@@ -1,5 +1,5 @@
 {
-  "name": "base",
+  "name": "delimall",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "js-base64": "^3.6.1",
     "vue": "^2.6.11",
     "vue-daum-postcode": "^0.9.0",
     "vue-router": "^3.5.1",

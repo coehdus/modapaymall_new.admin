@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-var domain = 'agency.reappay.net'
-var dev = 'https://api.dev.pg.reappay.net/agent/v1/'
-var server = 'https://api.pg.reappay.net/agent/v1/'
-var location = window.location.href
+let domain = 'delimall.co.kr'
+let dev = 'http://delimall.co.kr/API'
+let server = 'http://delimall.co.kr/API'
+let location = window.location.href
 
-var baseUrl = ''
+let baseUrl = ''
 
 if(location.indexOf(domain) > -1){
 	baseUrl = server
@@ -19,27 +19,27 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 		baseURL: baseUrl
 		,timeout: 30000
 	})
-	
+
 	const getUrl = function(){
 		return url
 	}
-	
+
 	const getParams = function(){
 		if(method == 'get'){
 			return data
 		}
 	}
-	
+
 	const getData = function(){
 		if(method != 'get'){
 			const formData = new FormData();
-			for(var key in data){
+			for(let key in data){
 				formData.append(key, data[key])
 			}
 			if(multipart){
 				return formData
 			}else{
-				return data
+				return formData
 			}
 		}
 	}
@@ -47,12 +47,11 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 	const getHeader = function(){
 		
 		let default_header = {
-			'Content-Type': 'application/json'
-			,'Access-Control-Allow-Origin' : '*'
+
 		}
 		
 		if(authorize){
-			default_header.Authorization = 'Bearer ' + (TOKEN ? TOKEN : sessionStorage.getItem('TOKEN'))
+			default_header.Authorization = 'Bearer ' + (TOKEN ? TOKEN : sessionStorage.getItem('delimallT'))
 		}
 		
 		if(multipart){
@@ -76,14 +75,8 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 		})
 		
 		if(result.status == 200){
-			const data = result.data
-			if(data.status == 200){
-				return {success: true, data: data}
-			}else if(result.status == 40120){
-				return {success: false, message: '인증이 만료되었습니다'}
-			}else{
-				return {success: false, message: data.message}
-			}
+
+			return result.data
 		}else{
 			const data = result.data
 			console.log(data.status)

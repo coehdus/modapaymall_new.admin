@@ -1,16 +1,23 @@
 <template>
-	<div>
-		<router-view
-			:Axios="Axios"
-			:Notify="Notify"
-			
-			@setNotify="setNotify"
-		></router-view>
-		
-		<Notify 
-			:msg="notifyCondition.message" 
+	<div class="full-height">
+		<div
+			class="full-height"
+		>
+			<router-view
+				:Axios="Axios"
+				:Notify="Notify"
+				:metaInfo="metaInfo"
+
+				@setNotify="setNotify"
+				class="overflow-y-auto"
+			></router-view>
+
+		</div>
+
+		<Notify
+			:msg="notifyCondition.message"
 			:type="notifyCondition.type"
-			
+
 			@clearMsg="clearMsg"
 		/>
 	</div>
@@ -22,7 +29,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify']
+		,props: ['Axios', 'Notify', 'metaInfo']
 		,components: { Notify }
 		,data: function(){
 			return {
@@ -49,3 +56,7 @@
 	
 </script>
 
+<style lang="css" src="@/assets/css/reset.css"></style>
+<style lang="css" src="@/assets/css/base.css"></style>
+
+<style lang="css" src="@/assets/css/dream/reset.css"></style>
