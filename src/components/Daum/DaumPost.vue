@@ -1,61 +1,62 @@
 <template>
-	
-	<v-card
+
+	<div
 		v-if="overlay"
-		color="indigo"
-		style="position: fixed; top: 10%; z-index: 9999; background-color: #00bfa5; color: white; "
-		class="pa-0"
+		style="position: fixed; width: 100%; height: 100%; z-index: 9999; top: 0; left: 0; overflow: auto"
 	>
-		<v-card-title
+		<div
+			style="width: 100%; top: 0; left: 0; position: absolute; top: 0; background-color: black; color: white; height: 100%; opacity: 0.5"
 		>
-			주소 찾기 <v-btn @click="daumComplate" class="float-right" icon color="white" style="position: absolute; right: 10px; top: 15px; color: white;"><v-icon large>mdi-close-box-outline</v-icon></v-btn>
-		</v-card-title>
-		<v-divider></v-divider>
-		<v-card-text
-			class="pa-0 ma-0"
-			style="padding: 0 !important; width: 550px; max-height: 550px; overflow: auto;"
+		</div>
+		<div
+			style="position: relative; z-index: 1; padding: 10px; height: 100%; overflow: auto"
 		>
+			<div
+				style="background-color: #0f6ecd; color: white; padding: 10px; display: flex; justify-content: space-between"
+			>
+				<span style="color: white; font-size: 24px" >주소 찾기</span>
+				<button
+					@click="daumComplate"
+				><v-icon large style="color: white; ">mdi-close-box-outline</v-icon></button>
+			</div>
 			<VueDaumPostcode
 				@complete="daumComplate"
 				style="padding: 0;"
 			>
 			</VueDaumPostcode>
-		</v-card-text>
-	</v-card>
-	
+		</div>
+	</div>
 </template>
 
 <script>
 
-	import { VueDaumPostcode } from "vue-daum-postcode"
-	
-	export default{
-		name: 'DaumPost'
-		,props: ['overlay', 'config']
-		,components: {VueDaumPostcode}
-		,data () {
-			return {
-			}
+import { VueDaumPostcode } from "vue-daum-postcode"
+
+export default{
+	name: 'DaumPost'
+	,props: ['overlay', 'config']
+	,components: { VueDaumPostcode }
+	,data () {
+		return {
 		}
-		,methods: {
-			
-			daumComplate: function(call){
-				console.log(call)
-				this.$emit('callBack', call)
-			}
+	}
+	,methods: {
+		daumComplate: function(call){
+			this.$emit('callBack', call)
 		}
-		,watch: {
-			modal: {
-				deep: true
-				,handler: function(call){
-					console.log('watch modal')
-					if(call){
-						this.callModal()
-					}else{
-						this.removeModal()
-					}
+	}
+	,watch: {
+		modal: {
+			deep: true
+			,handler: function(call){
+				console.log('watch modal')
+				if(call){
+					this.callModal()
+				}else{
+					this.removeModal()
 				}
 			}
 		}
 	}
+}
 </script>

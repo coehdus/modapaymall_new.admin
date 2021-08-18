@@ -23,6 +23,21 @@ const routes = [
 		,component: () => import('@/view/Auth/Login.vue')
 	}
 	,{
+		path: prefix + 'Auth/Join/:code?'
+		,name: 'Join'
+		,component: () => import('@/view/Auth/Join.vue')
+	}
+	,{
+		path: prefix + 'Auth/Result'
+		,name: 'JoinResult'
+		,component: () => import('@/view/Auth/Result.vue')
+	}
+	,{
+		path: prefix + 'Account/MyPage'
+		,name: 'MyPage'
+		,component: () => import('@/view/Account/MyPage.vue')
+	}
+	,{
 		path: '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')

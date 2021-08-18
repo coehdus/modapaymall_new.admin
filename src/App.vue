@@ -36,13 +36,37 @@ export default {
 		,rules: rules
 		,Base64: Base64
 		,metaInfo: metaInfo
-	}),
+	})
+	,methods: {
+		isAuth: function(){
+			console.log('isAuth start !!')
+			let TOKEN = sessionStorage.getItem('delimallT')
+			let skip = false
+			let except = ['auth']
+			let path = document.location.href
+			except.forEach(function (val) {
+				if (path.toLowerCase().indexOf(val) > -1) {
+					skip = true
+					return false
+				}
+			})
+			if(skip){
+				console.log('isAuth skip ! do next !!')
+			}else {
+				if (!TOKEN || TOKEN === 'false') {
+					console.log('not auth ! to login !!')
+					this.toLogin()
+				}
+			}
 
-	created() {
-		let TOKEN = sessionStorage.getItem('delimallT')
-		if(!TOKEN || TOKEN === 'false'){
-			this.$router.push({ name: 'Login'})
+			console.log('isAuth finished !!')
 		}
+		,toLogin: function(){
+			this.$router.push({ name: 'Login' })
+		}
+	}
+	,created() {
+		this.isAuth()
 	}
 };
 </script>

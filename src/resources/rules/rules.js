@@ -18,6 +18,25 @@ export const rules = {
 			}
 		}
 	}
+	,id: (obj, part, {min, max}) => {
+		if(obj[part]){
+			console.log(obj[part])
+			if(obj[part].length < min){
+				return { result: false, type: 'min'}
+			}
+			if(obj[part].length > max){
+				return { result: false, type: 'max'}
+			}
+
+			obj[part] = obj[part].replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/, '')
+			//return { result: false, type: 'kor'}
+
+			const num = obj[part].search(/[^0-9]/g)
+			if(!num){
+				return { result: false, type: 'num'}
+			}
+		}
+	}
 	,demical: (obj, part, {min, max}) => {
 		if(obj[part]){
 			const temp = obj[part].split('.')

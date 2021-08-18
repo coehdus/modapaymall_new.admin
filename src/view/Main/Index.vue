@@ -1,34 +1,6 @@
 <template>
 	<div class="flex-column full-height bg-gray-light">
-		<div
-			class="logo-position justify-center text-center pa-20 bg-base "
-		>
-			<a href="/" class="text-center color-white">Logo Position</a>
-		</div>
-
-		<div
-			class="header-box-menu flex-row justify-space-between bg-white"
-		>
-			<v-icon class="pa-10">mdi mdi-menu</v-icon>
-
-			<input
-				type="hidden"
-				name="search_type"
-				value="pdt_name"
-			/>
-			<input
-				class="flex-3 pa-10 border-lr"
-				type="text"
-				name="search_value"
-				placeholder="검색어를 입력하세요"
-			/>
-
-			<v-icon
-				class="pa-10"
-			>mdi mdi-magnify</v-icon>
-		</div>
-
-		<div class="main-pdt pa-10 full-height overflow-y-auto">
+		<div class="main-pdt pa-10 full-height  overflow-y-auto">
 			<div
 				v-for="item in items"
 				:key="item.pdt_uid"
@@ -41,41 +13,24 @@
 				</div>
 			</div>
 		</div>
-
-		<div
-			class="bottom justify-space-between text-center box-shadow-top position-relative bg-white"
-		>
-			<span class="flex-1 ptb-10 flex-column">
-				<v-icon>mdi mdi-store</v-icon>
-				홈
-			</span>
-			<span class="flex-1 ptb-10 flex-column position-relative">
-				<v-icon>mdi mdi-cart-outline</v-icon>
-				장바구니
-				<span
-					v-if="cart_cnt"
-					class="cart-count "
-				>{{ cart_cnt }}</span>
-			</span>
-			<span class="flex-1 ptb-10 flex-column">
-				<v-icon>mdi mdi-truck-fast</v-icon>배송조회
-			</span>
-			<span class="flex-1 ptb-10 flex-column">
-				<v-icon>mdi mdi-account-settings</v-icon>마이페이지
-			</span>
-		</div>
 	</div>
 </template>
 
 <script>
 	
+
 	export default{
 		name: 'Main'
-		,props: ['Axios']
+		,
+		components: {},
+		props: ['Axios']
 		,data: function(){
 			return {
 				program: {
 					name: '딜리몰'
+					,top: true
+					,title: false
+					,bottom: true
 				}
 				,member_info: {
 
@@ -86,8 +41,10 @@
 				]
 			}
 		}
+		,methods: {
+		}
 		,created: function(){
-			this.$emit('setProgram', this.program)
+			this.$emit('onLoad', this.program)
 		}
 	}
 	

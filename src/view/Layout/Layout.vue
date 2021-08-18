@@ -1,17 +1,33 @@
 <template>
-	<div class="full-height">
-		<div
-			class="full-height"
+	<div class="full-height" style="overflow: hidden">
+		<Side
+			v-if="is_side"
+			:Axios="Axios"
+
+			@toggleSide="toggleSide"
 		>
+		</Side>
+		<div
+			class="full-height flex-column"
+		>
+			<Top
+				v-if="program.top"
+				:program="program"
+				@toggleSide="toggleSide"
+			></Top>
 			<router-view
 				:Axios="Axios"
 				:Notify="Notify"
 				:metaInfo="metaInfo"
+				:rules="rules"
 
 				@setNotify="setNotify"
-				class="overflow-y-auto"
+				@onLoad="setProgram"
+				class=" overflow-y-auto"
 			></router-view>
-
+			<Bottom
+				v-if="program.bottom"
+			></Bottom>
 		</div>
 
 		<Notify
@@ -26,11 +42,14 @@
 <script>
 
 	import Notify from '@/components/AlertMsg'
+	import Side from "@/view/Layout/Side";
+	import Top from "@/view/Layout/Top";
+	import Bottom from "@/view/Layout/Bottom";
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo']
-		,components: { Notify }
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules']
+		,components: {Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
 				program: {
@@ -39,6 +58,7 @@
 					message: '메시지 입니다'
 					,type: ''
 				}
+				,is_side: false
 			}
 		}
 		,methods: {
@@ -51,6 +71,12 @@
 			,clearMsg: function(){
 				this.notifyCondition.message = ''
 			}
+			,toggleSide: function(){
+				this.is_side = !this.is_side
+			}
+			,setProgram: function(program){
+				this.program = program
+			}
 		}
 	}
 	
@@ -60,3 +86,10 @@
 <style lang="css" src="@/assets/css/base.css"></style>
 
 <style lang="css" src="@/assets/css/dream/reset.css"></style>
+
+<style>
+	.bg-title {
+		padding: 10px;
+		box-shadow: 0 0 3px 1px gray;
+	}
+</style>
