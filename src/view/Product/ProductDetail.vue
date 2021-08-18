@@ -59,82 +59,75 @@
 				class="pdt-pdt_options"
 			>
 				<div
-					v-for="(option, index) in pdt_options"
+					v-for="(pdt_option, index) in pdt_options"
 					:key="'option_' + index"
-					class="pdt-option"
+					class="mt-10"
 				>
-					<div
-						class=" flex-row justify-space-between"
-						@click="toggleOption(option)"
+					<select
+						v-model="option[index]"
+						class="select"
 					>
-						<span>
-							<span
-								class="option-name mr-10"
-							>{{ option.opt_name }}</span>
-							<span
-								v-if="option.opt"
-								class="option-select"
-							>{{ option.opt }}</span>
-						</span>
-						<button
-							class="btn-info btn-xs mdi mdi-chevron-down"
-						>
-						</button>
-					</div>
-					<ul
-						v-if="option.is_view"
-						class="ul-pdt-option mt-10"
-					>
-						<li
-							v-for="opt in option.opt_cont.split(',')"
+						<option value="">{{ pdt_option.opt_name }}</option>
+						<option
+							v-for="opt in pdt_option.opt_cont.split(',')"
 							:key="'option_' + index + '_' + opt"
-							class="li-pdt-option"
-							@click="setOption(option, opt)"
-						>{{ opt }}</li>
-					</ul>
+							:value="opt"
+						>{{ opt }}</option>
+					</select>
 				</div>
+
 			</div>
 
-			<div
-				class="pdt-cnt mt-10 flex-row justify-space-between"
-			>
-				<span
-					class="flex-2 font-weight-bold color-black"
-					style="display: inline !important; line-height: 240%;"
-				>수량</span>
-				<span
-					class="flex-1 flex-row justify-space-between box-pdt-cnt"
-				>
-					<button
-						@click="setCnt('down')"
-						class="flex-1 mdi mdi-minus"
 
-					></button>
-					<input
-						v-model="pdt_cnt"
-						type="number"
-						name="pdt_cnt"
-						value="1"
-						class="flex-1"
-
-					/>
-					<button
-						@click="setCnt('up')"
-						class="flex-1 mdi mdi-plus"
-					></button>
-				</span>
-			</div>
 		</div>
 
 		<div
 			class="mt-auto pa-10 shadow-top"
 		>
+			<ul>
+				<li
+					v-for="(odt, index) in odts"
+					:key="'odt_' + index"
+					class="pdt-cnt"
+				>
+					<div
+						class=" flex-row justify-space-between"
+					>
+						<span
+							class="flex-1 font-weight-bold color-black span-pdt-cnt"
+						>{{ odt.odt }}</span>
+						<span
+							class="flex-1 flex-row justify-space-between box-pdt-cnt"
+						>
+							<button
+								@click="setCnt(odt, 'down')"
+								class="flex-1 mdi mdi-minus"
+							></button>
+							<input
+								v-model="odt.odt_cnt"
+								type="number"
+								name="pdt_cnt"
+								class="flex-1 bg-gray-light"
+								readonly
+							/>
+							<button
+								@click="setCnt(odt, 'up')"
+								class="flex-1 mdi mdi-plus mr-10"
+							></button>
+							<button
+								@click="removeItem(index)"
+								class="flex-1 color-red mdi mdi-delete-outline"
+							></button>
+						</span>
+					</div>
+				</li>
+			</ul>
 			<div
 				class="pdt-cnt flex-row justify-space-between"
 			>
-			<span
-				class="font-weight-bold color-black"
-			>총 상품가</span>
+				<span
+					class="font-weight-bold color-black"
+				>총 상품가</span>
 				<span
 					class="order-price font-weight-bold color-black"
 				>{{ total_price | makeComma }}</span>
@@ -182,6 +175,8 @@
 				,files: [
 
 				]
+				// 현재 옵션
+				,option: []
 				// 선택한 옵션
 				,options: [
 
@@ -190,7 +185,18 @@
 		}
 		,computed: {
 			total_price: function(){
-				return this.item.pdt_price * this.pdt_cnt
+				let price = 0
+				let pdt_price = this.item.pdt_price
+				this.options.forEach(function(item){
+					price += Number(item.odt_cnt) * (Number(pdt_price) + Number(item.odt_price))
+				})
+				return price
+			}
+			,odts: function(){
+				return this.options.filter(function(item){
+
+					return item.odt.replaceAll(',', '/')
+				})
 			}
 		}
 		,methods: {
@@ -223,21 +229,13 @@
 				}else{
 					cart_items = JSON.parse(cart_items)
 				}
-				
-				let pdt_cnt = this.pdt_cnt
-				let pdt_pdt_options = this.pdt_options
-				let pdt_uid = this.item.uid
 
 				let append_type = 'append'
 				let msg = "장바구니에 등록되었습니다."
 
-				console.log(pdt_pdt_options.length + " : " + this.pdt_options.length)
-				if(pdt_pdt_options && pdt_pdt_options.length != this.pdt_options.length){
+				if(!this.options.length){
 					alert('옵션을 선택하세요');
-				}else if(!pdt_cnt || pdt_cnt < 1){
-					alert('수량을 선택하세요');
 				}else{
-
 					let company_items = {
 						pdt_company: this.item.pdt_company
 						,company: {
@@ -251,62 +249,106 @@
 						,items: []
 					}
 
-					let index = null
-
-					for(let i = 0; i < cart_items.length; i ++){
+					// 장바구니 조회
+					for(let i = 0; i < cart_items.length; i++){
 						let company = cart_items[i]
-						if(company.pdt_company == this.item.pdt_company){
-							company_items.items = cart_items[i].items
-							company_items.company.total_price = cart_items[i].company.total_price
+						// 동일 판매자가 있다면 상품 조회
+						if(company.pdt_company == this.item.pdt_company) {
+							console.log('동일 판매자가 있다면 상품 조회 ')
+							let items = company.items
+							// 동일 판매자의 상품 조회
+							for(let j = 0; j < items.length; j++){
+								// 동일 상품이 있다면 옵션 조회
+								if(items[j].pdt_uid == this.item.uid){
+									console.log('동일 상품이 있다면 옵션 조회 ')
+									let options = items[j].pdt_option
 
-							index = i + ''
+									if(!options.length){
+										console.log('옵션이 없다면 추가 ')
+										options = this.options
+										break
+									}
+									// 동일 상품의 옵션 조회
+									for(let k = 0; k < this.options.length; k++){
+
+										// 동일 옵션 조회
+										for(let l = 0; l < options.length; l++){
+											let option = options[l]
+											// 동일 옵션이 있을 경우 수량 증가
+											console.log(this.options[k].odt + ' : ' + option.odt)
+											if(this.options[k].odt == option.odt){
+												console.log('동일 옵션이 있을 경우 수량 증가')
+												option.odt_cnt += this.options[k].odt_cnt
+												console.log(option.odt_cnt)
+												this.options[k].is_cart = true
+												break
+											}
+										}
+										// 장바구니에 있으면
+										if(this.options[k].is_cart){
+											append_type = 'add'
+											console.log('장바구니에 있으면 다음 옵션')
+											continue
+										// 장바구니에 없으면
+										}else{
+											console.log('장바구니에 없으면 추가')
+											options.push(this.options[k])
+										}
+									}
+								// 동일 상품이 없다면
+								}else{
+									console.log('동일 상품이 없다면 상품 추가')
+									// 상품 추가 - 옵션 포함
+									items.push({
+										pdt_uid: this.item.uid
+										,pdt_name: this.item.pdt_name
+										,pdt_img: this.item.pdt_img1
+										,pdt_price: this.item.pdt_price
+										,pdt_option: this.options
+									})
+
+									break
+								}
+							}
+						// 동일 판매자가 없다면
+						}else{
+							console.log('동일 판매자가 없다면 상품 추가 ')
+							// 상품 추가 - 옵션 포함
+							company_items.items.push({
+								pdt_uid: this.item.uid
+								,pdt_name: this.item.pdt_name
+								,pdt_img: this.item.pdt_img1
+								,pdt_price: this.item.pdt_price
+								,pdt_option: this.options
+							})
+
+							// 판매자 추가
+							cart_items.push(company_items)
+
 							break;
 						}
 					}
-					alert(company_items.company.total_price)
-					for(let i = 0; i < company_items.items.length; i ++){
-						let item = company_items.items[i]
-
-						if(item.pdt_uid == pdt_uid && item.pdt_option == pdt_pdt_options){
-
-							pdt_cnt = Number(pdt_cnt) + Number(pdt_cnt)
-							company_items.company.total_price += (Number(pdt_cnt) * Number(this.item.pdt_price))
-							append_type = 'add'
-							break
-						}
-					}
-					alert(company_items.company.total_price)
-
-					if(append_type == 'add'){
-						msg = "장바구니에 추가되었습니다."
-					}else{
-						let cart_data = {
-							pdt_uid: pdt_uid
+					if(!cart_items.length){
+						console.log('빈 장바구니 추가 ')
+						company_items.items.push({
+							pdt_uid: this.item.uid
 							,pdt_name: this.item.pdt_name
 							,pdt_img: this.item.pdt_img1
 							,pdt_price: this.item.pdt_price
-							,pdt_option: pdt_pdt_options
-							,pdt_cnt: pdt_cnt
-						}
-						company_items.company.total_price += (Number(pdt_cnt) * Number(this.item.pdt_price))
-						company_items.items.push(cart_data)
-					}
-					alert(company_items.company.total_price)
-					console.log('index: ' + index)
-					if(index){
-						cart_items[index] = company_items
-					}else{
+							,pdt_option: this.options
+						})
 						cart_items.push(company_items)
 					}
-					console.log(cart_items)
 
 					localStorage.setItem("cart_items", JSON.stringify(cart_items))
-
+					if(append_type == 'add'){
+						msg = '장바구니에 추가 되었습니다'
+					}
 					alert(msg);
 				}
 			}
-			,setCnt: function(type){
-				let cnt = this.pdt_cnt
+			,setCnt: function(odt, type){
+				let cnt = odt.odt_cnt
 				if(cnt == ''){
 					cnt = 1
 				}
@@ -323,7 +365,7 @@
 						cnt = Number(cnt) - 1
 					}
 				}
-				this.pdt_cnt = cnt
+				odt.odt_cnt = cnt
 			}
 			,toBack: function(){
 				this.$emit('click')
@@ -332,19 +374,71 @@
 				this.$set(option, 'is_view', !option.is_view)
 			}
 			,setOption: function(option, opt){
+				console.log(option)
 				this.$set(option, 'opt', opt)
 				this.toggleOption(option)
+			}
+			,resetOption: function(call){
+				for(let i = 0; i < call.length; i++){
+					this.$set(this.option, i, '')
+				}
+			}
+			,removeItem: function(index){
+				if(confirm('해당 옵션을 삭제하시겠습니까?')){
+					this.$delete(this.options, index)
+				}
 			}
 		}
 		,created() {
 			this.$emit('onLoad', this.program)
 			this.getData()
 		}
-	}
-</script>
+		,watch:{
+			pdt_options: {
+				immediate: true
+				,handler: function (call){
+					this.resetOption(call)
+				}
+			}
+			,option: {
+				deep: true
+				,handler: function (call){
+					let full = true
+					call.forEach(function(item){
+						if(!item){
+							full = false
+							return false
+						}
+					})
 
-<style rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-<style rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+					if(full){
+						let val = {
+							odt: call.toString()
+							,odt_price: 0
+							,odt_cnt: 1
+						}
+
+						let result = this.options.filter(function(item){
+							if(item.odt == val.odt){
+								return item.odt_cnt++
+							}
+
+						})
+
+						if(result.length){
+							result.odt_cnt++
+						}else{
+							this.options.push(val)
+						}
+
+						this.resetOption(this.option)
+					}
+				}
+			}
+		}
+	}
+
+</script>
 
 <style type="text/css">
 .pdt-title {
@@ -416,7 +510,7 @@
 	border: none;
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
-	padding: 5px;
+	padding: 0px 5px;
 	width: 100%;
 	text-align: center;
 }
@@ -432,5 +526,15 @@
 
 .shadow-top {
 	box-shadow: 0px 2px 5px black;
+}
+
+.span-pdt-cnt {
+	display: inline !important; line-height: 240%;
+}
+
+.select {
+	width: 100%;
+	padding: 10px;
+	color: black;
 }
 </style>
