@@ -2,8 +2,9 @@
 	<div>
 		<div
 			class="logo-position justify-center text-center pa-20 bg-base "
+			@click="toMain"
 		>
-			<a href="/" class="text-center color-white">Logo Position</a>
+			<span class="text-center color-white">Logo Position</span>
 		</div>
 
 		<div
@@ -39,6 +40,9 @@
 		,methods: {
 			onSide: function(){
 				this.$emit('toggleSide')
+			}
+			,toMain: function(){
+				this.$router.push({ name: 'Index'})
 			}
 		}
 	}

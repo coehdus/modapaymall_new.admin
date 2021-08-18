@@ -33,6 +33,11 @@ const routes = [
 		,component: () => import('@/view/Auth/Result.vue')
 	}
 	,{
+		path: prefix + 'Product/List/:category?'
+		,name: 'ProductList'
+		,component: () => import('@/view/Product/ProductList.vue')
+	}
+	,{
 		path: prefix + 'Account/MyPage'
 		,name: 'MyPage'
 		,component: () => import('@/view/Account/MyPage.vue')

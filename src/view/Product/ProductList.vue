@@ -1,0 +1,159 @@
+<template>
+	<div
+		class=" full-height"
+	>
+		<div
+			v-if="!item.uid"
+			class="flex-column full-height bg-gray-light"
+		>
+
+			<div
+				class="flex-column full-height overflow-y-auto"
+			>
+				<template
+					v-if="search.total_count"
+				>
+					<div class="main-pdt pa-10 full-height  overflow-y-auto">
+						<div
+							v-for="item in items"
+							:key="item.uid"
+							class="main-box-pdt box-shadow mb-30"
+							@click="goDetail(item)"
+						>
+							<div class="pdt-img pa-30 under-line"><img src="" width="100%"/><v-icon class="mdi mdi-image none-img"></v-icon></div>
+							<div class="pdt-info pa-10 flex-row justify-space-between">
+								<span class="pdt-title">{{  item.pdt_name }}</span>
+								<span class="price">{{  item.pdt_price | makeComma }}</span>
+							</div>
+						</div>
+					</div>
+				</template>
+				<div
+					v-else
+					class="flex-column full-height justify-center bg-white"
+				>
+					<div class="text-center">
+						<v-icon class="size-px-48">mdi-cloud-off-outline</v-icon>
+						<p class="mt-10 size-px-16">조회된 기록이 없습니다.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<ProductDetail
+			v-if="item.uid"
+			:item="item"
+			:date="date"
+			:callBack="callBack"
+			:Axios="Axios"
+
+			@click="clear"
+			@onLoad="setProgram"
+		></ProductDetail>
+	</div>
+</template>
+
+<script>
+
+import ProductDetail from "@/view/Product/ProductDetail";
+
+export default{
+	props: ['Axios', 'user', 'codes', 'date', 'callBack', 'TOKEN']
+	,components: { ProductDetail }
+	,data: function(){
+		return {
+			program: {
+				name: '목록'
+				,code: 'product_list'
+				,top: true
+				,title: false
+				,bottom: true
+				,
+			}
+			,search: {
+				TOKEN:  this.TOKEN
+				,pdt_name: ''
+				,pdt_category: this.$route.params.category
+			}
+			,summary: {
+				total: 0
+			}
+			,items: [
+
+			]
+			,item: {
+
+			}
+		}
+	}
+	,computed:{
+		lists: function(){
+
+			return this.items.filter(function(item){
+				if(item.pdt_img){
+					item.pdt_img = ''
+				}else{
+					item.pdt_img = ''
+				}
+
+				return item
+			})
+		}
+	}
+	,methods: {
+		getData: async function() {
+
+			this.loading = true
+
+			try {
+				const result = await this.Axios({
+					method: 'post'
+					, url: 'product/getProductList'
+					, data: this.search
+				})
+
+				if (result.success) {
+					this.$set(this, 'items', result.data.content.result)
+
+					if (this.items.length > 0) {
+						this.$set(this.search, 'total_count', result.data.content.tCnt)
+						this.$set(this.search, 'list_cnt', result.data.content.cnt)
+					}else{
+						this.$set(this.search, 'total_count', 0)
+					}
+
+				} else {
+					this.$emit('setNotify', {type: 'error', message: result.message})
+				}
+			} catch (E) {
+				console.log(E)
+				this.$emit('setNotify', {type: 'error', message: E})
+			} finally {
+				this.loading = false
+			}
+		}
+		,goDetail(item){
+			this.$set(this, 'item', item)
+		}
+		,clear(){
+			this.$set(this, 'item', {})
+			this.setProgram(this.program)
+		}
+		,setProgram(program){
+			this.$emit('onLoad', program)
+		}
+	}
+	,created: function(){
+		this.$emit('onLoad', this.program)
+		this.getData()
+	}
+	,watch: {
+
+	}
+}
+</script>
+
+<style>
+.box-payment-list.shadow {
+	box-shadow: 0px 5px 10px rgb(0, 0, 0, 0.2)
+}
+</style>

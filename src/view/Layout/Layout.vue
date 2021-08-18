@@ -15,11 +15,16 @@
 				:program="program"
 				@toggleSide="toggleSide"
 			></Top>
+			<Title
+				v-if="program.title"
+				:program="program"
+			></Title>
 			<router-view
 				:Axios="Axios"
 				:Notify="Notify"
 				:metaInfo="metaInfo"
 				:rules="rules"
+				:TOKEN="TOKEN"
 
 				@setNotify="setNotify"
 				@onLoad="setProgram"
@@ -45,11 +50,12 @@
 	import Side from "@/view/Layout/Side";
 	import Top from "@/view/Layout/Top";
 	import Bottom from "@/view/Layout/Bottom";
+	import Title from "@/view/Layout/Title";
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules']
-		,components: {Bottom, Side, Top, Notify }
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN']
+		,components: {Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
 				program: {
@@ -88,6 +94,52 @@
 <style lang="css" src="@/assets/css/dream/reset.css"></style>
 
 <style>
+
+.cart-count {
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	background-color: #0093e2;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	color: white;
+	font-size: 12px;
+	padding: 3px 5px;
+	line-height: 100%;
+}
+
+
+.company-list {
+	font-family: "\B9D1\C740 \ACE0\B515",Malgun Gothic,Apple-Gothic,Helvetica,Dotum,\\B3CB\C6C0,Gulim
+}
+
+.cart-none-list {
+	display: none;
+}
+
+.main-box-pdt { background-color: white; border-radius: 10px 0px 0px 0px;}
+
+.box-shadow-top { box-shadow: 0px 3px 6px black}
+.box-shadow-inset { box-shadow: 0px 0px 2px 1px #bbb inset}
+.box-shadow { box-shadow: 1px 1px 3px 1px #bbb}
+
+.border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
+.border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
+
+.bg-base { background-color: #0165fa}
+
+	.logo-position {
+
+	}
+	.header-box-menu {
+		border-bottom: 1px solid #ddd;
+	}
+
+	.icon-box {
+		padding: 5px;
+		border: 1px solid #ddd;
+	}
+
 	.bg-title {
 		padding: 10px;
 		box-shadow: 0 0 3px 1px gray;

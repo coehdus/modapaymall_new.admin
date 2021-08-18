@@ -7,6 +7,7 @@
 		:rules="rules"
 		:Base64="Base64"
 		:metaInfo="metaInfo"
+		:TOKEN="TOKEN"
 	/>
 </template>
 
@@ -36,6 +37,7 @@ export default {
 		,rules: rules
 		,Base64: Base64
 		,metaInfo: metaInfo
+		,TOKEN: ''
 	})
 	,methods: {
 		isAuth: function(){
@@ -56,6 +58,8 @@ export default {
 				if (!TOKEN || TOKEN === 'false') {
 					console.log('not auth ! to login !!')
 					this.toLogin()
+				}else{
+					this.TOKEN = encodeURI(TOKEN)
 				}
 			}
 

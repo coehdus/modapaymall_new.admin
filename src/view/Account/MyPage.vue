@@ -112,7 +112,7 @@ export default{
 				,code: 'mypage'
 				,wrap: 'mypage'
 				,top: false
-				,title: true
+				,title: false
 				,bottom: false
 				,class: 'blue'
 			}

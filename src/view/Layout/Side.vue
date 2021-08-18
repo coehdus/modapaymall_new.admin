@@ -27,10 +27,11 @@
 					:key="item.category_code"
 					class="li-side-content justify-space-between"
 					:class="'li-side-depth-' + item.depth"
+
+					@click="toItem(item.category_code)"
 				>
 					<span>{{ item.category_name }}</span>
 					<v-icon
-						@click="toItem(item.category_code)"
 					>mdi mdi-chevron-right</v-icon>
 				</li>
 			</ul>
@@ -68,6 +69,7 @@
 			}
 			,toItem: function(category){
 				this.$router.push({ name: 'ProductList', params: { category: category}})
+				this.toggleSide()
 			}
 			,toggleSide: function(){
 				this.$emit('toggleSide')
