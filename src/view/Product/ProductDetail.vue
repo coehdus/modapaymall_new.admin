@@ -8,44 +8,47 @@
 			<button
 				:title="program.name"
 				@click="toBack"
-			><v-icon large class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span></button>
+			><v-icon class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-12 vertical-middle">{{ program.name }}</span></button>
 		</div>
 		<div
-			class="pa-10 full-height flex-column overflow-y-auto"
+			class="mt-10 pa-10 full-height flex-column overflow-y-auto"
 		>
 			<div
-				class="pdt-img mt-30"
+				class="pdt-img"
 			>
-				<div class="middlebanner">
-					<div class="">
-						<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-							<!-- Indicators -->
-							<ol class="carousel-indicators">
-								<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-							</ol>
-							<!-- Wrapper for slides -->
-							<div class="carousel-inner" role="listbox" style="text-align: center;">
-								<div class="item active">
-									<img src="<?=IMG_DIR?>visual_img01.jpg" alt="main1">
-								</div>
+				<div class=" flex-row justify-space-between">
+					<v-icon
+						@click="file_index--"
+					>mdi mdi-chevron-left</v-icon>
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner " role="listbox" style="text-align: center; min-width: 120px; min-height: 120px">
+						<template
+							v-if="files.sub.length"
+						>
+						<template
+							v-for="(file, index) in files.sub"
+						>
+							<div
+								v-if="file_index == index"
+								:key="file.file_name"
+							>
+								<img :src="'http://delimall.co.kr/API/data/product/' + file.file_name" alt="main1">
 							</div>
-
-							<!-- Controls -->
-							<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-								<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-								<span class="sr-only">Previous</span>
-							</a>
-							<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-								<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-								<span class="sr-only">Next</span>
-							</a>
-						</div>
+						</template>
+						</template>
+						<div
+							v-else
+							class="full-height flex-column justify-center input-box"
+						><span>No Image</span></div>
 					</div>
+					<v-icon
+						@click="file_index++"
+					>mdi mdi-chevron-right</v-icon>
 				</div>
 			</div>
 
 			<div
-				class="flex-row justify-space-between"
+				class="mt-20 flex-row justify-space-between"
 			>
 				<div
 					class="pdt-price"
@@ -75,9 +78,17 @@
 						>{{ opt }}</option>
 					</select>
 				</div>
-
 			</div>
 
+			<div
+				class="mt-30 input-box pdt-info"
+				v-html="item.pdt_info.replaceAll('/API/', 'http://delimall.co.kr/API/')"
+			></div>
+
+			<div
+				class="mt-30 input-box pdt-notice"
+				v-html="item.pdt_notice.replaceAll('/API/', 'http://delimall.co.kr/API/')"
+			></div>
 
 		</div>
 
@@ -118,7 +129,7 @@
 							<button
 								v-if="pdt_options.length"
 								@click="removeItem(index)"
-								class="flex-1 color-red mdi mdi-delete-outline"
+								class="flex-1 color-red mdi mdi-close"
 							></button>
 						</span>
 					</div>
@@ -172,9 +183,12 @@
 					
 				]
 				,pdt_cnt: 1
-				,files: [
+				,files: {
+					main: []
+					,sub: []
+				}
 
-				]
+				,file_index: 1
 				// 현재 옵션
 				,option: []
 				// 선택한 옵션
@@ -447,6 +461,17 @@
 					}
 				}
 			}
+			,file_index: {
+				handler: function(call){
+					if(this.files.sub.length > 1) {
+						if (call < 1) {
+							this.file_index = this.files.sub.length - 1
+						} else if (call >= this.files.sub.length) {
+							this.file_index = 1
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -548,5 +573,11 @@
 	width: 100%;
 	padding: 10px;
 	color: black;
+}
+
+
+.pdt-info img,
+.pdt-notice img {
+	max-width: 100%;
 }
 </style>

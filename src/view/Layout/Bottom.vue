@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="bottom justify-space-between text-center box-shadow-top position-relative bg-white"
+		class="bottom justify-space-between text-center box-shadow-top position-relative bg-white position-relative"
 	>
 		<span
 			class="flex-1 ptb-10 flex-column"
@@ -38,29 +38,13 @@
 <script>
 	export default{
 		name: 'Bottom'
+		,props: ['cart_cnt']
 		,data: function(){
 			return {
 
 			}
 		}
 		,computed: {
-			cart_cnt: function(){
-				let cnt = 0
-
-				let cart_items = localStorage.getItem('cart_items')
-
-				if(cart_items && cart_items !== 'false'){
-					console.log(cart_items)
-					cart_items = JSON.parse(cart_items)
-					for(let i = 0; i < cart_items.length; i++){
-						cnt += cart_items[i].items.length
-					}
-				}else{
-					console.log(111)
-				}
-
-				return cnt
-			}
 		}
 		,methods: {
 			toHome: function(){
