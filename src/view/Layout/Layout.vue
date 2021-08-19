@@ -97,8 +97,8 @@
 
 .cart-count {
 	position: absolute;
-	right: 2px;
-	top: 2px;
+	right: 10px;
+	top: 5px;
 	background-color: #0093e2;
 	border: 1px solid #ddd;
 	border-radius: 5px;

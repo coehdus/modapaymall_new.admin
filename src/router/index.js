@@ -38,6 +38,11 @@ const routes = [
 		,component: () => import('@/view/Product/ProductList.vue')
 	}
 	,{
+		path: prefix + 'Order/Cart'
+		,name: 'Cart'
+		,component: () => import('@/view/Order/Cart.vue')
+	}
+	,{
 		path: prefix + 'Account/MyPage'
 		,name: 'MyPage'
 		,component: () => import('@/view/Account/MyPage.vue')

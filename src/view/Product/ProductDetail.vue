@@ -112,9 +112,11 @@
 							/>
 							<button
 								@click="setCnt(odt, 'up')"
-								class="flex-1 mdi mdi-plus mr-10"
+								class="flex-1 mdi mdi-plus"
+								:class="{ 'mr-10': pdt_options.length}"
 							></button>
 							<button
+								v-if="pdt_options.length"
 								@click="removeItem(index)"
 								class="flex-1 color-red mdi mdi-delete-outline"
 							></button>
@@ -160,9 +162,7 @@
 					,bottom: false
 				}
 				// 상품옵션
-				,pdt_options: [
-
-				]
+				,pdt_options: null
 				// 판매자 정보
 				,seller_info: {
 					
@@ -211,7 +211,9 @@
 					})
 
 					if (result.success) {
-						this.pdt_options = result.data.pdt_options
+						this.$set(this, 'pdt_options', result.data.pdt_options)
+
+						this.resetOption(this.pdt_options)
 						this.files = result.data.pdt_files
 						this.seller_info = result.data.seller_info
 					} else {
@@ -379,8 +381,16 @@
 				this.toggleOption(option)
 			}
 			,resetOption: function(call){
-				for(let i = 0; i < call.length; i++){
-					this.$set(this.option, i, '')
+				if(call.length > 0) {
+					for (let i = 0; i < call.length; i++) {
+						this.$set(this.option, i, '')
+					}
+				}else{
+					this.$set(this.options, 0, {
+						odt: this.item.pdt_name
+						,odt_cnt: 1
+						,odt_price: 0
+					})
 				}
 			}
 			,removeItem: function(index){
@@ -394,13 +404,15 @@
 			this.getData()
 		}
 		,watch:{
+			/*
 			pdt_options: {
-				immediate: true
+				deep: true
 				,handler: function (call){
 					this.resetOption(call)
 				}
 			}
-			,option: {
+
+			,*/ option: {
 				deep: true
 				,handler: function (call){
 					let full = true
