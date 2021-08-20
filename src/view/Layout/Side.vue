@@ -11,11 +11,12 @@
 			class="side-container flex-column"
 		>
 			<div
-				class="pa-10 flex-row justify-space-between under-line"
+				class="flex-row justify-space-between under-line pa-20 bg-base color-white"
 			>
-				<span>logo-position</span>
+				<span class="color-white">logo-position</span>
 				<v-icon
 					@click="toggleSide"
+					class="color-white"
 				>mdi mdi-arrow-left-bold-box-outline</v-icon>
 			</div>
 
@@ -35,6 +36,12 @@
 					>mdi mdi-chevron-right</v-icon>
 				</li>
 			</ul>
+
+			<div
+				class="mt-auto  text-center bg-gray pa-20"
+			>
+				1.0.0 v
+			</div>
 		</div>
 	</div>
 </template>
@@ -68,8 +75,9 @@
 				}
 			}
 			,toItem: function(category){
-				this.$router.push({ name: 'ProductList', params: { category: category}})
 				this.toggleSide()
+				//document.location.href = '/Product/List/' + category
+				this.$router.push({ name: 'ProductList', params: { category: category}})
 			}
 			,toggleSide: function(){
 				this.$emit('toggleSide')

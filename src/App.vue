@@ -64,6 +64,7 @@ export default {
 					this.toLogin()
 				}else{
 					this.TOKEN = encodeURI(TOKEN)
+					this.getBaseInfo()
 				}
 			}
 
@@ -71,6 +72,27 @@ export default {
 		}
 		,toLogin: function(){
 			this.$router.push({ name: 'Login' })
+		}
+		,getBaseInfo: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'member/getBaseInfo'
+					,data: {
+						TOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.member_info = result.data.member_info
+					this.shop_info = result.data.shop_info
+					this.seller_info = result.data.seller_info
+				}else{
+					console.log(result.message)
+				}
+			}catch (e) {
+				console.log(e)
+			}
 		}
 	}
 	,created() {

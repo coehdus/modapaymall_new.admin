@@ -23,6 +23,7 @@
 		</span>
 		<span
 			class="flex-1 ptb-10 flex-column"
+			@click="toOrderList"
 		>
 			<v-icon>mdi mdi-truck-fast</v-icon>배송조회
 		</span>
@@ -55,6 +56,9 @@
 			}
 			,toCart: function(){
 				this.$router.push({ name: 'Cart'})
+			}
+			,toOrderList: function (){
+				this.$router.push({ name: 'OrderList'})
 			}
 		}
 	}

@@ -46,7 +46,10 @@
 						class="mt-10 input-box"
 						placeholder="연락처"
 					/>
-					<div class="mt-10 flex-row">
+					<div
+						class="mt-10 flex-row"
+						@click="daumPost('default')"
+					>
 						<input
 							v-model="item.d_post"
 							class="input-box flex-3 mr-10"
@@ -55,7 +58,6 @@
 						/>
 						<button
 							class="btn btn-blue flex-1"
-							@click="daumPost('default')"
 						>주소 검색</button>
 					</div>
 					<input
@@ -64,6 +66,7 @@
 						class="mt-10 input-box"
 						readonly
 						maxlength="80"
+						@click="daumPost('default')"
 					/>
 					<input
 						v-model="item.d_addr2"
@@ -97,7 +100,7 @@
 								:key="'product_' + product_index"
 								class=" under-line justify-space-between"
 							>
-								<div class="pa-10 flex-1 pdt-img justify-center flex-column">
+								<div class="pa-10 flex-1 odt-img justify-center flex-column">
 									<img
 										v-if="product.pdt_img"
 										:src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"
@@ -192,7 +195,7 @@
 							<div class="mt-10">{{ item.site_bank }}</div>
 							<input
 								v-model="item.bank_info"
-								placeholder="예금주"
+								placeholder="입금자 명"
 								class="mt-10 input-box"
 							/>
 						</div>
@@ -330,6 +333,8 @@ export default{
 				}
 			}
 
+			item.c_uid = JSON.stringify(item.c_uid)
+
 			return item
 		}
 		,item_list: function(){
@@ -412,7 +417,7 @@ export default{
 				})
 
 				if(result.success){
-					this.order_number = result.data.content.order_number
+					this.order_number = result.data.order_number
 					this.$emit('setNotify', { type: 'success', message: result.message})
 					this.toResult()
 				}else{
@@ -467,8 +472,8 @@ export default{
 	text-align: center;
 }
 
-.pdt-img {
+.odt-img {
 	margin-right: 10px
 }
-.pdt-img img {width: 100% !important;}
+.odt-img img {width: 100% !important;}
 </style>

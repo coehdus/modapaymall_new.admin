@@ -14,16 +14,19 @@
 			class="mt-10 pa-10 full-height flex-column overflow-y-auto"
 		>
 			<div
-				class="pdt-img"
+				class="pdt-img1"
 			>
 				<div class=" flex-row justify-space-between">
 					<v-icon
 						@click="file_index--"
 					>mdi mdi-chevron-left</v-icon>
-					<!-- Wrapper for slides -->
-					<div class="carousel-inner " role="listbox" style="text-align: center; min-width: 120px; min-height: 120px">
+
+					<div
+						class="flex-column justify-center"
+						style="text-align: center; min-width: 120px; min-height: 120px"
+					>
 						<template
-							v-if="files.sub.length"
+							v-if="files.sub.length > 0"
 						>
 						<template
 							v-for="(file, index) in files.sub"
@@ -32,7 +35,9 @@
 								v-if="file_index == index"
 								:key="file.file_name"
 							>
-								<img :src="'http://delimall.co.kr/API/data/product/' + file.file_name" alt="main1">
+								<img
+									:src="'http://delimall.co.kr/API/data/product/' + file.file_name" alt="main1"
+								/>
 							</div>
 						</template>
 						</template>
@@ -210,7 +215,7 @@
 					,sub: []
 				}
 
-				,file_index: 1
+				,file_index: 0
 				// 현재 옵션
 				,option: []
 				// 선택한 옵션
@@ -508,11 +513,11 @@
 			}
 			,file_index: {
 				handler: function(call){
-					if(this.files.sub.length > 1) {
-						if (call < 1) {
+					if(this.files.sub.length > 0) {
+						if (call < 0) {
 							this.file_index = this.files.sub.length - 1
 						} else if (call >= this.files.sub.length) {
-							this.file_index = 1
+							this.file_index = 0
 						}
 					}
 				}
@@ -536,7 +541,7 @@
 	font-family: Helvetica,Apple-Gothic,Dotum,"돋움",Gulim,"굴림";
 }
 
-.pdt-img img {
+.pdt-img1 img {
 	width: 50%;
 }
 

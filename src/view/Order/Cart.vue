@@ -23,7 +23,7 @@
 							:key="'product_' + product_index"
 							class=" under-line justify-space-between"
 						>
-							<div class="pa-10 flex-1 pdt-img justify-center flex-column">
+							<div class="pa-10 flex-1 odt-img justify-center flex-column">
 								<img
 									v-if="product.pdt_img"
 									:src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"
@@ -168,9 +168,11 @@
 			total_price: function(){
 				let price = 0;
 
-				for(let i = 0; i < this.cart_items.length; i ++){
-					if(!this.cart_items[i].is_not_select) {
-						price += (Number(this.cart_items[i].pdt_price) + Number(this.cart_items[i].op_price)) * this.cart_items[i].op_cnt
+				if(this.cart_items.length > 0) {
+					for (let i = 0; i < this.cart_items.length; i++) {
+						if (!this.cart_items[i].is_not_select) {
+							price += (Number(this.cart_items[i].pdt_price) + Number(this.cart_items[i].op_price)) * this.cart_items[i].op_cnt
+						}
 					}
 				}
 
@@ -274,13 +276,7 @@
 			}
 		}
 		,methods: {
-			getData: function(){
-				let cart_items = localStorage.getItem('cart_items')
-				if(cart_items && cart_items !== 'false') {
-					this.$set(this, 'cart_items', JSON.parse(cart_items))
-				}
-			}
-			,removeCart: async function(cart_index, odt_uid){
+			removeCart: async function(cart_index, odt_uid){
 				if(confirm('해당 상품을 삭제하시겠습니까?')){
 					try{
 						const result = await this.Axios({
@@ -338,7 +334,6 @@
 		}
 		,created: function(){
 			this.$emit('onLoad', this.program)
-			this.getData()
 		}
 	}
 </script>
@@ -365,8 +360,8 @@
 	text-align: center;
 }
 
-.pdt-img {
+.odt-img {
 	margin-right: 10px
 }
-.pdt-img img {width: 100% !important;}
+.odt-img img {width: 100% !important;}
 </style>

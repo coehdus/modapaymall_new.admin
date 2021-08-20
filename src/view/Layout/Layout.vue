@@ -28,6 +28,8 @@
 				:cart_items="cart_items"
 				:member_info="member_info"
 				:filter="filter"
+				:key="$route.fullPath"
+				:date="date"
 
 				@setNotify="setNotify"
 				@onLoad="setProgram"
@@ -62,7 +64,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter']
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date']
 		,components: {Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
@@ -156,6 +158,7 @@
 }
 
 .main-box-pdt { background-color: white; border-radius: 10px 0px 0px 0px;}
+.main-box-pdt img { border-radius: 10px 0px 0px 0px;}
 
 .box-shadow-top { box-shadow: 0px 3px 6px black}
 .box-shadow-inset { box-shadow: 0px 0px 2px 1px #bbb inset}

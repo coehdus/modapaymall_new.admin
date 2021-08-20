@@ -20,7 +20,16 @@
 							class="main-box-pdt box-shadow mb-30"
 							@click="goDetail(item)"
 						>
-							<div class="pdt-img pa-30 under-line"><img src="" width="100%"/><v-icon class="mdi mdi-image none-img"></v-icon></div>
+							<div class="pdt-img pa-10 under-line">
+								<img
+									v-if="item.pdt_img1"
+									:src="'http://delimall.co.kr/API/data/product/' + item.pdt_img1"  width="100%"
+								/>
+								<v-icon
+									v-else
+									class="mdi mdi-image none-img"
+								></v-icon>
+							</div>
 							<div class="pdt-info pa-10 flex-row justify-space-between">
 								<span class="pdt-title">{{  item.pdt_name }}</span>
 								<span class="pdt-title color-blue">{{  item.pdt_price | makeComma }}</span>

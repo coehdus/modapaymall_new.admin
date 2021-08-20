@@ -48,6 +48,16 @@ const routes = [
 		,component: () => import('@/view/Order/OrderForm.vue')
 	}
 	,{
+		path: prefix + 'Order/Result/:order_number'
+		,name: 'OrderResult'
+		,component: () => import('@/view/Order/OrderResult.vue')
+	}
+	,{
+		path: prefix + 'Order/List'
+		,name: 'OrderList'
+		,component: () => import('@/view/Order/OrderList.vue')
+	}
+	,{
 		path: prefix + 'Account/MyPage'
 		,name: 'MyPage'
 		,component: () => import('@/view/Account/MyPage.vue')
