@@ -171,7 +171,7 @@ export default{
 						}
 						localStorage.removeItem('delimallP')
 					}
-					this.$router.push({ name: 'Index'})
+					this.toMain()
 					this.error.type = ''
 				} else {
 
@@ -193,6 +193,9 @@ export default{
 			}else{
 				this.is_on_pw = true
 			}
+		}
+		,toMain: function(){
+			document.location.href = '/Index'
 		}
 	}
 	,mounted() {

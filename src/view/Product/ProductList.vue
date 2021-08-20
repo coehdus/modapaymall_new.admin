@@ -23,7 +23,7 @@
 							<div class="pdt-img pa-30 under-line"><img src="" width="100%"/><v-icon class="mdi mdi-image none-img"></v-icon></div>
 							<div class="pdt-info pa-10 flex-row justify-space-between">
 								<span class="pdt-title">{{  item.pdt_name }}</span>
-								<span class="price">{{  item.pdt_price | makeComma }}</span>
+								<span class="pdt-title color-blue">{{  item.pdt_price | makeComma }}</span>
 							</div>
 						</div>
 					</div>
@@ -48,6 +48,8 @@
 
 			@click="clear"
 			@onLoad="setProgram"
+			@setNotify="setNotify"
+			@getCart="$emit('getCart')"
 		></ProductDetail>
 	</div>
 </template>
@@ -132,11 +134,15 @@ export default{
 			}
 		}
 		,goDetail(item){
+			item.TOKEN = sessionStorage.getItem('delimallT')
 			this.$set(this, 'item', item)
 		}
 		,clear(){
 			this.$set(this, 'item', {})
 			this.setProgram(this.program)
+		}
+		,setNotify({ type, message}){
+			this.$emit('setNotify', { type: type, message: message })
 		}
 		,setProgram(program){
 			this.$emit('onLoad', program)

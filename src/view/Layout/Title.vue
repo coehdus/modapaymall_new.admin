@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="bg-title"
+		class="bg-title position-relative"
 	>
 	<button
 		:title="program.name"

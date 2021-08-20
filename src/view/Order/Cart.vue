@@ -1,64 +1,90 @@
 <template>
 	<div
-		class="full-height"
+		class="full-height flex-column"
 	>
-		<div class="full-height">
+		<div
+			class="pa-10 full-height pb-30 overflow-y-auto  bg-gray-light">
+
 			<template
 				v-if="cart_items.length > 0"
 			>
 			<ul>
 				<li
-					v-for="(item, item_index) in cart_items"
-					:key="item.pdt_company"
+					v-for="(item, item_index) in item_list"
+					:key="item_index"
+					class="under-line mb-10  bg-white box-shadow"
 				>
 					<div
-						class="pa-10 under-line"
-					><v-icon>mdi mdi-home-modern</v-icon>{{ item.pdt_company }}</div>
+						class="pa-10 under-line "
+					><v-icon>mdi mdi-home-modern</v-icon>{{ item.company.seller_name }}</div>
 					<ul>
 						<li
 							v-for="(product, product_index) in item.items"
 							:key="'product_' + product_index"
-							class="pa-10 under-line justify-space-between"
+							class=" under-line justify-space-between"
 						>
-							<div class="flex-1 pdt-img justify-center flex-column"><img :src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"></div>
+							<div class="pa-10 flex-1 pdt-img justify-center flex-column">
+								<img
+									v-if="product.pdt_img"
+									:src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"
+								/>
+								<span
+									v-else
+								>No Image</span>
+							</div>
 							<div class="flex-3">
 								<div class=" ptb-10 under-line">{{ product.pdt_name }}</div>
 								<div
-									v-for="(option, index) in product.pdt_option"
+									v-for="(option, index) in product.options"
 									:key="'odt_' + index"
-									class=" ptb-10 under-line-dashed"
+									class=" pa-10 under-line-dashed"
 								>
 									<div class="justify-space-between">
-										<span>{{ option.odt }}</span>
+
+										<span
+											class="size-px-13"
+											@click="setCartOptionSelect(option.cart_index, option.odt_uid)"
+										>
+											<v-icon
+												v-if="option.is_not_select"
+												class="size-px-16"
+											>mdi-checkbox-blank-outline</v-icon>
+											<v-icon
+												v-else
+												class="color-green size-px-16"
+											>mdi mdi-checkbox-marked</v-icon>
+											<span> {{ option.odt }}</span>
+										</span>
 										<v-icon
-											small class="color-red "
-											@click="removeCart(item, item_index, product, product_index, product.pdt_option, index)"
-											style="border: 1px solid #ddd; padding: 0px 5px"
+											small
+											class="color-red "
+											@click="removeCart(option.cart_index, option.odt_uid)"
+											style="border: 1px solid #ddd; font-size: 12px; padding: 0px 3px"
 										>mdi mdi-close</v-icon>
 									</div>
 									<div
 										class="mt-10 justify-space-between"
 									>
 										<span
-											class="flex-1"
-										>{{ option.odt_price }}</span>
+											class="flex-1 color-blue"
+										>{{ option.odt_price | makeComma }} 원</span>
 										<span
 											class="flex-1 flex-row justify-space-between box-pdt-cnt"
 										>
 											<button
 												@click="setCnt(option, 'down')"
-												class="flex-1 mdi mdi-minus"
+												class="flex-1 mdi mdi-minus size-px-14"
 											></button>
 											<input
 												v-model="option.odt_cnt"
 												type="number"
 												name="pdt_cnt"
-												class="flex-1 bg-gray-light"
+												class="flex-2 bg-gray-light"
 												readonly
 											/>
 											<button
 												@click="setCnt(option, 'up')"
-												class="flex-1 mdi mdi-plus"
+												class="flex-1 mdi mdi-plus size-px-14"
 											></button>
 										</span>
 									</div>
@@ -68,16 +94,16 @@
 						</li>
 					</ul>
 					<div
-						class="pa-10 justify-space-between"
+						class="pa-10 justify-space-between under-line-dashed"
 					>
-						<span>합계</span>
-						<span>{{ item.company.total_price | makeComma }}</span>
+						<span>배송비 <br/><span class="size-px-11">{{ item.company.delivery }}</span></span>
+						<span>{{ item.company.delivery_price | makeComma }}</span>
 					</div>
 					<div
 						class="pa-10 justify-space-between"
 					>
-						<span>배송비 {{ item.company.free_price | makeComma }}이상 {{ item.company.delivery_type }}</span>
-						<span>{{ item.company.delivery_price }}</span>
+						<span>합계</span>
+						<span class="color-blue">{{ item.company.total_price | makeComma }} 원</span>
 					</div>
 				</li>
 			</ul>
@@ -89,24 +115,162 @@
 				<div class="text-center">No Data</div>
 			</div>
 		</div>
+
+
+		<div
+			class="mt-auto flex-column box-shadow position-relative"
+		>
+			<div>
+				<div
+					class="pa-10 justify-space-between under-line-dashed"
+				>
+					<span>배송비 </span>
+					<span>{{ total_delivery_price | makeComma }} 원</span>
+				</div>
+				<div
+					class="pa-10 flex-row justify-space-between under-line"
+				>
+					<span
+						class="font-weight-bold color-black"
+					>총 상품가</span>
+					<span
+						class="order-price font-weight-bold color-blue"
+					>{{ total_price | makeComma }} 원</span>
+				</div>
+			</div>
+			<div
+			>
+				<button
+					class="btn btn-identify"
+					@click="toOrder"
+				>주문하기</button>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
 	export default{
 		name: 'Cart'
-		,props: ['Axios']
+		,props: ['Axios', 'cart_items', 'filter']
 		,data: function(){
 			return {
 				program: {
 					name: '장바구니'
 					,top: false
 					,title: true
-					,bottom: true
+					,bottom: false
 				}
-				,cart_items: [
+				//,total_delivery_price: 0
+			}
+		}
+		,computed: {
+			total_price: function(){
+				let price = 0;
 
-				]
+				for(let i = 0; i < this.cart_items.length; i ++){
+					if(!this.cart_items[i].is_not_select) {
+						price += (Number(this.cart_items[i].pdt_price) + Number(this.cart_items[i].op_price)) * this.cart_items[i].op_cnt
+					}
+				}
+
+				return price;
+			}
+			,total_delivery_price: function(){
+				let price = 0
+
+				if(Object.keys(this.item_list).length > 0){
+					for(const [key, val] of Object.entries(this.item_list)){
+						console.log(key)
+						price += Number(val.company.delivery_price)
+					}
+				}
+
+				return price
+			}
+			,is_cart_select: function(){
+				let result = false
+
+				if(Object.keys(this.item_list).length > 0){
+					for(const [key, val] of Object.entries(this.cart_items)){
+						console.log('is_select_cart : ' + key)
+						if(!val.is_not_select){
+							result = true
+							break
+						}
+					}
+				}
+				return result
+			}
+			,item_list: function(){
+				let items = {}
+
+				for(const [key ,val] of Object.entries(this.cart_items)){
+					console.log('key: ' + key)
+
+					let company = items[val.seller_id]
+
+					if(!company){
+						company = {
+							company: {
+								total_price: 0
+							}
+							,items: {}
+						}
+					}
+
+					items[val.seller_id] = company
+
+					items[val.seller_id]['company']['seller_id'] = val.seller_id
+					items[val.seller_id]['company']['seller_name'] = val.shop_name
+					if(!val.is_not_select) {
+						items[val.seller_id]['company']['total_price'] += ((Number(val.pdt_price) + Number(val.op_price)) * val.op_cnt)
+					}
+					items[val.seller_id]['company']['delivery_type'] = val.delivery_type
+					items[val.seller_id]['company']['delivery_price'] = val.delivery_price
+
+					if(val.delivery_type == '무료'){
+						items[val.seller_id]['company']['delivery_price'] = val.delivery_type
+						items[val.seller_id]['company']['delivery'] = ''
+					}else{
+						if(val.free_price > 0){
+							items[val.seller_id]['company']['delivery'] = val.free_price + ' 이상 구매시 무료'
+							if(val.free_price < items[val.seller_id]['company']['total_price']){
+								items[val.seller_id]['company']['delivery_price'] = 0
+							}
+						}
+					}
+
+					let product = items[val.seller_id]['items'][val.pdt_uid]
+
+					if(!product || product === undefined){
+						product = {
+							pdt_uid: val.pdt_uid
+							,pdt_img: val.pdt_img1
+							,pdt_name: val.pdt_name
+							,pdt_price: val.pdt_price
+							,options: {}
+						}
+					}
+
+					items[val.seller_id]['items'][val.pdt_uid] = product
+
+					let option = items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid]
+					if(!option || option === undefined){
+						option = {
+							odt_uid: val.uid
+							,odt: val.op_name
+							,odt_cnt: val.op_cnt
+							,odt_price: Number(val.pdt_price) + Number(val.op_price)
+							,cart_index: key
+							,is_not_select: val.is_not_select
+						}
+					}
+
+					items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid] = option
+				}
+
+				return items
 			}
 		}
 		,methods: {
@@ -116,20 +280,26 @@
 					this.$set(this, 'cart_items', JSON.parse(cart_items))
 				}
 			}
-			,removeCart: function(item, item_index, product, product_index, option, index){
+			,removeCart: async function(cart_index, odt_uid){
 				if(confirm('해당 상품을 삭제하시겠습니까?')){
+					try{
+						const result = await this.Axios({
+							method: 'post'
+							,url: 'order/postDeleteCartItem'
+							,data: {
+								odt_uid: odt_uid
+							}
+						})
 
-					this.$delete(option, index)
-
-					if(product.pdt_option.length <= 0){
-						this.$delete(item.items, product_index)
+						if(result.success){
+							this.$emit('setNotify', { type: 'success', message: result.message })
+							this.$delete(this.cart_items, cart_index)
+						}else{
+							this.$emit('setNotify', { type: 'error', message: result.message })
+						}
+					}catch(e){
+						console.log(e)
 					}
-					if(item.items.length <= 0){
-						this.$delete(this.cart_items, item_index)
-					}
-
-					localStorage.setItem('cart_items', JSON.stringify(this.cart_items))
-
 				}
 			}
 
@@ -153,6 +323,18 @@
 				}
 				odt.odt_cnt = cnt
 			}
+			,toOrder: function(){
+				if(!this.is_cart_select){
+					this.$emit('setNotify', { type: 'error', message: '선택된 상품이 없습니다.'})
+				}else {
+					this.$router.push({name: 'OrderForm'})
+				}
+			}
+			,setCartOptionSelect: function(cart_index, odt_uid){
+				console.log(odt_uid)
+				console.log(this.cart_items[cart_index])
+				this.$set(this.cart_items[cart_index], 'is_not_select', !this.cart_items[cart_index].is_not_select ? true : false)
+			}
 		}
 		,created: function(){
 			this.$emit('onLoad', this.program)
@@ -165,7 +347,6 @@
 
 .pdt-cnt {
 	padding: 10px;
-	border: 1px solid #ddd;
 }
 .box-pdt-cnt {
 }
@@ -187,5 +368,5 @@
 .pdt-img {
 	margin-right: 10px
 }
-.pdt-img img {width: 100%}
+.pdt-img img {width: 100% !important;}
 </style>

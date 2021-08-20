@@ -7,12 +7,12 @@
 		></Title>
 
 		<div
-			class="pa-10 flex-column full-height overflow-y-auto"
+			class="pa-10 flex-column full-height overflow-y-auto bg-gray-light"
 		>
 			<div>
 				<h6 class="pa-10">내 정보</h6>
 				<ul
-					class="box-mypage-list shadow ul-under-line size-px-14"
+					class="box-mypage-list shadow ul-under-line size-px-14 bg-white"
 				>
 					<li
 						class="pa-10 justify-space-between"
@@ -55,7 +55,7 @@
 
 				<h6 class="pa-10 mt-10">결제 정보</h6>
 				<ul
-					class="box-mypage-list shadow ul-under-line size-px-14"
+					class="box-mypage-list shadow ul-under-line size-px-14 bg-white"
 				>
 					<li
 						class="pa-10 justify-space-between"

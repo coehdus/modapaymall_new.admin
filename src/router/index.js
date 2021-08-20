@@ -43,6 +43,11 @@ const routes = [
 		,component: () => import('@/view/Order/Cart.vue')
 	}
 	,{
+		path: prefix + 'Order/Form'
+		,name: 'OrderForm'
+		,component: () => import('@/view/Order/OrderForm.vue')
+	}
+	,{
 		path: prefix + 'Account/MyPage'
 		,name: 'MyPage'
 		,component: () => import('@/view/Account/MyPage.vue')

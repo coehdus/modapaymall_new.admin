@@ -1,15 +1,18 @@
 
 <template>		
-		
-	<v-alert 
+
+	<div
 		v-show="notify"
-		:type="type ? type : 'error'" 
-		style="position: fixed; width: auto; bottom: 20%; right: 20px; z-index: 9999; padding-left: 10px;" 
-		
-		dense
+		class="position-fixed"
+		style="bottom: 20%; right: 0; display: block; padding: 10px; width: 100%; z-index: 999 "
 	>
-		{{ msg }}
-	</v-alert>
+		<div
+			:class="type ? type : 'error'"
+			style="padding: 10px; border-radius: 10px"
+		>
+			{{ msg }}
+		</div >
+	</div>
 	
 </template>
 
@@ -65,6 +68,6 @@
 </script>
 
 <style>
-	.success { background: #00bfa5 !important;}
-	.error { background: #f44336 !important}
+	.success { background: #00bfa5 !important; color: white}
+	.error { background: #f44336 !important; color: white}
 </style>

@@ -25,11 +25,17 @@
 				:metaInfo="metaInfo"
 				:rules="rules"
 				:TOKEN="TOKEN"
+				:cart_items="cart_items"
+				:member_info="member_info"
+				:filter="filter"
 
 				@setNotify="setNotify"
 				@onLoad="setProgram"
+				@getCart="getCart"
+
 				class=" overflow-y-auto"
 			></router-view>
+
 			<Bottom
 				v-if="program.bottom"
 
@@ -56,7 +62,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN']
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter']
 		,components: {Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
@@ -67,23 +73,14 @@
 					,type: ''
 				}
 				,is_side: false
+				,cart_items: [
+
+				]
 			}
 		}
 		,computed:{
 			cart_cnt: function(){
-				let cnt = 0
-
-				let cart_items = localStorage.getItem('cart_items')
-
-				if(cart_items && cart_items !== 'false'){
-					console.log(cart_items)
-					cart_items = JSON.parse(cart_items)
-					for(let i = 0; i < cart_items.length; i++){
-						cnt += cart_items[i].items.length
-					}
-				}
-
-				return cnt
+				return this.cart_items.length
 			}
 		}
 		,methods: {
@@ -102,11 +99,28 @@
 			,setProgram: function(program){
 				this.program = program
 			}
-		}
-		,mounted() {
-			window.onstorage = () => {
-				console.log(11)
+			,getCart: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'order/getCartList'
+						,data: {
+							TOKEN: sessionStorage.getItem('delimallT')
+						}
+					})
+
+					if(result.success){
+						this.cart_items = result.data.content.result
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message})
+					}
+				}catch (e) {
+					console.log(e)
+				}
 			}
+		}
+		,created: function(){
+			this.getCart()
 		}
 	}
 	

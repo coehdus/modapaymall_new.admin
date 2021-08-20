@@ -8,6 +8,7 @@
 		:Base64="Base64"
 		:metaInfo="metaInfo"
 		:TOKEN="TOKEN"
+		:member_info="member_info"
 	/>
 </template>
 
@@ -38,6 +39,9 @@ export default {
 		,Base64: Base64
 		,metaInfo: metaInfo
 		,TOKEN: ''
+		,member_info: {
+
+		}
 	})
 	,methods: {
 		isAuth: function(){

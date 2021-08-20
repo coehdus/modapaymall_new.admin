@@ -80,26 +80,47 @@
 				</div>
 			</div>
 
+			<h6 class="mt-30">상세정보</h6>
 			<div
-				class="mt-30 input-box pdt-info"
+				class="mt-10 input-box pdt-info"
 				v-html="item.pdt_info.replaceAll('/API/', 'http://delimall.co.kr/API/')"
 			></div>
 
+			<h6 class="mt-30">반품/교환정보</h6>
 			<div
-				class="mt-30 input-box pdt-notice"
+				class="mt-10 input-box pdt-notice"
 				v-html="item.pdt_notice.replaceAll('/API/', 'http://delimall.co.kr/API/')"
 			></div>
 
 		</div>
 
 		<div
-			class="mt-auto pa-10 shadow-top"
+			class="mt-auto pa-10 shadow-top position-relative"
 		>
-			<ul>
+			<div
+				v-if="options.length > 1"
+				class="text-center"
+				style="height: 10px;"
+				@click="is_show_options = !is_show_options"
+			>
+				<v-icon
+					v-if="is_show_options"
+					class=" bg-white"
+					style="border: 1px solid #ddd; margin-top: -50px"
+				>mdi mdi-chevron-double-down</v-icon>
+				<v-icon
+					v-else
+					class=" bg-white"
+					style="border: 1px solid #ddd; margin-top: -50px"
+				>mdi mdi-chevron-double-up</v-icon>
+			</div>
+			<ul
+				v-show="is_show_options"
+			>
 				<li
 					v-for="(odt, index) in odts"
 					:key="'odt_' + index"
-					class="pdt-cnt"
+					class="pa-10 under-line-dashed"
 				>
 					<div
 						class=" flex-row justify-space-between"
@@ -135,6 +156,7 @@
 					</div>
 				</li>
 			</ul>
+
 			<div
 				class="pdt-cnt flex-row justify-space-between"
 			>
@@ -195,6 +217,7 @@
 				,options: [
 
 				]
+				,is_show_options: true
 			}
 		}
 		,computed: {
@@ -237,7 +260,30 @@
 					console.log(E)
 				}
 			}
-			,setCart: function(){
+			,setCart: async function(){
+				let item = this.item
+				item.options = JSON.stringify(this.options)
+				console.log(item)
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'order/postCart'
+						,data: item
+					})
+
+					if(result.success){
+						this.$emit('setNotify', { type: 'success', message: '장바구니에 등록되었습니다'})
+						this.$emit('getCart')
+						this.options = []
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+					this.$emit('setNotify', { type: 'error', message: 'DB 오류'})
+				}
+			}
+			,setCart2: function(){
 
 				let cart_items = localStorage.getItem("cart_items")
 				if(!cart_items || cart_items === "false"){
@@ -448,7 +494,6 @@
 							if(item.odt == val.odt){
 								return item.odt_cnt++
 							}
-
 						})
 
 						if(result.length){
