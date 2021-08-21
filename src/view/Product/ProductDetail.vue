@@ -3,12 +3,24 @@
 		class="full-height flex-column"
 	>
 		<div
-			class="bg-title"
+			class="bg-title justify-space-between"
 		>
 			<button
 				:title="program.name"
 				@click="toBack"
 			><v-icon class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-12 vertical-middle">{{ program.name }}</span></button>
+
+
+			<span
+				class=" ptb-5 flex-column "
+				@click="toCart"
+			>
+				<v-icon class="mr-10">mdi mdi-cart-outline</v-icon>
+				<span
+					v-if="cart_cnt"
+					class="cart-count"
+				>{{ cart_cnt }}</span>
+			</span>
 		</div>
 		<div
 			class="mt-10 pa-10 full-height flex-column overflow-y-auto"
@@ -32,7 +44,7 @@
 							v-for="(file, index) in files.sub"
 						>
 							<div
-								v-if="file_index == index"
+								v-show="file_index == index"
 								:key="file.file_name"
 							>
 								<img
@@ -61,6 +73,19 @@
 				<div
 					class="pdt-rate"
 				>평점</div>
+			</div>
+
+
+			<div
+				v-if="item.is_sold != 1"
+				class="mt-10 flex-row justify-space-between"
+			>
+				<div
+					class="pdt-price"
+				><span v-if="item.pdt_stock < 10" class="color-red">품절임박</span></div>
+				<div
+					class="pdt-rate"
+				>수량 {{ item.pdt_stock | makeComma }} 개</div>
 			</div>
 
 			<div
@@ -133,7 +158,13 @@
 						<span
 							class="flex-1 font-weight-bold color-black span-pdt-cnt"
 						>{{ odt.odt }}</span>
+
 						<span
+							v-if="item.is_sold == 1 || (item.is_sold == 2 && item.pdt_stock < 1)"
+							class=" color-red"
+						>품절</span>
+						<span
+							v-else
 							class="flex-1 flex-row justify-space-between box-pdt-cnt"
 						>
 							<button
@@ -190,7 +221,7 @@
 <script>
 	export default {
 		name: 'ProductDetail'
-		,props: ['Axios', 'item']
+		,props: ['Axios', 'item', 'cart_cnt']
 		,data: function(){
 			return {
 				program: {
@@ -236,7 +267,7 @@
 			}
 			,odts: function(){
 				return this.options.filter(function(item){
-
+					console.log(item)
 					return item.odt.replaceAll(',', '/')
 				})
 			}
@@ -266,9 +297,12 @@
 				}
 			}
 			,setCart: async function(){
+				if(this.options.length <= 0){
+					this.$emit('setNotify', { type: 'error', message: '옵션을 선택하세요'})
+					return false
+				}
 				let item = this.item
 				item.options = JSON.stringify(this.options)
-				console.log(item)
 				try{
 					const result = await this.Axios({
 						method: 'post'
@@ -278,8 +312,8 @@
 
 					if(result.success){
 						this.$emit('setNotify', { type: 'success', message: '장바구니에 등록되었습니다'})
-						this.$emit('getCart')
-						this.options = []
+						this.$emit('getCartList')
+						this.resetOption(this.option)
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
@@ -419,8 +453,11 @@
 				if(cnt == ''){
 					cnt = 1
 				}
-				if(type == 'up'){
-					if(cnt >= 99){
+				if(type == 'up') {
+					if (cnt >= odt.pdt_stock){
+						cnt = odt.pdt_stock
+						this.$emit('setNotify', { type: 'error', message: '재고가 부족합니다'})
+					}else if(cnt >= 99){
 						cnt = 99
 					}else{
 						cnt = Number(cnt) + 1
@@ -455,6 +492,7 @@
 						odt: this.item.pdt_name
 						,odt_cnt: 1
 						,odt_price: 0
+						,pdt_stock: this.item.pdt_stock
 					})
 				}
 			}
@@ -462,6 +500,9 @@
 				if(confirm('해당 옵션을 삭제하시겠습니까?')){
 					this.$delete(this.options, index)
 				}
+			}
+			,toCart: function(){
+				this.$emit('push', 'Cart')
 			}
 		}
 		,created() {

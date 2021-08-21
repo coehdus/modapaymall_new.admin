@@ -15,7 +15,7 @@
 				>
 					<div class="main-pdt pa-10 full-height  overflow-y-auto">
 						<div
-							v-for="item in items"
+							v-for="item in lists"
 							:key="item.uid"
 							class="main-box-pdt box-shadow mb-30"
 							@click="goDetail(item)"
@@ -32,7 +32,14 @@
 							</div>
 							<div class="pdt-info pa-10 flex-row justify-space-between">
 								<span class="pdt-title">{{  item.pdt_name }}</span>
-								<span class="pdt-title color-blue">{{  item.pdt_price | makeComma }}</span>
+								<span
+									v-if="item.is_sold == 1 || (item.is_sold == 2 && item.pdt_stock < 1)"
+									class="pdt-title color-red"
+								>품절</span>
+								<span
+									v-else
+									class="pdt-title color-blue"
+								>{{  item.pdt_price | makeComma }}</span>
 							</div>
 						</div>
 					</div>
@@ -54,11 +61,13 @@
 			:date="date"
 			:callBack="callBack"
 			:Axios="Axios"
+			:cart_cnt="cart_cnt"
 
 			@click="clear"
 			@onLoad="setProgram"
 			@setNotify="setNotify"
-			@getCart="$emit('getCart')"
+			@getCartList="$emit('getCartList')"
+			@push="$emit('push', 'Cart')"
 		></ProductDetail>
 	</div>
 </template>
@@ -68,7 +77,7 @@
 import ProductDetail from "@/view/Product/ProductDetail";
 
 export default{
-	props: ['Axios', 'user', 'codes', 'date', 'callBack', 'TOKEN']
+	props: ['Axios', 'user', 'codes', 'date', 'callBack', 'TOKEN', 'cart_cnt']
 	,components: { ProductDetail }
 	,data: function(){
 		return {
@@ -100,11 +109,6 @@ export default{
 		lists: function(){
 
 			return this.items.filter(function(item){
-				if(item.pdt_img){
-					item.pdt_img = ''
-				}else{
-					item.pdt_img = ''
-				}
 
 				return item
 			})

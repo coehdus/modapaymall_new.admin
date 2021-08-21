@@ -42,7 +42,7 @@
 				this.$emit('toggleSide')
 			}
 			,toMain: function(){
-				this.$router.push({ name: 'Index'})
+				this.$emit('push', 'Index')
 			}
 		}
 	}

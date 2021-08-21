@@ -38,9 +38,19 @@
 			</ul>
 
 			<div
-				class="mt-auto  text-center bg-gray pa-20"
+				class="mt-auto"
 			>
-				1.0.0 v
+				<div
+					class="text-center bg-gray pa-10"
+				>
+					Ver 1.0.0
+				</div>
+				<div>
+					<button
+						class="btn btn-identify"
+						@click="logout"
+					>로그아웃</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -77,10 +87,17 @@
 			,toItem: function(category){
 				this.toggleSide()
 				//document.location.href = '/Product/List/' + category
-				this.$router.push({ name: 'ProductList', params: { category: category}})
+				this.$emit('push', 'ProductList', { category: category})
 			}
 			,toggleSide: function(){
 				this.$emit('toggleSide')
+			}
+			,logout: function(){
+				if(confirm('로그아웃 하시겠습니까?')){
+					sessionStorage.removeItem('delimallT')
+					sessionStorage.removeItem('delimallT2')
+					document.location.href= '/Login'
+				}
 			}
 		}
 		,created: function(){

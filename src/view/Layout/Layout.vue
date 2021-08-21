@@ -5,6 +5,7 @@
 			:Axios="Axios"
 
 			@toggleSide="toggleSide"
+			@push="toLocation"
 		>
 		</Side>
 		<div
@@ -14,11 +15,16 @@
 				v-if="program.top"
 				:program="program"
 				@toggleSide="toggleSide"
+				@push="toLocation"
 			></Top>
 			<Title
 				v-if="program.title"
 				:program="program"
+				:cart_cnt="cart_cnt"
+
+				@push="toLocation"
 			></Title>
+
 			<router-view
 				:Axios="Axios"
 				:Notify="Notify"
@@ -30,18 +36,21 @@
 				:filter="filter"
 				:key="$route.fullPath"
 				:date="date"
+				:cart_cnt="cart_cnt"
 
 				@setNotify="setNotify"
 				@onLoad="setProgram"
-				@getCart="getCart"
+				@getCartList="getCartList"
 
 				class=" overflow-y-auto"
+				@push="toLocation"
 			></router-view>
 
 			<Bottom
 				v-if="program.bottom"
 
 				:cart_cnt="cart_cnt"
+				@push="toLocation"
 			></Bottom>
 		</div>
 
@@ -101,7 +110,7 @@
 			,setProgram: function(program){
 				this.program = program
 			}
-			,getCart: async function(){
+			,getCartList: async function(){
 				try{
 					const result = await this.Axios({
 						method: 'post'
@@ -120,9 +129,14 @@
 					console.log(e)
 				}
 			}
+			,toLocation: function(path, params){
+				this.$router.push({ name: path, params: params}).catch(function(e){
+					console.log(e)
+				});
+			}
 		}
 		,created: function(){
-			this.getCart()
+			this.getCartList()
 		}
 	}
 	

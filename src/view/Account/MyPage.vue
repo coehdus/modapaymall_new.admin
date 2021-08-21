@@ -84,6 +84,7 @@
 		</div>
 
 		<div
+			v-if="false"
 			class="bottom"
 		>
 			<button
@@ -113,7 +114,7 @@ export default{
 				,wrap: 'mypage'
 				,top: false
 				,title: false
-				,bottom: false
+				,bottom: true
 				,class: 'blue'
 			}
 			,item: {

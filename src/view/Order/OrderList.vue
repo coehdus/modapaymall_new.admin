@@ -5,10 +5,15 @@
 				<li
 					v-for="item in item_list"
 					:key="item.uid"
-					class="prl-10 under-line"
+					class=" under-line"
 					@click="toResult(item.order_num_new)"
 				>
-					<div class="justify-space-between">
+					<div
+						class="pa-10 bg-gray-light"
+					>
+						{{ item.wDate }}
+					</div>
+					<div class="pa-10 justify-space-between">
 						<span
 							class="pdt-img flex-1 mr-10 flex-column justify-center"
 						><img

@@ -61,7 +61,7 @@
 						>주소 검색</button>
 					</div>
 					<input
-						v-model="item.d_addr1"
+						v-model="item.d_addr"
 						type="text" placeholder="기본 주소"
 						class="mt-10 input-box"
 						readonly
@@ -242,7 +242,7 @@
 					class="btn btn-identify"
 					@click="save"
 				>
-					<span class="color-white size-em-12">{{ total_price | makeComma }} 원 </span>
+					<span class="color-white size-em-12">{{ order_price | makeComma }} 원 </span>
 					<span class="color-white size-em-12"> 결제하기</span>
 				</button>
 			</div>
@@ -279,8 +279,8 @@ export default{
 				,member_email: 'aaa@bbb.com'
 				,d_name: '받는분'
 				,d_tell: '12345'
-				,d_zip: '123456'
-				,d_addr1: '주소'
+				,d_post: '123456'
+				,d_addr: '주소'
 				,d_addr2: '상세주소'
 				,site_bank: '은행 123-45-6789'
 				,bank_info: ''
@@ -292,7 +292,12 @@ export default{
 		}
 	}
 	,computed: {
-		total_price: function(){
+		order_price: function(){
+			let price = 0
+			price = this.total_price + this.total_delivery_price
+			return price
+		}
+		,total_price: function(){
 			let price = 0;
 
 			for(let i = 0; i < this.cart_items.length; i ++){
@@ -322,7 +327,8 @@ export default{
 		,order_item: function(){
 			let item = this.item
 			item.pay_div = this.item.pay_div
-			item.order_price = this.total_price
+			item.total_price = this.total_price
+			item.order_price = this.order_price
 			item.order_point = this.order_point
 			item.delivery_price = this.total_delivery_price
 
@@ -366,7 +372,7 @@ export default{
 				items[val.seller_id]['company']['delivery_price'] = val.delivery_price
 
 				if(val.delivery_type == '무료'){
-					items[val.seller_id]['company']['delivery_price'] = val.delivery_type
+					items[val.seller_id]['company']['delivery_price'] = 0
 					items[val.seller_id]['company']['delivery'] = ''
 				}else{
 					if(val.free_price > 0){
@@ -435,7 +441,7 @@ export default{
 		, addPost: function (call) {
 
 			this.$set(this.item, 'd_post', call.zonecode)
-			this.$set(this.item, 'd_addr1', call.address)
+			this.$set(this.item, 'd_addr', call.address)
 
 			this.daumPostUp = false
 			this.$emit('setOverlay')

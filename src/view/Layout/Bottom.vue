@@ -49,16 +49,16 @@
 		}
 		,methods: {
 			toHome: function(){
-				this.$router.push({ name: 'Index'})
+				this.$emit('push', 'Index')
 			}
 			,toMyPage: function(){
-				this.$router.push({ name: 'MyPage'})
+				this.$emit('push', 'MyPage')
 			}
 			,toCart: function(){
-				this.$router.push({ name: 'Cart'})
+				this.$emit('push', 'Cart')
 			}
 			,toOrderList: function (){
-				this.$router.push({ name: 'OrderList'})
+				this.$emit('push', 'OrderList')
 			}
 		}
 	}

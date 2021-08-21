@@ -152,7 +152,7 @@
 <script>
 	export default{
 		name: 'Cart'
-		,props: ['Axios', 'cart_items', 'filter']
+		,props: ['Axios', 'cart_items', 'filter', 'TOKEN']
 		,data: function(){
 			return {
 				program: {
@@ -299,7 +299,7 @@
 				}
 			}
 
-			,setCnt: function(odt, type){
+			,setCnt: async function(odt, type){
 				let cnt = odt.odt_cnt
 				if(cnt == ''){
 					cnt = 1
@@ -317,7 +317,26 @@
 						cnt = Number(cnt) - 1
 					}
 				}
-				odt.odt_cnt = cnt
+
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'order/postOdtCnt'
+						,data: {
+							TOKEN: this.TOKEN
+							,c_uid: odt.odt_uid
+							,op_cnt: cnt
+						}
+					})
+
+					if(result.success){
+						this.$emit('getCartList')
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
 			}
 			,toOrder: function(){
 				if(!this.is_cart_select){
