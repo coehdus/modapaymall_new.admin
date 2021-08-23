@@ -39,11 +39,12 @@
 									:key="'odt_' + index"
 									class=" pa-10 under-line-dashed"
 								>
-									<div class="justify-space-between">
-
+									<div
+										class="mt-10 justify-space-between"
+									>
 										<span
 											class="size-px-13"
-											@click="setCartOptionSelect(option.cart_index, option.odt_uid)"
+											@click="setCartOptionSelect(option, option.odt_uid)"
 										>
 											<v-icon
 												v-if="option.is_not_select"
@@ -57,9 +58,8 @@
 										</span>
 										<v-icon
 											small
-											class="color-red "
+											class="color-red btn-remove-cart"
 											@click="removeCart(option.cart_index, option.odt_uid)"
-											style="border: 1px solid #ddd; font-size: 12px; padding: 0px 3px"
 										>mdi mdi-close</v-icon>
 									</div>
 									<div
@@ -68,7 +68,12 @@
 										<span
 											class="flex-1 color-blue"
 										>{{ option.odt_price | makeComma }} 원</span>
+
+										<div
+											v-if="option.is_sold"
+										>품절</div>
 										<span
+											v-else
 											class="flex-1 flex-row justify-space-between box-pdt-cnt"
 										>
 											<button
@@ -237,7 +242,7 @@
 					}else{
 						if(val.free_price > 0){
 							items[val.seller_id]['company']['delivery'] = val.free_price + ' 이상 구매시 무료'
-							if(val.free_price < items[val.seller_id]['company']['total_price']){
+							if(val.free_price < items[val.seller_id]['company']['total_price'] || items[val.seller_id]['company']['total_price'] == 0){
 								items[val.seller_id]['company']['delivery_price'] = 0
 							}
 						}
@@ -267,6 +272,11 @@
 							,cart_index: key
 							,is_not_select: val.is_not_select
 						}
+					}
+
+					if(val.is_sold == 1 || (val.is_sold == 2 && val.pdt_stock < 1)){
+						option.is_sold = true
+						option.is_not_select = true
 					}
 
 					items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid] = option
@@ -313,6 +323,7 @@
 				}else{
 					if(cnt <= 1){
 						cnt = 1
+						return false
 					}else{
 						cnt = Number(cnt) - 1
 					}
@@ -329,13 +340,13 @@
 						}
 					})
 
-					if(result.success){
-						this.$emit('getCartList')
-					}else{
+					if(!result.success){
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
+				}finally {
+					this.$emit('getCartList')
 				}
 			}
 			,toOrder: function(){
@@ -345,10 +356,11 @@
 					this.$router.push({name: 'OrderForm'})
 				}
 			}
-			,setCartOptionSelect: function(cart_index, odt_uid){
-				console.log(odt_uid)
-				console.log(this.cart_items[cart_index])
-				this.$set(this.cart_items[cart_index], 'is_not_select', !this.cart_items[cart_index].is_not_select ? true : false)
+			,setCartOptionSelect: function(option){
+				if(option.is_sold){
+					return false
+				}
+				this.$set(this.cart_items[option.cart_index], 'is_not_select', !this.cart_items[option.cart_index].is_not_select ? true : false)
 			}
 		}
 		,created: function(){
@@ -383,4 +395,8 @@
 	margin-right: 10px
 }
 .odt-img img {width: 100% !important;}
+
+.btn-remove-cart{
+	border: 1px solid #ddd; font-size: 12px; padding: 0px 3px
+}
 </style>

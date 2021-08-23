@@ -67,7 +67,7 @@
 			@onLoad="setProgram"
 			@setNotify="setNotify"
 			@getCartList="$emit('getCartList')"
-			@push="$emit('push', 'Cart')"
+			@push="toCart"
 		></ProductDetail>
 	</div>
 </template>
@@ -82,10 +82,11 @@ export default{
 	,data: function(){
 		return {
 			program: {
-				name: '목록'
+				name: "상품 목록 " +this.$route.params.category
 				,code: 'product_list'
-				,top: true
-				,title: false
+				,top: false
+				,title: true
+				,search: true
 				,bottom: true
 				,
 			}
@@ -159,6 +160,9 @@ export default{
 		}
 		,setProgram(program){
 			this.$emit('onLoad', program)
+		}
+		,toCart: function(){
+			this.$emit('push', 'Cart')
 		}
 	}
 	,created: function(){

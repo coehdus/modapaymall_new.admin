@@ -14,7 +14,6 @@
 			<Top
 				v-if="program.top"
 				:program="program"
-				@toggleSide="toggleSide"
 				@push="toLocation"
 			></Top>
 			<Title
@@ -24,6 +23,11 @@
 
 				@push="toLocation"
 			></Title>
+			<Search
+				v-if="program.search"
+				:program="program"
+				@toggleSide="toggleSide"
+			></Search>
 
 			<router-view
 				:Axios="Axios"
@@ -70,11 +74,12 @@
 	import Top from "@/view/Layout/Top";
 	import Bottom from "@/view/Layout/Bottom";
 	import Title from "@/view/Layout/Title";
+	import Search from "@/view/Layout/Search";
 	
 	export default{
 		name: 'Layout'
 		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date']
-		,components: {Title, Bottom, Side, Top, Notify }
+		,components: {Search, Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
 				program: {

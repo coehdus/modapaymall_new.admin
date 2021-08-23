@@ -8,6 +8,7 @@
 		><v-icon large class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span></button>
 
 		<span
+			v-if="is_cart_view"
 			class=" ptb-5 flex-column "
 			@click="$emit('push', 'Cart')"
 		>
@@ -23,7 +24,7 @@
 <script>
 	export default{
 		name: 'Title'
-		,props: ['program', 'cart_cnt']
+		,props: ['program', 'cart_cnt', 'is_cart_view']
 		,methods: {
 			toBack: function(){
 				this.$router.back()

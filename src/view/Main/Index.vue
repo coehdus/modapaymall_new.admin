@@ -63,11 +63,13 @@
 			v-if="item.uid"
 			:item="item"
 			:Axios="Axios"
+			:cart_cnt="cart_cnt"
 
 			@click="clear"
 			@onLoad="setProgram"
 			@setNotify="setNotify"
 			@getCart="$emit('getCart')"
+			@push="$emit('push', 'Cart')"
 		></ProductDetail>
 	</div>
 </template>
@@ -80,19 +82,19 @@
 		name: 'Main'
 		,
 		components: {ProductDetail},
-		props: ['Axios']
+		props: ['Axios', 'cart_cnt']
 		,data: function(){
 			return {
 				program: {
 					name: '딜리몰'
 					,top: true
 					,title: false
+					,search: true
 					,bottom: true
 				}
 				,member_info: {
 
 				}
-				,cart_cnt: 0
 				,items: [
 					{}, {}, {}, {}
 				]

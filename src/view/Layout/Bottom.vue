@@ -4,6 +4,7 @@
 	>
 		<span
 			class="flex-1 ptb-10 flex-column"
+			:class="{on: is_home}"
 			@click="toHome"
 		>
 			<v-icon
@@ -13,6 +14,7 @@
 		<span
 			class="flex-1 ptb-10 flex-column position-relative"
 			@click="toCart"
+			:class="{on: is_cart}"
 		>
 			<v-icon>mdi mdi-cart-outline</v-icon>
 			장바구니
@@ -24,12 +26,14 @@
 		<span
 			class="flex-1 ptb-10 flex-column"
 			@click="toOrderList"
+			:class="{on: is_delivery}"
 		>
 			<v-icon>mdi mdi-truck-fast</v-icon>배송조회
 		</span>
 		<span
 			class="flex-1 ptb-10 flex-column"
 			@click="toMyPage"
+			:class="{on: is_mypage}"
 		>
 			<v-icon>mdi mdi-account-settings</v-icon>마이페이지
 		</span>
@@ -46,6 +50,38 @@
 			}
 		}
 		,computed: {
+			is_home: function(){
+				console.log(this.$route.path)
+				if(this.$route.path == '/Index'){
+					return true
+				}else{
+					return false
+				}
+			}
+			,is_cart: function(){
+				console.log(this.$route.path)
+				if(this.$route.path == '/Cart'){
+					return true
+				}else{
+					return false
+				}
+			}
+			,is_delivery: function(){
+				console.log(this.$route.path)
+				if(this.$route.path == '/Order/List'){
+					return true
+				}else{
+					return false
+				}
+			}
+			,is_mypage: function(){
+				console.log(this.$route.path)
+				if(this.$route.path == '/Account/MyPage'){
+					return true
+				}else{
+					return false
+				}
+			}
 		}
 		,methods: {
 			toHome: function(){
@@ -63,3 +99,8 @@
 		}
 	}
 </script>
+
+<style>
+	.on { background-color: #0D47A1; color: white;}
+	.on i { color: white !important;}
+</style>

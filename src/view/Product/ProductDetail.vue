@@ -215,13 +215,38 @@
 				>장바구니</button>
 			</div>
 		</div>
+		<Modal
+			:option="modal_option"
+			:is_modal="is_modal"
+		>
+			<div
+				slot="modal-content"
+				v-html="modal_option.content"
+			></div>
+			<template slot="modal-bottom">
+				<div
+					class="justify-space-between"
+				>
+					<button
+						class="btn btn-identify"
+						@click="toCart"
+					>장바구니로 이동</button>
+					<button
+						class="btn btn-green"
+						@click="toClose"
+					>계속 쇼핑</button>
+				</div>
+			</template>
+		</Modal>
 	</div>
 </template>
 
 <script>
+	import Modal from "@/components/Daum/Modal";
 	export default {
 		name: 'ProductDetail'
 		,props: ['Axios', 'item', 'cart_cnt']
+		,components: { Modal}
 		,data: function(){
 			return {
 				program: {
@@ -254,6 +279,14 @@
 
 				]
 				,is_show_options: true
+				// 장바구니 이동 컨펌창
+				,is_modal: false
+				,modal_option: {
+					top: true
+					,title: '장바구니'
+					,content: '장바구니에 등록되었습니다. 장바구니로 이동하시겠습니까?'
+					,bottom: true
+				}
 			}
 		}
 		,computed: {
@@ -311,9 +344,11 @@
 					})
 
 					if(result.success){
-						this.$emit('setNotify', { type: 'success', message: '장바구니에 등록되었습니다'})
+
 						this.$emit('getCartList')
 						this.resetOption(this.option)
+
+						this.is_modal = true
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
@@ -503,6 +538,9 @@
 			}
 			,toCart: function(){
 				this.$emit('push', 'Cart')
+			}
+			,toClose: function(){
+				this.is_modal = false
 			}
 		}
 		,created() {
