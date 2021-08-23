@@ -4,6 +4,9 @@
 	>
 		<Title
 			:program="program"
+			:cart_cnt="cart_cnt"
+
+			@push="$emit('push', 'Cart')"
 		></Title>
 
 		<div
@@ -104,7 +107,7 @@ import Title from "@/view/Layout/Title";
 
 export default{
 	name: 'Mypage'
-	,props: ['Axios', 'user', 'rules', 'codes']
+	,props: ['Axios', 'user', 'rules', 'codes', 'cart_cnt']
 	,components: { Title }
 	,data: function(){
 		return {

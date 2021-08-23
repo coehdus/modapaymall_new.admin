@@ -9,7 +9,7 @@
 
 		<span
 			class=" ptb-5 flex-column "
-			@click="toCart"
+			@click="$emit('push', 'Cart')"
 		>
 			<v-icon class="mr-10">mdi mdi-cart-outline</v-icon>
 			<span
@@ -27,9 +27,6 @@
 		,methods: {
 			toBack: function(){
 				this.$router.back()
-			}
-			,toCart: function(){
-				this.$emit('push', 'Cart')
 			}
 		}
 	}
