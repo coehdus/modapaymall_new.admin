@@ -242,7 +242,7 @@
 </template>
 
 <script>
-	import Modal from "@/components/Daum/Modal";
+	import Modal from "@/components/Modal";
 	export default {
 		name: 'ProductDetail'
 		,props: ['Axios', 'item', 'cart_cnt']

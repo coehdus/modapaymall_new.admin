@@ -53,7 +53,7 @@ export default {
 	}
 	,methods: {
 		close: function(){
-			this.show = false
+			this.$emit('close')
 		}
 	}
 	,watch: {

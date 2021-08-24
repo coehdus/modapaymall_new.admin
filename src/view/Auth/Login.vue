@@ -212,7 +212,7 @@ export default{
 		}
 	}
 	,created: function(){
-		this.$emit('setProgram', this.program)
+		this.$emit('onLoad', this.program)
 
 	}
 	,watch: {

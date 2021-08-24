@@ -76,7 +76,7 @@
 			}
 			,is_mypage: function(){
 				console.log(this.$route.path)
-				if(this.$route.path == '/Account/MyPage'){
+				if(this.$route.path.indexOf('/Account') > -1){
 					return true
 				}else{
 					return false

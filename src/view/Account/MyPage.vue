@@ -4,9 +4,6 @@
 	>
 		<Title
 			:program="program"
-			:cart_cnt="cart_cnt"
-
-			@push="$emit('push', 'Cart')"
 		></Title>
 
 		<div
@@ -20,12 +17,12 @@
 					<li
 						class="pa-10 justify-space-between"
 					>
-						<span>{{ item.member_id }}</span>
-						<span></span>
+						<span>아이디</span>
+						<span>{{ member_info.member_id }}</span>
 					</li>
 					<li
-						class="pa-10 justify-space-between"
-						@click="toPassword"
+						class="pa-10 justify-space-between bg-gray-light"
+						@click="$emit('push', 'Password')"
 					>
 						<span>비밀번호 변경</span>
 						<span><v-icon>mdi-chevron-right</v-icon></span>
@@ -33,23 +30,34 @@
 					<li
 						class="pa-10 justify-space-between"
 					>
-						<span>{{ item.member_phone }}</span>
-						<span></span>
+						<span>이름</span>
+						<span>{{ member_info.member_name }}</span>
 					</li>
 					<li
 						class="pa-10 justify-space-between"
 					>
-						<span>{{ item.member_email }}</span>
-						<span></span>
+						<span>연락처</span>
+						<span>{{ member_info.member_tell }}</span>
 					</li>
 					<li
 						class="pa-10 justify-space-between"
 					>
-						<div>{{ item.member_post }} {{ item.member_addr1 }} {{ item.member_addr2 }}</div>
+						<span>이메일</span>
+						<span>{{ member_info.member_email }}</span>
 					</li>
 					<li
-						class="pa-10 justify-space-between"
-						@click="toPassword"
+						class="pa-10 "
+					>
+						<div class=" text-right">{{ member_info.member_post }} {{ member_info.member_addr1 }}</div>
+					</li>
+					<li
+						class="pa-10 "
+					>
+						<div class=" text-right">{{ member_info.member_addr2 }}</div>
+					</li>
+					<li
+						class="pa-10 justify-space-between bg-gray-light"
+						@click="$emit('push', 'Shipping')"
 					>
 						<span>주소록</span>
 						<span><v-icon>mdi-chevron-right</v-icon></span>
@@ -87,7 +95,6 @@
 		</div>
 
 		<div
-			v-if="false"
 			class="bottom"
 		>
 			<button
@@ -107,7 +114,7 @@ import Title from "@/view/Layout/Title";
 
 export default{
 	name: 'Mypage'
-	,props: ['Axios', 'user', 'rules', 'codes', 'cart_cnt']
+	,props: ['Axios', 'member_info', 'rules', 'codes']
 	,components: { Title }
 	,data: function(){
 		return {
@@ -117,7 +124,7 @@ export default{
 				,wrap: 'mypage'
 				,top: false
 				,title: false
-				,bottom: true
+				,bottom: false
 				,class: 'blue'
 			}
 			,item: {

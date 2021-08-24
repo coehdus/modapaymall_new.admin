@@ -23,6 +23,16 @@ const routes = [
 		,component: () => import('@/view/Auth/Login.vue')
 	}
 	,{
+		path: prefix + 'Auth/Find/Id'
+		,name: 'FindId'
+		,component: () => import('@/view/Auth/FindId.vue')
+	}
+	,{
+		path: prefix + 'Auth/Find/Pw'
+		,name: 'FindPw'
+		,component: () => import('@/view/Auth/FindPw.vue')
+	}
+	,{
 		path: prefix + 'Auth/Join/:code?'
 		,name: 'Join'
 		,component: () => import('@/view/Auth/Join.vue')
@@ -63,6 +73,16 @@ const routes = [
 		,component: () => import('@/view/Account/MyPage.vue')
 	}
 	,{
+		path: prefix + 'Account/Password'
+		,name: 'Password'
+		,component: () => import('@/view/Account/Password.vue')
+	}
+	,{
+		path: prefix + 'Account/Shipping'
+		,name: 'Shipping'
+		,component: () => import('@/view/Account/Shipping.vue')
+	}
+	,{
 		path: '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')
@@ -76,6 +96,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+	console.log('from: ' + from.path + ' to : ' + to.path)
 	next();
 });
 
