@@ -80,7 +80,7 @@ const routes = [
 	,{
 		path: prefix + 'Account/Shipping'
 		,name: 'Shipping'
-		,component: () => import('@/view/Account/Shipping.vue')
+		,component: () => import('@/view/Account/ShippingList.vue')
 	}
 	,{
 		path: '*',
