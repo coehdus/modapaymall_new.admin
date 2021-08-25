@@ -51,7 +51,6 @@
 		}
 		,computed: {
 			is_home: function(){
-				console.log(this.$route.path)
 				if(this.$route.path == '/Index'){
 					return true
 				}else{
@@ -59,7 +58,6 @@
 				}
 			}
 			,is_cart: function(){
-				console.log(this.$route.path)
 				if(this.$route.path == '/Cart'){
 					return true
 				}else{
@@ -67,7 +65,6 @@
 				}
 			}
 			,is_delivery: function(){
-				console.log(this.$route.path)
 				if(this.$route.path == '/Order/List'){
 					return true
 				}else{
@@ -75,7 +72,6 @@
 				}
 			}
 			,is_mypage: function(){
-				console.log(this.$route.path)
 				if(this.$route.path.indexOf('/Account') > -1){
 					return true
 				}else{

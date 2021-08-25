@@ -335,6 +335,9 @@ export default{
 			if(Object.keys(this.item_list).length > 0) {
 				for(const [key, val] of Object.entries(this.cart_items)) {
 					console.log(key)
+					if(val.is_not_select){
+						continue
+					}
 					item.c_uid.push(val.uid)
 				}
 			}
@@ -400,10 +403,18 @@ export default{
 				let option = items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid]
 				if(!option || option === undefined){
 					option = {
-						odt: val.op_name
+						odt_uid: val.uid
+						,odt: val.op_name
 						,odt_cnt: val.op_cnt
 						,odt_price: Number(val.pdt_price) + Number(val.op_price)
+						,cart_index: key
+						,is_not_select: val.is_not_select
 					}
+				}
+
+				if(val.is_sold == 1 || (val.is_sold == 2 && val.pdt_stock < 1)){
+					option.is_sold = true
+					option.is_not_select = true
 				}
 
 				items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid] = option

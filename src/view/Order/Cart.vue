@@ -277,6 +277,8 @@
 					if(val.is_sold == 1 || (val.is_sold == 2 && val.pdt_stock < 1)){
 						option.is_sold = true
 						option.is_not_select = true
+
+						this.setCartOptionSelect(option)
 					}
 
 					items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid] = option
@@ -357,10 +359,14 @@
 				}
 			}
 			,setCartOptionSelect: function(option){
+
+				let val = !this.cart_items[option.cart_index].is_not_select ? true : false
+
 				if(option.is_sold){
-					return false
+					val = true
 				}
-				this.$set(this.cart_items[option.cart_index], 'is_not_select', !this.cart_items[option.cart_index].is_not_select ? true : false)
+
+				this.$set(this.cart_items[option.cart_index], 'is_not_select', val)
 			}
 		}
 		,created: function(){

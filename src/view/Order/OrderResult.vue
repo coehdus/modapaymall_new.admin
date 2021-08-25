@@ -9,30 +9,58 @@
 			class="pa-10 full-height pb-30 overflow-y-auto  bg-gray-light"
 		>
 			<div class="mt-30">
+
 				<h6>주문번호</h6>
 				<div
-					class="mt-10 size-px-24 text-center input-box box-shadow bg-white"
+					class="mt-10 size-px-16 text-center input-box box-shadow bg-white"
 				>
 					{{ item.result.order_num_new }}
 				</div>
 
-				<h6 class="mt-10">결제 정보</h6>
-				<div
-					class="mt-10 pa-10 bg-white box-shadow"
-				>
-					<div class="input-box justify-space-between">
-						<span>결제금액</span>
-						<span><span class="color-blue">{{ item.result.order_price | makeComma }}</span> 원</span>
+				<div class="mt-30">
+					<h6>주문자 정보</h6>
+					<div
+						class="mt-10 pa-10 bg-white box-shadow"
+					>
+						<div class="input-box justify-space-between">
+							<span>이름</span>
+							<span>{{ item.result.member_name }}</span>
+						</div>
+						<div class="mt-5 input-box justify-space-between">
+							<span>연락처</span>
+							<span>{{ item.result.member_tell }}</span>
+						</div>
+						<div class="mt-5 input-box justify-space-between">
+							<span>이메일</span>
+							<span>{{ item.result.member_email }}</span></div>
 					</div>
-					<div class=" mt-5 input-box justify-space-between">
-						<span>결제</span>
-						<span>{{ pay_div }}</span>
-					</div>
-					<div class=" mt-5 input-box ">
-						{{ item.result.pay_info }}
+				</div>
+
+				<div class="mt-30">
+
+					<h6>배송지 정보</h6>
+
+					<div
+						class="mt-10 bg-white pa-10 box-shadow"
+					>
+						<div class="input-box justify-space-between">
+							<span>받는분 이름</span>
+							<span>{{ item.result.d_name }}</span>
+						</div>
+						<div class="mt-10 input-box justify-space-between">
+							<span>받는분 연락처</span>
+							<span>{{ item.result.d_tell }}</span>
+						</div>
+						<div class="mt-10 input-box">
+							{{ item.result.d_post }}
+							{{ item.result.d_addr1 }}
+							{{ item.result.d_addr2 }}
+						</div>
+
 					</div>
 				</div>
 			</div>
+
 			<div class="mt-30">
 				<h6>상품 정보</h6>
 				<div></div>
@@ -61,9 +89,9 @@
 										v-if="product.pdt_img"
 										:src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"
 									/>
-									<span
+									<v-icon
 										v-else
-									>No Image</span>
+									>mdi mdi-image</v-icon>
 								</div>
 								<div class="flex-3">
 									<div class=" ptb-10 under-line">{{ product.pdt_name }}</div>
@@ -106,67 +134,26 @@
 				</ul>
 			</template>
 
-			<div class="mt-10">
-				<h6>주문자 정보</h6>
-				<div
-					class="mt-10 pa-10 bg-white box-shadow"
-				>
-					<div class="input-box">{{ item.result.member_name }}</div>
-					<div class="mt-5 input-box">{{ item.result.member_tell }}</div>
-					<div class="mt-5 input-box">{{ item.result.member_email }}</div>
-					<div class="mt-5 input-box">{{ item.result.member_post }} {{ item.result.member_addr1 }}</div>
-					<div class="mt-5 input-box">{{ item.result.member_addr2 }}</div>
+			<h6 class="mt-10">결제 정보</h6>
+			<div
+				class="mt-10 pa-10 bg-white box-shadow"
+			>
+				<div class="input-box justify-space-between">
+					<span>결제금액</span>
+					<span><span class="color-blue">{{ item.result.order_price | makeComma }}</span> 원</span>
+				</div>
+				<div class=" mt-5 input-box justify-space-between">
+					<span>결제</span>
+					<span>{{ pay_div }}</span>
+				</div>
+				<div class=" mt-5 input-box justify-space-between">
+					<span>결제 상태</span>
+					<span>{{ order_status }}</span>
+				</div>
+				<div class=" mt-5 input-box ">
+					{{ item.result.pay_info }}
 				</div>
 			</div>
-			<div class="mt-30">
-				<div
-				>
-					<h6 class="flex-4">배송지 정보</h6>
-				</div>
-				<div
-					class="mt-10 bg-white pa-10 box-shadow"
-				>
-					<input
-						v-model="item.result.d_name"
-						class="input-box"
-						placeholder="이름"
-					/>
-					<input
-						v-model="item.result.d_tell"
-						class="mt-10 input-box"
-						placeholder="연락처"
-					/>
-					<div
-						class="mt-10 flex-row"
-						@click="daumPost('default')"
-					>
-						<input
-							v-model="item.result.d_post"
-							class="input-box flex-3 mr-10"
-							placeholder="우편번호"
-							readonly
-						/>
-						<button
-							class="btn btn-blue flex-1"
-						>주소 검색</button>
-					</div>
-					<input
-						v-model="item.result.d_addr1"
-						type="text" placeholder="기본 주소"
-						class="mt-10 input-box"
-						readonly
-						maxlength="80"
-						@click="daumPost('default')"
-					/>
-					<input
-						v-model="item.result.d_addr2"
-						type="text" placeholder="상세 주소를 입력하세요"
-						class="mt-10 input-box"
-						maxlength="50"
-					/>
-				</div>
-			</div>
-
 		</div>
 	</div>
 </template>
@@ -203,6 +190,15 @@
 					div = '카드 결제'
 				}
 				return div
+			}
+			,order_status: function(){
+				let status = ''
+					if(this.item.result.o_status == 1){
+						status = '입금대기'
+					}else{
+						status = '결제완료'
+					}
+				return status
 			}
 			,item_list: function(){
 				let items = {}

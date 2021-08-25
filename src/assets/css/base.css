@@ -75,6 +75,7 @@
 .color-cancel { color: #FF5D46 !important;}
 .color-white { color: white !important;}
 .color-blue { color: #0f6ecd !important;}
+.color-orange { color: darkorange !important;}
 .color-green { color: #15ab94 !important; }
 .color-gray { color: #bbb !important;}
 .color-red { color: red !important;}
@@ -282,3 +283,4 @@ input:read-only { background-color: #eee; color: #bbb;}
 .position-fixed { position: fixed;}
 .position-absolute { position: absolute !important;}
 .position-absolute.icon-menu-down { right: 10px; top: 12px}
+

@@ -19,10 +19,9 @@
 					class="input-box flex-3 mr-10"
 					maxlength="20"
 				/>
-				<button
+				<label
 					class="pa-10 btn-default "
-					:class="{'btn-success': item.is_base }"
-					@click="item.is_base = !item.is_base"
+					:class="{'btn-success': item.is_base == 1}"
 				>
 					<v-icon
 						v-if="item.is_base"
@@ -31,7 +30,16 @@
 					<v-icon
 						v-else
 					>mdi mdi-checkbox-blank-outline</v-icon>
-					기본 배송지</button>
+					기본 배송지
+
+					<input
+						v-show="false"
+						v-model="item.is_base"
+						type="checkbox"
+						value="1"
+					/>
+				</label>
+
 			</div>
 			<div
 				class="mt-10"

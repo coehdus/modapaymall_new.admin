@@ -1,9 +1,21 @@
 <template>
 	<div class="full-height bg-gray-light">
 		<div
-			v-if="!item.uid"
+			v-if="!is_item"
 			class="full-height"
 		>
+			<div
+				class="bg-title position-relative justify-space-between "
+			>
+				<button
+					:title="program.name"
+					@click="$router.back()"
+				><v-icon large class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span></button>
+				<v-icon
+					class="color-blue"
+					@click="setItem(item)"
+				>mdi mdi-pencil-box</v-icon>
+			</div>
 			<ul
 				class="pa-10"
 			>
@@ -66,7 +78,7 @@
 		</div>
 
 		<ShippingItem
-			v-if="item.uid"
+			v-if="is_item"
 			:Axios="Axios"
 			:item="item"
 			:rules="rules"
@@ -91,7 +103,7 @@
 				program: {
 					name: '주소록'
 					,top: false
-					,title: true
+					,title: false
 					,bottom: true
 
 				}
@@ -100,7 +112,7 @@
 				}
 				,items: []
 				,item: {
-					is_base: false
+					is_base: ''
 					,TOKEN: this.TOKEN
 				}
 				,item_remove: {
@@ -120,7 +132,7 @@
 				return this.items.filter(function (item){
 					item.TOKEN = self.TOKEN
 					if(item.is_base != 1){
-						item.is_base = false
+						item.is_base = ''
 					}
 					return item
 				})
@@ -144,7 +156,11 @@
 				}
 			}
 			,close: function(){
-				this.item = {}
+				this.is_item = false
+				this.item = {
+					is_base: ''
+					,TOKEN: this.TOKEN
+				}
 				this.getData()
 				this.$emit('onLoad', this.program)
 			}
@@ -156,6 +172,7 @@
 			}
 			,setItem: function(item){
 				this.item = item
+				this.is_item = true
 			}
 			,showRemoveModal: function(item){
 				this.item_remove = item
