@@ -6,12 +6,8 @@
 			class="bg-login-content pa-10"
 		>
 			<div
-				class="pa-10"
+				class="pa-10 text-center"
 			>
-				<img
-					class="mr-10"
-					src="@/assets/images/new/login-top.svg" alt="Logo Position"
-				/>
 				<span
 					class="size-em-15 font-weight-bold vertical-middle"
 				>Logo Position</span>
@@ -66,7 +62,7 @@
 				class="mt-10"
 			>
 				<button
-					class="btn btn-primary"
+					class="btn btn-identify"
 					@click="login"
 				>로그인</button>
 			</div>
