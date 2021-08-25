@@ -148,7 +148,7 @@ export default{
 			}
 		}
 		,goDetail(item){
-			item.TOKEN = sessionStorage.getItem('delimallT')
+			item.TOKEN = sessionStorage.getItem('delimallAT')
 			this.$set(this, 'item', item)
 		}
 		,clear(){

@@ -1,12 +1,8 @@
 <template>
 	<div
+		v-if="is_side"
 		class="side"
 	>
-		<div
-			class="bg-side"
-			@click="toggleSide"
-		></div>
-
 		<div
 			class="side-container flex-column"
 		>
@@ -15,7 +11,6 @@
 			>
 				<span class="color-white">logo-position</span>
 				<v-icon
-					@click="toggleSide"
 					class="color-white"
 				>mdi mdi-arrow-left-bold-box-outline</v-icon>
 			</div>
@@ -36,22 +31,6 @@
 					>mdi mdi-chevron-right</v-icon>
 				</li>
 			</ul>
-
-			<div
-				class="mt-auto"
-			>
-				<div
-					class="text-center bg-gray pa-10"
-				>
-					Ver 1.0.0
-				</div>
-				<div>
-					<button
-						class="btn btn-identify"
-						@click="logout"
-					>로그아웃</button>
-				</div>
-			</div>
 		</div>
 	</div>
 </template>
@@ -67,41 +46,27 @@
 				]
 			}
 		}
-		,methods: {
-			getData: async function(){
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: '/product/getCategory'
-					})
-					if(result.success){
-						this.items = result.data.category
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message})
-					}
-				}catch (e) {
-					console.log(e)
+		,computed: {
+			is_side: function(){
+				let use = true
+				let except = ['auth']
+				let path = this.$route.path
 
-				}
+				except.forEach(function (val) {
+					if (path.toLowerCase().indexOf(val) > -1) {
+						use = false
+						return false
+					}
+				})
+				return use
 			}
-			,toItem: function(category){
-				this.toggleSide()
-				//document.location.href = '/Product/List/' + category
-				this.$emit('push', 'ProductList', { category: category})
-			}
-			,toggleSide: function(){
-				this.$emit('toggleSide')
-			}
-			,logout: function(){
-				if(confirm('로그아웃 하시겠습니까?')){
-					sessionStorage.removeItem('delimallT')
-					sessionStorage.removeItem('delimallT2')
-					document.location.href= '/Login'
-				}
-			}
+
+		}
+		,methods: {
+
 		}
 		,created: function(){
-			this.getData()
+
 		}
 	}
 </script>
@@ -109,8 +74,8 @@
 <style>
 
 	.side {
-		width: 100%; height: 100%;
-		position: fixed; left: 0; top: 0; z-index: 98;
+		max-width: 300px;
+		height: 100%;
 	}
 	.bg-side {
 		width: 100%; height: 100%;
@@ -120,10 +85,10 @@
 	}
 	.side-container{
 		width: 80%; height: 100%;
-		max-width: 300px;
 		position: relative;  z-index: 99;
 		background-color: white;
 		overflow-y: auto;
+		border-right: 1px solid #ddd
 	}
 
 	.side-container {

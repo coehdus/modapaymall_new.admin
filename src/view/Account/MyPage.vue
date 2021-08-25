@@ -144,8 +144,8 @@ export default{
 	,methods: {
 		logout: function(){
 			if(confirm('로그아웃 하시겠습니까?')){
-				sessionStorage.removeItem('delimallT')
-				sessionStorage.removeItem('delimallT2')
+				sessionStorage.removeItem('delimallAT')
+				sessionStorage.removeItem('delimallAT2')
 				this.$router.push({ name: 'Login'})
 			}
 		}

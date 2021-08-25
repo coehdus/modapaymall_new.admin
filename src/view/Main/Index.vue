@@ -109,7 +109,7 @@
 					method: 'post'
 					,url: 'product/getMainProduct'
 					,data: {
-						TOKEN: sessionStorage.getItem('delimallT')
+						TOKEN: sessionStorage.getItem('delimallAT')
 					}
 				})
 
@@ -120,7 +120,7 @@
 				}
 			}
 			,goDetail(item){
-				item.TOKEN = sessionStorage.getItem('delimallT')
+				item.TOKEN = sessionStorage.getItem('delimallAT')
 				this.$set(this, 'item', item)
 			}
 			,clear(){

@@ -46,7 +46,7 @@ export default {
 	,methods: {
 		isAuth: function(){
 			console.log('isAuth start !!')
-			let TOKEN = sessionStorage.getItem('delimallT')
+			let TOKEN = sessionStorage.getItem('delimallAT')
 			let skip = false
 			let except = ['auth']
 			let path = document.location.href
@@ -77,17 +77,16 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'member/getBaseInfo'
+					,url: 'management/getBaseInfo'
 					,data: {
-						TOKEN: this.TOKEN
+						ATOKEN: this.TOKEN
 					}
 				})
 
 				if(result.success){
-					this.member_info = result.data.member_info
-					this.shop_info = result.data.shop_info
-					this.seller_info = result.data.seller_info
+					this.member_info = result.data.admin_info
 				}else{
+					this.toLogin()
 					console.log(result.message)
 				}
 			}catch (e) {

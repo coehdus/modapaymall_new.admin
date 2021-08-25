@@ -273,7 +273,7 @@ export default{
 			,daumPostUp: false
 			,order_number: ''
 			,item: {
-				TOKEN: sessionStorage.getItem('delimallT')
+				TOKEN: sessionStorage.getItem('delimallAT')
 				,pay_div: 'bank'
 				,member_tell: '1234'
 				,member_email: 'aaa@bbb.com'

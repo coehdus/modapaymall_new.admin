@@ -45,18 +45,8 @@
 			</div>
 			<div
 				v-show="error.type"
-				class="pa-10 text-red"
-			><v-icon small class="text-red">mdi-alert</v-icon> {{ error.msg }}</div>
-			<div class="pa-10">
-				<label
-				>
-					<input
-						v-model="is_auto_login"
-						type="checkbox"
-						class="login-checkbox"
-					/> <span class="auto-login">자동 로그인</span>
-				</label>
-			</div>
+				class="pa-10 color-red"
+			><v-icon small class="color-red">mdi-alert</v-icon> {{ error.msg }}</div>
 
 			<div
 				class="mt-10"
@@ -68,10 +58,9 @@
 			</div>
 
 			<div
-				class="pa-10 mt-10 text-center login-menu justify-space-between"
+				class="pa-10 mt-10 text-center login-menu justify-space-around"
 			>
-				<router-link :to="{ name: 'Join' }">가입하기</router-link> /
-				<router-link :to="{ name: 'FindId' }">아이디 찾기</router-link> /
+				<router-link :to="{ name: 'FindId' }">아이디 찾기</router-link>
 				<router-link :to="{ name: 'FindPw' }">비밀번호 찾기</router-link>
 			</div>
 
@@ -80,8 +69,6 @@
 </template>
 
 <script>
-
-import { Base64 } from 'js-base64'
 
 export default{
 	name: 'Login'
@@ -141,34 +128,17 @@ export default{
 			try {
 				let result = await this.Axios({
 					method: 'post'
-					, url: '/memberProcess/login'
+					, url: 'management/postLogin'
 					, data: item
 				})
 
 				if (result.success) {
 
-					sessionStorage.setItem('delimallT', Base64.encode(this.item.member_id))
-					sessionStorage.setItem('delimallT2', Base64.encode(this.item.member_pw))
+					sessionStorage.setItem('delimallAT', result.data.TOKEN)
 
-					if (this.is_id_save) {
-						localStorage.setItem('delimallS', Base64.encode(this.item.member_id))
-					} else {
-						localStorage.removeItem('delimallS')
-						//localStorage.removeItem('is_id_save')
-					}
-					if (this.is_auto_login) {
-						localStorage.setItem('delimallA', true)
-						localStorage.setItem('delimallN', Base64.encode(Base64.encode(this.item.member_id)))
-						localStorage.setItem('delimallP', Base64.encode(Base64.encode(this.item.member_pw)))
-					} else {
-						localStorage.removeItem('delimallA')
-						if(!this.is_id_save) {
-							localStorage.removeItem('delimallN')
-						}
-						localStorage.removeItem('delimallP')
-					}
-					this.toMain()
 					this.error.type = ''
+
+					this.toMain()
 				} else {
 
 					if(result.message.indexOf('아이디') > -1){
@@ -194,19 +164,6 @@ export default{
 			document.location.href = '/Index'
 		}
 	}
-	,mounted() {
-		if(localStorage.getItem('delimallS')){
-			this.is_id_save = Base64.decode(localStorage.getItem('delimallS'))
-			this.item.member_id = Base64.decode(localStorage.getItem('delimallS'))
-		}
-
-		if(localStorage.getItem('delimallA')){
-			this.is_auto_login = Base64.decode(localStorage.getItem('delimallA'))
-			this.item.member_id = Base64.decode(Base64.decode(localStorage.getItem('delimallN')))
-			this.item.member_pw = Base64.decode(Base64.decode(localStorage.getItem('delimallP')))
-			this.login()
-		}
-	}
 	,created: function(){
 		this.$emit('onLoad', this.program)
 
@@ -219,7 +176,7 @@ export default{
 
 <style>
 .bg-login { background-color: #eee; padding: 10px;}
-.bg-login-content { background-color: white; border-radius: 5px}
+.bg-login-content { width: 320px; background-color: white; border-radius: 5px; margin: 0 auto}
 
 .auto-login { vertical-align: middle; font-size: 14px; }
 

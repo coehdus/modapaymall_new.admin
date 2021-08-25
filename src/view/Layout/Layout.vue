@@ -1,7 +1,6 @@
 <template>
 	<div class="full-height" style="overflow: hidden">
 		<Side
-			v-if="is_side"
 			:Axios="Axios"
 
 			@toggleSide="toggleSide"
@@ -14,6 +13,8 @@
 			<Top
 				v-if="program.top"
 				:program="program"
+				:member_info="member_info"
+
 				@push="toLocation"
 			></Top>
 			<Title
@@ -44,10 +45,9 @@
 
 				@setNotify="setNotify"
 				@onLoad="setProgram"
-				@getCartList="getCartList"
+				@push="toLocation"
 
 				class=" overflow-y-auto"
-				@push="toLocation"
 			></router-view>
 
 			<Bottom
@@ -115,25 +115,6 @@
 			,setProgram: function(program){
 				this.program = program
 			}
-			,getCartList: async function(){
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'order/getCartList'
-						,data: {
-							TOKEN: sessionStorage.getItem('delimallT')
-						}
-					})
-
-					if(result.success){
-						this.cart_items = result.data.content.result
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message})
-					}
-				}catch (e) {
-					console.log(e)
-				}
-			}
 			,toLocation: function(path, params){
 				this.$router.push({ name: path, params: params}).catch(function(e){
 					console.log(e)
@@ -141,7 +122,6 @@
 			}
 		}
 		,created: function(){
-			this.getCartList()
 		}
 	}
 	

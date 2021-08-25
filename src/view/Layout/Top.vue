@@ -1,17 +1,13 @@
 <template>
 	<div>
-		<div
-			class="logo-position justify-center text-center pa-20 bg-base "
-			@click="toMain"
-		>
-			<span class="text-center color-white">Logo Position</span>
-		</div>
+		{{ member_info.admin_name }}
 	</div>
 </template>
 
 <script>
 	export default{
 		name: 'Top'
+		,props: ['member_info']
 		,methods: {
 			onSide: function(){
 				this.$emit('toggleSide')
