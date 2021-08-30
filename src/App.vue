@@ -9,6 +9,7 @@
 		:metaInfo="metaInfo"
 		:TOKEN="TOKEN"
 		:member_info="member_info"
+		:codes="codes"
 	/>
 </template>
 
@@ -20,6 +21,7 @@
 	import { date } from '@/resources/date/date'
 	import { rules } from '@/resources/rules/rules'
 	import { metaInfo } from '@/resources/config/metainfo'
+	import { codes } from '@/resources/config/codes'
 
 	import { Base64 } from 'js-base64'
 
@@ -38,6 +40,7 @@ export default {
 		,rules: rules
 		,Base64: Base64
 		,metaInfo: metaInfo
+		,codes: codes
 		,TOKEN: ''
 		,member_info: {
 
@@ -99,3 +102,28 @@ export default {
 	}
 };
 </script>
+
+<style>
+	table { width: 100% }
+	table thead {
+
+	}
+
+	th {
+		background-color: #eee;
+	}
+
+
+	.pdt-img img { width: 100% }
+
+	td, th {
+		padding: 10px;
+		border: none;
+		border-bottom: 1px solid #ddd;
+		text-align: center;
+	}
+
+	td:first-child {
+		text-align: center;
+	}
+</style>

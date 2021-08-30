@@ -3,15 +3,15 @@
 
 	<div
 		v-show="notify"
-		class="position-fixed"
+		class="position-fixed text-center"
 		style="bottom: 20%; right: 0; display: block; padding: 10px; width: 100%; z-index: 999 "
 	>
-		<div
+		<span
 			:class="type ? type : 'error'"
-			style="padding: 10px; border-radius: 10px"
+			style="padding: 10px; border-radius: 10px; width: auto; margin: 0 auto; display: inline-block"
 		>
 			{{ msg }}
-		</div >
+		</span >
 	</div>
 	
 </template>

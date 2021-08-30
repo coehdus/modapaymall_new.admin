@@ -1,61 +1,66 @@
 <template>
-	<div class="full-height" style="overflow: hidden">
-		<Side
-			:Axios="Axios"
+	<div
+		class="full-height flex-column"
+	>
+		<Top
+			v-if="program.top"
+			:program="program"
+			:member_info="member_info"
 
-			@toggleSide="toggleSide"
 			@push="toLocation"
-		>
-		</Side>
+		></Top>
 		<div
-			class="full-height flex-column"
+			class="full-height justify-space-between overflow-y-auto"
 		>
-			<Top
-				v-if="program.top"
-				:program="program"
-				:member_info="member_info"
-
-				@push="toLocation"
-			></Top>
-			<Title
-				v-if="program.title"
-				:program="program"
-				:cart_cnt="cart_cnt"
-
-				@push="toLocation"
-			></Title>
-			<Search
-				v-if="program.search"
-				:program="program"
-				@toggleSide="toggleSide"
-			></Search>
-
-			<router-view
+			<Side
+				v-if="is_side"
 				:Axios="Axios"
-				:Notify="Notify"
-				:metaInfo="metaInfo"
-				:rules="rules"
-				:TOKEN="TOKEN"
-				:cart_items="cart_items"
-				:member_info="member_info"
-				:filter="filter"
-				:key="$route.fullPath"
-				:date="date"
-				:cart_cnt="cart_cnt"
 
-				@setNotify="setNotify"
-				@onLoad="setProgram"
+				@toggleSide="toggleSide"
 				@push="toLocation"
+			>
+			</Side>
 
-				class=" overflow-y-auto"
-			></router-view>
+			<div class="flex-1 full-height flex-column">
+				<Title
+					v-if="program.title"
+					:program="program"
+					:cart_cnt="cart_cnt"
 
-			<Bottom
-				v-if="program.bottom"
+					@push="toLocation"
+				></Title>
+				<Search
+					v-if="program.search"
+					:program="program"
+					@toggleSide="toggleSide"
+				></Search>
 
-				:cart_cnt="cart_cnt"
-				@push="toLocation"
-			></Bottom>
+				<router-view
+					:Axios="Axios"
+					:Notify="Notify"
+					:metaInfo="metaInfo"
+					:rules="rules"
+					:TOKEN="TOKEN"
+					:cart_items="cart_items"
+					:member_info="member_info"
+					:filter="filter"
+					:key="$route.fullPath"
+					:date="date"
+					:codes="codes"
+
+					@setNotify="setNotify"
+					@onLoad="setProgram"
+					@push="toLocation"
+
+					class="pa-10 overflow-y-auto"
+				></router-view>
+
+				<Bottom
+
+					:cart_cnt="cart_cnt"
+					@push="toLocation"
+				></Bottom>
+			</div>
 		</div>
 
 		<Notify
@@ -78,7 +83,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date']
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes']
 		,components: {Search, Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {
@@ -122,6 +127,18 @@
 			}
 		}
 		,created: function(){
+		}
+		,watch: {
+			TOKEN: {
+				immediate: true
+				,handler: function(call){
+					if(call){
+						this.is_side = true
+					}else{
+						this.is_side = false
+					}
+				}
+			}
 		}
 	}
 	
@@ -182,6 +199,5 @@
 
 	.bg-title {
 		padding: 10px;
-		box-shadow: 0 0 3px 1px gray;
 	}
 </style>

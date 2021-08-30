@@ -2,10 +2,7 @@
 	<div
 		class="bg-title position-relative justify-space-between "
 	>
-		<button
-			:title="program.name"
-			@click="toBack()"
-		><v-icon large class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span></button>
+		<span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span>
 
 		<span
 			v-if="is_cart_view"

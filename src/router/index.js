@@ -43,9 +43,34 @@ const routes = [
 		,component: () => import('@/view/Auth/Result.vue')
 	}
 	,{
+		path: prefix + 'Member/List'
+		,name: 'MemberList'
+		,component: () => import('@/view/Member/MemberList.vue')
+	}
+	,{
+		path: prefix + 'Manager/AdminList'
+		,name: 'ManagerAdminList'
+		,component: () => import('@/view/Manager/ManagerAdminList.vue')
+	}
+	,{
+		path: prefix + 'Manager/AgencyList'
+		,name: 'ManagerAgencyList'
+		,component: () => import('@/view/Manager/ManagerAgencyList.vue')
+	}
+	,{
+		path: prefix + 'Manager/SupplyList'
+		,name: 'ManagerSupplyList'
+		,component: () => import('@/view/Manager/ManagerSupplyList.vue')
+	}
+	,{
 		path: prefix + 'Product/List/:category?'
 		,name: 'ProductList'
 		,component: () => import('@/view/Product/ProductList.vue')
+	}
+	,{
+		path: prefix + 'Product/Category'
+		,name: 'ProductCategory'
+		,component: () => import('@/view/Product/ProductCategory.vue')
 	}
 	,{
 		path: prefix + 'Order/Cart'

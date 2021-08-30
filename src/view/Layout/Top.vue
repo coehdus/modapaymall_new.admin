@@ -1,6 +1,19 @@
 <template>
-	<div>
-		{{ member_info.admin_name }}
+	<div
+		class="top"
+	>
+		<div
+			class="logo bg-base pa-10 color-white text-center"
+			@click="$emit('push', 'Index')"
+		>Logo Position</div>
+		<div class="pa-10">
+			{{ admin_div_name }}
+			{{ member_info.admin_name }}
+			({{ member_info.admin_id}}) 님 환영합니다
+			<button
+				class="btn-primary prl-10 size-px-12"
+			>로그아웃</button>
+		</div>
 	</div>
 </template>
 
@@ -8,6 +21,24 @@
 	export default{
 		name: 'Top'
 		,props: ['member_info']
+		,computed: {
+			admin_div_name: function(){
+				let name = ''
+				switch(this.member_info.admin_type){
+					case 'admin':
+						name = '관리자'
+						break;
+					case 'agency':
+						name = '대리점'
+						break;
+					case 'supply':
+						name = '공급사'
+						break;
+				}
+
+				return name
+			}
+		}
 		,methods: {
 			onSide: function(){
 				this.$emit('toggleSide')
@@ -18,3 +49,16 @@
 		}
 	}
 </script>
+
+<style>
+	.top {
+		border-bottom: 1px solid #ddd;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.top .logo {
+		width: 180px;
+	}
+</style>

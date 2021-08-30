@@ -2,53 +2,38 @@
 
 export const codes = {
 	metaInfo: {
-		title: 'reappaypg_agency'
-		,copyright: 'REAPPAY Payment'
+		title: 'delimall'
+		,copyright: 'delimall'
 	}
-	,posStatus: [
-		{ code: '', codeName: '단말기 상태를 선택하세요' }
-		,{ code: 'Normal', codeName: '정상사용' }
-		,{ code: 'Pause', codeName: '사용중지' }
-		,{ code: 'Termination', codeName: '해지' }
-	]
-	,posType: [
-		{ code: '', codeName: '단말기 타입을 선택하세요' }
-		,{ code: 'Fixed', codeName: '유선 단말기' }
-		,{ code: 'Wireless', codeName: '무선 단말기' }
-	]
-	,settlementStatus: [
-		{ code: '', codeName: '전체'}
-		,{ code: 'Pause', codeName: '정산대기'}
-		,{ code: 'Normal', codeName: '정산완료'}
-		,{ code: '003', codeName: '지급보류'}
-	]
-	,merchants: {
-		status: [
-			{ code: '', codeName: '전체'}
-			,{ code: 'Normal', codeName: '정상사용'}
-			,{ code: 'Pause', codeName: '사용중지'}
-			,{ code: 'Termination', codeName: '해지'}
-		]
+	,img_url: 'http://delimall.co.kr/API/data/product/'
+	,pay_div: {
+		card: { code: 'card', name: '카드결제', color: 'blue'}
+		,bank: { code: 'bank', name: '무통장 입금', color: 'gray'}
+		,point: { code: 'point', name: '포인트 결제', color: 'red'}
 	}
-	,serviceType: [
-		{ code: '001', codeName: '인증(온라인)'}
-		,{ code: '002', codeName: '비인증(수기)'}
-		,{ code: '003', codeName: 'OFF PG(단말기)'}
+	,o_status: [
+		{ code: 0, name: '', color: ''}
+		,{ code: 1, name: '입금대기', color: 'gray'}
+		,{ code: 2, name: '결제완료', color: 'green'}
+		,{ code: 3, name: '취소요청', color: 'orange'}
+		,{ code: 4, name: '주문취소', color: 'red'}
 	]
-	,companyType: [
-		{ code: 'PUBLIC', name: '법인 사업자'}
-		,{ code: 'PRIVATE', name: '개인 사업자'}
-		,{ code: 'NON', name: '비사업자'}
-	]
-	,merchantType: [
-		{ code: '001', name: '직영'}
-		,{ code: 'Resales', name: '리셀러'}
-		,{ code: 'Dealer', name: '딜러'}
-	]
-	,insurancesNon: {
-		insuranceCoverageAmount: ''
-		,oneTimeLimit: 2000000
-		,monthLimit: 4000000
-		,yearLimit: 38000000
+	,odt_status: {
+
+		step1: { code: 1, name: '주문접수', color: ''}
+		,step2: { code: 2, name: '배송준비중', color: ''}
+		,step3: { code: 3, name: '배송중', color: ''}
+		,step4: { code: 4, name: '배송완료', color: ''}
+		,step5: { code: 5, name: '구매확정', color: 'green'}
+		,step21: { code: 21, name: '주문 취소 요청', color: 'red'}
+		,step22: { code: 22, name: '주문 취소 완료', color: 'red'}
+		,step31: { code: 31, name: '교환요청', color: 'orange'}
+		,step32: { code: 32, name: '교환처리중', color: 'orange'}
+		,step33: { code: 33, name: '교환 배송중', color: 'orange'}
+		,step34: { code: 34, name: '교환 완료', color: 'orange'}
+		,step41: { code: 41, name: '반품 요청', color: 'red'}
+		,step42: { code: 42, name: '반품 처리중', color: 'red'}
+		,step43: { code: 43, name: '반품 완료', color: 'red'}
 	}
+
 }

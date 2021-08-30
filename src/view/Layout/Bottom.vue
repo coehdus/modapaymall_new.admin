@@ -1,6 +1,6 @@
 <template>
 	<div
-		class=""
+		class="pa-10"
 	>
 
 	</div>

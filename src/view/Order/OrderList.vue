@@ -1,282 +1,450 @@
 <template>
 	<div
-		class="full-height "
+		class="full-height justify-space-between"
 	>
 		<div
-			class="pa-10 full-height pb-30 bg-gray-light"
+			class="full-height full-width flex-column"
 		>
-			<ul
-				class="full-height overflow-y-auto"
-			>
-				<li
-					v-for="(item, index) in item_list"
-					:key="item.uid"
-					class=" bg-white mb-20 box-shadow position-relative"
+			<table>
+				<colgroup>
+					<col width="80px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="auto" />
+				</colgroup>
+				<thead>
+				<tr>
+					<th>
+						<input
+							type="checkbox"
+						/>
+					</th>
+					<th>주문번호</th>
+					<th>아이디</th>
+					<th>이름</th>
+					<th>연락처</th>
+					<th>결제 정보</th>
+					<th>결제상태</th>
+					<th>상세정보</th>
+				</tr>
+				</thead>
+				<tbody>
+				<template
+					v-for="(item) in item_list"
 				>
-					<div
-						class="pa-10 bg-gray-light under-line justify-space-between"
-						@click="toResult(item.order_num_new)"
+					<tr
+						:key="item.admin_id"
+						:class="{ 'bg-f5': item.uid == item_new.uid }"
 					>
-						<span>{{ item.order_num_new}}</span>
-						<v-icon >mdi mdi-arrow-right-bold-box-outline</v-icon>
-					</div>
-					<div
-						class="pa-10"
-					>
-						<div class="justify-space-between under-line-dashed pb-10">
-							<span class="color-blue">{{ item.order_price | makeComma }}</span>
-							<span>
-								<span
-									class="mr-10"
-									:class="item.o_status_color"
-								>{{ item.o_status_name }}</span>
-
-								<button
-									v-if="item.is_cancel"
-									class="btn-danger size-px-12 prl-10"
-									@click="viewCancel(item, index)"
-								>주문 취소</button>
-							</span>
-						</div>
-						<ul
-							@click="toResult(item.order_num_new)"
+						<td
 						>
-							<li
-								v-for="odt in item.odt_list"
-								:key="'odt_' + odt.uid"
-								class="under-line-dashed ptb-10"
+							<input
+								v-model="item.is_watch"
+								type="checkbox"
+							/>
+						</td>
+						<td>
+							{{ item.order_num_new }}
+						</td>
+						<td @click="item.is_detail = !item.is_detail">{{ item.member_id }}</td>
+						<td>{{ item.member_name }}</td>
+						<td>{{ item.member_tell }}</td>
+						<td>{{ item.order_price | makeComma }} 원</td>
+
+						<td
+							class="full-height "
+						>
+							<div
+								class=" flex-row justify-center"
 							>
-								<div class="justify-space-between">
-									<span class="flex-1 pdt-img mr-10 flex-column justify-center">
+								<template
+									v-for="o_status in codes.o_status"
+								>
+								<button
+									v-if="o_status.code > 0"
+									:key="'o_status_' + o_status.code"
+									class="pa-5 "
+									:class="'bg-' + (item.o_status == o_status.code ? o_status.color : 'default')"
+									@click="item.o_status = o_status.code; item.is_watch = true"
+								>{{ o_status.name }}</button>
+								</template>
+							</div>
+						</td>
+						<td
+						>
+							<v-icon
+								v-if="item.uid == item_new.uid"
+								class="color-red"
+								@click="setItem(item)"
+							>mdi mdi-close-box-outline</v-icon>
+							<v-icon
+								v-else
+								@click="setItem(item)"
+							>mdi mdi-arrow-right-bold-box-outline</v-icon>
+						</td>
+					</tr>
+				</template>
+				</tbody>
+			</table>
+
+			<div
+				class="mt-auto"
+			>
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="options"
+				></Pagination>
+			</div>
+		</div>
+
+		<SideB
+			v-if="item_new.uid"
+			:title="'주문 정보'"
+			:bg-title="'bg-' + item_new.o_status_color"
+			width="350px"
+		>
+			<div
+				slot="item"
+				class="pa-10 flex-column full-height overflow-y-auto"
+			>
+				<h6>주문번호</h6>
+				<div
+					class="mt-10 pa-10 size-px-16 text-center  box-shadow bg-white"
+				>
+					{{ item_new.order_num_new }}
+				</div>
+
+				<div class="mt-30">
+					<h6>상품 정보</h6>
+					<div></div>
+				</div>
+
+				<template
+					v-if="item_new.odt_list.length > 0"
+				>
+					<ul class="mt-10">
+						<li
+							v-for="(item, item_index) in odt_list"
+							:key="item_index"
+							class="under-line mb-10  bg-white box-shadow"
+						>
+							<div
+								class="pa-10 under-line "
+							><v-icon>mdi mdi-home-modern</v-icon>{{ item.company.seller_name }}</div>
+							<ul>
+								<li
+									v-for="(product, product_index) in item.items"
+									:key="'product_' + product_index"
+									class=" under-line justify-space-between"
+								>
+									<div class="pa-10 flex-1 odt-img justify-center flex-column pdt-img">
 										<img
-											v-if="odt.pdt_img"
-											:src="'http://delimall.co.kr/API/data/product/' + odt.pdt_img"
+											v-if="product.pdt_img"
+											:src="'http://delimall.co.kr/API/data/product/' + product.pdt_img" alt="main1"
 										/>
 										<v-icon
 											v-else
 										>mdi mdi-image</v-icon>
-									</span>
-									<div class="flex-3">
-										<div>{{ odt.pdt_name}} / {{ odt.op_name }}</div>
-										<div class="mt-10 justify-space-between">
-											<span class="color-blue">{{ odt.odt_price | makeComma }} 원</span>
-											<span>{{ odt.op_cnt }}개</span>
-										</div>
-										<div class="mt-10 justify-space-between">
-											<span
-												class="flex-1">{{ odt.odt_status_name }}</span>
-										</div>
 									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<Modal
-			:is_modal="is_modal"
-			:option="modal_option"
+									<div class="flex-3">
+										<div class=" ptb-10 under-line">{{ product.pdt_name }}</div>
+										<div
+											v-for="(option, index) in product.options"
+											:key="'odt_' + index"
+											class=" pa-10 under-line-dashed"
+										>
+											<div class="justify-space-between">
+												<span>옵션</span>
+												<span>{{ option.odt }}</span>
+											</div>
+											<div
+												class="mt-10 justify-space-between"
+											>
+											<span
+												class="flex-2 color-blue"
+											>{{ option.odt_price | makeComma }}</span>
 
-			@click="toCancel"
-			@close="is_modal = !is_modal"
-		>
-			<div
-				slot="modal-bottom"
-				class="justify-space-between"
-			>
-				<button
-					class="btn btn-danger"
-					@click="toCancel"
-				>주문 취소</button>
+												<span>{{ option.odt_cnt }} 개</span>
+											</div>
+										</div>
+
+									</div>
+								</li>
+							</ul>
+							<div
+								class="pa-10 justify-space-between under-line-dashed"
+							>
+								<span>배송비 <span class="size-px-11">{{ item.company.delivery }}</span></span>
+								<span>{{ item.company.delivery_price | makeComma }}</span>
+							</div>
+							<div
+								class="pa-10 justify-space-between"
+							>
+								<span>합계</span>
+								<span class="color-blue">{{ item.company.total_price | makeComma }}</span>
+							</div>
+						</li>
+					</ul>
+				</template>
+
+
+				<h6 class="mt-20">결제 정보</h6>
+				<div
+					class="mt-10 pa-10 bg-white box-shadow"
+				>
+					<div class=" justify-space-between">
+						<span>결제금액</span>
+						<span><span class="color-blue">{{ item_new.order_price | makeComma }}</span> 원</span>
+					</div>
+					<div class="mt-10  justify-space-between">
+						<span class="ptb-5">{{ item_new.pay_div_name }}</span>
+
+						<span class='pa-5' :class="'bg-' + item_new.o_status_color">{{ item_new.o_status_name }}</span>
+					</div>
+					<div class="mt-10  ">
+						{{ item_new.pay_info }}
+					</div>
+				</div>
+
+				<div class="mt-30">
+					<h6>주문자 정보</h6>
+					<div
+						class="mt-10 pa-10 bg-white box-shadow"
+					>
+						<div class=" justify-space-between">
+							<span>이름</span>
+							<span>{{ item_new.member_name }}</span>
+						</div>
+						<div class="mt-5  justify-space-between">
+							<span>연락처</span>
+							<span>{{ item_new.member_tell }}</span>
+						</div>
+						<div class="mt-5  justify-space-between">
+							<span>이메일</span>
+							<span>{{ item_new.member_email }}</span></div>
+					</div>
+				</div>
+
+				<div class="mt-30">
+
+					<h6>배송지 정보</h6>
+
+					<div
+						class="mt-10 bg-white pa-10 box-shadow"
+					>
+						<div class=" justify-space-between">
+							<span>받는분 이름</span>
+							<span>{{ item_new.d_name }}</span>
+						</div>
+						<div class="mt-10  justify-space-between">
+							<span>받는분 연락처</span>
+							<span>{{ item_new.d_tell }}</span>
+						</div>
+						<div class="mt-10 ">
+							{{ item_new.d_post }}
+							{{ item_new.d_addr1 }}
+							{{ item_new.d_addr2 }}
+						</div>
+
+					</div>
+				</div>
 			</div>
-		</Modal>
+		</SideB>
 	</div>
 </template>
 
 <script>
-	import Modal from "@/components/Modal";
-	export default{
-		name: 'OrderList'
-		,
-		components: {Modal},
-		props: ['Axios', 'member_info', 'TOKEN']
-		,data: function() {
-			return {
-				program: {
-					name: '주문내역'
-					, top: false
-					, title: true
-					, bottom: true
-				}
-				,search: {
-					TOKEN: this.TOKEN
-					,sDate: ''
-					,eDate: ''
-				}
-				,items: [
 
-				]
-				,is_modal: false
-				,modal_option: {
-					top: true
-					,title: '주문 취소'
-					,content: '해당 주문을 취소하시겠습니까?'
-					,bottom: true
-				}
-				,cancel_item: ''
+import Pagination from "../../components/Pagination";
+import SideB from "../Layout/SideB";
+
+export default {
+	name: 'ManagerAdminList'
+	,
+	components: {SideB, Pagination},
+	props: ['Axios', 'TOKEN', 'codes', 'rules']
+	,data: function (){
+		return {
+			program: {
+				name: '주문 목록'
+				,top: true
+				,title: true
 			}
-		}
+			,options: {
 
-		,computed: {
-			item_list: function(){
-				const self = this
-				return this.items.filter(function(item){
-					item.TOKEN = self.TOKEN
-					item.is_cancel = true
-
-					switch (item.o_status){
-						default: case "1":
-							item.o_status_name = "입금 대기"
-							item.o_status_color = ""
-							break;
-
-						case "2":
-							item.o_status_name = "결제완료"
-							item.o_status_color = "color-green"
-							break
-						case "3":
-							item.o_status_name = "취소 요청"
-							item.o_status_color = "color-orange"
-							item.is_cancel = false
-							break
-						case "4":
-							item.o_status_name = "주문 취소"
-							item.o_status_color = "color-red"
-							item.is_cancel = false
-							break;
-					}
-					item.odt_list.filter(function(odt){
-						odt.odt_price = Number(odt.pdt_price) + Number(odt.op_price)
-						switch (odt.odt_status){
-							default: case 1:
-								odt.odt_status_name = '주문접수'
-								break
-							case 2:
-								odt.odt_status_name = '배송준비중'
-								item.is_cancel = false
-								break
-							case 3:
-								odt.odt_status_name = '배송중'
-								item.is_cancel = false
-								break
-							case 4:
-								odt.odt_status_name = '배송완료'
-								item.is_cancel = false
-								break
-							case 5:
-								odt.odt_status_name = '구매확정'
-								item.is_cancel = false
-								break
-							case 21:
-								odt.odt_status_name = '주문 취소 요청'
-								item.is_cancel = false
-								break
-							case 22:
-								odt.odt_status_name = '주문 취소 완료'
-								item.is_cancel = false
-								break
-							case 31:
-								odt.odt_status_name = '교환 요청'
-								item.is_cancel = false
-								break
-							case 32:
-								odt.odt_status_name = '교환 처리중'
-								item.is_cancel = false
-								break
-							case 33:
-								odt.odt_status_name = '교환 배송중'
-								item.is_cancel = false
-								break
-							case 34:
-								odt.odt_status_name = '교환 완료'
-								item.is_cancel = false
-								break
-							case 41:
-								odt.odt_status_name = '반품 요청'
-								item.is_cancel = false
-								break
-							case 42:
-								odt.odt_status_name = '반품 처리중'
-								item.is_cancel = false
-								break
-							case 43:
-								odt.odt_status_name = '반품 완료'
-								item.is_cancel = false
-								break
-						}
-					})
-					return item
-				})
 			}
-		}
-		,methods: {
-			getData: async function(){
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'order/getOrderList'
-						,data: this.search
-					})
-
-					if(result.success){
-						this.items = result.data.result.result
-						this.$emit('setNotify', { type: 'success', message: result.message })
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
-					}
-				}catch(e){
-					console.log(e)
-				}
+			,search: {
+				ATOKEN: this.TOKEN
 			}
-			,toResult: function(order_number){
-				this.$router.push({ name: 'OrderResult', params: { order_number: order_number }})
-			}
-			,viewCancel: function(item, index){
-				this.is_modal = true
-				item.index = index
-				this.cancel_item = item
+			,items: [
 
-				console.log(item)
+			]
+			,item_new: {
+				admin_level: 0
 			}
-			,toCancel: async  function(){
-
-				console.log(this.cancel_item)
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'order/postOrderCancel'
-						,data: this.cancel_item
-					})
-
-					if(result.success){
-						this.$set(this.items[this.cancel_item.index], 'o_status', result.data.item.o_status)
-						this.is_modal = false
-						this.$emit('setNotify', { type: 'success', message: result.message})
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message})
-					}
-				}catch (e) {
-					console.log(e)
-				}
-			}
-		}
-		,created() {
-			this.$emit('onLoad', this.program)
-			this.getData()
+			,levels: [
+				{ code: 99, name: '최고관리자'}
+				,{ code: 50, name: '총판관리자'}
+				,{ code: 1, name: '일반관리자'}
+			]
+			,status: [
+				{ code: 99, name: '최고관리자'}
+				,{ code: 50, name: '총판관리자'}
+				,{ code: 1, name: '일반관리자'}
+			]
 		}
 	}
+	,computed: {
+		item_list: function (){
+
+			console.log(11)
+			let self = this
+			return this.items.filter(function(item){
+				let o_status = self.codes.o_status[Number(item.o_status)]
+
+				if(o_status) {
+					item.o_status_name = o_status.name
+					item.o_status_color = o_status.color
+				}
+
+				let pay_div = self.codes.pay_div[item.pay_div]
+				item.pay_div_name = pay_div.name
+
+				item.odt_list.filter(function(odt){
+					if(odt.pdt_img1){
+						odt.pdt_img = self.codes.img_url + odt.pdt_img1
+					}else{
+						odt.pdt_img = ''
+					}
+
+					let order_status = self.codes.odt_status[odt.order_status]
+
+					if(order_status){
+						odt.order_status_name = order_status.name
+						odt.order_status_color = order_status.color
+					}
+				})
+
+				return item
+			})
+		}
+
+		,odt_list: function(){
+			let items = {}
+
+			for(const [key ,val] of Object.entries(this.item_new.odt_list)){
+				console.log('key: ' + key)
+
+				if(val.is_not_select){
+					continue
+				}
+				let company = items[val.seller_id]
+
+				if(!company){
+					company = {
+						company: {
+							total_price: 0
+						}
+						,items: {}
+					}
+				}
+
+				items[val.seller_id] = company
+
+				items[val.seller_id]['company']['seller_id'] = val.seller_id
+				items[val.seller_id]['company']['seller_name'] = val.shop_name
+				items[val.seller_id]['company']['total_price'] += ((Number(val.pdt_price) + Number(val.op_price)) * val.op_cnt)
+				items[val.seller_id]['company']['delivery_type'] = val.delivery_type
+				items[val.seller_id]['company']['delivery_price'] = val.delivery_price
+
+				if(val.delivery_type == '무료'){
+					items[val.seller_id]['company']['delivery_price'] = val.delivery_type
+					items[val.seller_id]['company']['delivery'] = ''
+				}else{
+					if(val.free_price > 0){
+						items[val.seller_id]['company']['delivery'] = val.free_price + ' 이상 구매시 무료'
+						if(val.free_price < items[val.seller_id]['company']['total_price']){
+							items[val.seller_id]['company']['delivery_price'] = 0
+						}
+					}
+				}
+
+				let product = items[val.seller_id]['items'][val.pdt_uid]
+
+				if(!product || product === undefined){
+					product = {
+						pdt_uid: val.pdt_uid
+						,pdt_img: val.pdt_img1
+						,pdt_name: val.pdt_name
+						,pdt_price: val.pdt_price
+						,options: {}
+					}
+				}
+
+				items[val.seller_id]['items'][val.pdt_uid] = product
+
+				let option = items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid]
+				if(!option || option === undefined){
+					option = {
+						odt: val.op_name
+						,odt_cnt: val.op_cnt
+						,odt_price: Number(val.pdt_price) + Number(val.op_price)
+					}
+				}
+
+				items[val.seller_id]['items'][val.pdt_uid]['options'][val.uid] = option
+			}
+			console.log(items)
+			return items
+		}
+	}
+	,methods: {
+		getData: async function(){
+
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getOrderList'
+					,data: this.search
+				})
+
+				if(result.success){
+					this.items = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+		,setItem: function (item){
+			if(this.item_new.uid == item.uid){
+				this.item_new = {
+					ATOKEN: this.TOKEN
+				}
+			}else {
+				this.item_new = item
+			}
+		}
+	}
+	,created() {
+		this.$emit('onLoad', this.program)
+		this.getData()
+	}
+	,watch: {
+		items: {
+			deep: true
+			,handler: function(){
+			}
+		}
+	}
+}
 </script>
+
 <style>
-	.pdt-img img { width: 100% }
+	.pdt-img img { width: 100%}
 </style>

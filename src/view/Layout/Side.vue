@@ -1,34 +1,44 @@
 <template>
 	<div
-		v-if="is_side"
 		class="side"
 	>
 		<div
 			class="side-container flex-column"
 		>
-			<div
-				class="flex-row justify-space-between under-line pa-20 bg-base color-white"
-			>
-				<span class="color-white">logo-position</span>
-				<v-icon
-					class="color-white"
-				>mdi mdi-arrow-left-bold-box-outline</v-icon>
-			</div>
-
 			<ul
 				class="side-content overflow-y-auto"
 			>
 				<li
 					v-for="item in items"
-					:key="item.category_code"
-					class="li-side-content justify-space-between"
+					:key="item.path"
+					class="li-side-content "
 					:class="'li-side-depth-' + item.depth"
-
-					@click="toItem(item.category_code)"
 				>
-					<span>{{ item.category_name }}</span>
-					<v-icon
-					>mdi mdi-chevron-right</v-icon>
+					<div
+						class="pa-10 justify-space-between"
+					>
+						<span
+							class="font-weight-bold"
+						>{{ item.name }}</span>
+					</div>
+					<ul>
+						<li
+							v-for="sub in item.sub"
+							:key="item.path + sub.path"
+							class="pa-10 "
+							:class="{'bg-gray-light': $route.name == item.path + sub.path }"
+							@click="toPush(item, sub)"
+						>
+							<div
+								class="justify-space-between"
+							>
+								<span>{{ sub.name }}</span>
+								<v-icon
+									v-if="$route.name != item.path + sub.path"
+								>mdi mdi-chevron-right</v-icon>
+							</div>
+						</li>
+					</ul>
 				</li>
 			</ul>
 		</div>
@@ -42,28 +52,132 @@
 		,data: function(){
 			return {
 				items: [
-
+					{
+						path: 'Manager'
+						,name: '관리자'
+						,sub: [
+							{
+								path: 'AdminList'
+								,name: '관리자 목록'
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'AgencyList'
+								,name: '대리점 목록'
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'SupplyList'
+								,name: '공급사 목록'
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
+						path: 'Member'
+						,name: '회원관리'
+						,sub: [
+							{
+								path: 'List'
+								,name: '회원목록'
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
+						path: 'Product'
+						,name: '상품 관리'
+						,sub: [
+							{
+								path: 'Category'
+								,name: '카테고리'
+							}
+							,{
+								path: 'List'
+								,name: '상품 목록'
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
+						path: 'Order'
+						,name: '주문 관리'
+						,sub: [
+							{
+								path: 'List'
+								,name: '주문 목록'
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
+						path: 'Settlement'
+						,name: '정산 관리'
+						,sub: [
+							{
+								path: 'AgencyList'
+								,name: '대리점 정산'
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'SupplyList'
+								,name: '공급사 정산'
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'DeliveryList'
+								,name: '배송비 정산'
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'MinusList'
+								,name: '정산 차감'
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
 				]
+				,item_new: {
+
+				}
 			}
 		}
 		,computed: {
-			is_side: function(){
-				let use = true
-				let except = ['auth']
-				let path = this.$route.path
+			item_list: function(){
+				return this.items.filter(function(item){
 
-				except.forEach(function (val) {
-					if (path.toLowerCase().indexOf(val) > -1) {
-						use = false
-						return false
-					}
+					return item.sub.filter(function(sub){
+
+						return sub
+					})
 				})
-				return use
 			}
-
 		}
 		,methods: {
+			toPush: function(menu, sub){
 
+				this.$emit('push', menu.path + sub.path )
+			}
 		}
 		,created: function(){
 
@@ -74,7 +188,7 @@
 <style>
 
 	.side {
-		max-width: 300px;
+		width: 180px;
 		height: 100%;
 	}
 	.bg-side {
@@ -84,7 +198,7 @@
 		opacity: 0.5;
 	}
 	.side-container{
-		width: 80%; height: 100%;
+		height: 100%;
 		position: relative;  z-index: 99;
 		background-color: white;
 		overflow-y: auto;
@@ -96,7 +210,6 @@
 	}
 
 	.li-side-content {
-		padding: 20px 10px;
 		border-bottom: 1px solid #ddd;
 	}
 	.li-side-depth-1 {
