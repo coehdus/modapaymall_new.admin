@@ -8,38 +8,42 @@
 			<ul
 				class="side-content overflow-y-auto"
 			>
-				<li
+				<template
 					v-for="item in items"
-					:key="item.path"
-					class="li-side-content "
-					:class="'li-side-depth-' + item.depth"
 				>
-					<div
-						class="pa-10 justify-space-between"
+					<li
+						v-if="item.type.indexOf(member_info.admin_type) > -1"
+						:key="item.path"
+						class="li-side-content "
+						:class="'li-side-depth-' + item.depth"
 					>
-						<span
-							class="font-weight-bold"
-						>{{ item.name }}</span>
-					</div>
-					<ul>
-						<li
-							v-for="sub in item.sub"
-							:key="item.path + sub.path"
-							class="pa-10 "
-							:class="{'bg-gray-light': $route.name == item.path + sub.path }"
-							@click="toPush(item, sub)"
+						<div
+							class="pa-10 justify-space-between"
 						>
-							<div
-								class="justify-space-between"
+							<span
+								class="font-weight-bold"
+							>{{ item.name }}</span>
+						</div>
+						<ul>
+							<li
+								v-for="sub in item.sub"
+								:key="item.path + sub.path"
+								class="pa-10 "
+								:class="{'bg-gray-light': $route.name == item.path + sub.path }"
+								@click="toPush(item, sub)"
 							>
-								<span>{{ sub.name }}</span>
-								<v-icon
-									v-if="$route.name != item.path + sub.path"
-								>mdi mdi-chevron-right</v-icon>
-							</div>
-						</li>
-					</ul>
-				</li>
+								<div
+									class="justify-space-between"
+								>
+									<span>{{ sub.name }}</span>
+									<v-icon
+										v-if="$route.name != item.path + sub.path"
+									>mdi mdi-chevron-right</v-icon>
+								</div>
+							</li>
+						</ul>
+					</li>
+				</template>
 			</ul>
 		</div>
 	</div>
@@ -48,13 +52,14 @@
 <script>
 	export default{
 		name: 'Side'
-		,props: ['Axios']
+		,props: ['Axios', 'member_info']
 		,data: function(){
 			return {
 				items: [
 					{
 						path: 'Manager'
 						,name: '관리자'
+						,type: ['admin']
 						,sub: [
 							{
 								path: 'AdminList'
@@ -82,6 +87,7 @@
 					,{
 						path: 'Member'
 						,name: '회원관리'
+						,type: ['admin', 'agency']
 						,sub: [
 							{
 								path: 'List'
@@ -95,6 +101,7 @@
 					,{
 						path: 'Product'
 						,name: '상품 관리'
+						,type: ['admin', 'agency', 'supply']
 						,sub: [
 							{
 								path: 'Category'
@@ -112,6 +119,7 @@
 					,{
 						path: 'Order'
 						,name: '주문 관리'
+						,type: ['admin', 'agency', 'supply']
 						,sub: [
 							{
 								path: 'List'
@@ -125,6 +133,7 @@
 					,{
 						path: 'Settlement'
 						,name: '정산 관리'
+						,type: ['admin', 'agency', 'supply']
 						,sub: [
 							{
 								path: 'AgencyList'
@@ -165,6 +174,8 @@
 		,computed: {
 			item_list: function(){
 				return this.items.filter(function(item){
+
+					if(item.type.indexOf())
 
 					return item.sub.filter(function(sub){
 

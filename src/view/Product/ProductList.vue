@@ -12,9 +12,10 @@
 					<col width="auto" />
 					<col width="150px" />
 					<col width="150px" />
-					<col width="120px" />
-					<col width="120px" />
-					<col width="120px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -72,6 +73,16 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div
+				class="mt-auto"
+			>
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="options"
+				></Pagination>
+			</div>
 		</div>
 
 		<SideB
@@ -89,10 +100,11 @@
 
 <script>
 import SideB from "../Layout/SideB";
+import Pagination from "@/components/Pagination";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {SideB},
+	components: {Pagination, SideB},
 	props: ['Axios', 'TOKEN']
 	,data: function (){
 		return {
@@ -108,6 +120,9 @@ export default {
 
 			]
 			,item: {
+
+			}
+			,options: {
 
 			}
 		}

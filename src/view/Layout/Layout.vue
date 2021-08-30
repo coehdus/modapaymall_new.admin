@@ -15,6 +15,7 @@
 			<Side
 				v-if="is_side"
 				:Axios="Axios"
+				:member_info="member_info"
 
 				@toggleSide="toggleSide"
 				@push="toLocation"

@@ -12,9 +12,9 @@
 					<col width="150px" />
 					<col width="150px" />
 					<col width="150px" />
+					<col width="150px" />
 					<col width="auto" />
-					<col width="150px" />
-					<col width="150px" />
+					<col width="auto" />
 					<col width="150px" />
 				</colgroup>
 				<thead>
@@ -120,6 +120,7 @@
 
 		<SideB
 			:title="'공급사 정보'"
+			:bg-title="'bg-' + (item_new.uid ? (item_new.admin_status == 1 ? 'green' : 'red') : '')"
 		>
 			<div
 				slot="item"
@@ -203,7 +204,7 @@ export default {
 	name: 'ManagerAgencyList'
 	,
 	components: {Pagination, SideB},
-	props: ['Axios', 'rules', 'ATOKEN']
+	props: ['Axios', 'rules', 'TOKEN']
 	,data: function (){
 		return {
 			program: {
@@ -215,7 +216,7 @@ export default {
 
 			}
 			,search: {
-				ATOKEN: this.ATOKEN
+				ATOKEN: this.TOKEN
 			}
 			,items: [
 
@@ -310,7 +311,7 @@ export default {
 		}
 		,clear_item: function(){
 			this.item_new = {
-				ATOKEN: this.ATOKEN
+				ATOKEN: this.TOKEN
 				,admin_level: 0
 				,admin_type: 'supply'
 			}
