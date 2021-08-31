@@ -8,9 +8,9 @@ const prefix = '/'
 const routes = [
 	
 	{
-		path: '/'
+		path: prefix
 		,name: 'intro'
-		,component: () => import('@/view/Main/Intro.vue')
+		,component: () => import('@/view/Main/Index.vue')
 	}
 	,{
 		path: prefix + 'Index'
@@ -108,7 +108,7 @@ const routes = [
 		,component: () => import('@/view/Account/ShippingList.vue')
 	}
 	,{
-		path: '*',
+		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')
 	}

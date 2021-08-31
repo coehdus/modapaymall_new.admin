@@ -191,7 +191,7 @@
 			}
 		}
 		,created: function(){
-
+			console.log('in side !!')
 		}
 	}
 </script>

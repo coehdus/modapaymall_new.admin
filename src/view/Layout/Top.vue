@@ -12,6 +12,7 @@
 			({{ member_info.admin_id}}) 님 환영합니다
 			<button
 				class="btn-primary prl-10 size-px-12"
+				@click="confirmLogout"
 			>로그아웃</button>
 		</div>
 	</div>
@@ -44,8 +45,16 @@
 				this.$emit('toggleSide')
 			}
 			,toMain: function(){
-				this.$emit('push', 'Index')
+				this.$emit('push', 'Login')
 			}
+			,confirmLogout: function() {
+				if(confirm("로그아웃 하시겠습니까?")){
+					sessionStorage.removeItem('delimallAT')
+					this.toMain()
+				}
+			}
+		}
+		,created() {
 		}
 	}
 </script>

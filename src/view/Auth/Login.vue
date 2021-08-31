@@ -161,7 +161,7 @@ export default{
 			}
 		}
 		,toMain: function(){
-			document.location.href = '/Index'
+			document.location.href = '/ADMIN'
 		}
 	}
 	,created: function(){

@@ -115,6 +115,7 @@
 .ptb-20 { padding: 20px 0 !important;}
 .ptb-30 { padding: 30px 0 !important;}
 
+.prl-5 { padding: 0 5px !important;}
 .prl-10 { padding: 0 10px !important;}
 .prl-20 { padding: 0 20px !important;}
 .prl-30 { padding: 0 30px !important;}
@@ -153,6 +154,7 @@
 .justify-center { display: flex; justify-content: center}
 .justify-space-around { display: flex; justify-content: space-around}
 .justify-space-between { display: flex !important; justify-content: space-between }
+.justify-end { display: flex; justify-content: flex-end}
 
 .flex-column { display: flex; flex-direction: column;}
 .flex-column-wrap { display: flex; flex-direction: column; flex-wrap: wrap;}
