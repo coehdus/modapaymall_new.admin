@@ -22,7 +22,7 @@
 					class="mt-10 pa-10 box-shadow full-height"
 				>
 					<template
-						v-for="sub in item"
+						v-for="(sub, sub_index) in item"
 					>
 					<li
 						v-if="is_view(sub)"
@@ -35,25 +35,25 @@
 						/>
 
 						<span
-							class="flex-1 justify-space-between"
+							class="flex-1 justify-end"
 						>
 							<span
-								class="flex-1"
+								v-if="sub_index"
+								class="flex-1 flex-column justify-center"
 							>
 								<v-icon
-									v-if="false"
 								>mdi mdi-arrow-up-bold-box-outline</v-icon>
 							</span>
 							<span
-								class="flex-1"
+								v-if="sub_index < Object.keys(item).length - 1"
+								class="flex-1 flex-column justify-center"
 							>
 								<v-icon
-									v-if="false"
 								>mdi mdi-arrow-down-bold-box-outline</v-icon>
 							</span>
 							<v-icon
-								class="flex-1 color-red"
-							>mdi mdi-close-box-outline</v-icon>
+								class="flex-1 color-red "
+							>mdi mdi-delete-outline</v-icon>
 							<v-icon
 								@click="setSub(items[sub.index])"
 								class="flex-1"
@@ -76,20 +76,23 @@
 						<span
 							class="flex-1 justify-space-between"
 						>
+
 							<span
-								class="flex-1"
-							> </span>
+								class="flex-1 flex-column justify-center"
+							>
+								<v-icon
+								>mdi mdi-arrow-up-bold-box-outline</v-icon>
+							</span>
 							<span
-								class="flex-1"
-							> </span>
+								class="flex-1 flex-column justify-center"
+							>
+								<v-icon
+								>mdi mdi-arrow-down-bold-box-outline</v-icon>
+							</span>
 							<v-icon
 								class="flex-1 color-red"
-							>mdi mdi-close-box-outline</v-icon>
-							<span
-								class="flex-1"
-							> </span>
+							>mdi mdi-delete-outline</v-icon>
 						</span>
-
 					</li>
 				</ul>
 

@@ -3,604 +3,163 @@
 		class="full-height flex-column"
 	>
 		<div
-			class="bg-title justify-space-between"
+			class="justify-space-between under-line"
 		>
-			<button
-				:title="program.name"
-				@click="toBack"
-			><v-icon class="">mdi-chevron-left</v-icon><span class=" font-weight-bold size-em-12 vertical-middle">{{ program.name }}</span></button>
-
-
-			<span
-				class=" ptb-5 flex-column "
-				@click="toCart"
-			>
-				<v-icon class="mr-10">mdi mdi-cart-outline</v-icon>
-				<span
-					v-if="cart_cnt"
-					class="cart-count"
-				>{{ cart_cnt }}</span>
-			</span>
-		</div>
-		<div
-			class="mt-10 pa-10 full-height flex-column overflow-y-auto"
-		>
-			<div
-				class="pdt-img1"
-			>
-				<div class=" flex-row justify-space-between">
-					<v-icon
-						@click="file_index--"
-					>mdi mdi-chevron-left</v-icon>
-
-					<div
-						class="flex-column justify-center"
-						style="text-align: center; min-width: 120px; min-height: 120px"
-					>
-						<template
-							v-if="files.sub.length > 0"
-						>
-						<template
-							v-for="(file, index) in files.sub"
-						>
-							<div
-								v-show="file_index == index"
-								:key="file.file_name"
-							>
-								<img
-									:src="'http://delimall.co.kr/API/data/product/' + file.file_name" alt="main1"
-								/>
-							</div>
-						</template>
-						</template>
-						<div
-							v-else
-							class="full-height flex-column justify-center input-box"
-						><span>No Image</span></div>
-					</div>
-					<v-icon
-						@click="file_index++"
-					>mdi mdi-chevron-right</v-icon>
-				</div>
-			</div>
-
-			<div
-				class="mt-20 flex-row justify-space-between"
-			>
-				<div
-					class="pdt-price"
-				>{{  item.pdt_price | makeComma }}</div>
-				<div
-					class="pdt-rate"
-				>평점</div>
-			</div>
-
-
-			<div
-				v-if="item.is_sold != 1"
-				class="mt-10 flex-row justify-space-between"
-			>
-				<div
-					class="pdt-price"
-				><span v-if="item.pdt_stock < 10" class="color-red">품절임박</span></div>
-				<div
-					class="pdt-rate"
-				>수량 {{ item.pdt_stock | makeComma }} 개</div>
-			</div>
-
-			<div
-				class="pdt-pdt_options"
-			>
-				<div
-					v-for="(pdt_option, index) in pdt_options"
-					:key="'option_' + index"
-					class="mt-10"
-				>
-					<select
-						v-model="option[index]"
-						class="select"
-					>
-						<option value="">{{ pdt_option.opt_name }}</option>
-						<option
-							v-for="opt in pdt_option.opt_cont.split(',')"
-							:key="'option_' + index + '_' + opt"
-							:value="opt"
-						>{{ opt }}</option>
-					</select>
-				</div>
-			</div>
-
-			<h6 class="mt-30">상세정보</h6>
-			<div
-				class="mt-10 input-box pdt-info"
-				v-html="item.pdt_info.replaceAll('/API/', 'http://delimall.co.kr/API/')"
-			></div>
-
-			<h6 class="mt-30">반품/교환정보</h6>
-			<div
-				class="mt-10 input-box pdt-notice"
-				v-html="item.pdt_notice.replaceAll('/API/', 'http://delimall.co.kr/API/')"
-			></div>
-
+			<span>카테고리</span>
+			<div></div>
 		</div>
 
 		<div
-			class="mt-auto pa-10 shadow-top position-relative"
+			class="justify-space-between under-line"
 		>
-			<div
-				v-if="options.length > 1"
-				class="text-center"
-				style="height: 10px;"
-				@click="is_show_options = !is_show_options"
-			>
-				<v-icon
-					v-if="is_show_options"
-					class=" bg-white"
-					style="border: 1px solid #ddd; margin-top: -50px"
-				>mdi mdi-chevron-double-down</v-icon>
-				<v-icon
-					v-else
-					class=" bg-white"
-					style="border: 1px solid #ddd; margin-top: -50px"
-				>mdi mdi-chevron-double-up</v-icon>
-			</div>
-			<ul
-				v-show="is_show_options"
-			>
-				<li
-					v-for="(odt, index) in odts"
-					:key="'odt_' + index"
-					class="pa-10 under-line-dashed"
-				>
-					<div
-						class=" flex-row justify-space-between"
-					>
-						<span
-							class="flex-1 font-weight-bold color-black span-pdt-cnt"
-						>{{ odt.odt }}</span>
-
-						<span
-							v-if="item.is_sold == 1 || (item.is_sold == 2 && item.pdt_stock < 1)"
-							class=" color-red"
-						>품절</span>
-						<span
-							v-else
-							class="flex-1 flex-row justify-space-between box-pdt-cnt"
-						>
-							<button
-								@click="setCnt(odt, 'down')"
-								class="flex-1 mdi mdi-minus"
-							></button>
-							<input
-								v-model="odt.odt_cnt"
-								type="number"
-								name="pdt_cnt"
-								class="flex-1 bg-gray-light"
-								readonly
-							/>
-							<button
-								@click="setCnt(odt, 'up')"
-								class="flex-1 mdi mdi-plus"
-								:class="{ 'mr-10': pdt_options.length}"
-							></button>
-							<button
-								v-if="pdt_options.length"
-								@click="removeItem(index)"
-								class="flex-1 color-red mdi mdi-close"
-							></button>
-						</span>
-					</div>
-				</li>
-			</ul>
-
-			<div
-				class="pdt-cnt flex-row justify-space-between"
-			>
-				<span
-					class="font-weight-bold color-black"
-				>총 상품가</span>
-				<span
-					class="order-price font-weight-bold color-black"
-				>{{ total_price | makeComma }}</span>
-			</div>
-			<div
-				class="mt-10 flex-row justify-space-between"
-			>
-				<button
-					class="flex-1 btn btn-default mr-10"
-				>바로구매</button>
-				<button
-					class="flex-1 btn btn-primary"
-					@click="setCart"
-				>장바구니</button>
+			<span>상품코드</span>
+			<div>
+				<input
+					v-model="item.pdt_code"
+					placeholder="상품코드"
+					class="input-box"
+					readonly
+				/>
 			</div>
 		</div>
-		<Modal
-			:option="modal_option"
-			:is_modal="is_modal"
+
+		<div
+			class="justify-space-between under-line"
 		>
-			<div
-				slot="modal-content"
-				v-html="modal_option.content"
-			></div>
-			<template slot="modal-bottom">
-				<div
-					class="justify-space-between"
+			<span>상품명</span>
+			<div>
+				<input
+					v-model="item.pdt_name"
+					placeholder="상품명을 입력하세요"
+					class="input-box"
+				/>
+			</div>
+		</div>
+
+		<div
+			class="justify-space-between under-line"
+		>
+			<span>공급사</span>
+			<div>
+
+				<select
+					class="pa-10 mr-10"
+					v-model="item.pdt_company"
 				>
-					<button
-						class="btn btn-identify"
-						@click="toCart"
-					>장바구니로 이동</button>
-					<button
-						class="btn btn-green"
-						@click="toClose"
-					>계속 쇼핑</button>
-				</div>
-			</template>
-		</Modal>
+					<option
+						:value="''"
+					>공급사를 선택하세요</option>
+					<option
+						v-for="supply in supply_list"
+						:key="supply.admin_id"
+						:value="supply.admin_id"
+					>{{ supply.shop_name }}</option>
+				</select>
+			</div>
+		</div>
+
+		<div
+			class="justify-space-between under-line"
+		>
+			<span>공급가</span>
+			<div>
+				<input
+					v-model="item.pdt_purchage"
+					placeholder="공급가를 입력하세요"
+					class="input-box"
+				/>
+			</div>
+		</div>
+		<div>
+			<span>대표 이미지</span>
+			<div>
+				<input
+					type="file"
+				/>
+			</div>
+		</div>
+		<div>
+			<span>상품 이미지</span>
+			<div>
+				<input
+					type="file"
+					multiple
+				/>
+			</div>
+		</div>
+		<div>
+			<span>상품내용</span>
+			<textarea
+				v-model="item.pdt_content"
+			></textarea>
+		</div>
 	</div>
 </template>
 
 <script>
-	import Modal from "@/components/Modal";
+
 	export default {
 		name: 'ProductDetail'
-		,props: ['Axios', 'item', 'cart_cnt']
-		,components: { Modal}
+		,props: ['Axios', 'cart_cnt']
+		,components: { }
 		,data: function(){
 			return {
 				program: {
-					name: this.item.pdt_name
-					,top: false
-					,title: false
+					name: '상품 등록'
+					,top: true
+					,title: true
 					,bottom: false
 				}
-				// 상품옵션
-				,pdt_options: null
-				// 판매자 정보
-				,seller_info: {
-					
+				,item: {
+					pdt_company: ''
 				}
-				//장바구니
-				,cart_items: [
-					
-				]
-				,pdt_cnt: 1
-				,files: {
-					main: []
-					,sub: []
-				}
-
-				,file_index: 0
-				// 현재 옵션
-				,option: []
-				// 선택한 옵션
-				,options: [
+				,category: [
 
 				]
-				,is_show_options: true
-				// 장바구니 이동 컨펌창
-				,is_modal: false
-				,modal_option: {
-					top: true
-					,title: '장바구니'
-					,content: '장바구니에 등록되었습니다. 장바구니로 이동하시겠습니까?'
-					,bottom: true
-				}
+				,supply_list: [
+
+				]
+				,main_img: null
 			}
 		}
 		,computed: {
-			total_price: function(){
-				let price = 0
-				let pdt_price = this.item.pdt_price
-				this.options.forEach(function(item){
-					price += Number(item.odt_cnt) * (Number(pdt_price) + Number(item.odt_price))
-				})
-				return price
-			}
-			,odts: function(){
-				return this.options.filter(function(item){
-					console.log(item)
-					return item.odt.replaceAll(',', '/')
-				})
-			}
+
 		}
 		,methods: {
 			getData: async function(){
+
+			}
+			,getCategory: async function(){
+
+			}
+
+			,getSupplyList: async  function(){
 				try{
 					const result = await this.Axios({
 						method: 'post'
-						, url: 'product/product_info'
-						, data: {
-							pdt_uid: this.item.uid
+						,url: 'management/getSupplyList'
+						,data: {
+							ATOKEN: this.TOKEN
 						}
 					})
 
-					if (result.success) {
-						this.$set(this, 'pdt_options', result.data.pdt_options)
-
-						this.resetOption(this.pdt_options)
-						this.files = result.data.pdt_files
-						this.seller_info = result.data.seller_info
-					} else {
-						this.$emit('setNotify', {type: 'error', message: result.message})
-					}
-				}catch(E){
-					console.log(E)
-				}
-			}
-			,setCart: async function(){
-				if(this.options.length <= 0){
-					this.$emit('setNotify', { type: 'error', message: '옵션을 선택하세요'})
-					return false
-				}
-				let item = this.item
-				item.options = JSON.stringify(this.options)
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'order/postCart'
-						,data: item
-					})
-
 					if(result.success){
-
-						this.$emit('getCartList')
-						this.resetOption(this.option)
-
-						this.is_modal = true
+						this.supply_list = result.data.result
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
-					this.$emit('setNotify', { type: 'error', message: 'DB 오류'})
 				}
-			}
-			,setCart2: function(){
-
-				let cart_items = localStorage.getItem("cart_items")
-				if(!cart_items || cart_items === "false"){
-					cart_items = []
-				}else{
-					cart_items = JSON.parse(cart_items)
-				}
-
-				let append_type = 'append'
-				let msg = "장바구니에 등록되었습니다."
-
-				if(!this.options.length){
-					alert('옵션을 선택하세요');
-				}else{
-					let company_items = {
-						pdt_company: this.item.pdt_company
-						,company: {
-							company_name: this.seller_info.shop_name
-							,delivery_price: this.seller_info.delivery_price
-							,delivery_type: this.seller_info.delivery_type
-							,free_price: this.seller_info.free_price
-							,island_price: this.seller_info.island_price
-							,total_price: 0
-						}
-						,items: []
-					}
-
-					// 장바구니 조회
-					for(let i = 0; i < cart_items.length; i++){
-						let company = cart_items[i]
-						// 동일 판매자가 있다면 상품 조회
-						if(company.pdt_company == this.item.pdt_company) {
-							console.log('동일 판매자가 있다면 상품 조회 ')
-							let items = company.items
-							// 동일 판매자의 상품 조회
-							for(let j = 0; j < items.length; j++){
-								// 동일 상품이 있다면 옵션 조회
-								if(items[j].pdt_uid == this.item.uid){
-									console.log('동일 상품이 있다면 옵션 조회 ')
-									let options = items[j].pdt_option
-
-									if(!options.length){
-										console.log('옵션이 없다면 추가 ')
-										options = this.options
-										break
-									}
-									// 동일 상품의 옵션 조회
-									for(let k = 0; k < this.options.length; k++){
-
-										// 동일 옵션 조회
-										for(let l = 0; l < options.length; l++){
-											let option = options[l]
-											// 동일 옵션이 있을 경우 수량 증가
-											console.log(this.options[k].odt + ' : ' + option.odt)
-											if(this.options[k].odt == option.odt){
-												console.log('동일 옵션이 있을 경우 수량 증가')
-												option.odt_cnt += this.options[k].odt_cnt
-												console.log(option.odt_cnt)
-												this.options[k].is_cart = true
-												break
-											}
-										}
-										// 장바구니에 있으면
-										if(this.options[k].is_cart){
-											append_type = 'add'
-											console.log('장바구니에 있으면 다음 옵션')
-											continue
-										// 장바구니에 없으면
-										}else{
-											console.log('장바구니에 없으면 추가')
-											options.push(this.options[k])
-										}
-									}
-								// 동일 상품이 없다면
-								}else{
-									console.log('동일 상품이 없다면 상품 추가')
-									// 상품 추가 - 옵션 포함
-									items.push({
-										pdt_uid: this.item.uid
-										,pdt_name: this.item.pdt_name
-										,pdt_img: this.item.pdt_img1
-										,pdt_price: this.item.pdt_price
-										,pdt_option: this.options
-									})
-
-									break
-								}
-							}
-						// 동일 판매자가 없다면
-						}else{
-							console.log('동일 판매자가 없다면 상품 추가 ')
-							// 상품 추가 - 옵션 포함
-							company_items.items.push({
-								pdt_uid: this.item.uid
-								,pdt_name: this.item.pdt_name
-								,pdt_img: this.item.pdt_img1
-								,pdt_price: this.item.pdt_price
-								,pdt_option: this.options
-							})
-
-							// 판매자 추가
-							cart_items.push(company_items)
-
-							break;
-						}
-					}
-					if(!cart_items.length){
-						console.log('빈 장바구니 추가 ')
-						company_items.items.push({
-							pdt_uid: this.item.uid
-							,pdt_name: this.item.pdt_name
-							,pdt_img: this.item.pdt_img1
-							,pdt_price: this.item.pdt_price
-							,pdt_option: this.options
-						})
-						cart_items.push(company_items)
-					}
-
-					localStorage.setItem("cart_items", JSON.stringify(cart_items))
-					if(append_type == 'add'){
-						msg = '장바구니에 추가 되었습니다'
-					}
-					alert(msg);
-				}
-			}
-			,setCnt: function(odt, type){
-				let cnt = odt.odt_cnt
-				if(cnt == ''){
-					cnt = 1
-				}
-				if(type == 'up') {
-					if (cnt >= odt.pdt_stock){
-						cnt = odt.pdt_stock
-						this.$emit('setNotify', { type: 'error', message: '재고가 부족합니다'})
-					}else if(cnt >= 99){
-						cnt = 99
-					}else{
-						cnt = Number(cnt) + 1
-					}
-				}else{
-					if(cnt <= 1){
-						cnt = 1
-					}else{
-						cnt = Number(cnt) - 1
-					}
-				}
-				odt.odt_cnt = cnt
-			}
-			,toBack: function(){
-				this.$emit('click')
-			}
-			,toggleOption: function(option){
-				this.$set(option, 'is_view', !option.is_view)
-			}
-			,setOption: function(option, opt){
-				console.log(option)
-				this.$set(option, 'opt', opt)
-				this.toggleOption(option)
-			}
-			,resetOption: function(call){
-				if(call.length > 0) {
-					for (let i = 0; i < call.length; i++) {
-						this.$set(this.option, i, '')
-					}
-				}else{
-					this.$set(this.options, 0, {
-						odt: this.item.pdt_name
-						,odt_cnt: 1
-						,odt_price: 0
-						,pdt_stock: this.item.pdt_stock
-					})
-				}
-			}
-			,removeItem: function(index){
-				if(confirm('해당 옵션을 삭제하시겠습니까?')){
-					this.$delete(this.options, index)
-				}
-			}
-			,toCart: function(){
-				this.$emit('push', 'Cart')
-			}
-			,toClose: function(){
-				this.is_modal = false
 			}
 		}
 		,created() {
 			this.$emit('onLoad', this.program)
 			this.getData()
+			this.getSupplyList()
 		}
 		,watch:{
-			/*
-			pdt_options: {
-				deep: true
-				,handler: function (call){
-					this.resetOption(call)
-				}
-			}
 
-			,*/ option: {
-				deep: true
-				,handler: function (call){
-					let full = true
-					call.forEach(function(item){
-						if(!item){
-							full = false
-							return false
-						}
-					})
-
-					if(full){
-						let val = {
-							odt: call.toString()
-							,odt_price: 0
-							,odt_cnt: 1
-						}
-
-						let result = this.options.filter(function(item){
-							if(item.odt == val.odt){
-								return item.odt_cnt++
-							}
-						})
-
-						if(result.length){
-							result.odt_cnt++
-						}else{
-							this.options.push(val)
-						}
-
-						this.resetOption(this.option)
-					}
-				}
-			}
-			,file_index: {
-				handler: function(call){
-					if(this.files.sub.length > 0) {
-						if (call < 0) {
-							this.file_index = this.files.sub.length - 1
-						} else if (call >= this.files.sub.length) {
-							this.file_index = 0
-						}
-					}
-				}
-			}
 		}
 	}
 

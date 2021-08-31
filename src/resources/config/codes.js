@@ -35,5 +35,8 @@ export const codes = {
 		,step42: { code: 42, name: '반품 처리중', color: 'red'}
 		,step43: { code: 43, name: '반품 완료', color: 'red'}
 	}
+	,is_sold: [
+		"무한", "품절", "재고"
+	]
 
 }

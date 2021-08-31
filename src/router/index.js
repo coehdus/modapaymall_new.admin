@@ -68,6 +68,11 @@ const routes = [
 		,component: () => import('@/view/Product/ProductList.vue')
 	}
 	,{
+		path: prefix + 'Product/Detail/:pdt_code?'
+		,name: 'ProductDetail'
+		,component: () => import('@/view/Product/ProductDetail.vue')
+	}
+	,{
 		path: prefix + 'Product/Category'
 		,name: 'ProductCategory'
 		,component: () => import('@/view/Product/ProductCategory.vue')

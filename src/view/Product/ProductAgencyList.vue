@@ -1,0 +1,271 @@
+<template>
+	<div
+		class="full-height justify-space-between"
+	>
+		<div
+			class="full-height full-width"
+		>
+			<table>
+				<colgroup>
+					<col width="80px" />
+					<col width="150px" />
+					<col width="auto" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="200px" />
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+				</colgroup>
+				<thead>
+				<tr>
+					<th>
+						<input
+							type="checkbox"
+						/>
+					</th>
+					<th
+						colspan="2"
+					>상품명</th>
+					<th>공급가</th>
+					<th>공급 배송비</th>
+					<th>재고</th>
+					<th>판매여부</th>
+					<th>등록일</th>
+					<th>상세정보</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr
+					v-for="item in item_list"
+					:key="item.uid"
+				>
+					<td>
+						<input
+							type="checkbox"
+						/>
+					</td>
+					<td
+						class="pdt-img"
+					>
+						<img
+							v-if="item.img"
+							:src="item.img"
+						/>
+						<v-icon
+							v-else
+						>mdi mdi-image</v-icon>
+					</td>
+					<td
+						class="text-left"
+					>{{ item.pdt_name }}</td>
+					<td>{{ item.pdt_price | makeComma }}</td>
+					<td>{{ item.pdt_delivery | makeComma }}</td>
+
+					<td
+						class="full-height"
+					>
+						<div
+							v-if="member_info.admin_type == 'supply'"
+							class=" flex-row justify-space-between"
+						>
+							<button
+								class=" flex-1"
+								:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
+								@click="items[item.index].is_sold = 1; update(item)"
+							>무한</button>
+							<button
+								class=" flex-1 "
+								:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
+								@click="items[item.index].is_sold = 2; update(item)"
+							>품절</button>
+							<button
+								class="  flex-1"
+								:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
+								@click="items[item.index].is_sold = 3; update(item)"
+							>재고</button>
+							<input
+								v-model="items[item.index].pdt_stock"
+								class=" flex-1 ptb-5"
+								style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
+								@change="items[item.index].is_sold = 3; update(item)"
+							/>
+						</div>
+						<div
+							v-else
+						>
+							{{ item.is_sold_name }}
+						</div>
+					</td>
+
+					<td
+						class="full-height"
+					>
+						<div
+							class=" flex-row justify-center"
+						>
+							<v-icon
+								class="pa-5 "
+								:class="item.shop_status == 1 ? 'bg-green color-white' : 'btn-default' "
+								@click="item.shop_status = 1; update(item)"
+							>mdi mdi-cart</v-icon>
+							<v-icon
+								class="pa-5  "
+								:class="item.shop_status != 1 ? 'bg-red color-white' : 'btn-default' "
+								@click="item.shop_status = 0; update(item)"
+							>mdi mdi-cart-off</v-icon>
+						</div>
+					</td>
+					<td>{{ item.wDate.substring(0, 10) }}</td>
+					<td
+						@click="setItem(item)"
+					>
+						<v-icon
+						>mdi mdi-arrow-right-bold-box-outline</v-icon>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+
+			<div
+				class="mt-auto"
+			>
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="options"
+				></Pagination>
+			</div>
+		</div>
+
+		<SideB
+			v-if="item.uid"
+			:title="'상품 상세 정보'"
+		>
+			<div
+				slot="item"
+			>
+
+			</div>
+		</SideB>
+	</div>
+</template>
+
+<script>
+import SideB from "../Layout/SideB";
+import Pagination from "@/components/Pagination";
+export default {
+	name: 'ManagerAdminList'
+	,
+	components: {Pagination, SideB},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes']
+	,data: function (){
+		return {
+			program: {
+				name: '상품 목록'
+				,top: true
+				,title: true
+			}
+			,search: {
+				ATOKEN: this.TOKEN
+			}
+			,items: [
+
+			]
+			,item: {
+
+			}
+			,options: {
+
+			}
+		}
+	}
+	,computed: {
+		item_list: function (){
+			const self = this
+			let index = 0
+			return this.items.filter(function(item){
+				item.ATOKEN = self.TOKEN
+				if(item.pdt_img1){
+					item.img = self.$language.img_url + item.pdt_img1
+				}else{
+					item.img = ''
+				}
+
+				if(item.is_use == 'y'){
+					item.is_use_name = '판매가능'
+				}else{
+					item.is_use_name = '판매불가'
+				}
+
+				item.is_sold_name = self.codes.is_sold[item.is_sold]
+
+				if(item.is_sold == 2){
+					item.is_sold_name = item.pdt_stock
+				}
+
+				item.index = index
+				index++
+				return item
+			})
+		}
+	}
+	,methods: {
+		getData: async function(){
+
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getProductList'
+					,data: this.search
+				})
+
+				if(result.success){
+					this.items = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+		,update: async function(item){
+
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postProductUpdate'
+					,data: item
+				})
+
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+			}finally {
+				await this.getData()
+			}
+		}
+		,setItem: function (item){
+			if(this.item.uid == item.uid){
+				this.item = {
+
+				}
+			}else {
+				this.item = item
+			}
+		}
+	}
+	,created() {
+		this.$emit('onLoad', this.program)
+		this.getData()
+	}
+}
+</script>
+
+<style>
+</style>
