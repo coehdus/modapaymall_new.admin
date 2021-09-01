@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column"
+		class="full-height flex-column bg-gray-light"
 	>
 		<Top
 			v-if="program.top"

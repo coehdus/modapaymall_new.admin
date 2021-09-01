@@ -15,8 +15,8 @@ export const codes = {
 		{ code: 0, name: '', color: ''}
 		,{ code: 1, name: '입금대기', color: 'gray'}
 		,{ code: 2, name: '결제완료', color: 'green'}
-		,{ code: 3, name: '취소요청', color: 'orange'}
-		,{ code: 4, name: '주문취소', color: 'red'}
+		,{ code: 3, name: '결제취소요청', color: 'orange'}
+		,{ code: 4, name: '결제취소', color: 'red'}
 	]
 	,odt_status: {
 
@@ -37,6 +37,23 @@ export const codes = {
 	}
 	,is_sold: [
 		"무한", "품절", "재고"
+	]
+	,parcel: [
+		{ name: 'CJ대한통운', val: 'https://www.doortodoor.co.kr/parcel/doortodoor.do?fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT&invc_no='}
+		, { name: '우체국택배', val: 'https://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm?sid1='}
+		, { name: '한진택배', val: 'http://www.hanjin.co.kr/Delivery_html/inquiry/result_waybill.jsp?wbl_num='}
+		, { name: '롯데택배', val: 'http://www.hlc.co.kr/hydex/jsp/tracking/trackingViewCus.jsp?InvNo='}
+		, { name: '로젠택배', val: 'http://d2d.ilogen.com/d2d/delivery/invoice_tracesearch_quick.jsp?slipno='}
+		, { name: '드림택배', val: 'http://www.kglogis.co.kr/delivery/delivery_result.jsp?item_no='}
+		, { name: 'CVsnet 편의점택배', val: 'http://www.cvsnet.co.kr/postbox/m_delivery/local/local.jsp?invoice_no='}
+		, { name: 'KGB택배', val: 'http://www.kgbls.co.kr//sub5/trace.asp?f_slipno='}
+		, { name: '경동택배', val: 'http://kdexp.com/sub3_shipping.asp?stype=1&yy=&mm=&p_item='}
+		, { name: '대신택배', val: 'http://home.daesinlogistics.co.kr/daesin/jsp/d_freight_chase/d_general_process2.jsp?billno1='}
+		, { name: '일양로지스', val: 'http://www.ilyanglogis.com/functionality/tracking_result.asp?hawb_no='}
+		, { name: '합동택배', val: 'http://www.hdexp.co.kr/parcel/order_result_t.asp?stype=1&p_item='}
+		, { name: 'GTX로지스', val: 'http://www.gtxlogis.co.kr/tracking/default.asp?awblno='}
+		, { name: '건영택배', val: 'http://www.kunyoung.com/goods/goods_01.php?mulno='}
+		, { name: '천일택배', val: 'http://www.chunil.co.kr/HTrace/HTrace.jsp?transNo='}
 	]
 
 }

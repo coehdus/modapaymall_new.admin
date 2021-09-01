@@ -266,7 +266,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {SideB, Pagination},
-	props: ['Axios', 'TOKEN', 'codes', 'rules']
+	props: ['Axios', 'TOKEN', 'codes', 'rules', 'member_info']
 	,data: function (){
 		return {
 			program: {
@@ -432,6 +432,9 @@ export default {
 		}
 	}
 	,created() {
+		if(this.member_info.admin_type == 'supply'){
+			this.$router.push({ name: 'OrderListSupply'})
+		}
 		this.$emit('onLoad', this.program)
 		this.getData()
 	}

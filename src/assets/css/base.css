@@ -154,6 +154,7 @@
 .justify-center { display: flex; justify-content: center}
 .justify-space-around { display: flex; justify-content: space-around}
 .justify-space-between { display: flex !important; justify-content: space-between }
+.justify-start { display: flex; justify-content: flex-start}
 .justify-end { display: flex; justify-content: flex-end}
 
 .flex-column { display: flex; flex-direction: column;}
@@ -184,7 +185,7 @@
 
 .bg-default { background-color: #eee}
 .bg-gray { background-color: gray; color: white}
-.bg-gray-light { background-color: lightgray;}
+.bg-gray-light { background-color: #eee;}
 .bg-gray-dark { background-color: darkgray}
 .bg-dark { background-color: #828282}
 .bg-white { background-color: white}
@@ -195,6 +196,11 @@
 .bg-eee { background-color: #eee !important}
 .bg-select { background-color: #fff6ee}
 .bg-blue { background-color: #0D47A1}
+.bg-light-gray { background-color: darkgray;}
+.bg-light-green { background-color: #81C784;}
+.bg-light-blue { background-color: #eee;}
+.bg-light-red { background-color: #EF9A9A;}
+
 
 /* input */
 .select-list-type { border: 1px solid #ddd; width: 100%; padding: 13px; color: black; height: auto;}
@@ -216,6 +222,13 @@ input:read-only { background-color: #eee; color: #bbb;}
 .input-box-inline { display: inline-block; padding: 10px; border: 1px solid #ddd; vertical-align: middle}
 
 .login-checkbox { width: 20px !important; vertical-align: middle; margin-right: 0px;}
+
+
+.inline input,
+.inline select {
+    width: auto;
+    disiplay: inline !important;
+}
 
 /* button */
 .btn { display: inline-block; width: 100%; text-align: center; padding: 10px; font-size: 14px; color: white;}

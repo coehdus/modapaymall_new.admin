@@ -98,6 +98,11 @@ const routes = [
 		,component: () => import('@/view/Order/OrderList.vue')
 	}
 	,{
+		path: prefix + 'Order/ListSupply'
+		,name: 'OrderListSupply'
+		,component: () => import('@/view/Order/OrderListSupply.vue')
+	}
+	,{
 		path: prefix + 'Account/MyPage'
 		,name: 'MyPage'
 		,component: () => import('@/view/Account/MyPage.vue')
