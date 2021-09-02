@@ -131,7 +131,7 @@
 							</div>
 							<div class="flex-1 flex-column">
 								<span>상품명: {{ odt.pdt_name }}</span>
-								<span>선택 옵션: {{ odt.op_name }}</span>
+								<span class="color-gray">선택 옵션: {{ odt.op_name }}</span>
 							</div>
 							<div class="flex-1">공급가: {{ odt.pdt_purchase | makeComma }}</div>
 							<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>

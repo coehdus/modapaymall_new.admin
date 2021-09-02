@@ -1,9 +1,9 @@
 <template>
 	<div
-		class="full-height justify-space-between"
+		class="full-height justify-space-between bg-white"
 	>
 		<div
-			class="full-height full-width flex-column"
+			class="full-height full-width flex-column "
 		>
 			<table>
 				<colgroup>

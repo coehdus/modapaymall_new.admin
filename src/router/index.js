@@ -63,9 +63,19 @@ const routes = [
 		,component: () => import('@/view/Manager/ManagerSupplyList.vue')
 	}
 	,{
-		path: prefix + 'Product/List/:category?'
+		path: prefix + 'Product/List/'
 		,name: 'ProductList'
 		,component: () => import('@/view/Product/ProductList.vue')
+	}
+	,{
+		path: prefix + 'Product/ListAgency/'
+		,name: 'ProductListAgency'
+		,component: () => import('@/view/Product/ProductListAgency.vue')
+	}
+	,{
+		path: prefix + 'Product/ListSupply/'
+		,name: 'ProductListSupply'
+		,component: () => import('@/view/Product/ProductListSupply.vue')
 	}
 	,{
 		path: prefix + 'Product/Detail/:pdt_code?'

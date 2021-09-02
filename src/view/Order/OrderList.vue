@@ -119,9 +119,12 @@
 							class="under-line-not-last"
 						>
 							<div class="pa-10 justify-space-between under-line-dashed bg-eee">
-								{{ supply.seller_id }}
-								{{ supply.total_price | makeComma }}
-								{{ supply.delivery_price | makeComma }}
+								<span class="flex-1">{{ supply.seller_id }}</span>
+								<span class="flex-1"></span>
+								<span class="flex-1 text-center">공급가: {{ supply.total_price | makeComma }}</span>
+								<span class="flex-1 text-center">배송비: {{ supply.delivery_price | makeComma }}</span>
+								<span class="flex-1 text-center">합계금액: {{ supply.delivery_price | makeComma }}</span>
+								<span class="flex-1"></span>
 							</div>
 							<ul>
 								<li
@@ -144,7 +147,7 @@
 									</div>
 									<div class="flex-1 flex-column">
 										<span>상품명: {{ odt.pdt_name }}</span>
-										<span>선택 옵션: {{ odt.op_name }}</span>
+										<span class="color-gray">선택 옵션: {{ odt.op_name }}</span>
 									</div>
 									<div class="flex-1">판매가: {{ odt.op_price | makeComma }}</div>
 									<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>

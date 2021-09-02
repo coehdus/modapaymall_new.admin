@@ -5,10 +5,10 @@
 		<div
 			class="full-height full-width"
 		>
-			<div class=" ptb-10 text-right">
+			<div class=" ptb-10 text-right bg-white">
 
 				<select
-					class="pa-10 mr-10"
+					class="pa-5 mr-10"
 					v-if="!is_supply"
 					v-model="search.pdt_company"
 					@change="getData"
@@ -24,7 +24,7 @@
 				</select>
 
 				<select
-					class="pa-10 mr-10"
+					class="pa-5 mr-10"
 					v-model="search.search_type"
 				>
 					<option
@@ -37,23 +37,23 @@
 
 				<input
 					v-model="search.search_value"
-					class="input-box-inline"
+					class="pa-5 box vertical-middle mr-10 "
 					placeholder="검색어를 입력하세요"
 				/>
 
 				<button
-					class="btn-blue pa-10 vertical-middle "
+					class="btn-blue pa-5 prl-10 vertical-middle mr-10"
 					@click="getData"
 				>검색</button>
 
 				<button
 					v-if="!is_agency && !is_supply"
-					class="btn-green pa-10 vertical-middle ml-10"
+					class="btn-green pa-5 prl-10 vertical-middle mr-10"
 					@click="$emit('push', 'ProductDetail')"
 				>상품 등록</button>
 
 			</div>
-			<table>
+			<table class="mt-10 bg-white">
 				<colgroup>
 					<col width="80px" />
 					<col width="150px" />
@@ -398,6 +398,11 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
+		if(this.member_info.admin_type == 'agency'){
+			this.$emit('push', 'ProductListAgency')
+		}else if(this.member_info.admin_type == 'supply'){
+			this.$emit('push', 'ProductListSupply')
+		}
 		this.getData()
 		this.getSupplyList()
 	}

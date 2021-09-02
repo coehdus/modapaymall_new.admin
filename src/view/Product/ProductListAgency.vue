@@ -5,7 +5,55 @@
 		<div
 			class="full-height full-width"
 		>
-			<table>
+			<div class=" ptb-10 text-right bg-white">
+
+				<select
+					class="pa-5 mr-10"
+					v-if="!is_supply"
+					v-model="search.pdt_company"
+					@change="getData"
+				>
+					<option
+						:value="''"
+					>공급사</option>
+					<option
+						v-for="supply in supply_list"
+						:key="supply.admin_id"
+						:value="supply.admin_id"
+					>{{ supply.shop_name }}</option>
+				</select>
+
+				<select
+					class="pa-5 mr-10"
+					v-model="search.search_type"
+				>
+					<option
+						:value="''"
+					>검색조건</option>
+					<option
+						:value="'pdt_name'"
+					>상품명</option>
+				</select>
+
+				<input
+					v-model="search.search_value"
+					class="pa-5 box vertical-middle mr-10 "
+					placeholder="검색어를 입력하세요"
+				/>
+
+				<button
+					class="btn-blue pa-5 prl-10 vertical-middle mr-10"
+					@click="getData"
+				>검색</button>
+
+				<button
+					v-if="!is_agency && !is_supply"
+					class="btn-green pa-5 prl-10 vertical-middle mr-10"
+					@click="$emit('push', 'ProductDetail')"
+				>상품 등록</button>
+
+			</div>
+			<table class="mt-10 bg-white">
 				<colgroup>
 					<col width="80px" />
 					<col width="150px" />
@@ -31,6 +79,9 @@
 					<th>공급 배송비</th>
 					<th>재고</th>
 					<th>판매여부</th>
+					<th
+						v-if="!is_supply"
+					>사용여부</th>
 					<th>등록일</th>
 					<th>상세정보</th>
 				</tr>
@@ -58,15 +109,14 @@
 					</td>
 					<td
 						class="text-left"
-					>{{ item.pdt_name }}</td>
+					>[{{ item.shop_name}}] <br/> {{ item.pdt_name }}</td>
 					<td>{{ item.pdt_price | makeComma }}</td>
-					<td>{{ item.pdt_delivery | makeComma }}</td>
-
+					<td>{{ item.shop_delivery_price | makeComma }}</td>
 					<td
 						class="full-height"
 					>
 						<div
-							v-if="member_info.admin_type == 'supply'"
+							v-if="is_supply"
 							class=" flex-row justify-space-between"
 						>
 							<button
@@ -97,23 +147,73 @@
 							{{ item.is_sold_name }}
 						</div>
 					</td>
-
 					<td
 						class="full-height"
 					>
 						<div
+							v-if="is_supply"
 							class=" flex-row justify-center"
 						>
 							<v-icon
 								class="pa-5 "
-								:class="item.shop_status == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="item.shop_status = 1; update(item)"
+								:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+								@click="item.is_use = 1; update(item)"
 							>mdi mdi-cart</v-icon>
 							<v-icon
 								class="pa-5  "
-								:class="item.shop_status != 1 ? 'bg-red color-white' : 'btn-default' "
-								@click="item.shop_status = 0; update(item)"
+								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+								@click="item.is_use = 0; update(item)"
 							>mdi mdi-cart-off</v-icon>
+						</div>
+						<div
+							v-else
+						>
+							<v-icon
+								v-if="item.is_use == 1"
+								class="pa-5 "
+								:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+
+							>mdi mdi-cart</v-icon>
+							<v-icon
+								v-else
+								class="pa-5  "
+								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+							>mdi mdi-cart-off</v-icon>
+						</div>
+					</td>
+					<td
+						v-if="!is_supply"
+						class="full-height"
+					>
+						<div
+							v-if="is_agency"
+							class=" flex-row justify-center"
+						>
+							<v-icon
+								class="pa-5 "
+								:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
+								@click="item.is_use = 1; update(item)"
+							>mdi mdi-power-plug</v-icon>
+							<v-icon
+								class="pa-5  "
+								:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
+								@click="item.is_use = 0; update(item)"
+							>mdi mdi-power-plug-off</v-icon>
+						</div>
+						<div
+							v-else
+							class=" flex-row justify-center"
+						>
+							<v-icon
+								class="pa-5 "
+								:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+								@click="item.is_use = 1; update(item)"
+							>mdi mdi-power-plug</v-icon>
+							<v-icon
+								class="pa-5  "
+								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+								@click="item.is_use = 0; update(item)"
+							>mdi mdi-power-plug-off</v-icon>
 						</div>
 					</td>
 					<td>{{ item.wDate.substring(0, 10) }}</td>
@@ -168,6 +268,8 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
+				,pdt_company: ''
+				,search_type: 'pdt_name'
 			}
 			,items: [
 
@@ -178,6 +280,7 @@ export default {
 			,options: {
 
 			}
+			,supply_list: []
 		}
 	}
 	,computed: {
@@ -208,6 +311,20 @@ export default {
 				index++
 				return item
 			})
+		}
+		,is_supply: function(){
+			if(this.member_info.admin_type == 'supply'){
+				return true
+			}else{
+				return false
+			}
+		}
+		,is_agency: function(){
+			if(this.member_info.admin_type == 'agency'){
+				return true
+			}else{
+				return false
+			}
 		}
 	}
 	,methods: {
@@ -259,10 +376,33 @@ export default {
 				this.item = item
 			}
 		}
+		,getSupplyList: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getSupplyList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.supply_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
+		if(this.member_info.admin_type == 'agency'){
+			this.$emit('push', 'ProductListAgency')
+		}
 		this.getData()
+		this.getSupplyList()
 	}
 }
 </script>
