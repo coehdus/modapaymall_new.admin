@@ -98,9 +98,14 @@ const routes = [
 		,component: () => import('@/view/Order/OrderList.vue')
 	}
 	,{
-		path: prefix + 'Order/ListSupply'
+		path: prefix + 'Order/ListSupply:page?'
 		,name: 'OrderListSupply'
 		,component: () => import('@/view/Order/OrderListSupply.vue')
+	}
+	,{
+		path: prefix + 'Order/ListAgency/:page?'
+		,name: 'OrderListAgency'
+		,component: () => import('@/view/Order/OrderListAgency.vue')
 	}
 	,{
 		path: prefix + 'Account/MyPage'

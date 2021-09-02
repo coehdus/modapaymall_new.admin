@@ -434,6 +434,8 @@ export default {
 	,created() {
 		if(this.member_info.admin_type == 'supply'){
 			this.$router.push({ name: 'OrderListSupply'})
+		}else if(this.member_info.admin_type == 'agency') {
+			this.$router.push({name: 'OrderListAgency'})
 		}
 		this.$emit('onLoad', this.program)
 		this.getData()

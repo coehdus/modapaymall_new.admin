@@ -90,8 +90,10 @@
 							<span class="color-white"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="pa-10 flex-1 color-white text-center">총 상품가: {{ item.total_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-center">배송비: {{ item.delivery_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-white text-center">{{ item.pay_info }}</span>
+						<span class="pa-10 flex-1 color-white text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-white text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-white text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
 						<span class="pa-10 flex-1 color-white text-right">{{ item.wDate }}</span>
 					</div>
 					<div class="justify-space-between under-line ">
@@ -112,72 +114,64 @@
 					</div>
 					<ul>
 						<li
-							v-for="odt in item.odt_list"
-							:key="'odt_' + odt.uid"
-							class="pa-10 flex-row under-line-dashed"
+							v-for="supply in item.supply_list"
+							:key="'item_' + item.uid + 'supply_' + supply.uid"
+							class="under-line-not-last"
 						>
-							<div
-								class="pdt-img flex-1"
-								style="max-height: 40px; overflow: hidden;"
-							>
-								<img
-									v-if="odt.pdt_img"
-									:src="odt.pdt_img"
-									style="max-width: 120px;"
-									/>
-								<v-icon
-									v-else
-								>mdi mdi-image</v-icon>
+							<div class="pa-10 justify-space-between under-line-dashed bg-eee">
+								{{ supply.seller_id }}
+								{{ supply.total_price | makeComma }}
+								{{ supply.delivery_price | makeComma }}
 							</div>
-							<div class="flex-1 flex-column">
-								<span>상품명: {{ odt.pdt_name }}</span>
-								<span>선택 옵션: {{ odt.op_name }}</span>
-							</div>
-							<div class="flex-1">공급가: {{ odt.pdt_purchase | makeComma }}</div>
-							<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
-							<div>
-								<template
-									v-for="(step, key) in codes.odt_status"
+							<ul>
+								<li
+									v-for="odt in supply.odt_list"
+									:key="'item_' + item.uid + 'supply_' + supply.uid + 'odt_' + odt.uid"
+									class="pa-10 flex-row under-line-dashed"
 								>
-									<button
-										v-if=" odt.step_group == key.slice(-2, -1)"
-										:key="key + '_' + item.uid"
-										class="pa-5 mr-5"
-										:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
-										:disabled="odt.not_confirm"
-										@click="setOdtStatus(odt, key)"
-									>{{ step.name }}</button>
-								</template>
-							</div>
+									<div
+										class="pdt-img flex-1"
+										style="max-height: 40px; overflow: hidden;"
+									>
+										<img
+											v-if="odt.pdt_img"
+											:src="odt.pdt_img"
+											style="max-width: 120px;"
+										/>
+										<v-icon
+											v-else
+										>mdi mdi-image</v-icon>
+									</div>
+									<div class="flex-1 flex-column">
+										<span>상품명: {{ odt.pdt_name }}</span>
+										<span>선택 옵션: {{ odt.op_name }}</span>
+									</div>
+									<div class="flex-1">판매가: {{ odt.op_price | makeComma }}</div>
+									<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
+									<div>
+										<template
+											v-for="(step, key) in codes.odt_status"
+										>
+											<button
+												v-if=" odt.order_status == key"
+												:key="key + '_' + item.uid"
+												class="pa-5 mr-5"
+												:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
+												:disabled="odt.not_confirm"
+												@click="setOdtStatus(odt, key)"
+											>{{ step.name }}</button>
+										</template>
+									</div>
 
-							<div class=" flex-2 inline position-relative text-right">
+									<div class=" flex-2 inline position-relative text-right">
 
-								<select
-									v-model="odt.shipping_name"
-									class="box pa-5 vertical-middle mr-5"
-									:disabled="odt.not_confirm"
-								>
-									<option
-										:value="null"
-									>택배사 선택</option>
-									<option
-										v-for="(v, index) in codes.parcel"
-										:key="'parcel_' + index"
-										:value="index"
-									>{{ v.name }}</option>
-								</select>
+										<span class="pa-5 box ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
 
-								<input
-									v-model="odt.shipping_number"
-									class="box pa-5 vertical-middle mr-5"
-									placeholder="송장번호"
-									:disabled="odt.not_confirm"
-								/>
-								<button
-									class="btn-success pa-5 vertical-middle"
-									:disabled="odt.not_confirm"
-								>등록</button>
-							</div>
+										<span class="pa-5 box ">{{ odt.shipping_number ? odt.shipping_number : '송장번호' }}</span>
+
+									</div>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</li>
@@ -250,26 +244,29 @@ export default {
 				let pay_div = self.codes.pay_div[item.pay_div]
 				item.pay_div_name = pay_div.name
 
-				item.odt_list.filter(function(odt){
-					if(odt.pdt_img1){
-						odt.pdt_img = self.codes.img_url + odt.pdt_img1
-					}else{
-						odt.pdt_img = ''
-					}
+				item.supply_list.filter(function(supply){
 
-					let order_status = self.codes.odt_status[odt.order_status]
+					supply.odt_list.filter(function(odt){
+						if(odt.pdt_img1){
+							odt.pdt_img = self.codes.img_url + odt.pdt_img1
+						}else{
+							odt.pdt_img = ''
+						}
 
-					if(order_status){
-						odt.order_status_name = order_status.name
-						odt.order_status_color = order_status.color
-					}
-					odt.step_group = odt.order_status.slice(-2, -1)
+						let order_status = self.codes.odt_status[odt.order_status]
 
-					odt.ATOKEN = self.TOKEN
+						if(order_status){
+							odt.order_status_name = order_status.name
+							odt.order_status_color = order_status.color
+						}
+						odt.step_group = odt.order_status.slice(-2, -1)
 
-					if(item.o_status != 2){
-						odt.not_confirm = true
-					}
+						odt.ATOKEN = self.TOKEN
+
+						if(item.o_status != 2){
+							odt.not_confirm = true
+						}
+					})
 				})
 
 				item.ATOKEN = self.TOKEN

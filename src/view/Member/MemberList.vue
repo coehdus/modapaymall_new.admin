@@ -103,6 +103,7 @@
 		>
 			<div
 				slot="item"
+				class="flex-column overflow-y-auto"
 			>
 				<div class="pa-10">
 					<div class="mt-10 position-relative">

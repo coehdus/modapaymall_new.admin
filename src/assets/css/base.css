@@ -1,6 +1,7 @@
 
 /* text decoration */
 .under-line { border-bottom: 1px solid #ddd}
+.under-line-not-last:not(:last-child) { border-bottom: 1px solid #ddd }
 .text-right { text-align: right !important; }
 .text-center { text-align: center; }
 .text-left { text-align: left; }
@@ -115,8 +116,8 @@
 .ptb-20 { padding: 20px 0 !important;}
 .ptb-30 { padding: 30px 0 !important;}
 
-.prl-5 { padding: 0 5px !important;}
-.prl-10 { padding: 0 10px !important;}
+.prl-5 { padding-right: 5px !important; padding-left: 5px !important;}
+.prl-10 { padding-right: 10px !important; padding-left: 10px !important;}
 .prl-20 { padding: 0 20px !important;}
 .prl-30 { padding: 0 30px !important;}
 
@@ -230,6 +231,9 @@ input:read-only { background-color: #eee; color: #bbb;}
     disiplay: inline !important;
 }
 
+input:disabled,
+select:disabled { cursor: no-drop}
+
 /* button */
 .btn { display: inline-block; width: 100%; text-align: center; padding: 10px; font-size: 14px; color: white;}
 
@@ -258,6 +262,8 @@ input:read-only { background-color: #eee; color: #bbb;}
     color: white;
     font-size: 16px;
 }
+
+button:disabled { cursor: no-drop}
 
 /* box */
 
