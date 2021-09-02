@@ -219,6 +219,8 @@ input:read-only { background-color: #eee; color: #bbb;}
 .input-underline.input  { border-bottom: 1px solid #009BFA}
 
 .box { border: 1px solid #ddd;}
+.radius-5 { border-radius: 5px}
+.radius-10 { border-radius: 10px}
 .input-box { width: 100%; padding: 10px; border: 1px solid #ddd;}
 .input-box-inline { display: inline-block; padding: 10px; border: 1px solid #ddd; vertical-align: middle}
 

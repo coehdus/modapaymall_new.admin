@@ -68,6 +68,7 @@ export default {
 				}else{
 					this.TOKEN = encodeURI(TOKEN)
 					this.getBaseInfo()
+					this.getBaseCode()
 				}
 			}
 
@@ -75,6 +76,26 @@ export default {
 		}
 		,toLogin: function(){
 			this.$router.push({ name: 'Login' })
+		}
+		,getBaseCode: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getCodeList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.setCode(result.data.result)
+				}else{
+					this.toLogin()
+					console.log(result.message)
+				}
+			}catch (e) {
+				console.log(e)
+			}
 		}
 		,getBaseInfo: async function(){
 			try{
@@ -95,6 +116,19 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,setCode: function(code_list){
+			let list = this.codes
+			code_list.forEach(function(code){
+				let main = list[code.main_code]
+				if(!main){
+					code.items = []
+					list[code.main_code] = code
+				}
+				list[code.main_code].items.push(code)
+			})
+
+			console.log(list)
 		}
 	}
 	,created() {

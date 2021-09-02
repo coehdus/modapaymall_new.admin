@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="top"
+		class="top bg-white"
 	>
 		<div
 			class="logo bg-base pa-10 color-white text-center"

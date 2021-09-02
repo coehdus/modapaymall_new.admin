@@ -108,20 +108,11 @@ const routes = [
 		,component: () => import('@/view/Order/OrderListAgency.vue')
 	}
 	,{
-		path: prefix + 'Account/MyPage'
-		,name: 'MyPage'
-		,component: () => import('@/view/Account/MyPage.vue')
+		path: prefix + 'Setting/Code/List'
+		,name: 'SettingCodeList'
+		,component: () => import('@/view/Setting/CodeList.vue')
 	}
-	,{
-		path: prefix + 'Account/Password'
-		,name: 'Password'
-		,component: () => import('@/view/Account/Password.vue')
-	}
-	,{
-		path: prefix + 'Account/Shipping'
-		,name: 'Shipping'
-		,component: () => import('@/view/Account/ShippingList.vue')
-	}
+
 	,{
 		path: prefix + '*',
 		name:'404', 

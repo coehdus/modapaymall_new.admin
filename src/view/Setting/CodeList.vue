@@ -1,0 +1,166 @@
+<template>
+	<div>
+		<div class="pa-10 bg-white box-shadow">
+			<input
+				v-model="new_item.main_code"
+				placeholder="메인 코드"
+				class="box pa-10 mr-10"
+				maxlength="4"
+			>
+			<input
+				v-model="new_item.sub_code"
+				placeholder="서브 코드"
+				class="box pa-10 mr-10"
+				maxlength="4"
+			>
+			<input
+				v-model="new_item.code_name"
+				placeholder="코드명"
+				class="box pa-10 mr-10"
+				maxlength="25"
+			>
+			<input
+				v-model="new_item.code_value"
+				placeholder="코드값"
+				class="box pa-10 mr-10"
+				maxlength="50"
+			>
+			<button
+				class="pa-10 box bg-green"
+				@click="save"
+			>저장</button>
+		</div>
+
+		<div
+			class="mt-10 pa-10 bg-white box-shadow"
+		>
+			<button
+				v-for="(item, key) in item_list"
+				:key="item.total_code"
+				class="pa-10 box radius-10 mr-10"
+				:class="main_code == key ? 'bg-blue color-white' : 'bg-default' "
+				@click="main_code = key; $set(new_item, 'main_code', key)"
+			> {{ item.code_name }}</button>
+		</div>
+
+		<template
+			v-for="(item, key) in item_list"
+			>
+			<ul
+				v-if="main_code == item.main_code "
+				:key="item.total_code + key"
+				class="mt-10 pa-10 bg-white"
+			>
+				<li
+					v-for="sub in item.items"
+					:key="item.main_code + key + sub.sub_code"
+				>
+					<input
+						v-model="sub.main_code"
+					>
+					<input
+						v-model="sub.sub_code"
+					>
+					<input
+						v-model="sub.code_name"
+					>
+					<input
+						v-model="sub.code_value"
+					>
+				</li>
+			</ul>
+		</template>
+	</div>
+</template>
+
+<script>
+	export default {
+		name: 'SettingCodeList'
+		,props: ['Axios', 'member_info']
+		,data: function(){
+			return {
+				program: {
+					name: '코드 관리'
+					,top: true
+					,title: true
+					,bottom: false
+				}
+				,items: [
+
+				]
+				,item: {
+
+				}
+				,new_item: {
+
+				}
+				,main_code: ''
+			}
+		}
+		,computed: {
+			item_list: function(){
+				let list = {}
+				if(this.items.length > 0) {
+					this.items.filter(function (item) {
+
+						let main = list[item.main_code]
+						if(!main){
+							item.items = []
+							list[item.main_code] = item
+						}
+						list[item.main_code].items.push(item)
+					})
+
+					console.log(list)
+
+					return list
+				}else{
+					return []
+				}
+			}
+		}
+		,methods: {
+			getData: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/getCodeList'
+						,data: this.search
+					})
+
+					if(result.success){
+						this.items = result.data.result
+					}else{
+						this.$emit('setNotify', { type: 'error', mesage: result.message})
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
+			,save: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postCode'
+						,data: this.new_item
+					})
+
+					if(result.success){
+						await this.getData()
+
+						this.$emit('setNotify', { type: 'success', message: result.message})
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message})
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
+
+		}
+		,created() {
+			this.$emit('onLoad', this.program)
+			this.getData()
+		}
+	}
+</script>
