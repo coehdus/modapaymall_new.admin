@@ -218,6 +218,15 @@
 					slot="item"
 					class="flex-column overflow-y-auto "
 				>
+					<ProductItem
+						:item_new="item_new"
+						:rules="rules"
+						:member_info="member_info"
+						:supply_list="supply_list"
+						:category_list="category_list"
+
+						@click="save"
+					></ProductItem>
 				</template>
 			</SideB>
 		</div>
@@ -235,11 +244,12 @@ import SideB from "../Layout/SideB";
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
+import ProductItem from "./ProductItem";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Excel, Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date']
+	components: {ProductItem, Excel, Search, Pagination, SideB},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date', 'rules']
 	,data: function (){
 		return {
 			program: {
@@ -300,7 +310,10 @@ export default {
 				]
 				,content: null
 			}
-			,is_item : false
+			,is_item : true
+			,category_list: [
+
+			]
 		}
 	}
 	,computed: {
@@ -410,8 +423,10 @@ export default {
 		,clear_item: function(){
 			this.item_new = {
 				ATOKEN: this.TOKEN
+				,pdt_company: ''
+				,pdt_category: ''
 			}
-			this.is_item = false
+			//this.is_item = false
 		}
 		,getSupplyList: async function(){
 			try{
@@ -433,12 +448,49 @@ export default {
 				console.log(e)
 			}
 		}
+		,getCategoryList: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getCategoryList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.category_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
 		,toExcel: function(){
 			this.excel_data.content = this.items
 			this.is_excel = true
 		}
 		,toItem: function (){
 			this.is_item = !this.is_item
+		}
+		,save: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postProduct'
+					,data: this.item_new
+				})
+
+				if(result.success){
+					await this.getData()
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
 		}
 	}
 	,created() {
@@ -448,8 +500,10 @@ export default {
 		}else if(this.member_info.admin_type == 'supply'){
 			this.$emit('push', 'ProductListSupply')
 		}
+		this.clear_item()
 		this.getData()
 		this.getSupplyList()
+		this.getCategoryList()
 	}
 }
 </script>

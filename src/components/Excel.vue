@@ -40,7 +40,6 @@
 		}
 		,methods: {
 			toExcel: function(){
-				console.log(this.excel_data)
 				let tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">'
 				tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
 				tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
