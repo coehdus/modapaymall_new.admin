@@ -53,7 +53,7 @@ html, body {
 }
 html, body, table {
     font-size: 14px;
-    color:  #bbb;
+    color:  #666;
     font-family: Noto Sans KR,sans-serif,Dotum,Helvetica,AppleSDGothicNeo;
 }
 
@@ -91,7 +91,7 @@ a:hover {border: 0;}
 a:hover img {display: none;}
 a:hover img {display: inline;}
 
-select {border:  1px solid #ddd; padding:  1px; vertical-align:  middle; color: #bbb}
+select {border:  1px solid #ddd; padding:  1px; vertical-align:  middle;}
 
 button {border:  none; margin:  0; padding:  0; cursor:  pointer;}
 

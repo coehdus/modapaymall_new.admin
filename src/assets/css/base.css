@@ -100,6 +100,13 @@
 .pa-10 { padding: 10px !important;}
 .pa-20 { padding: 20px;}
 .pa-30 { padding: 30px;}
+.pa-40 { padding: 40px;}
+.pa-50 { padding: 50px;}
+
+.pa-5-10 { padding: 5px 10px;}
+.pa-10-5 { padding: 10px 5px;}
+.pa-10-20 { padding: 10px 20px;}
+.pa-20-10 { padding: 20px 10px;}
 
 .pl-10 { padding-left: 10px}
 .pl-20 { padding-left: 20px}
@@ -195,18 +202,19 @@
 .bg-orange { background-color: darkorange; color: white;}
 .bg-f5 { background-color: #f5f5f5}
 .bg-eee { background-color: #eee !important}
-.bg-select { background-color: #fff6ee}
+.bg-select { background-color: black}
 .bg-blue { background-color: #0D47A1}
 .bg-light-gray { background-color: darkgray;}
 .bg-light-green { background-color: #81C784;}
 .bg-light-blue { background-color: #eee;}
 .bg-light-red { background-color: #EF9A9A;}
+.bg-black { background-color: black;}
 
 
 /* input */
 .select-list-type { border: 1px solid #ddd; width: 100%; padding: 13px; color: black; height: auto;}
 
-input { font-size: 14px; letter-spacing: -0.5px}
+input { font-size: 14px; letter-spacing: -0.5px; color: #bbb}
 input:disabled,
 input:read-only { background-color: #eee; color: #bbb;}
 
@@ -218,7 +226,7 @@ input:read-only { background-color: #eee; color: #bbb;}
 .input-underline:focus,
 .input-underline.input  { border-bottom: 1px solid #009BFA}
 
-.box { border: 1px solid #ddd;}
+.box { border: 1px solid #bbb;}
 .radius-5 { border-radius: 5px}
 .radius-10 { border-radius: 10px}
 .input-box { width: 100%; padding: 10px; border: 1px solid #ddd;}
@@ -331,7 +339,7 @@ button:disabled { cursor: no-drop}
 .border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
 .border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
 
-.bg-base { background-color: white}
+.bg-base { background-color: #333333}
 
 .logo-position {
 

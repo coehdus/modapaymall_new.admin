@@ -1,5 +1,5 @@
 <template>
-	<div class=" ptb-10 bg-white justify-space-between">
+	<div class=" ptb-10 bg-base box justify-space-between">
 
 		<div
 			v-show="option.is_cnt"
@@ -12,7 +12,7 @@
 			<input
 				v-if="option.sDate"
 				v-model="search.sDate"
-				class="pa-5 box vertical-middle mr-10 "
+				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 시작일"
 			/>
 
@@ -25,7 +25,7 @@
 			<input
 				v-if="option.eDate"
 				v-model="search.eDate"
-				class="pa-5 box vertical-middle mr-10 "
+				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 종료일"
 			/>
 
@@ -35,7 +35,7 @@
 				<select
 					:key="'select_' + index"
 					v-model="search[select.column]"
-					class="pa-5 box vertical-middle mr-10 "
+					class="pa-5-10 box vertical-middle mr-10 "
 					@change="$emit('click')"
 				>
 					<option
@@ -50,7 +50,7 @@
 			</template>
 
 			<select
-				class="pa-5 mr-10"
+				class="pa-5-10 mr-10"
 				v-model="search.list_cnt"
 			>
 				<option
@@ -61,7 +61,7 @@
 			</select>
 
 			<select
-				class="pa-5 mr-10"
+				class="pa-5-10 mr-10"
 				v-model="search.search_type"
 			>
 				<option
@@ -76,24 +76,24 @@
 
 			<input
 				v-model="search.search_value"
-				class="pa-5 box vertical-middle mr-10 "
+				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색어를 입력하세요"
 			/>
 
 			<button
-				class="btn-blue pa-5 prl-10 vertical-middle mr-10"
+				class="btn-blue pa-5-10 vertical-middle mr-10"
 				@click="$emit('click')"
 			>검색</button>
 
 			<button
 				v-if="option.is_excel"
-				class="btn-green pa-5 prl-10 vertical-middle mr-10"
+				class="btn-green pa-5-10 vertical-middle mr-10"
 				@click="$emit('toExcel')"
 			>EXCEL</button>
 
 			<button
 				v-if="option.is_item"
-				class="btn-green pa-5 prl-10 vertical-middle mr-10"
+				class="btn-green pa-5-10 vertical-middle mr-10"
 				@click="$emit('toItem')"
 			>등록</button>
 		</div>

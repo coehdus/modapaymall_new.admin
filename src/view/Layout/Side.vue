@@ -21,7 +21,7 @@
 							class="pa-10 justify-space-between"
 						>
 							<span
-								class="font-weight-bold"
+								class="font-weight-bold flex-column justify-center ptb-5"
 							>{{ item.name }}</span>
 						</div>
 						<ul>
@@ -29,15 +29,16 @@
 								v-for="sub in item.sub"
 								:key="item.path + sub.path"
 								class="pa-10 "
-								:class="{'bg-gray-light': $route.name == item.path + sub.path }"
+								:class="{'bg-black': $route.name == item.path + sub.path }"
 								@click="toPush(item, sub)"
 							>
 								<div
 									class="justify-space-between"
 								>
-									<span>{{ sub.name }}</span>
+									<span class="flex-column justify-center ptb-5">{{ sub.name }}</span>
 									<v-icon
-										v-if="$route.name != item.path + sub.path"
+										v-show="$route.name != item.path + sub.path"
+										class="color-icon"
 									>mdi mdi-chevron-right</v-icon>
 								</div>
 							</li>

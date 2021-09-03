@@ -18,7 +18,6 @@
 			<div class="full-width">
 				<table
 					v-if="item_list.length > 0"
-					class="bg-white"
 				>
 					<colgroup>
 						<col width="80px" />
@@ -26,8 +25,8 @@
 						<col width="150px" />
 						<col width="150px" />
 						<col width="150px" />
-						<col width="150px" />
 						<col width="auto" />
+						<col width="180px" />
 						<col width="150px" />
 					</colgroup>
 					<thead>
@@ -41,8 +40,8 @@
 							<th>아이디</th>
 							<th>이름</th>
 							<th>연락처</th>
-							<th>가입일</th>
 							<th>사용여부</th>
+							<th>가입일</th>
 							<th>상세정보</th>
 						</tr>
 					</thead>
@@ -61,7 +60,6 @@
 							<td>{{ item.member_id }}</td>
 							<td>{{ item.member_name }}</td>
 							<td>{{ item.member_phone }}</td>
-							<td>{{ item.join_date }}</td>
 							<td
 								class="full-height"
 							>
@@ -85,8 +83,8 @@
 									>mdi mdi-delete-forever</v-icon>
 								</div>
 							</td>
-							<td
-							>
+							<td>{{ item.join_date }}</td>
+							<td>
 								<v-icon
 									v-if="item.uid == item_new.uid"
 									class="color-red"
@@ -95,6 +93,7 @@
 								<v-icon
 									v-else
 									@click="setItem(item)"
+									class="color-icon"
 								>mdi mdi-arrow-right-bold-box-outline</v-icon>
 							</td>
 						</tr>
@@ -103,40 +102,43 @@
 
 				<div
 					v-else
-					class="flex-column justify-center bg-white"
-				><table
-					class="bg-white"
+					class="flex-column justify-center "
 				>
-					<colgroup>
-						<col width="80px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="auto" />
-						<col width="150px" />
-					</colgroup>
-					<thead>
-					<tr>
-						<th>
-							<input
-								type="checkbox"
-							/>
-						</th>
-						<th>소속 대리점</th>
-						<th>아이디</th>
-						<th>이름</th>
-						<th>연락처</th>
-						<th>가입일</th>
-						<th>사용여부</th>
-						<th>상세정보</th>
-					</tr>
-					</thead>
-				</table>
-					<div class="pa-30 text-center">
-						<v-icon class="size-px-48">mdi-cloud-off-outline</v-icon>
-						<p class="mt-10 size-px-16">조회된 내역이 없습니다.</p>
+					<table
+						class=""
+					>
+						<colgroup>
+							<col width="80px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="auto" />
+							<col width="180px" />
+							<col width="150px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>
+								<input
+									type="checkbox"
+								/>
+							</th>
+							<th>소속 대리점</th>
+							<th>아이디</th>
+							<th>이름</th>
+							<th>연락처</th>
+							<th>가입일</th>
+							<th>사용여부</th>
+							<th>상세정보</th>
+						</tr>
+						</thead>
+					</table>
+					<div class="pa-50 text-center bg-base under-line">
+						<v-icon
+							class="size-px-48 color-gray"
+						>mdi-cloud-off-outline</v-icon>
+						<p class="mt-10 size-px-16 color-gray">조회된 내역이 없습니다.</p>
 					</div>
 				</div>
 
@@ -150,6 +152,7 @@
 				v-if="is_item"
 				:title="'회원 정보'"
 				:bg-title="'bg-' + (item_new.uid ? (item_new.member_status == 1 ? 'green' : 'red') : '')"
+				@click="clear_item"
 			>
 				<template
 					slot="item"
@@ -161,7 +164,7 @@
 						:admin_list="admin_list"
 
 						@click="save"
-						class="bg-white"
+						class=""
 					></MemberItem>
 				</template>
 			</SideB>
@@ -334,10 +337,8 @@
 			,setItem: function (item){
 				if(this.item_new.uid == item.uid){
 					this.clear_item()
-					this.is_item = false
 				}else {
 					this.item_new = item
-
 					this.is_item = true
 				}
 			}
@@ -346,6 +347,7 @@
 					ATOKEN: this.TOKEN
 					,admin_code: this.member_info.admin_type == 'agency' ? this.member_info.admin_id : ''
 				})
+				this.is_item = false
 			}
 			,confirmDelete: function(item){
 				if(confirm("삭제하시겠습니까?")){

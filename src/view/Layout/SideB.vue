@@ -3,14 +3,21 @@
 		class="side-b ml-10 flex-column full-height"
 	>
 		<h6
-			class="text-center bg-gray pa-10"
+			class="justify-space-between bg-gray pa-10 color-gray-light"
 			:class="bgTitle"
-		> {{ title }}</h6>
+		>
+			{{ title }}
+
+			<v-icon
+				small
+				class="box color-white"
+				@click="$emit('click')"
+			>mdi mdi-close</v-icon>
+		</h6>
 		<slot
 			name="item"
 			class="flex-column overflow-y-auto"
 		>
-
 		</slot>
 	</div>
 </template>

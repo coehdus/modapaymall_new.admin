@@ -1,211 +1,222 @@
 <template>
 	<div
-		class="full-height justify-space-between"
+		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height full-width flex-column"
+			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
 		>
-			<table>
-				<colgroup>
-					<col width="80px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="auto" />
-					<col width="auto" />
-					<col width="150px" />
-				</colgroup>
-				<thead>
-				<tr>
-					<th>
-						<input
-							type="checkbox"
-						/>
-					</th>
-					<th>대리점명</th>
-					<th>아이디</th>
-					<th>이름</th>
-					<th>연락처</th>
-					<th>가입일</th>
-					<th>사용여부</th>
-					<th>판매여부</th>
-					<th>상세정보</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr
-					v-for="item in item_list"
-					:key="item.uid"
-					:class="{ 'bg-select': item.uid == item_new.uid }"
+			<div class="full-width">
+				<table
+					v-if="items.length > 0"
 				>
-					<td>
-						<input
-							type="checkbox"
-						/>
-					</td>
-					<td>{{ item.shop_name }}</td>
-					<td>{{ item.seller_id }}</td>
-					<td>{{ item.admin_name }}</td>
-					<td>{{ item.admin_phone }}</td>
-					<td>{{ item.wDate }}</td>
-					<td
-						class="full-height"
+					<colgroup>
+						<col width="80px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="180px" />
+						<col width="150px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th>
+							<input
+								type="checkbox"
+							/>
+						</th>
+						<th>대리점명</th>
+						<th>아이디</th>
+						<th>이름</th>
+						<th>연락처</th>
+						<th>사용여부</th>
+						<th>판매여부</th>
+						<th>가입일</th>
+						<th>상세정보</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr
+						v-for="item in item_list"
+						:key="item.uid"
+						:class="{ 'bg-select': item.uid == item_new.uid }"
 					>
-						<div
-							class=" flex-row justify-center"
+						<td>
+							<input
+								type="checkbox"
+							/>
+						</td>
+						<td>{{ item.shop_name }}</td>
+						<td>{{ item.seller_id }}</td>
+						<td>{{ item.admin_name }}</td>
+						<td>{{ item.admin_phone }}</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5"
+									:class="item.admin_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.admin_status = 1; update(item)"
+								>mdi mdi-account-check</v-icon>
+								<v-icon
+									class="pa-5 "
+									:class="item.admin_status != 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.admin_status = 0; update(item)"
+								>mdi mdi-account-off</v-icon>
+
+								<v-icon
+									class="pa-5 bg-red color-white ml-10"
+									@click="confirmDelete(item)"
+								>mdi mdi-delete-forever</v-icon>
+							</div>
+						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5 "
+									:class="item.shop_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.shop_status = 1; update(item)"
+								>mdi mdi-cart</v-icon>
+								<v-icon
+									class="pa-5  "
+									:class="item.shop_status != 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.shop_status = 0; update(item)"
+								>mdi mdi-cart-off</v-icon>
+							</div>
+						</td>
+						<td>{{ item.wDate }}</td>
+						<td
 						>
 							<v-icon
-								class="pa-5"
-								:class="item.admin_status == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="item.admin_status = 1; update(item)"
-							>mdi mdi-account-check</v-icon>
+								v-if="item.uid == item_new.uid"
+								class="color-red"
+								@click="setItem(item)"
+							>mdi mdi-close-box-outline</v-icon>
 							<v-icon
-								class="pa-5 "
-								:class="item.admin_status != 1 ? 'bg-red color-white' : 'btn-default' "
-								@click="item.admin_status = 0; update(item)"
-							>mdi mdi-account-off</v-icon>
-
-							<v-icon
-								class="pa-5 bg-red color-white ml-10"
-								@click="confirmDelete(item)"
-							>mdi mdi-delete-forever</v-icon>
-						</div>
-					</td>
-					<td
-						class="full-height"
+								v-else
+								@click="setItem(item)"
+								class="color-icon"
+							>mdi mdi-arrow-right-bold-box-outline</v-icon>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div
+					v-else
+					class="flex-column justify-center bg-white"
+				>
+					<table
+						class="bg-white"
 					>
-						<div
-							class=" flex-row justify-center"
-						>
-							<v-icon
-								class="pa-5 "
-								:class="item.shop_status == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="item.shop_status = 1; update(item)"
-							>mdi mdi-cart</v-icon>
-							<v-icon
-								class="pa-5  "
-								:class="item.shop_status != 1 ? 'bg-red color-white' : 'btn-default' "
-								@click="item.shop_status = 0; update(item)"
-							>mdi mdi-cart-off</v-icon>
-						</div>
-					</td>
-					<td
-					>
+						<colgroup>
+							<col width="80px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="auto" />
+							<col width="auto" />
+							<col width="180px" />
+							<col width="150px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>
+								<input
+									type="checkbox"
+								/>
+							</th>
+							<th>대리점명</th>
+							<th>아이디</th>
+							<th>이름</th>
+							<th>연락처</th>
+							<th>사용여부</th>
+							<th>판매여부</th>
+							<th>가입일</th>
+							<th>상세정보</th>
+						</tr>
+						</thead>
+					</table>
+					<div class="pa-50 text-center bg-base under-line">
 						<v-icon
-							v-if="item.uid == item_new.uid"
-							class="color-red"
-							@click="setItem(item)"
-						>mdi mdi-close-box-outline</v-icon>
-						<v-icon
-							v-else
-							@click="setItem(item)"
-						>mdi mdi-arrow-right-bold-box-outline</v-icon>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-
-			<div
-				class="mt-auto"
-			>
-				<Pagination
-					:program="program"
-					:align="'center'"
-					:options="options"
-				></Pagination>
-			</div>
-		</div>
-
-		<SideB
-			:title="'대리점 정보'"
-			:bg-title="'bg-' + (item_new.uid ? (item_new.admin_status == 1 ? 'green' : 'red') : '')"
-		>
-			<div
-				slot="item"
-				class="flex-column overflow-y-auto"
-			>
-				<div class="pa-10">
-					<div>
-						<div
-							v-if="item_new.uid"
-							class="input-box bg-gray-light"
-						>{{ item_new.admin_id }}</div>
-						<input
-							v-else
-							v-model="item_new.admin_id"
-							placeholder="대리점 아이디"
-							class="input-box"
-							maxlength="25"
-							:rules="[rules.id(item_new, 'admin_id', { min: 5, max: 20})]"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.shop_name"
-							placeholder="대리점 명"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.admin_name"
-							placeholder="대리점 이름"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.admin_phone"
-							type="number"
-							placeholder="대리점 연락처"
-							class="input-box"
-							:rules="[rules.max(item_new, 'admin_phone', 15)]"
-						/>
-					</div>
-					<div
-						class="mt-10"
-					>
-						<input
-							v-model="item_new.admin_password"
-							type="password"
-							placeholder="비밀번호"
-							class="input-box"
-							maxlength="25"
-						/>
-						<input
-							v-model="item_new.admin_password_confirm"
-							type="password"
-							placeholder="비밀번호 확인"
-							class="input-box mt-10"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<button
-							class="btn btn-identify"
-							@click="save"
-						>{{ btn_name }}</button>
+							class="size-px-48 color-gray"
+						>mdi-cloud-off-outline</v-icon>
+						<p class="mt-10 size-px-16 color-gray">조회된 내역이 없습니다.</p>
 					</div>
 				</div>
+
+				<div
+					class="mt-auto"
+				>
+					<Pagination
+						:program="program"
+						:align="'center'"
+						:options="options"
+					></Pagination>
+				</div>
 			</div>
-		</SideB>
+
+			<SideB
+				v-if="is_item"
+				:title="'대리점 정보'"
+				:bg-title="'bg-' + (item_new.uid ? (item_new.admin_status == 1 ? 'green' : 'red') : '')"
+
+				@click="clear_item"
+			>
+				<template
+					slot="item"
+					class="flex-column overflow-y-auto "
+				>
+					<ManagerAgencyItem
+						:item_new="item_new"
+						:rules="rules"
+
+						@click="save"
+						class="bg-white"
+					></ManagerAgencyItem>
+				</template>
+			</SideB>
+		</div>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
 	</div>
 </template>
 
 <script>
 import SideB from "../Layout/SideB";
 import Pagination from "../../components/Pagination";
+import Search from "../Layout/Search";
+import ManagerAgencyItem from "./ManagerAgencyItem";
+import Excel from "../../components/Excel";
 
 export default {
 	name: 'ManagerAgencyList'
-	,
-	components: {Pagination, SideB},
-	props: ['Axios', 'rules', 'TOKEN']
-	,data: function (){
+	, components: {Excel, ManagerAgencyItem, Search, Pagination, SideB}
+	, props: ['Axios', 'rules', 'TOKEN', 'date']
+	, data: function (){
 		return {
 			program: {
 				name: '대리점 목록'
@@ -217,12 +228,53 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
+				,admin_status: ''
+				,shop_status: ''
+				,list_cnt: 10
+				,search_type: ''
+			}
+			,search_option:{
+
+				is_item: true
+				,is_excel: true
+				,is_cnt: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '아이디', column: 'admin_id'}
+					,{ name: '이름', column: 'admin_name'}
+				]
+				,select: [
+					{ name: '사용 여부', column: 'admin_status', items: [
+							{ name: '사용', column: '1'}
+							,{ name: '미사용', column: '0'}
+						]
+					}
+					,{ name: '판매 여부', column: 'shop_status', items: [
+							{ name: '판매 가능', column: '1'}
+							,{ name: '판매 불가', column: '0'}
+						]
+					}
+				]
 			}
 			,items: [
 
 			]
 			,item_new: {
 
+			}
+			,is_item: false
+			,is_excel: false
+			,excel_data: {
+				name: '대리점 목록'
+				,header: [
+					{ key: 0, name: '대리점명', column: 'shop_name'}
+					,{ key: 0, name: '아이디', column: 'admin_id'}
+					,{ key: 0, name: '이름', column: 'admin_name'}
+					,{ key: 0, name: '연락처', column: 'admin_tell'}
+					,{ key: 0, name: '가입일', column: 'wDate'}
+				]
+				,content: null
 			}
 		}
 	}
@@ -246,13 +298,16 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getAgencyList'
 					,data: this.search
 				})
 
 				if(result.success){
 					this.items = result.data.result
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -307,6 +362,7 @@ export default {
 				this.clear_item()
 			}else {
 				this.item_new = item
+				this.is_item = true
 			}
 		}
 		,clear_item: function(){
@@ -315,6 +371,7 @@ export default {
 				,admin_level: 0
 				,admin_type: 'agency'
 			}
+			this.is_item = false
 		}
 		,confirmDelete: function(item){
 			if(confirm("삭제하시겠습니까?")){
@@ -342,11 +399,25 @@ export default {
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}
 		}
+		,toExcel: function(){
+			this.excel_data.content = this.items
+			this.is_excel = true
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
+		}
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
 		this.clear_item()
 		this.getData()
+	}
+	,watch: {
+		'search.page': {
+			handler: function(){
+				this.getData()
+			}
+		}
 	}
 }
 </script>

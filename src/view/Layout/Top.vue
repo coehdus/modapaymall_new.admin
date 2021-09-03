@@ -11,7 +11,7 @@
 			{{ member_info.admin_name }}
 			({{ member_info.admin_id}}) 님 환영합니다
 			<button
-				class="btn-primary prl-10 size-px-12"
+				class="btn-blue pa-5-10 size-px-12"
 				@click="confirmLogout"
 			>로그아웃</button>
 		</div>

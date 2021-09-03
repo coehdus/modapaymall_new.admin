@@ -1,263 +1,230 @@
 <template>
 	<div
-		class="full-height justify-space-between"
+		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height full-width"
+			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
 		>
-			<div class=" ptb-10 text-right bg-white">
-
-				<select
-					class="pa-5 mr-10"
-					v-if="!is_supply"
-					v-model="search.pdt_company"
-					@change="getData"
-				>
-					<option
-						:value="''"
-					>공급사</option>
-					<option
-						v-for="supply in supply_list"
-						:key="supply.admin_id"
-						:value="supply.admin_id"
-					>{{ supply.shop_name }}</option>
-				</select>
-
-				<select
-					class="pa-5 mr-10"
-					v-model="search.search_type"
-				>
-					<option
-						:value="''"
-					>검색조건</option>
-					<option
-						:value="'pdt_name'"
-					>상품명</option>
-				</select>
-
-				<input
-					v-model="search.search_value"
-					class="pa-5 box vertical-middle mr-10 "
-					placeholder="검색어를 입력하세요"
-				/>
-
-				<button
-					class="btn-blue pa-5 prl-10 vertical-middle mr-10"
-					@click="getData"
-				>검색</button>
-
-				<button
-					v-if="!is_agency && !is_supply"
-					class="btn-green pa-5 prl-10 vertical-middle mr-10"
-					@click="$emit('push', 'ProductDetail')"
-				>상품 등록</button>
-
-			</div>
-			<table class="mt-10 bg-white">
-				<colgroup>
-					<col width="80px" />
-					<col width="150px" />
-					<col width="auto" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="200px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th>
-							<input
-								type="checkbox"
-							/>
-						</th>
-						<th
-							colspan="2"
-						>상품명</th>
-						<th>공급가</th>
-						<th>공급 배송비</th>
-						<th>재고</th>
-						<th>판매여부</th>
-						<th
-							v-if="!is_supply"
-						>사용여부</th>
-						<th>등록일</th>
-						<th>상세정보</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="item in item_list"
-						:key="item.uid"
-					>
-						<td>
-							<input
-								type="checkbox"
-							/>
-						</td>
-						<td
-							class="pdt-img"
-						>
-							<img
-								v-if="item.img"
-								:src="item.img"
-							/>
-							<v-icon
-								v-else
-							>mdi mdi-image</v-icon>
-						</td>
-						<td
-							class="text-left"
-						>[{{ item.shop_name}}] <br/> {{ item.pdt_name }}</td>
-						<td>{{ item.pdt_price | makeComma }}</td>
-						<td>{{ item.shop_delivery_price | makeComma }}</td>
-						<td
-							class="full-height"
-						>
-							<div
-								v-if="is_supply"
-								class=" flex-row justify-space-between"
-							>
-								<button
-									class=" flex-1"
-									:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 1; update(item)"
-								>무한</button>
-								<button
-									class=" flex-1 "
-									:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 2; update(item)"
-								>품절</button>
-								<button
-									class="  flex-1"
-									:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 3; update(item)"
-								>재고</button>
+			<div class="full-width">
+				<table class="mt-10 ">
+					<colgroup>
+						<col width="80px" />
+						<col width="150px" />
+						<col width="auto" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="200px" />
+						<col width="150px" />
+						<col width="180px" />
+						<col width="150px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>
 								<input
-									v-model="items[item.index].pdt_stock"
-									class=" flex-1 ptb-5"
-									style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
-									@change="items[item.index].is_sold = 3; update(item)"
+									type="checkbox"
 								/>
-							</div>
-							<div
-								v-else
-							>
-								{{ item.is_sold_name }}
-							</div>
-						</td>
-						<td
-							class="full-height"
+							</th>
+							<th
+								colspan="2"
+							>상품명</th>
+							<th>공급가</th>
+							<th>공급 배송비</th>
+							<th>재고</th>
+							<th>판매여부</th>
+							<th
+								v-if="!is_supply"
+							>사용여부</th>
+							<th>등록일</th>
+							<th>상세정보</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="item in item_list"
+							:key="item.uid"
 						>
-							<div
-								v-if="is_supply"
-								class=" flex-row justify-center"
+							<td>
+								<input
+									type="checkbox"
+								/>
+							</td>
+							<td
+								class="pdt-img"
 							>
-								<v-icon
-									class="pa-5 "
-									:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.is_use = 1; update(item)"
-								>mdi mdi-cart</v-icon>
-								<v-icon
-									class="pa-5  "
-									:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.is_use = 0; update(item)"
-								>mdi mdi-cart-off</v-icon>
-							</div>
-							<div
-								v-else
-							>
-								<v-icon
-									v-if="item.is_use == 1"
-									class="pa-5 "
-									:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-
-								>mdi mdi-cart</v-icon>
+								<img
+									v-if="item.img"
+									:src="item.img"
+								/>
 								<v-icon
 									v-else
-									class="pa-5  "
-									:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
-								>mdi mdi-cart-off</v-icon>
-							</div>
-						</td>
-						<td
-							v-if="!is_supply"
-							class="full-height"
-						>
-							<div
-								v-if="is_agency"
-								class=" flex-row justify-center"
+									class="color-icon"
+								>mdi mdi-image</v-icon>
+							</td>
+							<td
+								class="text-left"
+							>[{{ item.shop_name}}] <br/> {{ item.pdt_name }}</td>
+							<td>{{ item.pdt_price | makeComma }}</td>
+							<td>{{ item.shop_delivery_price | makeComma }}</td>
+							<td
+								class="full-height"
 							>
-								<v-icon
-									class="pa-5 "
-									:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.is_use = 1; update(item)"
-								>mdi mdi-power-plug</v-icon>
-								<v-icon
-									class="pa-5  "
-									:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.is_use = 0; update(item)"
-								>mdi mdi-power-plug-off</v-icon>
-							</div>
-							<div
-								v-else
-								class=" flex-row justify-center"
+								<div
+									v-if="is_supply"
+									class=" flex-row justify-space-between"
+								>
+									<button
+										class=" flex-1"
+										:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="items[item.index].is_sold = 1; update(item)"
+									>무한</button>
+									<button
+										class=" flex-1 "
+										:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
+										@click="items[item.index].is_sold = 2; update(item)"
+									>품절</button>
+									<button
+										class="  flex-1"
+										:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
+										@click="items[item.index].is_sold = 3; update(item)"
+									>재고</button>
+									<input
+										v-model="items[item.index].pdt_stock"
+										class=" flex-1 ptb-5"
+										style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
+										@change="items[item.index].is_sold = 3; update(item)"
+									/>
+								</div>
+								<div
+									v-else
+								>
+									{{ item.is_sold_name }}
+								</div>
+							</td>
+							<td
+								class="full-height"
 							>
-								<v-icon
-									class="pa-5 "
-									:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.is_use = 1; update(item)"
-								>mdi mdi-power-plug</v-icon>
-								<v-icon
-									class="pa-5  "
-									:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.is_use = 0; update(item)"
-								>mdi mdi-power-plug-off</v-icon>
-							</div>
-						</td>
-						<td>{{ item.wDate.substring(0, 10) }}</td>
-						<td
-							@click="setItem(item)"
-						>
-							<v-icon
-							>mdi mdi-arrow-right-bold-box-outline</v-icon>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+								<div
+									v-if="is_supply"
+									class=" flex-row justify-center"
+								>
+									<v-icon
+										class="pa-5 "
+										:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="item.is_use = 1; update(item)"
+									>mdi mdi-cart</v-icon>
+									<v-icon
+										class="pa-5  "
+										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="item.is_use = 0; update(item)"
+									>mdi mdi-cart-off</v-icon>
+								</div>
+								<div
+									v-else
+								>
+									<v-icon
+										v-if="item.is_use == 1"
+										class="pa-5 "
+										:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
 
-			<div
-				class="mt-auto"
-			>
-				<Pagination
-					:program="program"
-					:align="'center'"
-					:options="options"
-				></Pagination>
+									>mdi mdi-cart</v-icon>
+									<v-icon
+										v-else
+										class="pa-5  "
+										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+									>mdi mdi-cart-off</v-icon>
+								</div>
+							</td>
+							<td
+								v-if="!is_supply"
+								class="full-height"
+							>
+								<div
+									v-if="is_agency"
+									class=" flex-row justify-center"
+								>
+									<v-icon
+										class="pa-5 "
+										:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="item.is_use = 1; update(item)"
+									>mdi mdi-power-plug</v-icon>
+									<v-icon
+										class="pa-5  "
+										:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="item.is_use = 0; update(item)"
+									>mdi mdi-power-plug-off</v-icon>
+								</div>
+								<div
+									v-else
+									class=" flex-row justify-center"
+								>
+									<v-icon
+										class="pa-5 "
+										:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="item.is_use = 1; update(item)"
+									>mdi mdi-power-plug</v-icon>
+									<v-icon
+										class="pa-5  "
+										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="item.is_use = 0; update(item)"
+									>mdi mdi-power-plug-off</v-icon>
+								</div>
+							</td>
+							<td>{{ item.wDate.substring(0, 10) }}</td>
+							<td
+								@click="setItem(item)"
+							>
+								<v-icon
+									class="color-icon"
+								>mdi mdi-arrow-right-bold-box-outline</v-icon>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div
+					class="mt-auto"
+				>
+					<Pagination
+						:program="program"
+						:align="'center'"
+						:options="options"
+					></Pagination>
+				</div>
 			</div>
+			<SideB
+				v-if="item.uid"
+				:title="'상품 상세 정보'"
+				@click="clear_item"
+			>
+				<div
+					slot="item"
+				>
+
+				</div>
+			</SideB>
 		</div>
-
-		<SideB
-			v-if="item.uid"
-			:title="'상품 상세 정보'"
-		>
-			<div
-				slot="item"
-			>
-
-			</div>
-		</SideB>
 	</div>
 </template>
 
 <script>
 import SideB from "../Layout/SideB";
 import Pagination from "@/components/Pagination";
+import Search from "../Layout/Search";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Pagination, SideB},
+	components: {Search, Pagination, SideB},
 	props: ['Axios', 'TOKEN', 'member_info', 'codes']
 	,data: function (){
 		return {
@@ -270,6 +237,26 @@ export default {
 				ATOKEN: this.TOKEN
 				,pdt_company: ''
 				,search_type: 'pdt_name'
+				,is_use: ''
+				,list_cnt: 10
+			}
+			,search_option:{
+				is_excel: true
+				,is_item: true
+				,is_cnt: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '상품명', column: 'pdt_name'}
+				]
+				,select: [
+					{ name: '공급사', column: 'pdt_company', items: []}
+					, { name: '사용 여부', column: 'is_use', items: [
+							{ name: '사용', column: '1'}
+							,{ name: '미사용', column: '0'}
+						]
+					}
+				]
 			}
 			,items: [
 
@@ -281,6 +268,22 @@ export default {
 
 			}
 			,supply_list: []
+			,is_excel: false
+			,excel_data: {
+				name: '상품 목록'
+				,header: [
+					{ key: 0, name: '공급사', column: 'shop_name'}
+					,{ key: 0, name: '상품명', column: 'pdt_name'}
+					,{ key: 0, name: '공급가', column: 'pdt_purchase'}
+					,{ key: 0, name: '공급 배송비', column: 'pdt_delivery'}
+					,{ key: 0, name: '재고', column: 'pdt_stock'}
+					,{ key: 0, name: '판매여부', column: 'agency_use_name'}
+					,{ key: 0, name: '사용여부', column: 'is_use_name'}
+					,{ key: 0, name: '등록일', column: 'wDate'}
+				]
+				,content: null
+			}
+			,is_item : false
 		}
 	}
 	,computed: {
@@ -325,6 +328,18 @@ export default {
 			}else{
 				return false
 			}
+		}
+		,select_option_admin: function(){
+			let list = []
+			this.supply_list.filter(function(item){
+
+				list.push({
+					name: item.admin_name
+					,column: item.admin_id
+				})
+			})
+
+			return list
 		}
 	}
 	,methods: {
@@ -388,12 +403,25 @@ export default {
 
 				if(result.success){
 					this.supply_list = result.data.result
+					this.search_option.select[0].items = this.select_option_admin
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,toExcel: function(){
+			this.excel_data.content = this.items
+			this.is_excel = true
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
+		}
+		,clear_item: function(){
+			this.$set(this, 'item_new', {
+				ATOKEN: this.TOKEN
+			})
 		}
 	}
 	,created() {

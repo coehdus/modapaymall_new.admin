@@ -144,7 +144,7 @@ export default {
 	}
 
 	th {
-		background-color: #ddd;
+		background-color: #545454;
 	}
 
 

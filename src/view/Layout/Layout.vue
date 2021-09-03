@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column bg-base"
+		class="full-height flex-column bg-base theme-dark"
 	>
 		<Top
 			v-if="program.top"
@@ -147,6 +147,7 @@
 
 <style lang="css" src="@/assets/css/reset.css"></style>
 <style lang="css" src="@/assets/css/base.css"></style>
+<style lang="css" src="@/assets/css/theme/dark.css"></style>
 
 <style>
 
