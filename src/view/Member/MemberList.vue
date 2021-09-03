@@ -343,10 +343,10 @@
 				}
 			}
 			,clear_item: function(){
-				this.$set(this, 'item_new', {
+				this.item_new = {
 					ATOKEN: this.TOKEN
 					,admin_code: this.member_info.admin_type == 'agency' ? this.member_info.admin_id : ''
-				})
+				}
 				this.is_item = false
 			}
 			,confirmDelete: function(item){

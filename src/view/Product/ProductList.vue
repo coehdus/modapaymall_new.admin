@@ -182,9 +182,15 @@
 							</td>
 							<td>{{ item.wDate.substring(0, 10) }}</td>
 							<td
-								@click="setItem(item)"
 							>
 								<v-icon
+									v-if="item.uid == item_new.uid"
+									class="color-red"
+									@click="setItem(item)"
+								>mdi mdi-close-box-outline</v-icon>
+								<v-icon
+									v-else
+									@click="setItem(item)"
 									class="color-icon"
 								>mdi mdi-arrow-right-bold-box-outline</v-icon>
 							</td>
@@ -203,17 +209,24 @@
 				</div>
 			</div>
 			<SideB
-				v-if="item.uid"
-				:title="'상품 상세 정보'"
+				v-if="is_item"
+				:title="'상품 정보'"
+				:bg-title="'bg-' + (item_new.uid ? (item_new.is_use == 1 ? 'green' : 'red') : '')"
 				@click="clear_item"
 			>
-				<div
+				<template
 					slot="item"
+					class="flex-column overflow-y-auto "
 				>
-
-				</div>
+				</template>
 			</SideB>
 		</div>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
 	</div>
 </template>
 
@@ -221,11 +234,12 @@
 import SideB from "../Layout/SideB";
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
+import Excel from "../../components/Excel";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes']
+	components: {Excel, Search, Pagination, SideB},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date']
 	,data: function (){
 		return {
 			program: {
@@ -262,6 +276,9 @@ export default {
 
 			]
 			,item: {
+
+			}
+			,item_new: {
 
 			}
 			,options: {
@@ -383,13 +400,18 @@ export default {
 			}
 		}
 		,setItem: function (item){
-			if(this.item.uid == item.uid){
-				this.item = {
-
-				}
+			if(this.item_new.uid == item.uid){
+				this.clear_item()
 			}else {
-				this.item = item
+				this.item_new = item
+				this.is_item = true
 			}
+		}
+		,clear_item: function(){
+			this.item_new = {
+				ATOKEN: this.TOKEN
+			}
+			this.is_item = false
 		}
 		,getSupplyList: async function(){
 			try{
@@ -417,11 +439,6 @@ export default {
 		}
 		,toItem: function (){
 			this.is_item = !this.is_item
-		}
-		,clear_item: function(){
-			this.$set(this, 'item_new', {
-				ATOKEN: this.TOKEN
-			})
 		}
 	}
 	,created() {

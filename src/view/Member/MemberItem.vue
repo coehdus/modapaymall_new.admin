@@ -16,7 +16,7 @@
 				>{{ admin.admin_name }}</option>
 			</select>
 			<v-icon
-				class="position-absolute"
+				class="position-absolute color-icon"
 				style="right: 10px; top: 10px;"
 			>mdi mdi-menu-down</v-icon>
 		</div>

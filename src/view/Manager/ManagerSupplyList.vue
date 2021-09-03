@@ -364,7 +364,6 @@ export default {
 				this.item_new = item
 				this.is_item = true
 			}
-
 		}
 		,clear_item: function(){
 			this.item_new = {
