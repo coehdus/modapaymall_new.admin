@@ -1,22 +1,123 @@
 <template>
 	<div
-		class="full-height justify-space-between"
+		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height full-width flex-column"
+			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
 		>
-			<table>
-				<colgroup>
-					<col width="80px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="auto" />
-					<col width="150px" />
-				</colgroup>
-				<thead>
+			<div class="full-width">
+				<table
+					v-if="item_list.length > 0"
+					class="bg-white"
+				>
+					<colgroup>
+						<col width="80px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="auto" />
+						<col width="150px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>
+								<input
+									type="checkbox"
+								/>
+							</th>
+							<th>소속 대리점</th>
+							<th>아이디</th>
+							<th>이름</th>
+							<th>연락처</th>
+							<th>가입일</th>
+							<th>사용여부</th>
+							<th>상세정보</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="item in item_list"
+							:key="item.uid"
+							:class="{ 'bg-select': item.uid == item_new.uid }"
+						>
+							<td>
+								<input
+									type="checkbox"
+								/>
+							</td>
+							<td>{{ item.admin_name }}</td>
+							<td>{{ item.member_id }}</td>
+							<td>{{ item.member_name }}</td>
+							<td>{{ item.member_phone }}</td>
+							<td>{{ item.join_date }}</td>
+							<td
+								class="full-height"
+							>
+								<div
+									class=" flex-row justify-center"
+								>
+									<v-icon
+										class="pa-5"
+										:class="item.member_status == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="item.member_status = 1; update(item)"
+									>mdi mdi-account-check</v-icon>
+									<v-icon
+										class="pa-5 "
+										:class="item.member_status != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="item.member_status = 0; update(item)"
+									>mdi mdi-account-off</v-icon>
+
+									<v-icon
+										class="pa-5 bg-red color-white ml-10"
+										@click="confirmDelete(item)"
+									>mdi mdi-delete-forever</v-icon>
+								</div>
+							</td>
+							<td
+							>
+								<v-icon
+									v-if="item.uid == item_new.uid"
+									class="color-red"
+									@click="setItem(item)"
+								>mdi mdi-close-box-outline</v-icon>
+								<v-icon
+									v-else
+									@click="setItem(item)"
+								>mdi mdi-arrow-right-bold-box-outline</v-icon>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div
+					v-else
+					class="flex-column justify-center bg-white"
+				><table
+					class="bg-white"
+				>
+					<colgroup>
+						<col width="80px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="auto" />
+						<col width="150px" />
+					</colgroup>
+					<thead>
 					<tr>
 						<th>
 							<input
@@ -31,212 +132,60 @@
 						<th>사용여부</th>
 						<th>상세정보</th>
 					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="item in item_list"
-						:key="item.uid"
-						:class="{ 'bg-select': item.uid == item_new.uid }"
-					>
-						<td>
-							<input
-								type="checkbox"
-							/>
-						</td>
-						<td>{{ item.admin_name }}</td>
-						<td>{{ item.member_id }}</td>
-						<td>{{ item.member_name }}</td>
-						<td>{{ item.member_tell }}</td>
-						<td>{{ item.join_date }}</td>
-						<td
-							class="full-height"
-						>
-							<div
-								class=" flex-row justify-center"
-							>
-								<v-icon
-									class="pa-5"
-									:class="item.member_status == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.member_status = 1; update(item)"
-								>mdi mdi-account-check</v-icon>
-								<v-icon
-									class="pa-5 "
-									:class="item.member_status != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.member_status = 0; update(item)"
-								>mdi mdi-account-off</v-icon>
+					</thead>
+				</table>
+					<div class="pa-30 text-center">
+						<v-icon class="size-px-48">mdi-cloud-off-outline</v-icon>
+						<p class="mt-10 size-px-16">조회된 내역이 없습니다.</p>
+					</div>
+				</div>
 
-								<v-icon
-									class="pa-5 bg-red color-white ml-10"
-									@click="confirmDelete(item)"
-								>mdi mdi-delete-forever</v-icon>
-							</div>
-						</td>
-						<td
-						>
-							<v-icon
-								v-if="item.uid == item_new.uid"
-								class="color-red"
-								@click="setItem(item)"
-							>mdi mdi-close-box-outline</v-icon>
-							<v-icon
-								v-else
-								@click="setItem(item)"
-							>mdi mdi-arrow-right-bold-box-outline</v-icon>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<div
-				class="mt-auto"
-			>
 				<Pagination
 					:program="program"
 					:align="'center'"
-					:options="options"
+					:options="search"
 				></Pagination>
 			</div>
-		</div>
-		<SideB
-			:title="'회원 정보'"
-			:bg-title="'bg-' + (item_new.uid ? (item_new.member_status == 1 ? 'green' : 'red') : '')"
-		>
-			<div
-				slot="item"
-				class="flex-column overflow-y-auto"
+			<SideB
+				v-if="is_item"
+				:title="'회원 정보'"
+				:bg-title="'bg-' + (item_new.uid ? (item_new.member_status == 1 ? 'green' : 'red') : '')"
 			>
-				<div class="pa-10">
-					<div class="mt-10 position-relative">
-						<select
-							v-model="item_new.admin_code"
-							class="input-box"
-							:disabled="is_agency"
-						>
-							<option
-								:value="''"
-							>소속 대리점</option>
-							<option
-								v-for="admin in admin_list"
-								:key="admin.admin_id"
-								:value="admin.admin_id"
-							>{{ admin.admin_name }}</option>
-						</select>
-						<v-icon
-							class="position-absolute"
-							style="right: 10px; top: 10px;"
-						>mdi mdi-menu-down</v-icon>
-					</div>
-					<div class="mt-10">
-						<div
-							v-if="item_new.uid"
-							class="input-box bg-gray-light"
-						>{{ item_new.member_id }}</div>
-						<input
-							v-else
-							v-model="item_new.member_id"
-							placeholder="아이디"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.member_name"
-							placeholder="이름"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.member_phone"
-							type="number"
-							placeholder="연락처"
-							class="input-box"
-							:rules="[rules.max(item_new, 'admin_phone', 15)]"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.member_email"
-							type="email"
-							placeholder="이메일"
-							class="input-box"
-						/>
-					</div>
-					<div class="mt-10 justify-space-between">
-						<input
-							v-model="item_new.member_post"
-							placeholder="우편번호"
-							class="input-box mr-10"
-							readonly
-						/>
-						<button
-							class="btn btn-identify"
-						>주소찾기</button>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.member_addr1"
-							placeholder="주소"
-							class="input-box"
-							readonly
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.member_addr2"
-							placeholder="상세주소"
-							class="input-box"
-						/>
-					</div>
-					<div
-						v-if="false"
-						class="mt-10"
-					>
-						<button
-							class="btn btn-identify"
-						>비밀번호 변경</button>
-					</div>
-					<div
-						v-else
-						class="mt-10"
-					>
-						<input
-							v-model="item_new.member_password"
-							type="password"
-							placeholder="비밀번호"
-							class="input-box"
-							maxlength="25"
-						/>
-						<input
-							v-model="item_new.member_password_confirm"
-							type="password"
-							placeholder="비밀번호 확인"
-							class="input-box mt-10"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<button
-							class="btn btn-identify"
-							@click="save"
-						>{{ btn_name }}</button>
-					</div>
-				</div>
-			</div>
-		</SideB>
+				<template
+					slot="item"
+					class="flex-column overflow-y-auto "
+				>
+					<MemberItem
+						:item_new="item_new"
+						:rules="rules"
+						:admin_list="admin_list"
+
+						@click="save"
+						class="bg-white"
+					></MemberItem>
+				</template>
+			</SideB>
+		</div>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
 	</div>
 </template>
 
 <script>
 	import SideB from "../Layout/SideB";
 	import Pagination from "../../components/Pagination";
+	import Excel from "@/components/Excel";
+	import MemberItem from "@/view/Member/MemberItem";
+	import Search from "@/view/Layout/Search";
 	export default {
 		name: 'MemberList'
 		,
-		components: {Pagination, SideB},
-		props: ['Axios', 'rules', 'TOKEN', 'member_info']
+		components: {Search, MemberItem, Excel, Pagination, SideB},
+		props: ['Axios', 'rules', 'TOKEN', 'member_info', 'date']
 		,data: function (){
 			return {
 				program: {
@@ -246,6 +195,29 @@
 				}
 				,search: {
 					ATOKEN: this.TOKEN
+					,search_type: ''
+					,admin_code: ''
+					,member_status: ''
+					,list_cnt: 10
+				}
+				,search_option:{
+					is_excel: true
+					,is_item: true
+					,is_cnt: true
+					,cnt: 0
+					,tCnt: 0
+					,search_type: [
+						{ name: '아이디', column: 'member_id'}
+						,{ name: '이름', column: 'member_name'}
+					]
+					,select: [
+						{ name: '소속 대리점', column: 'admin_code', items: []}
+						, { name: '사용 여부', column: 'member_status', items: [
+								{ name: '사용', column: '1'}
+								,{ name: '미사용', column: '0'}
+							]
+						}
+					]
 				}
 				,items: [
 
@@ -253,12 +225,22 @@
 				,item_new: {
 					ATOKEN: this.TOKEN
 				}
-				,options: {
+				,admin_list: [
 
+				]
+				,is_excel: false
+				,excel_data: {
+					name: '회원목록'
+					,header: [
+						{ key: 0, name: '소속 대리점', column: 'admin_name'}
+						,{ key: 0, name: '아이디', column: 'member_id'}
+						,{ key: 0, name: '이름', column: 'member_name'}
+						,{ key: 0, name: '연락처', column: 'member_phone'}
+						,{ key: 0, name: '가입일', column: 'join_date'}
+					]
+					,content: null
 				}
-				,admin_list: {
-
-				}
+				,is_item : false
 			}
 		}
 		,computed: {
@@ -268,13 +250,6 @@
 					return item
 				})
 			}
-			,btn_name: function (){
-				if(this.item_new.uid){
-					return '저장'
-				}else{
-					return '신규 등록'
-				}
-			}
 			,is_agency: function(){
 				if(this.member_info.admin_type == 'agency'){
 					return true
@@ -282,22 +257,38 @@
 					return false
 				}
 			}
+			,select_option_admin: function(){
+				let list = []
+				this.admin_list.filter(function(item){
+
+					list.push({
+						name: item.admin_name
+						,column: item.admin_id
+					})
+				})
+
+				return list
+			}
 		}
 		,methods: {
 			getData: async function(){
 
 				try{
 					const result = await this.Axios({
-						method: 'post'
+						method: 'get'
 						,url: 'management/getMemberList'
 						,data: this.search
 					})
 
 					if(result.success){
 						this.items = result.data.result
+						this.$set(this.search, 'total_count', result.data.tCnt)
+						this.search_option.tCnt = result.data.tCnt
+						this.search_option.cnt = result.data.cnt
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
+					this.is_excel = false
 				}catch (e) {
 					console.log(e)
 				}
@@ -312,6 +303,7 @@
 
 					if(result.success){
 						this.admin_list = result.data.result
+						this.search_option.select[0].items = this.select_option_admin
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
@@ -342,8 +334,11 @@
 			,setItem: function (item){
 				if(this.item_new.uid == item.uid){
 					this.clear_item()
+					this.is_item = false
 				}else {
 					this.item_new = item
+
+					this.is_item = true
 				}
 			}
 			,clear_item: function(){
@@ -400,12 +395,26 @@
 					await this.getData()
 				}
 			}
+			,toExcel: function(){
+				this.excel_data.content = this.items
+				this.is_excel = true
+			}
+			,toItem: function (){
+				this.is_item = !this.is_item
+			}
 		}
 		,created() {
 			this.$emit('onLoad', this.program)
 			this.clear_item()
 			this.getData()
 			this.getAdminList()
+		}
+		,watch: {
+			'search.page': {
+				handler: function(){
+					this.getData()
+				}
+			}
 		}
 	}
 </script>

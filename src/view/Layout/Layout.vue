@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column bg-gray-light"
+		class="full-height flex-column bg-base"
 	>
 		<Top
 			v-if="program.top"
@@ -148,8 +148,6 @@
 <style lang="css" src="@/assets/css/reset.css"></style>
 <style lang="css" src="@/assets/css/base.css"></style>
 
-<style lang="css" src="@/assets/css/dream/reset.css"></style>
-
 <style>
 
 .cart-count {
@@ -177,28 +175,4 @@
 .main-box-pdt { background-color: white; border-radius: 10px 0px 0px 0px;}
 .main-box-pdt img { border-radius: 10px 0px 0px 0px;}
 
-.box-shadow-top { box-shadow: 0px 3px 6px black}
-.box-shadow-inset { box-shadow: 0px 0px 2px 1px #bbb inset}
-.box-shadow { box-shadow: 1px 1px 3px 1px #bbb}
-
-.border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
-.border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
-
-.bg-base { background-color: #0165fa}
-
-	.logo-position {
-
-	}
-	.header-box-menu {
-		border-bottom: 1px solid #ddd;
-	}
-
-	.icon-box {
-		padding: 5px;
-		border: 1px solid #ddd;
-	}
-
-	.bg-title {
-		padding: 10px;
-	}
 </style>

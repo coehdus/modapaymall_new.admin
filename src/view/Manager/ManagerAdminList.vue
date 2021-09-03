@@ -1,228 +1,163 @@
 <template>
 	<div
-		class="full-height justify-space-between bg-white"
+		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height full-width flex-column "
+			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
 		>
-			<table>
-				<colgroup>
-					<col width="80px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="auto" />
-					<col width="150px" />
-				</colgroup>
-				<thead>
-				<tr>
-					<th>
-						<input
-							type="checkbox"
-						/>
-					</th>
-					<th>등급</th>
-					<th>아이디</th>
-					<th>이름</th>
-					<th>연락처</th>
-					<th>가입일</th>
-					<th>사용여부</th>
-					<th>상세정보</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr
-					v-for="item in item_list"
-					:key="item.admin_id"
-					:class="{ 'bg-select': item.uid == item_new.uid }"
+			<div class="full-width">
+				<table
+					v-if="item_list.length > 0"
+					class="bg-white"
 				>
-					<td>
-						<input
-							type="checkbox"
-						/>
-					</td>
-					<td class="position-relative">
-						<select
-							v-model="item.admin_level"
-							class="input-box"
-							@change="update(item)"
-						>
-							<option
-								value="0"
-							>등급을 선택하세요</option>
-							<option
-								v-for="level in levels"
-								:key="level.code"
-								:value="level.code"
-							>{{ level.name }}</option>
-						</select>
-						<v-icon
-							class="position-absolute"
-							style="right: 15px; top: 20px"
-						>mdi mdi-menu-down</v-icon>
-					</td>
-					<td>{{ item.admin_id }}</td>
-					<td>{{ item.admin_name }}</td>
-					<td>{{ item.admin_phone }}</td>
-					<td>{{ item.wDate }}</td>
-					<td
-						class="full-height "
+					<colgroup>
+						<col width="80px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="auto" />
+						<col width="150px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th>
+							<input
+								type="checkbox"
+							/>
+						</th>
+						<th>등급</th>
+						<th>아이디</th>
+						<th>이름</th>
+						<th>연락처</th>
+						<th>가입일</th>
+						<th>사용여부</th>
+						<th>상세정보</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr
+						v-for="item in item_list"
+						:key="item.admin_id"
+						:class="{ 'bg-select': item.uid == item_new.uid }"
 					>
-						<div
-							class=" flex-row justify-center"
+						<td>
+							<input
+								type="checkbox"
+							/>
+						</td>
+						<td class="position-relative">
+							<select
+								v-model="item.admin_level"
+								class="input-box"
+								@change="update(item)"
+							>
+								<option
+									value="0"
+								>등급을 선택하세요</option>
+								<option
+									v-for="level in levels"
+									:key="level.code"
+									:value="level.code"
+								>{{ level.name }}</option>
+							</select>
+							<v-icon
+								class="position-absolute"
+								style="right: 15px; top: 20px"
+							>mdi mdi-menu-down</v-icon>
+						</td>
+						<td>{{ item.admin_id }}</td>
+						<td>{{ item.admin_name }}</td>
+						<td>{{ item.admin_phone }}</td>
+						<td>{{ item.wDate }}</td>
+						<td
+							class="full-height "
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5 "
+									:class="item.admin_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.admin_status = 1; update(item)"
+								>mdi mdi-account-check</v-icon>
+								<v-icon
+									class="pa-5  "
+									:class="item.admin_status == 0 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.admin_status = 0; update(item)"
+								>mdi mdi-account-off</v-icon>
+
+								<v-icon
+									class="pa-5 bg-red color-white ml-10"
+									@click="confirmDelete(item)"
+								>mdi mdi-delete-forever</v-icon>
+							</div>
+						</td>
+						<td
 						>
 							<v-icon
-								class="pa-5 "
-								:class="item.admin_status == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="item.admin_status = 1; update(item)"
-							>mdi mdi-account-check</v-icon>
+								v-if="item.uid == item_new.uid"
+								class="color-red"
+								@click="setItem(item)"
+							>mdi mdi-close-box-outline</v-icon>
 							<v-icon
-								class="pa-5  "
-								:class="item.admin_status == 0 ? 'bg-red color-white' : 'btn-default' "
-								@click="item.admin_status = 0; update(item)"
-							>mdi mdi-account-off</v-icon>
+								v-else
+								@click="setItem(item)"
+							>mdi mdi-arrow-right-bold-box-outline</v-icon>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 
-							<v-icon
-								class="pa-5 bg-red color-white ml-10"
-								@click="confirmDelete(item)"
-							>mdi mdi-delete-forever</v-icon>
-						</div>
-					</td>
-					<td
-					>
-						<v-icon
-							v-if="item.uid == item_new.uid"
-							class="color-red"
-							@click="setItem(item)"
-						>mdi mdi-close-box-outline</v-icon>
-						<v-icon
-							v-else
-							@click="setItem(item)"
-						>mdi mdi-arrow-right-bold-box-outline</v-icon>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-
-			<div
-				class="mt-auto"
-			>
 				<Pagination
 					:program="program"
 					:align="'center'"
 					:options="options"
 				></Pagination>
 			</div>
-		</div>
-
-		<SideB
-			:title="'관리자 정보'"
-			:bg-title="'bg-' + (item_new.uid ? (item_new.admin_status == 1 ? 'green' : 'red') : '')"
-		>
-			<div
-				slot="item"
-				class="flex-column overflow-y-auto"
+			<SideB
+				v-if="is_item"
+				:title="'관리자 정보'"
+				:bg-title="'bg-' + (item_new.uid ? (item_new.member_status == 1 ? 'green' : 'red') : '')"
 			>
-				<div class="pa-10">
-					<div>
-						<div
-							v-if="item_new.uid"
-							class="input-box bg-gray-light"
-						>{{ item_new.admin_id }}</div>
-						<input
-							v-else
-							v-model="item_new.admin_id"
-							placeholder="관리자 아이디"
-							class="input-box"
-							maxlength="25"
-							type=""
-							:rules="[rules.id(item_new, 'admin_id', { min: 5, max: 20})]"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.admin_name"
-							placeholder="관리자 이름"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10 position-relative">
-						<select
-							v-model="item_new.admin_level"
-							class="input-box"
-						>
-							<option
-								value="0"
-							>등급을 선택하세요</option>
-							<option
-								v-for="level in levels"
-								:key="level.code"
-								:value="level.code"
-							>{{ level.name }}</option>
-						</select>
-						<v-icon
-							class="position-absolute"
-							style="right: 10px; top: 10px"
-						>mdi mdi-menu-down</v-icon>
-					</div>
-					<div
-						class="mt-10"
-					>
-						<input
-							v-model="item_new.admin_password"
-							type="password"
-							placeholder="비밀번호"
-							class="input-box"
-							maxlength="25"
-						/>
-						<input
-							v-model="item_new.admin_password_confirm"
-							type="password"
-							placeholder="비밀번호 확인"
-							class="input-box mt-10"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							type="number"
-							v-model="item_new.admin_phone"
-							placeholder="연락처"
-							class="input-box"
-							:rules="[rules.max(item_new, 'admin_phone', 15)]"
-						/>
-					</div>
-					<div class="mt-10">
-						<input
-							v-model="item_new.admin_email"
-							placeholder="이메일"
-							class="input-box"
-							maxlength="25"
-						/>
-					</div>
-					<div class="mt-10">
-						<button
-							class="btn btn-identify"
-							@click="save"
-						>{{ btn_name }}</button>
-					</div>
-				</div>
-			</div>
-		</SideB>
+				<template
+					slot="item"
+					class="flex-column overflow-y-auto "
+				>
+					<ManagerAdminItem
+						:item_new="item_new"
+						:rules="rules"
+						:levels="levels"
+
+						@click="save"
+						class="bg-white"
+					></ManagerAdminItem>
+				</template>
+			</SideB>
+		</div>
 	</div>
 </template>
 
 <script>
 import SideB from "../Layout/SideB";
 import Pagination from "../../components/Pagination";
+import Search from "@/view/Layout/Search";
+import ManagerAdminItem from "@/view/Manager/ManagerAdminItem";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Pagination, SideB},
+	components: {ManagerAdminItem, Search, Pagination, SideB},
 	props: ['Axios', 'TOKEN', 'rules']
 	,data: function (){
 		return {
@@ -236,7 +171,35 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
+				,admin_level: ''
+				,admin_status: ''
+				,list_cnt: 10
+				,search_type: ''
 			}
+			,search_option:{
+
+				is_item: true
+				,is_cnt: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '아이디', column: 'admin_id'}
+					,{ name: '이름', column: 'admin_name'}
+				]
+				,select: [
+					{ name: '등급', column: 'admin_level', items: [
+							{ column: 99, name: '최고관리자'}
+							,{ column: 50, name: '총판관리자'}
+							,{ column: 1, name: '일반관리자'}
+						]}
+					, { name: '사용 여부', column: 'admin_status', items: [
+							{ name: '사용', column: '1'}
+							,{ name: '미사용', column: '0'}
+						]
+					}
+				]
+			}
+			,is_item: false
 			,items: [
 
 			]
@@ -275,13 +238,16 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getAdminList'
 					,data: this.search
 				})
 
 				if(result.success){
 					this.items = result.data.result
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -312,8 +278,10 @@ export default {
 		,setItem: function (item){
 			if(this.item_new.uid == item.uid){
 				this.clear_item()
+				this.is_item = false
 			}else {
 				this.item_new = item
+				this.is_item = true
 			}
 		}
 		,clear_item: function(){
@@ -370,6 +338,9 @@ export default {
 			}finally {
 				await this.getData()
 			}
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
 		}
 	}
 	,created() {

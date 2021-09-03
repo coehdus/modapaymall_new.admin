@@ -1,18 +1,29 @@
 <template>
 	<div :class="'text-' + align">
-		<div class="pagination mt-10">
-			<div class="pg-prev">
-				<a @click="click(prevGroup)"><i class="xi-angle-left"></i></a>
+		<div class="mt-10 justify-center">
+			<div class="pg-prev  mr-10">
+				<v-icon
+					class="box bg-white"
+					@click="click(prevGroup)"
+				>mdi mdi-chevron-left</v-icon>
 			</div>
-			<div class="pg-body">
-				<div class="pg-num"
+			<div class="">
+				<button
+
 					v-for="item in (setLength)"
+					class="box prl-10 mr-10 bg-white size-px-14"
+					style="line-height: 170%"
 					:class="{ active: page_config.page == page_config.page_group * page_config.page_cnt - page_config.page_cnt + item}"
 					:key="item"
-				><a @click="click(page_config.page_group * page_config.page_cnt - page_config.page_cnt + item)">{{ page_config.page_group * page_config.page_cnt - page_config.page_cnt + item }}</a></div>
+					@click="click(page_config.page_group * page_config.page_cnt - page_config.page_cnt + item)"
+
+				>{{ page_config.page_group * page_config.page_cnt - page_config.page_cnt + item }}</button>
 			</div>
 			<div class="pg-next">
-				<a @click="click(nextGroup)"><i class="xi-angle-right"></i></a>
+				<v-icon
+					class="box bg-white"
+					@click="click(nextGroup)"
+				>mdi mdi-chevron-right</v-icon>
 			</div>
 		</div>
 	</div>
@@ -40,7 +51,7 @@
 				let length = 
 					this.page_config.total_group > this.page_config.page_group ?
 					this.page_config.page_cnt : this.page_config.total_page - ((this.page_config.page_group - 1)* this.page_config.page_cnt)
-				
+				console.log(length)
 				if(length <= 0){
 					length = 1
 				}
@@ -72,8 +83,8 @@
 				deep: true
 				,immediate: true
 				,handler: function(call){
-//					console.log('page_config')
-//					console.log(call)
+					console.log('page_config')
+					console.log(call)
 					if(call.page){
 						this.page_config.page = call.page
 					}
@@ -91,6 +102,7 @@
 					}
 					
 					let total_page = Math.ceil(this.page_config.total_count / this.page_config.list_cnt)
+
 					total_page = total_page > 0 ? total_page : 1
 					this.page_config.total_page = total_page
 					
@@ -106,3 +118,9 @@
 		}
 	}
 </script>
+
+<style>
+	.active {
+		background-color: #eee;
+	}
+</style>

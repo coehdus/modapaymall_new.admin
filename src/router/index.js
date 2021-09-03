@@ -43,7 +43,7 @@ const routes = [
 		,component: () => import('@/view/Auth/Result.vue')
 	}
 	,{
-		path: prefix + 'Member/List'
+		path: prefix + 'Member/List/:page?'
 		,name: 'MemberList'
 		,component: () => import('@/view/Member/MemberList.vue')
 	}
@@ -122,7 +122,11 @@ const routes = [
 		,name: 'SettingCodeList'
 		,component: () => import('@/view/Setting/CodeList.vue')
 	}
-
+	,{
+		path: prefix + 'Etc/Excel/Download'
+		,name: 'EtcExcelDownload'
+		,component: () => import('@/components/Excel')
+	}
 	,{
 		path: prefix + '*',
 		name:'404', 

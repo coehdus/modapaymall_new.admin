@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="side"
+		class="side bg-base"
 	>
 		<div
 			class="side-container flex-column"
@@ -205,13 +205,11 @@
 	.bg-side {
 		width: 100%; height: 100%;
 		position: fixed; left: 0; top: 0; z-index: 98;
-		background-color: gray;
 		opacity: 0.5;
 	}
 	.side-container{
 		height: 100%;
 		position: relative;  z-index: 99;
-		background-color: white;
 		overflow-y: auto;
 		border-right: 1px solid #ddd
 	}

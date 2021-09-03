@@ -321,3 +321,30 @@ button:disabled { cursor: no-drop}
 .position-absolute { position: absolute !important;}
 .position-absolute.icon-menu-down { right: 10px; top: 12px}
 
+
+
+
+.box-shadow-top { box-shadow: 0px 3px 6px black}
+.box-shadow-inset { box-shadow: 0px 0px 2px 1px #bbb inset}
+.box-shadow { box-shadow: 1px 1px 3px 1px #bbb}
+
+.border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
+.border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
+
+.bg-base { background-color: white}
+
+.logo-position {
+
+}
+.header-box-menu {
+    border-bottom: 1px solid #ddd;
+}
+
+.icon-box {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.bg-title {
+    padding: 10px;
+}
