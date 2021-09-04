@@ -21,7 +21,7 @@
 				<li
 					v-for="(item) in item_list"
 					:key="item.order_num_new"
-					class="  mb-10 "
+					class="mb-50 "
 				>
 					<div
 						class="justify-space-between color-white"
@@ -203,6 +203,10 @@ export default {
 					,{ key: 0, name: '결제금액', column: 'order_price'}
 					,{ key: 0, name: '총 상품금액', column: 'total_price'}
 					,{ key: 0, name: '배송비', column: 'delivery_price'}
+					,{ key: 0, name: '받는분', column: 'delivery_price'}
+					,{ key: 0, name: '우편번호', column: 'd_post'}
+					,{ key: 0, name: '주소', column: 'd_addr1'}
+					,{ key: 0, name: '상세주소', column: 'd_addr2'}
 				]
 				,content: null
 			}
