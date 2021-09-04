@@ -54,7 +54,8 @@
 							{{ item.d_addr2 }}
 						</div>
 					</div>
-					<ul>
+					<ul
+					>
 						<li
 							v-for="supply in item.supply_list"
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
@@ -68,7 +69,9 @@
 								<span class="flex-1 text-center">합계금액: {{ supply.delivery_price | makeComma }}</span>
 								<span class="flex-1"></span>
 							</div>
-							<ul>
+							<ul
+								class="pa-10"
+							>
 								<li
 									v-for="odt in supply.odt_list"
 									:key="'item_' + item.uid + 'supply_' + supply.uid + 'odt_' + odt.uid"
@@ -93,6 +96,7 @@
 									</div>
 									<div class="flex-1">판매가: {{ odt.op_price | makeComma }}</div>
 									<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
+
 									<div>
 										<template
 											v-for="(step, key) in codes.odt_status"
@@ -108,7 +112,7 @@
 										</template>
 									</div>
 
-									<div class=" flex-2 inline position-relative text-right">
+									<div class=" flex-2 text-right">
 
 										<span class="pa-5 box mr-10">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
 
@@ -124,8 +128,9 @@
 		</div>
 
 		<Pagination
-			:options="options"
-			class="text-center"
+			:program="program"
+			:align="'center'"
+			:options="search"
 		></Pagination>
 
 		<Excel
@@ -332,14 +337,16 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getOrderList'
 					,data: this.search
 				})
 
 				if(result.success){
 					this.items = result.data.result
-					this.tCnt = result.data.tCnt
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -397,6 +404,12 @@ export default {
 		items: {
 			deep: true
 			,handler: function(){
+			}
+		}
+		,'search.page': {
+			handler: function(call){
+				this.getData()
+				this.$set(this.$route.params, 'page', call)
 			}
 		}
 	}

@@ -205,9 +205,9 @@
 /* input */
 .theme-dark .select-list-type { border: 1px solid #ddd; width: 100%; padding: 13px; color: black; height: auto;}
 
-input { font-size: 14px; letter-spacing: -0.5px}
-input:disabled,
-input:read-only { background-color: #eee; color: #bbb;}
+.theme-dark input { font-size: 14px; letter-spacing: -0.5px}
+.theme-dark input:disabled,
+.theme-dark input:read-only { background-color: #222; color: #bbb; cursor: no-drop}
 
 .theme-dark .input-disabled { background-color: #eee}
 .theme-dark .input-secret { -webkit-text-security: disc }

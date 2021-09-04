@@ -85,6 +85,12 @@ input:focus,
 textarea:focus,
 button:focus { outline: none !important;}
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 img { vertical-align: middle }
 a img {border-width: 0; display: inline;}
 a:hover {border: 0;}

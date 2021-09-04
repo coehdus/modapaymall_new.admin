@@ -25,23 +25,27 @@
 							>{{ item.name }}</span>
 						</div>
 						<ul>
-							<li
+							<template
 								v-for="sub in item.sub"
-								:key="item.path + sub.path"
-								class="pa-10 "
-								:class="{'bg-black': $route.name == item.path + sub.path }"
-								@click="toPush(item, sub)"
 							>
-								<div
-									class="justify-space-between"
+								<li
+									v-if="sub.type.indexOf(member_info.admin_type) > -1"
+									:key="item.path + sub.path"
+									class="pa-10 "
+									:class="{'bg-black': $route.name.indexOf(item.path + sub.path) > -1}"
+									@click="toPush(item, sub)"
 								>
-									<span class="flex-column justify-center ptb-5">{{ sub.name }}</span>
-									<v-icon
-										v-show="$route.name != item.path + sub.path"
-										class="color-icon"
-									>mdi mdi-chevron-right</v-icon>
-								</div>
-							</li>
+									<div
+										class="justify-space-between"
+									>
+										<span class="flex-column justify-center ptb-5">{{ sub.name }}</span>
+										<v-icon
+											v-show="$route.name != item.path + sub.path"
+											class="color-icon"
+										>mdi mdi-chevron-right</v-icon>
+									</div>
+								</li>
+							</template>
 						</ul>
 					</li>
 				</template>
@@ -65,6 +69,7 @@
 							{
 								path: 'AdminList'
 								,name: '관리자 목록'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
@@ -72,6 +77,7 @@
 							,{
 								path: 'AgencyList'
 								,name: '대리점 목록'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
@@ -79,6 +85,7 @@
 							,{
 								path: 'SupplyList'
 								,name: '공급사 목록'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
@@ -93,6 +100,7 @@
 							{
 								path: 'List'
 								,name: '회원목록'
+								,type: ['admin', 'agency']
 								,params: {
 									page: 1
 								}
@@ -107,10 +115,12 @@
 							{
 								path: 'Category'
 								,name: '카테고리'
+								,type: ['admin']
 							}
 							,{
 								path: 'List'
 								,name: '상품 목록'
+								,type: ['admin', 'agency', 'supply']
 								,params: {
 									page: 1
 								}
@@ -125,6 +135,7 @@
 							{
 								path: 'List'
 								,name: '주문 목록'
+								,type: ['admin', 'agency', 'supply']
 								,params: {
 									page: 1
 								}
@@ -137,29 +148,41 @@
 						,type: ['admin', 'agency', 'supply']
 						,sub: [
 							{
-								path: 'AgencyList'
+								path: 'Management'
+								,name: '정산 내역'
+								,type: ['admin', 'agency', 'supply']
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'Agency'
 								,name: '대리점 정산'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
 							}
 							,{
-								path: 'SupplyList'
+								path: 'Supply'
 								,name: '공급사 정산'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
 							}
 							,{
-								path: 'DeliveryList'
+								path: 'Delivery'
 								,name: '배송비 정산'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}
 							}
 							,{
-								path: 'MinusList'
+								path: 'Minus'
 								,name: '정산 차감'
+								,type: ['admin']
 								,params: {
 									page: 1
 								}

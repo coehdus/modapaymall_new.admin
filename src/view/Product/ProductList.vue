@@ -21,13 +21,13 @@
 				<table class="mt-10 ">
 					<colgroup>
 						<col width="80px" />
-						<col width="150px" />
+						<col width="80px" />
 						<col width="auto" />
 						<col width="150px" />
 						<col width="150px" />
 						<col width="200px" />
 						<col width="150px" />
-						<col width="180px" />
+						<col width="150px" />
 						<col width="150px" />
 					</colgroup>
 					<thead>

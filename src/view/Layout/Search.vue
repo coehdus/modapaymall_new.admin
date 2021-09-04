@@ -9,6 +9,9 @@
 		</div>
 
 		<div class="flex-1 text-right">
+
+			<slot name="add">
+			</slot>
 			<input
 				v-if="option.sDate"
 				v-model="search.sDate"
@@ -52,6 +55,7 @@
 			<select
 				class="pa-5-10 mr-10"
 				v-model="search.list_cnt"
+				@change="$emit('click')"
 			>
 				<option
 					v-for="cnt in list_cnt"

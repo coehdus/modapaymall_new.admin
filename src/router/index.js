@@ -128,6 +128,36 @@ const routes = [
 		,component: () => import('@/components/Excel')
 	}
 	,{
+		path: prefix + 'Settlement/Management'
+		,name: 'SettlementManagement'
+		,component: () => import('@/view/Settlement/SettlementManagement')
+	}
+	,{
+		path: prefix + 'Settlement/Agency'
+		,name: 'SettlementAgency'
+		,component: () => import('@/view/Settlement/SettlementAgency')
+	}
+	,{
+		path: prefix + 'Settlement/Supply'
+		,name: 'SettlementSupply'
+		,component: () => import('@/view/Settlement/SettlementSupply')
+	}
+	,{
+		path: prefix + 'Settlement/Delivery'
+		,name: 'SettlementDelivery'
+		,component: () => import('@/view/Settlement/SettlementDelivery')
+	}
+	,{
+		path: prefix + 'Settlement/Minus'
+		,name: 'SettlementMinus'
+		,component: () => import('@/view/Settlement/SettlementMinus')
+	}
+	,{
+		path: prefix + 'Etc/Excel/Download'
+		,name: 'EtcExcelDownload'
+		,component: () => import('@/components/Excel')
+	}
+	,{
 		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')
