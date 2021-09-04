@@ -164,7 +164,7 @@
 				<Pagination
 					:program="program"
 					:align="'center'"
-					:options="options"
+					:options="search"
 				></Pagination>
 			</div>
 			<SideB

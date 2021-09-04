@@ -13,9 +13,11 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
+			class="mt-10 full-height full-width justify-space-between flex-column overflow-y-auto position-relative"
 		>
-			<div class="full-width">
+			<div
+				class="full-width full-height flex-column overflow-y-auto"
+			>
 				<table class="mt-10 ">
 					<colgroup>
 						<col width="80px" />
@@ -60,16 +62,19 @@
 								/>
 							</td>
 							<td
-								class="pdt-img"
 							>
-								<img
-									v-if="item.img"
-									:src="item.img"
-								/>
-								<v-icon
-									v-else
-									class="color-icon"
-								>mdi mdi-image</v-icon>
+								<div
+								class="pdt-img"
+								>
+									<img
+										v-if="item.img"
+										:src="item.img"
+									/>
+									<v-icon
+										v-else
+										class="color-icon"
+									>mdi mdi-image</v-icon>
+								</div>
 							</td>
 							<td
 								class="text-left"
@@ -204,7 +209,7 @@
 					<Pagination
 						:program="program"
 						:align="'center'"
-						:options="options"
+						:options="search"
 					></Pagination>
 				</div>
 			</div>
@@ -213,6 +218,8 @@
 				:title="'상품 정보'"
 				:bg-title="'bg-' + (item_new.uid ? (item_new.is_use == 1 ? 'green' : 'red') : '')"
 				@click="clear_item"
+				class="position-absolute full-width bg-base full-height"
+				style="left: 0; top: 0; z-index: 999"
 			>
 				<template
 					slot="item"
@@ -226,6 +233,8 @@
 						:category_list="category_list"
 
 						@click="save"
+						@setMainImg="setMainImg"
+						@setSubImg="setSubImg"
 					></ProductItem>
 				</template>
 			</SideB>
@@ -377,13 +386,16 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getProductList'
 					,data: this.search
 				})
 
 				if(result.success){
 					this.items = result.data.result
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -426,7 +438,7 @@ export default {
 				,pdt_company: ''
 				,pdt_category: ''
 			}
-			//this.is_item = false
+			this.is_item = false
 		}
 		,getSupplyList: async function(){
 			try{
@@ -484,6 +496,7 @@ export default {
 
 				if(result.success){
 					await this.getData()
+					this.clear_item()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -491,6 +504,18 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,setMainImg: function(file){
+
+			this.item_new.pdt_img1 = file
+		}
+		,setSubImg: function(files){
+
+			for(const [key, val] of Object.entries(files)){
+				this.$set(this.item_new, 'pdt_img' + (Number(key)+2), val)
+			}
+
+			this.$set(this.item_new, 'img_cnt', Object.keys(files).length)
 		}
 	}
 	,created() {
@@ -505,8 +530,22 @@ export default {
 		this.getSupplyList()
 		this.getCategoryList()
 	}
+	,watch: {
+		'search.page': {
+			handler: function(){
+				this.getData()
+			}
+		}
+	}
 }
 </script>
 
 <style>
+
+	.pdt-img {
+		width: 80px;
+		height: 80px;
+		overflow: hidden;
+	}
+	.pdt-img img { width: 100%}
 </style>

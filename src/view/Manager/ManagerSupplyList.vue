@@ -169,7 +169,8 @@
 					<Pagination
 						:program="program"
 						:align="'center'"
-						:options="options"
+						:options="search"
+
 					></Pagination>
 				</div>
 			</div>
@@ -414,8 +415,9 @@ export default {
 	}
 	,watch: {
 		'search.page': {
-			handler: function(){
+			handler: function(call){
 				this.getData()
+				this.$set(this.$route.params, 'page', call)
 			}
 		}
 	}

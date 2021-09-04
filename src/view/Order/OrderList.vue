@@ -1,85 +1,27 @@
 <template>
 	<div
-		class="full-height flex-column"
+		class="full-height flex-column "
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height flex-column overflow-y-auto"
+			class="mt-10 full-height flex-column overflow-y-auto"
 		>
-			<div
-				class="  position-relative"
-			>
-				<div class=" pa-10 justify-space-between bg-white box-shadow mb-10">
-
-					<span >총 <span class="size-em-12 color-red">{{ tCnt }}</span> 건</span>
-					<div>
-						<input
-							v-model="search.sDate"
-							class="box pa-5"
-							placeholder="검색 기간 시작일"
-						/>
-						<span
-							class="pa-5"
-							style="display: inline-block;"
-						> ~ </span>
-						<input
-							v-model="search.eDate"
-							class="box pa-5 mr-10"
-							placeholder="검색 기간 종료일"
-						/>
-
-						<select
-							class="pa-5 mr-10"
-							v-model="search.o_status"
-							@change="getData"
-						>
-							<option
-								:value="''"
-							>결제상태</option>
-							<option
-								v-for="code in codes.o_status"
-								:key="code.code"
-								:value="code.code"
-							>{{ code.name }}</option>
-						</select>
-
-						<select
-							class="pa-5 mr-10"
-							v-model="search.search_type"
-						>
-							<option
-								:value="''"
-							>검색조건</option>
-							<option
-								:value="'pdt_name'"
-							>상품명</option>
-							<option
-								:value="'member_id'"
-							>주문자 ID</option>
-							<option
-								:value="'member_name'"
-							>주문자명</option>
-						</select>
-
-						<input
-							v-model="search.search_value"
-							class="box  pa-5 vertical-middle mr-10"
-							placeholder="검색어를 입력하세요"
-						/>
-
-						<button
-							class="btn-blue pa-5 prl-10 vertical-middle "
-							@click="getData"
-						>검색</button>
-					</div>
-				</div>
-			</div>
 			<ul
 				class=" full-height flex-column overflow-y-auto"
 			>
 				<li
 					v-for="(item) in item_list"
 					:key="item.order_num_new"
-					class="pa-10 box-shadow mb-10 bg-white"
+					class="  mb-10 "
 				>
 					<div
 						class="justify-space-between color-white"
@@ -118,7 +60,7 @@
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
 							class="under-line-not-last"
 						>
-							<div class="pa-10 justify-space-between under-line-dashed bg-eee">
+							<div class="pa-10 justify-space-between under-line-dashed ">
 								<span class="flex-1">{{ supply.seller_id }}</span>
 								<span class="flex-1"></span>
 								<span class="flex-1 text-center">공급가: {{ supply.total_price | makeComma }}</span>
@@ -186,18 +128,26 @@
 			class="text-center"
 		></Pagination>
 
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
+
 	</div>
 </template>
 
 <script>
 
 import Pagination from "../../components/Pagination";
+import Search from "../Layout/Search";
+import Excel from "../../components/Excel";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: { Pagination},
-	props: ['Axios', 'TOKEN', 'codes', 'rules', 'member_info']
+	components: {Excel, Search, Pagination},
+	props: ['Axios', 'TOKEN', 'codes', 'rules', 'member_info', 'date']
 	,data: function (){
 		return {
 			program: {
@@ -212,24 +162,50 @@ export default {
 				ATOKEN: this.TOKEN
 				,o_status: ''
 				,search_type: ''
+				,list_cnt: 10
+			}
+			,search_option:{
+
+				is_excel: true
+				,is_cnt: true
+				,sDate: true
+				,eDate: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '주문번호', column: 'order_num_new'}
+					,{ name: '아이디', column: 'member_id'}
+					,{ name: '이름', column: 'member_name'}
+				]
+				,select: [
+					{ name: '주문상태', column: 'o_status', items: [
+							{ name: '입금대기', column: '1'}
+							,{ name: '결제완료', column: '2'}
+							,{ name: '취소요청', column: '3'}
+							,{ name: '주문취소', column: '4'}
+						]
+					}
+				]
 			}
 			,items: [
 
 			]
 			,item_new: {
-				admin_level: 0
 			}
-			,levels: [
-				{ code: 99, name: '최고관리자'}
-				,{ code: 50, name: '총판관리자'}
-				,{ code: 1, name: '일반관리자'}
-			]
-			,status: [
-				{ code: 99, name: '최고관리자'}
-				,{ code: 50, name: '총판관리자'}
-				,{ code: 1, name: '일반관리자'}
-			]
 			,tCnt: 0
+			,is_excel: false
+			,excel_data: {
+				name: '주문 목록'
+				,header: [
+					{ key: 0, name: '주문번호', column: 'order_num_new'}
+					,{ key: 0, name: '아이디', column: 'member_id'}
+					,{ key: 0, name: '이름', column: 'member_name'}
+					,{ key: 0, name: '결제금액', column: 'order_price'}
+					,{ key: 0, name: '총 상품금액', column: 'total_price'}
+					,{ key: 0, name: '배송비', column: 'delivery_price'}
+				]
+				,content: null
+			}
 		}
 	}
 	,computed: {
@@ -394,6 +370,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,toExcel: function(){
+			this.excel_data.content = this.items
+			this.is_excel = true
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
 		}
 	}
 	,created() {

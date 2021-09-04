@@ -3,7 +3,7 @@
 		<div class="mt-10 justify-center">
 			<div class="pg-prev  mr-10">
 				<v-icon
-					class="box bg-white"
+					class="box color-icon"
 					@click="click(prevGroup)"
 				>mdi mdi-chevron-left</v-icon>
 			</div>
@@ -11,7 +11,7 @@
 				<button
 
 					v-for="item in (setLength)"
-					class="box prl-10 mr-10 bg-white size-px-14"
+					class="box prl-10 mr-10 bg-page size-px-14"
 					style="line-height: 170%"
 					:class="{ active: page_config.page == page_config.page_group * page_config.page_cnt - page_config.page_cnt + item}"
 					:key="item"
@@ -21,7 +21,7 @@
 			</div>
 			<div class="pg-next">
 				<v-icon
-					class="box bg-white"
+					class="box color-icon"
 					@click="click(nextGroup)"
 				>mdi mdi-chevron-right</v-icon>
 			</div>
@@ -50,8 +50,9 @@
 			setLength: function(){
 				let length = 
 					this.page_config.total_group > this.page_config.page_group ?
-					this.page_config.page_cnt : this.page_config.total_page - ((this.page_config.page_group - 1)* this.page_config.page_cnt)
-				console.log(length)
+					this.page_config.page_cnt :
+					this.page_config.total_page - ((this.page_config.page_group - 1) * this.page_config.page_cnt)
+				console.log('length : ' + length)
 				if(length <= 0){
 					length = 1
 				}
@@ -121,6 +122,7 @@
 
 <style>
 	.active {
-		background-color: #eee;
+		background-color: #bbb !important;
+		color: #333;
 	}
 </style>

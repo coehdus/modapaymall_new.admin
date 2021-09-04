@@ -86,7 +86,9 @@
 					maxlength="250"
 				/>
 			</div>
+
 			<div class="mt-10">
+
 				<label
 					class="box pa-10 justify-space-between"
 				>
@@ -105,6 +107,7 @@
 					/>
 				</label>
 			</div>
+
 			<div class="mt-10">
 
 				<label
@@ -133,6 +136,13 @@
 					v-model="item_new.pdt_info"
 					placeholder="상품 정보"
 				></textarea>
+				<editor
+					:initialValue="item_new.pdt_info"
+					:options="editorOptions"
+					height="500px"
+					initialEditType="wysiwyg"
+					previewStyle="vertical"
+				/>
 			</div>
 
 			<div
@@ -154,15 +164,25 @@
 </template>
 
 <script>
+import '@toast-ui/editor/dist/toastui-editor.css';
+
+import { Editor } from '@toast-ui/vue-editor';
+
 export default {
 	name: 'ProductItem'
 	,props: ['item_new', 'member_info', 'rules', 'supply_list', 'category_list']
+	,components: {
+		editor: Editor
+	}
 	,data: function(){
 		return {
 			main_img: null
 			,sub_img: [
 
 			]
+			,editorOptions: {
+				hideModeSwitch: true
+			}
 		}
 	}
 	,computed: {
@@ -203,12 +223,25 @@ export default {
 	,methods: {
 		setMainImg: function(e){
 			this.main_img = e.target.files[0]
-
+			this.$emit('setMainImg', this.main_img)
 		}
 		,setSubImg: function(e){
-
 			this.sub_img = e.target.files
+			console.log(this.sub_img)
+			this.$emit('setSubImg', this.sub_img)
 		}
 	}
 }
 </script>
+
+<style>
+
+.v-file-input__text--placeholder {
+	color: #bbb !important;
+	font-size: 14px;
+}
+
+.theme--light.v-icon {
+	color: #bbb;
+}
+</style>
