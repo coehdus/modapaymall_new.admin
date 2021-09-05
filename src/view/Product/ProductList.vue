@@ -21,22 +21,17 @@
 				<table class="mt-10 ">
 					<colgroup>
 						<col width="80px" />
-						<col width="80px" />
 						<col width="auto" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="200px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="80px" />
 					</colgroup>
 					<thead>
 						<tr>
-							<th>
-								<input
-									type="checkbox"
-								/>
-							</th>
 							<th
 								colspan="2"
 							>상품명</th>
@@ -57,12 +52,6 @@
 							:key="item.uid"
 						>
 							<td>
-								<input
-									type="checkbox"
-								/>
-							</td>
-							<td
-							>
 								<div
 								class="pdt-img"
 								>
@@ -78,8 +67,12 @@
 							</td>
 							<td
 								class="text-left"
-							>[{{ item.shop_name}}] <br/> {{ item.pdt_name }}</td>
-							<td>{{ item.pdt_price | makeComma }}</td>
+							>
+								[{{ item.shop_name}}] <br/>
+								[{{ item.pdt_category}}] <br/>
+								{{ item.pdt_name }}
+							</td>
+							<td>{{ item.pdt_purchase | makeComma }}</td>
 							<td>{{ item.shop_delivery_price | makeComma }}</td>
 							<td
 								class="full-height"

@@ -23,7 +23,7 @@
 				<v-icon
 					v-else
 					class="color-icon"
-				>mdi mdi-checkbox-marked</v-icon>
+				>mdi mdi-checkbox-blank-outline</v-icon>
 				<span
 					:class="{ 'color-green': search.agency_use == 1}"
 				>진열 상품만 보기</span>
@@ -40,25 +40,19 @@
 				<table class="mt-10 ">
 					<colgroup>
 						<col width="80px" />
-						<col width="80px" />
 						<col width="auto" />
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
-						<col width="80px" />
 						<col width="120px" />
 						<col width="120px" />
-						<col width="150px" />
+						<col width="120px" />
+						<col width="120px" />
 						<col width="80px" />
 					</colgroup>
 					<thead>
 					<tr>
-						<th>
-							<input
-								type="checkbox"
-							/>
-						</th>
 						<th
 							colspan="2"
 						>상품명</th>
@@ -68,9 +62,7 @@
 						<th>배송비</th>
 						<th>재고</th>
 						<th>판매여부</th>
-						<th
-							v-if="!is_supply"
-						>사용여부</th>
+						<th>진열여부</th>
 						<th>등록일</th>
 						<th>상세정보</th>
 					</tr>
@@ -80,11 +72,6 @@
 						v-for="item in item_list"
 						:key="item.uid"
 					>
-						<td>
-							<input
-								type="checkbox"
-							/>
-						</td>
 						<td
 						>
 							<div
@@ -106,6 +93,20 @@
 							[{{ item.shop_name}}] <br/>
 							{{ item.pdt_category_name }} <br/>
 							{{ item.pdt_name }}
+							<div
+								v-if="item.agency_use == 1"
+								class="mt-5"
+							>
+								메인진열:
+								<label
+									class="mr-10"
+								><input type="checkbox" class="vertical-middle" @change="setPdtType(item, 'new')" :checked="item.is_new"/> NEW</label>
+								<label
+									class="mr-10"
+								><input type="checkbox" class="vertical-middle" @change="setPdtType(item, 'hot')" :checked="item.is_hot"/> HOT</label><label
+									class="mr-10"
+								><input type="checkbox" class="vertical-middle" @change="setPdtType(item, 'reccom')" :checked="item.is_reccom"/> 추천 상품</label>
+							</div>
 						</td>
 						<td>{{ item.pdt_purchase | makeComma }} 원</td>
 						<td>
@@ -251,6 +252,7 @@ export default {
 			,options: {
 
 			}
+			,pdt_type: []
 			,supply_list: []
 			,is_excel: false
 			,excel_data: {
@@ -264,8 +266,8 @@ export default {
 					,{ key: 0, name: '판매가', column: 'agency_sale_price'}
 					,{ key: 0, name: '공급 배송비', column: 'pdt_delivery'}
 					,{ key: 0, name: '재고', column: 'pdt_stock'}
-					,{ key: 0, name: '판매여부', column: 'agency_use_name'}
-					,{ key: 0, name: '사용여부', column: 'is_use_name'}
+					,{ key: 0, name: '판매여부', column: 'is_use_name'}
+					,{ key: 0, name: '진열여부', column: 'agency_use_name'}
 					,{ key: 0, name: '등록일', column: 'wDate'}
 				]
 				,content: null
@@ -284,16 +286,34 @@ export default {
 					item.img = ''
 				}
 
-				if(item.is_use == 'y'){
+				if(item.is_use == '1'){
 					item.is_use_name = '판매가능'
 				}else{
 					item.is_use_name = '판매불가'
+				}
+
+				if(item.agency_use == '1'){
+					item.agency_use_name = '진열상품'
+				}else{
+					item.agency_use_name = '미진열'
 				}
 
 				item.is_sold_name = self.codes.is_sold[item.is_sold]
 
 				if(item.is_sold == 2){
 					item.is_sold_name = item.pdt_stock
+				}
+
+				if(item.agency_pdt_type) {
+					if (item.agency_pdt_type.indexOf('new') > -1) {
+						item.is_new = true
+					}
+					if (item.agency_pdt_type.indexOf('hot') > -1) {
+						item.is_hot = true
+					}
+					if (item.agency_pdt_type.indexOf('reccom') > -1) {
+						item.is_reccom = true
+					}
 				}
 
 				item.index = index
@@ -401,7 +421,7 @@ export default {
 			}
 		}
 		,toExcel: function(){
-			this.excel_data.content = this.items
+			this.excel_data.content = this.item_list
 			this.is_excel = true
 		}
 		,toItem: function (){
@@ -410,6 +430,20 @@ export default {
 		,getSearchData: function(){
 			this.$set(this.search, 'page', 1)
 			this.getData()
+		}
+		,setPdtType: function(item, type){
+
+			let pdt_type = item.agency_pdt_type.split(',')
+
+			if(pdt_type.indexOf(type) > -1){
+				pdt_type.pop(pdt_type.indexOf(type))
+			}else {
+				pdt_type.push(type)
+			}
+
+			item.pdt_type = pdt_type
+
+			this.update(item)
 		}
 	}
 	,created() {

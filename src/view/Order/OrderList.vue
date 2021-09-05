@@ -24,29 +24,45 @@
 					class="mb-50 "
 				>
 					<div
-						class="justify-space-between color-white"
+						class="pa-10 justify-space-between color-black"
 						:class="'bg-light-' + item.o_status_color"
 					>
-						<div class="pa-10 flex-1">
-							<span class="color-white">[{{ item.o_status_name }}]</span>
-							<span class="color-white"> {{ item.order_num_new}}</span>
+						<div class=" flex-1">
+							<span class="color-black">
+								[{{ item.o_status_name }}]
+							</span>
+							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="pa-10 flex-1 color-white text-center">{{ item.pay_info }}</span>
-						<span class="pa-10 flex-1 color-white text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-right">{{ item.wDate }}</span>
+						<span class=" flex-1 color-black text-center">{{ item.pay_info }}</span>
+						<span class=" flex-1 color-black text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
+						<span class=" flex-1 color-black text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
+						<span class=" flex-1 color-black text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
+						<span class=" flex-1 color-black text-right">{{ item.wDate }}</span>
+					</div>
+					<div class="pa-10 under-line">
+						<button
+							v-if="item.o_status == '1'"
+							class=" bg-green prl-10 radius-10"
+							@click="update(item, 2)"
+						><span class="vertical-middle color-black ">입금 확인</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
+						<button
+							v-else-if="item.o_status == '2' || item.o_status == '3'"
+							class="bg-light-red prl-10 radius-10"
+							@click="update(item, 4)"
+						><span class="vertical-middle color-black">주문 취소</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
 							class="pa-10"
 						>
+							주문자 정보:
 							{{ item.member_id }} /
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
 						<div class="pa-10">
+							배송지 정보:
 							{{ item.d_name }} /
 							{{ item.d_tell }} /
 							{{ item.d_post }}
@@ -388,6 +404,25 @@ export default {
 		}
 		,toItem: function (){
 			this.is_item = !this.is_item
+		}
+		,update: async function(item, o_status){
+			item.next_status = o_status
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postOrderUpdate'
+					,data: item
+				})
+
+				if(result.success){
+					item.o_status = o_status
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
 		}
 	}
 	,created() {

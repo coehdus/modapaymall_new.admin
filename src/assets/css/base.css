@@ -87,6 +87,7 @@
 .color-purple-light { color: #6f7dff }
 
 .color-black { color: black !important;}
+.color-333 { color: #333}
 
 .vertical-middle { vertical-align: middle !important;}
 .vertical-top { vertical-align: top !important;}
@@ -209,6 +210,7 @@
 .bg-light-blue { background-color: #eee;}
 .bg-light-red { background-color: #EF9A9A;}
 .bg-black { background-color: black;}
+.bg-light-orange { background-color: lightsalmon;}
 
 
 /* input */

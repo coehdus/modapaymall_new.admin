@@ -1,186 +1,159 @@
 <template>
 	<div
-		class="full-height justify-space-between"
+		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height full-width"
+			class="mt-10 full-height full-width justify-space-between flex-column overflow-y-auto position-relative"
 		>
-			<div class=" ptb-10 text-right bg-white">
-
-				<select
-					class="pa-5 mr-10"
-					v-model="search.search_type"
-				>
-					<option
-						:value="''"
-					>검색조건</option>
-					<option
-						:value="'pdt_name'"
-					>상품명</option>
-				</select>
-
-				<input
-					v-model="search.search_value"
-					class="pa-5 box vertical-middle mr-10 "
-					placeholder="검색어를 입력하세요"
-				/>
-
-				<button
-					class="btn-blue pa-5 prl-10 vertical-middle mr-10"
-					@click="getData"
-				>검색</button>
-
-			</div>
-			<table class="mt-10 bg-white">
-				<colgroup>
-					<col width="40px" />
-					<col width="120px" />
-					<col width="auto" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="200px" />
-					<col width="150px" />
-					<col width="150px" />
-					<col width="150px" />
-				</colgroup>
-				<thead>
-				<tr>
-					<th>
-						<input
-							type="checkbox"
-						/>
-					</th>
-					<th
-						colspan="2"
-					>상품명</th>
-					<th>공급가</th>
-					<th>상품 배송비</th>
-					<th>재고</th>
-					<th>판매여부</th>
-					<th>등록일</th>
-					<th>상세정보</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr
-					v-for="item in item_list"
-					:key="item.uid"
-				>
-					<td>
-						<input
-							type="checkbox"
-						/>
-					</td>
-					<td
-					>
-						<div
-							class="pdt-img flex-column justify-center"
-						>
-							<img
-								v-if="item.img"
-								:src="item.img"
-							/>
-							<v-icon
-								v-else
-							>mdi mdi-image</v-icon>
-						</div>
-					</td>
-					<td
-						class="text-left"
-					>
-						<input
-							v-model="item.pdt_name"
-							type="text"
-							placeholder="상품명"
-							class="box pa-5"
-							maxlength="50"
-						/>
-					</td>
-					<td>
-						<input
-							v-model="item.pdt_purchase"
-							type="number"
-							placeholder="공급가"
-							class="box pa-5"
-							:rules="[rules.max(item, 'pdt_purchase', 10)]"
-						/>
-					</td>
-					<td>
-						<input
-							v-model="item.pdt_delivery"
-							type="number"
-							placeholder="상품 배송비"
-							class="box pa-5"
-							:rules="[rules.max(item, 'pdt_purchase', 10)]"
-						/>
-					</td>
-					<td
-						class="full-height"
-					>
-						<div
-							class=" flex-row justify-space-between"
-						>
-							<button
-								class=" flex-1"
-								:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="items[item.index].is_sold = 1; update(item)"
-							>무한</button>
-							<button
-								class=" flex-1 "
-								:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
-								@click="items[item.index].is_sold = 2; update(item)"
-							>품절</button>
-							<button
-								class="  flex-1"
-								:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
-								@click="items[item.index].is_sold = 3; update(item)"
-							>재고</button>
-							<input
-								v-model="items[item.index].pdt_stock"
-								class=" flex-1 ptb-5"
-								style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
-								@change="items[item.index].is_sold = 3; update(item)"
-							/>
-						</div>
-					</td>
-					<td
-						class="full-height"
-					>
-						<div
-							v-if="is_supply"
-							class=" flex-row justify-center"
-						>
-							<v-icon
-								class="pa-5 "
-								:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-								@click="item.is_use = 1; update(item)"
-							>mdi mdi-cart</v-icon>
-							<v-icon
-								class="pa-5  "
-								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
-								@click="item.is_use = 0; update(item)"
-							>mdi mdi-cart-off</v-icon>
-						</div>
-					</td>
-					<td>{{ item.wDate.substring(0, 10) }}</td>
-					<td
-						@click="setItem(item)"
-					>
-						<v-icon
-						>mdi mdi-arrow-right-bold-box-outline</v-icon>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-
 			<div
-				class="mt-auto"
+				class="full-width full-height flex-column overflow-y-auto"
 			>
-				<Pagination
-					:program="program"
-					:align="'center'"
-					:options="options"
-				></Pagination>
+				<table class="mt-10 ">
+					<colgroup>
+						<col width="80px" />
+						<col width="auto" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="200px" />
+						<col width="120px" />
+						<col width="120px" />
+						<col width="80px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th
+							colspan="2"
+						>상품명</th>
+						<th>공급가</th>
+						<th>상품 배송비</th>
+						<th>재고</th>
+						<th>판매여부</th>
+						<th>등록일</th>
+						<th>상세정보</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr
+						v-for="item in item_list"
+						:key="item.uid"
+					>
+						<td>
+							<div
+								class="pdt-img flex-column justify-center"
+							>
+								<img
+									v-if="item.img"
+									:src="item.img"
+								/>
+								<v-icon
+									v-else
+									class="color-icon"
+								>mdi mdi-image</v-icon>
+							</div>
+						</td>
+						<td
+							class="text-left"
+						>
+							[{{ item.pdt_category }}] <br/>
+							{{ item.pdt_name }}
+						</td>
+						<td>
+							<input
+								v-model="item.pdt_purchase"
+								type="number"
+								placeholder="공급가"
+								class="box pa-5"
+								:rules="[rules.max(item, 'pdt_purchase', 10)]"
+							/>
+						</td>
+						<td>
+							<input
+								v-model="item.pdt_delivery"
+								type="number"
+								placeholder="상품 배송비"
+								class="box pa-5"
+								:rules="[rules.max(item, 'pdt_purchase', 10)]"
+							/>
+						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-space-between"
+							>
+								<button
+									class=" flex-1"
+									:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 1; update(item)"
+								>무한</button>
+								<button
+									class=" flex-1 "
+									:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 2; update(item)"
+								>품절</button>
+								<button
+									class="  flex-1"
+									:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 3; update(item)"
+								>수량</button>
+								<input
+									v-model="items[item.index].pdt_stock"
+									class=" flex-1 ptb-5"
+									style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
+									@change="items[item.index].is_sold = 3; update(item)"
+								/>
+							</div>
+						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								v-if="is_supply"
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5 "
+									:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default ' "
+									@click="item.is_use = 1; update(item)"
+								>mdi mdi-cart</v-icon>
+								<v-icon
+									class="pa-5  "
+									:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default ' "
+									@click="item.is_use = 0; update(item)"
+								>mdi mdi-cart-off</v-icon>
+							</div>
+						</td>
+						<td>{{ item.wDate.substring(0, 10) }}</td>
+						<td
+							@click="setItem(item)"
+						>
+							<v-icon
+								class="color-icon"
+							>mdi mdi-arrow-right-bold-box-outline</v-icon>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<div
+					class="mt-auto"
+				>
+					<Pagination
+						:program="program"
+						:align="'center'"
+						:options="options"
+					></Pagination>
+				</div>
 			</div>
 		</div>
 
@@ -194,17 +167,25 @@
 
 			</div>
 		</SideB>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
 	</div>
 </template>
 
 <script>
 import SideB from "../Layout/SideB";
 import Pagination from "@/components/Pagination";
+import Search from "../Layout/Search";
+import Excel from "../../components/Excel";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules']
+	components: {Excel, Search, Pagination, SideB},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules', 'date']
 	,data: function (){
 		return {
 			program: {
@@ -216,6 +197,17 @@ export default {
 				ATOKEN: this.TOKEN
 				,pdt_company: ''
 				,search_type: 'pdt_name'
+				,list_cnt: 10
+			}
+			,search_option:{
+				is_excel: true
+				,is_item: false
+				,is_cnt: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '상품명', column: 'pdt_name'}
+				]
 			}
 			,items: [
 
@@ -227,6 +219,20 @@ export default {
 
 			}
 			,supply_list: []
+			,is_excel: false
+			,excel_data: {
+				name: '상품 목록'
+				,header: [
+					{ key: 0, name: '카테고리', column: 'category_name'}
+					,{ key: 0, name: '상품명', column: 'pdt_name'}
+					,{ key: 0, name: '공급가', column: 'pdt_purchase'}
+					,{ key: 0, name: '상품 배송비', column: 'pdt_delivery'}
+					,{ key: 0, name: '재고', column: 'pdt_stock_name'}
+					,{ key: 0, name: '진열여부', column: 'is_use_name'}
+					,{ key: 0, name: '등록일', column: 'wDate'}
+				]
+				,content: null
+			}
 		}
 	}
 	,computed: {
@@ -285,6 +291,9 @@ export default {
 
 				if(result.success){
 					this.items = result.data.result
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -341,6 +350,13 @@ export default {
 				console.log(e)
 			}
 		}
+		,toExcel: function(){
+			this.excel_data.content = this.item_list
+			this.is_excel = true
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
+		}
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
@@ -351,6 +367,13 @@ export default {
 		}
 		this.getData()
 		this.getSupplyList()
+	}
+	,watch: {
+		'search.page': {
+			handler: function(){
+				this.getData()
+			}
+		}
 	}
 }
 </script>
