@@ -136,13 +136,6 @@
 					v-model="item_new.pdt_info"
 					placeholder="상품 정보"
 				></textarea>
-				<editor
-					:initialValue="item_new.pdt_info"
-					:options="editorOptions"
-					height="500px"
-					initialEditType="wysiwyg"
-					previewStyle="vertical"
-				/>
 			</div>
 
 			<div
@@ -164,15 +157,11 @@
 </template>
 
 <script>
-import '@toast-ui/editor/dist/toastui-editor.css';
-
-import { Editor } from '@toast-ui/vue-editor';
 
 export default {
 	name: 'ProductItem'
 	,props: ['item_new', 'member_info', 'rules', 'supply_list', 'category_list']
 	,components: {
-		editor: Editor
 	}
 	,data: function(){
 		return {

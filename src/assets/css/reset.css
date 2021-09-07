@@ -77,7 +77,7 @@ a:active {
 input[type=text],
 input[type=number],
 input[type=email],
-input[type=password] { width: 100%; letter-spacing: 1px}
+input[type=password] { width: auto; letter-spacing: 1px}
 
 input[type=checkbox],
 input[type=radio] { vertical-align: text-bottom }

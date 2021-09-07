@@ -155,18 +155,31 @@
 					></Pagination>
 				</div>
 			</div>
-		</div>
 
-		<SideB
-			v-if="item.uid"
-			:title="'상품 상세 정보'"
-		>
-			<div
-				slot="item"
+			<SideB
+				v-if="item.uid"
+				:title="'상품 상세 정보'"
+				style="position: absolute; right: 0; top: 160px; width: 100%; height: calc(100% - 160px)"
+				class="bg-base"
 			>
+				<template
+					slot="item"
+					class="flex-column overflow-y-auto "
+				>
+					<ProductItem
+						:item_new="item_new"
+						:rules="rules"
+						:member_info="member_info"
+						:supply_list="supply_list"
+						:category_list="category_list"
 
-			</div>
-		</SideB>
+						@click="save"
+						@setMainImg="setMainImg"
+						@setSubImg="setSubImg"
+					></ProductItem>
+				</template>
+			</SideB>
+		</div>
 
 		<Excel
 			v-if="is_excel"
@@ -284,7 +297,7 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getProductList'
 					,data: this.search
 				})
@@ -323,18 +336,12 @@ export default {
 			}
 		}
 		,setItem: function (item){
-			if(this.item.uid == item.uid){
-				this.item = {
-
-				}
-			}else {
-				this.item = item
-			}
+			this.$router.push({ name: 'ProductDetail', params: { pdt_code: item.pdt_code }})
 		}
 		,getSupplyList: async function(){
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getSupplyList'
 					,data: {
 						ATOKEN: this.TOKEN

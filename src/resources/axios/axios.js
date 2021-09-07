@@ -34,6 +34,8 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 		if(method != 'get'){
 			const formData = new FormData();
 			for(let key in data){
+				console.log(key)
+				console.log(data[key])
 				formData.append(key, data[key])
 			}
 			if(multipart){
