@@ -5,6 +5,8 @@ export const codes = {
 		title: 'delimall'
 		,copyright: 'delimall'
 	}
+	,live_url: 'http://delimall.co.kr/Auth/Join/'
+	,dev_url: 'http://localhost:8080/Auth/Join/'
 	,img_url: 'http://delimall.co.kr/API/data/product/'
 	,pay_div: {
 		card: { code: 'card', name: '카드결제', color: 'blue'}

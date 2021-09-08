@@ -6,6 +6,8 @@
 			v-if="program.top"
 			:program="program"
 			:member_info="member_info"
+			:codes="codes"
+			:Base64="Base64"
 
 			@push="toLocation"
 		></Top>
@@ -87,7 +89,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes']
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes', 'Base64']
 		,components: {Search, Title, Bottom, Side, Top, Notify }
 		,data: function(){
 			return {

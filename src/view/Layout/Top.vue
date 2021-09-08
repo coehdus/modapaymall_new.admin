@@ -6,22 +6,33 @@
 			class="logo bg-base pa-10 color-white text-center"
 			@click="$emit('push', 'Index')"
 		>Logo Position</div>
-		<div class="pa-10">
-			{{ admin_div_name }}
-			{{ member_info.admin_name }}
-			({{ member_info.admin_id}}) 님 환영합니다
-			<button
-				class="btn-blue pa-5-10 size-px-12"
-				@click="confirmLogout"
-			>로그아웃</button>
+		<div class=" pa-10 ">
+			<span
+				v-show="member_info.admin_type == 'agency'"
+				@click="copy"
+				class="mr-10 bg-black pa-5-10 radius-10"
+			>
+				대리점 코드 발급
+			</span>
+			<span>
+				{{ admin_div_name }}
+				{{ member_info.admin_name }}
+				({{ member_info.admin_id}}) 님 환영합니다
+				<button
+					class="btn-blue pa-5-10 size-px-12"
+					@click="confirmLogout"
+				>로그아웃</button>
+			</span>
+
 		</div>
 	</div>
 </template>
 
 <script>
+
 	export default{
 		name: 'Top'
-		,props: ['member_info']
+		,props: ['member_info', 'codes', 'Base64']
 		,computed: {
 			admin_div_name: function(){
 				let name = ''
@@ -52,6 +63,20 @@
 					sessionStorage.removeItem('delimallAT')
 					document.location.href= '/ADMIN/Auth/Login'
 				}
+			}
+
+			,clipBoard: function (val){
+				const t = document.createElement("textarea");
+				document.body.appendChild(t);
+				t.value = val;
+				t.select();
+				document.execCommand('copy');
+				document.body.removeChild(t);
+			}
+
+			,copy: function (){
+				this.clipBoard(this.codes.dev_url + encodeURI(this.Base64.encode(this.member_info.admin_id)));
+				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 		}
 		,created() {
