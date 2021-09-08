@@ -48,10 +48,13 @@
 					:key="$route.fullPath"
 					:date="date"
 					:codes="codes"
+					:category_list="category_list"
+					:supply_list="supply_list"
 
 					@setNotify="setNotify"
 					@onLoad="setProgram"
 					@push="toLocation"
+					@goBack="goBack()"
 
 					class="pa-10 overflow-y-auto"
 				></router-view>
@@ -98,6 +101,8 @@
 				,cart_items: [
 
 				]
+				,category_list: null
+				,supply_list: null
 			}
 		}
 		,computed:{
@@ -126,8 +131,51 @@
 					console.log(e)
 				});
 			}
+			,goBack: function(){
+				this.$router.back()
+			}
+			,getSupplyList: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/getSupplyList'
+						,data: {
+							ATOKEN: this.TOKEN
+						}
+					})
+
+					if(result.success){
+						this.supply_list = result.data.result
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
+			,getCategoryList: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/getCategoryList'
+						,data: {
+							ATOKEN: this.TOKEN
+						}
+					})
+
+					if(result.success){
+						this.category_list = result.data.result
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
 		}
 		,created: function(){
+			this.getCategoryList()
+			this.getSupplyList()
 		}
 		,watch: {
 			TOKEN: {

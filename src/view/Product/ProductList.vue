@@ -1,16 +1,33 @@
 <template>
 	<div
-		class="full-height flex-column"
+		class="full-height flex-column position-relative"
 	>
 		<Search
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="toSearch"
+			@click="toSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
-		></Search>
+		>
+			<template
+				slot="add"
+			>
+				<select
+					v-model="search.pdt_company"
+					class="pa-5-10 mr-10"
+					@change="toSearch"
+				>
+					<option value="">공급사</option>
+					<option
+						v-for="supply in supply_list"
+						:key="'supply_' + supply.uid"
+						:value="supply.seller_id"
+					>{{ supply.shop_name }}</option>
+				</select>
+			</template>
+		</Search>
 
 		<div
 			class="mt-10 full-height full-width justify-space-between flex-column overflow-y-auto position-relative"
@@ -28,6 +45,7 @@
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
+						<col width="120px" />
 						<col width="80px" />
 					</colgroup>
 					<thead>
@@ -37,6 +55,7 @@
 							>상품명</th>
 							<th>공급가</th>
 							<th>공급 배송비</th>
+							<th>상품 배송비</th>
 							<th>재고</th>
 							<th>판매여부</th>
 							<th
@@ -53,7 +72,7 @@
 						>
 							<td>
 								<div
-								class="pdt-img"
+									class="pdt-img flex-column justify-center"
 								>
 									<img
 										v-if="item.img"
@@ -74,41 +93,10 @@
 							</td>
 							<td>{{ item.pdt_purchase | makeComma }}</td>
 							<td>{{ item.shop_delivery_price | makeComma }}</td>
+							<td>{{ item.pdt_delivery | makeComma }}</td>
 							<td
 								class="full-height"
-							>
-								<div
-									v-if="is_supply"
-									class=" flex-row justify-space-between"
-								>
-									<button
-										class=" flex-1"
-										:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="items[item.index].is_sold = 1; update(item)"
-									>무한</button>
-									<button
-										class=" flex-1 "
-										:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
-										@click="items[item.index].is_sold = 2; update(item)"
-									>품절</button>
-									<button
-										class="  flex-1"
-										:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
-										@click="items[item.index].is_sold = 3; update(item)"
-									>재고</button>
-									<input
-										v-model="items[item.index].pdt_stock"
-										class=" flex-1 ptb-5"
-										style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
-										@change="items[item.index].is_sold = 3; update(item)"
-									/>
-								</div>
-								<div
-									v-else
-								>
-									{{ item.is_sold_name }}
-								</div>
-							</td>
+							>{{ item.is_sold_name }}</td>
 							<td
 								class="full-height"
 							>
@@ -118,28 +106,28 @@
 								>
 									<v-icon
 										class="pa-5 "
-										:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="item.is_use = 1; update(item)"
+										:class="item.is_supply_sale == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="item.is_supply_sale = 1; update(item)"
 									>mdi mdi-cart</v-icon>
 									<v-icon
 										class="pa-5  "
-										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="item.is_use = 0; update(item)"
+										:class="item.is_supply_sale != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="item.is_supply_sale = 0; update(item)"
 									>mdi mdi-cart-off</v-icon>
 								</div>
 								<div
 									v-else
 								>
 									<v-icon
-										v-if="item.is_use == 1"
+										v-if="item.is_supply_sale == 1"
 										class="pa-5 "
-										:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
+										:class="item.is_supply_sale == 1 ? 'bg-green color-white' : 'btn-default' "
 
 									>mdi mdi-cart</v-icon>
 									<v-icon
 										v-else
 										class="pa-5  "
-										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
+										:class="item.is_supply_sale != 1 ? 'bg-red color-white' : 'btn-default' "
 									>mdi mdi-cart-off</v-icon>
 								</div>
 							</td>
@@ -206,31 +194,6 @@
 					></Pagination>
 				</div>
 			</div>
-			<SideB
-				v-if="is_item"
-				:title="'상품 정보'"
-				:bg-title="'bg-' + (item_new.uid ? (item_new.is_use == 1 ? 'green' : 'red') : '')"
-				@click="clear_item"
-				class="position-absolute full-width bg-base full-height"
-				style="left: 0; top: 0; z-index: 999"
-			>
-				<template
-					slot="item"
-					class="flex-column overflow-y-auto "
-				>
-					<ProductItem
-						:item_new="item_new"
-						:rules="rules"
-						:member_info="member_info"
-						:supply_list="supply_list"
-						:category_list="category_list"
-
-						@click="save"
-						@setMainImg="setMainImg"
-						@setSubImg="setSubImg"
-					></ProductItem>
-				</template>
-			</SideB>
 		</div>
 
 		<Excel
@@ -238,20 +201,59 @@
 			:excel_data="excel_data"
 			:date="date"
 		></Excel>
+
+		<ProductItem
+			v-if="is_item_view"
+			:Axios="Axios"
+			:rules="rules"
+			:member_info="member_info"
+			:supply_list="supply_list"
+			:category_list="category_list"
+			:codes="codes"
+
+			@onLoad="setProgram"
+			@goBack="goBack"
+			@goSuccess="goSuccess"
+			@setNotify="setNotify"
+
+			class="position-absolute bg-base full-width full-height"
+			style="top: 0; right: 0"
+		></ProductItem>
+
+		<ProductDetail
+			v-if="is_detail_view"
+			:Axios="Axios"
+			:rules="rules"
+			:member_info="member_info"
+			:supply_list="supply_list"
+			:category_list="category_list"
+			:codes="codes"
+			:pdt_code="item.pdt_code"
+			:TOKEN="TOKEN"
+
+			@onLoad="setProgram"
+			@goBack="goBack"
+			@goSuccess="goSuccess"
+			@setNotify="setNotify"
+
+			class="pa-10 position-absolute bg-base full-width full-height"
+			style="top: 0; right: 0"
+		></ProductDetail>
 	</div>
 </template>
 
 <script>
-import SideB from "../Layout/SideB";
+
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import ProductItem from "./ProductItem";
+import ProductDetail from "@/view/Product/ProductDetail";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {ProductItem, Excel, Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date', 'rules']
+	components: {ProductDetail, ProductItem, Excel, Search, Pagination},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date', 'rules', 'supply_list', 'category_list']
 	,data: function (){
 		return {
 			program: {
@@ -261,25 +263,26 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,pdt_company: ''
-				,search_type: 'pdt_name'
-				,is_use: ''
-				,list_cnt: 10
+				,pdt_company: this.$route.params.pdt_company ? this.$route.params.pdt_company : ''
+				,search_type: this.$route.params.search_type ? this.$route.params.search_type : 'pdt_name'
+				,is_use: this.$route.params.is_use ? this.$route.params.is_use : ''
+				,list_cnt: this.$route.params.list_cnt ? this.$route.params.list_cnt : 10
+				,page: this.$route.params.page ? this.$route.params.page : 1
 			}
 			,search_option:{
 				is_excel: true
-				,is_item: true
-				,is_cnt: true
-				,cnt: 0
-				,tCnt: 0
-				,search_type: [
-					{ name: '상품명', column: 'pdt_name'}
+				, is_item: true
+				, is_cnt: true
+				, cnt: 0
+				, tCnt: 0
+				, search_type: [
+					{name: '상품명', column: 'pdt_name'}
 				]
-				,select: [
-					{ name: '공급사', column: 'pdt_company', items: []}
-					, { name: '사용 여부', column: 'is_use', items: [
-							{ name: '사용', column: '1'}
-							,{ name: '미사용', column: '0'}
+				, select: [
+					{
+						name: '사용 여부', column: 'is_use', items: [
+							{name: '사용', column: '1'}
+							, {name: '미사용', column: '0'}
 						]
 					}
 				]
@@ -287,35 +290,32 @@ export default {
 			,items: [
 
 			]
-			,item: {
-
-			}
+			,item: null
 			,item_new: {
 
 			}
 			,options: {
 
 			}
-			,supply_list: []
 			,is_excel: false
 			,excel_data: {
 				name: '상품 목록'
 				,header: [
-					{ key: 0, name: '공급사', column: 'shop_name'}
+					{ key: 0, name: '카테고리', column: 'pdt_category_name'}
+					,{ key: 0, name: '공급사', column: 'shop_name'}
 					,{ key: 0, name: '상품명', column: 'pdt_name'}
 					,{ key: 0, name: '공급가', column: 'pdt_purchase'}
 					,{ key: 0, name: '공급 배송비', column: 'pdt_delivery'}
-					,{ key: 0, name: '재고', column: 'pdt_stock'}
-					,{ key: 0, name: '판매여부', column: 'agency_use_name'}
+					,{ key: 0, name: '재고', column: 'is_sold_name'}
+					,{ key: 0, name: '판매여부', column: 'is_supply_sale_name'}
 					,{ key: 0, name: '사용여부', column: 'is_use_name'}
 					,{ key: 0, name: '등록일', column: 'wDate'}
 				]
 				,content: null
 			}
 			,is_item : true
-			,category_list: [
-
-			]
+			,is_item_view: false
+			,is_detail_view: false
 		}
 	}
 	,computed: {
@@ -330,11 +330,17 @@ export default {
 						item.img = ''
 					}
 
-					if(item.is_use == 'y'){
-						item.is_use_name = '판매가능'
+					if(item.is_use == '1'){
+						item.is_use_name = '사용'
 					}else{
-						item.is_use_name = '판매불가'
+						item.is_use_name = '미사용'
 					}
+
+				if(item.is_supply_sale == '1'){
+					item.is_supply_sale_name = '판매'
+				}else{
+					item.is_supply_sale_name = '판매 불가'
+				}
 
 					item.is_sold_name = self.codes.is_sold[item.is_sold]
 
@@ -361,13 +367,14 @@ export default {
 				return false
 			}
 		}
-		,select_option_admin: function(){
+
+		,supply_list_as: function(){
+
 			let list = []
 			this.supply_list.filter(function(item){
 
 				list.push({
-					name: item.admin_name
-					,column: item.admin_id
+					name: item.shop_name, column: item.seller_id
 				})
 			})
 
@@ -387,8 +394,9 @@ export default {
 				if(result.success){
 					this.items = result.data.result
 					this.$set(this.search, 'total_count', result.data.tCnt)
-					this.search_option.tCnt = result.data.tCnt
-					this.search_option.cnt = result.data.cnt
+					this.$set(this.search_option, 'tCnt', result.data.tCnt)
+					this.$set(this.search_option, 'cnt', result.data.cnt)
+
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -418,12 +426,8 @@ export default {
 			}
 		}
 		,setItem: function (item){
-			if(this.item_new.uid == item.uid){
-				this.clear_item()
-			}else {
-				this.item_new = item
-				this.is_item = true
-			}
+			this.item = item
+			this.is_detail_view = !this.is_detail_view
 		}
 		,clear_item: function(){
 			this.item_new = {
@@ -433,83 +437,48 @@ export default {
 			}
 			this.is_item = false
 		}
-		,getSupplyList: async function(){
-			try{
-				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/getSupplyList'
-					,data: {
-						ATOKEN: this.TOKEN
-					}
-				})
-
-				if(result.success){
-					this.supply_list = result.data.result
-					this.search_option.select[0].items = this.select_option_admin
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
-			}
-		}
-		,getCategoryList: async function(){
-			try{
-				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/getCategoryList'
-					,data: {
-						ATOKEN: this.TOKEN
-					}
-				})
-
-				if(result.success){
-					this.category_list = result.data.result
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
-			}
-		}
 		,toExcel: function(){
 			this.excel_data.content = this.items
 			this.is_excel = true
 		}
 		,toItem: function (){
-			this.is_item = !this.is_item
+			//this.$router.push({ name: 'ProductItem'})
+			this.is_item_view = !this.is_item_view
 		}
-		,save: async function(){
-			try{
-				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/postProduct'
-					,data: this.item_new
-				})
-
-				if(result.success){
-					await this.getData()
-					this.clear_item()
-					this.$emit('setNotify', { type: 'success', message: result.message })
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
+		,toSearch: function(){
+			console.log('toSearch : ' + this.search.page)
+			if(this.search.page > 1) {
+				console.log(1111)
+				this.search.page = 1
+				this.$set(this.search, 'page', 1)
+			}else if(this.$route.params.page == 1) {
+				console.log(2222)
+				delete this.search.page
+				this.getData()
+			}else{
+				console.log(3333)
+				this.$set(this.search, 'page', 1)
+				this.getData()
 			}
 		}
-		,setMainImg: function(file){
-
-			this.item_new.pdt_img1 = file
+		,setProgram: function(program){
+			this.$emit('onLoad', program)
 		}
-		,setSubImg: function(files){
-
-			for(const [key, val] of Object.entries(files)){
-				this.$set(this.item_new, 'pdt_img' + (Number(key)+2), val)
-			}
-
-			this.$set(this.item_new, 'img_cnt', Object.keys(files).length)
+		,goBack: function(){
+			this.item = null
+			this.is_detail_view = false
+			this.is_item_view = false
+			this.$emit('onLoad', this.program)
 		}
+		,goSuccess: function(){
+			this.is_detail_view = false
+			this.is_item_view = false
+			this.getData()
+		}
+		,setNotify: function({ type, message}){
+			this.$emit('setNotify', { type: type, message: message })
+		}
+
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
@@ -520,13 +489,11 @@ export default {
 		}
 		this.clear_item()
 		this.getData()
-		this.getSupplyList()
-		this.getCategoryList()
 	}
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.getData()
+				this.$emit('push', 'ProductList', this.search)
 			}
 		}
 	}

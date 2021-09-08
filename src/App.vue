@@ -127,8 +127,6 @@ export default {
 				}
 				list[code.main_code].items.push(code)
 			})
-
-			console.log(list)
 		}
 	}
 	,created() {

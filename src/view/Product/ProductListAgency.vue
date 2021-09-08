@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column"
+		class="full-height flex-column position-relative"
 	>
 		<Search
 			:search="search"
@@ -11,23 +11,38 @@
 			@toExcel="toExcel"
 			@toItem="toItem"
 		>
-			<label
+			<template
 				slot="add"
-				class=" pa-5 vertical-middle mr-10"
-				@click="search.agency_use = search.agency_use == 1 ? null : 1; getSearchData()"
 			>
-				<v-icon
-					v-if="search.agency_use == 1"
-					class="color-green"
-				>mdi mdi-checkbox-marked</v-icon>
-				<v-icon
-					v-else
-					class="color-icon"
-				>mdi mdi-checkbox-blank-outline</v-icon>
-				<span
-					:class="{ 'color-green': search.agency_use == 1}"
-				>진열 상품만 보기</span>
-			</label>
+				<label
+					class=" pa-5 vertical-middle mr-10"
+					@click="search.agency_use = search.agency_use == 1 ? null : 1; getSearchData()"
+				>
+					<v-icon
+						v-if="search.agency_use == 1"
+						class="color-green"
+					>mdi mdi-checkbox-marked</v-icon>
+					<v-icon
+						v-else
+						class="color-icon"
+					>mdi mdi-checkbox-blank-outline</v-icon>
+					<span
+						:class="{ 'color-green': search.agency_use == 1}"
+					>진열 상품만 보기</span>
+				</label>
+				<select
+					v-model="search.pdt_company"
+					class="pa-5-10 mr-10"
+					@change="toSearch"
+				>
+					<option value="">공급사</option>
+					<option
+						v-for="supply in supply_list"
+						:key="'supply_' + supply.uid"
+						:value="supply.seller_id"
+					>{{ supply.shop_name }}</option>
+				</select>
+			</template>
 
 		</Search>
 
@@ -186,36 +201,47 @@
 			</div>
 		</div>
 
-		<SideB
-			v-if="item.uid"
-			:title="'상품 상세 정보'"
-		>
-			<div
-				slot="item"
-			>
-
-			</div>
-		</SideB>
-
 		<Excel
 			v-if="is_excel"
 			:excel_data="excel_data"
 			:date="date"
 		></Excel>
+
+		<ProductDetail
+			v-if="is_detail_view"
+			:Axios="Axios"
+			:rules="rules"
+			:member_info="member_info"
+			:supply_list="supply_list"
+			:category_list="category_list"
+			:codes="codes"
+			:pdt_code="item.pdt_code"
+			:TOKEN="TOKEN"
+
+			@onLoad="setProgram"
+			@goBack="goBack"
+			@goSuccess="goSuccess"
+			@setNotify="setNotify"
+			@update="update"
+
+			class="pa-10 position-absolute bg-base full-width full-height"
+			style="top: 0; right: 0"
+		></ProductDetail>
 	</div>
 </template>
 
 <script>
-import SideB from "../Layout/SideB";
+
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
+import ProductDetail from "@/view/Product/ProductDetailAgency";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Excel, Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules', 'date']
+	components: {ProductDetail, Excel, Search, Pagination,},
+	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules', 'date', 'category_list', 'supply_list']
 	,data: function (){
 		return {
 			program: {
@@ -239,9 +265,6 @@ export default {
 				,search_type: [
 					{ name: '상품명', column: 'pdt_name'}
 				]
-				,select: [
-					{ name: '공급사', column: 'pdt_company', items: []}
-				]
 			}
 			,items: [
 
@@ -253,7 +276,6 @@ export default {
 
 			}
 			,pdt_type: []
-			,supply_list: []
 			,is_excel: false
 			,excel_data: {
 				name: '상품 목록'
@@ -272,6 +294,7 @@ export default {
 				]
 				,content: null
 			}
+			,is_detail_view: false
 		}
 	}
 	,computed: {
@@ -376,10 +399,19 @@ export default {
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postProductUpdate'
-					,data: item
+					,data: {
+						ATOKEN: this.TOKEN
+						,uid: item.uid
+						,pdt_code: item.pdt_code
+						,agency_price: item.agency_price
+						,agency_sale_price: item.agency_sale_price
+						,agency_use: item.agency_use
+						,pdt_type: item.pdt_type
+					}
 				})
 
 				if(result.success){
+					this.is_detail_view = false
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -392,33 +424,8 @@ export default {
 			}
 		}
 		,setItem: function (item){
-			if(this.item.uid == item.uid){
-				this.item = {
-
-				}
-			}else {
-				this.item = item
-			}
-		}
-		,getSupplyList: async function(){
-			try{
-				const result = await this.Axios({
-					method: 'get'
-					,url: 'management/getSupplyList'
-					,data: {
-						ATOKEN: this.TOKEN
-					}
-				})
-
-				if(result.success){
-					this.supply_list = result.data.result
-					this.search_option.select[0].items = this.select_option_admin
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
-			}
+			this.item = item
+			this.is_detail_view = !this.is_detail_view
 		}
 		,toExcel: function(){
 			this.excel_data.content = this.item_list
@@ -445,6 +452,38 @@ export default {
 
 			this.update(item)
 		}
+		,toSearch: function(){
+			console.log('toSearch : ' + this.search.page)
+			if(this.search.page > 1) {
+				console.log(1111)
+				this.search.page = 1
+				this.$set(this.search, 'page', 1)
+			}else if(this.$route.params.page == 1) {
+				console.log(2222)
+				delete this.search.page
+				this.getData()
+			}else{
+				console.log(3333)
+				this.$set(this.search, 'page', 1)
+				this.getData()
+			}
+		}
+		,setProgram: function(program){
+			this.$emit('onLoad', program)
+		}
+		,goBack: function(){
+			this.item = null
+			this.is_detail_view = false
+			this.$emit('onLoad', this.program)
+		}
+		,goSuccess: function(){
+			this.is_detail_view = false
+			this.getData()
+		}
+		,setNotify: function({ type, message}){
+			this.$emit('setNotify', { type: type, message: message })
+		}
+
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
@@ -452,7 +491,6 @@ export default {
 			this.$emit('push', 'ProductListAgency')
 		}
 		this.getData()
-		this.getSupplyList()
 	}
 	,watch: {
 		'search.page': {

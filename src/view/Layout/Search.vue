@@ -10,8 +10,6 @@
 
 		<div class="flex-1 text-right">
 
-			<slot name="add">
-			</slot>
 			<input
 				v-if="option.sDate"
 				v-model="search.sDate"
@@ -31,6 +29,10 @@
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 종료일"
 			/>
+
+			<slot
+				name="add"
+			></slot>
 
 			<template
 				v-for="(select, index) in option.select"

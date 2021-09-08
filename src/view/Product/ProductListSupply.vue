@@ -27,6 +27,7 @@
 						<col width="200px" />
 						<col width="120px" />
 						<col width="120px" />
+						<col width="120px" />
 						<col width="80px" />
 					</colgroup>
 					<thead>
@@ -38,6 +39,7 @@
 						<th>상품 배송비</th>
 						<th>재고</th>
 						<th>판매여부</th>
+						<th>사용여부</th>
 						<th>등록일</th>
 						<th>상세정보</th>
 					</tr>
@@ -93,24 +95,24 @@
 							>
 								<button
 									class=" flex-1"
-									:class="item.is_sold == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 1; update(item)"
+									:class="item.is_sold == 0 ? 'bg-green color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 0; update(item)"
 								>무한</button>
 								<button
 									class=" flex-1 "
-									:class="item.is_sold == 2 ? 'bg-red color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 2; update(item)"
+									:class="item.is_sold == 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 1; update(item)"
 								>품절</button>
 								<button
 									class="  flex-1"
-									:class="item.is_sold == 3? 'bg-blue color-white' : 'btn-default' "
-									@click="items[item.index].is_sold = 3; update(item)"
+									:class="item.is_sold == 2? 'bg-blue color-white' : 'btn-default' "
+									@click="items[item.index].is_sold = 2; update(item)"
 								>수량</button>
 								<input
 									v-model="items[item.index].pdt_stock"
 									class=" flex-1 ptb-5"
 									style="display: inline-block !important; border: 1px solid #ddd; width: 30px !important; text-align: center"
-									@change="items[item.index].is_sold = 3; update(item)"
+									@change="items[item.index].is_sold = 2; update(item)"
 								/>
 							</div>
 						</td>
@@ -118,19 +120,34 @@
 							class="full-height"
 						>
 							<div
-								v-if="is_supply"
 								class=" flex-row justify-center"
 							>
 								<v-icon
 									class="pa-5 "
-									:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default ' "
-									@click="item.is_use = 1; update(item)"
+									:class="item.is_supply_sale == 1 ? 'bg-green color-white' : 'btn-default ' "
+									@click="item.is_supply_sale = 1; update(item)"
 								>mdi mdi-cart</v-icon>
 								<v-icon
 									class="pa-5  "
-									:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default ' "
-									@click="item.is_use = 0; update(item)"
+									:class="item.is_supply_sale != 1 ? 'bg-red color-white' : 'btn-default ' "
+									@click="item.is_supply_sale = 0; update(item)"
 								>mdi mdi-cart-off</v-icon>
+							</div>
+						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									v-if="item.is_use == 1"
+									class="pa-5 bg-green"
+								>mdi mdi-power-plug</v-icon>
+								<v-icon
+									v-else
+									class="pa-5 bg-red"
+								>mdi mdi-power-plug-off</v-icon>
 							</div>
 						</td>
 						<td>{{ item.wDate.substring(0, 10) }}</td>

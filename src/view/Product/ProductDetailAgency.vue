@@ -12,81 +12,51 @@
 					<tbody>
 					<tr>
 						<th>공급사</th>
-						<td>
-							<div class="">
-								<select
-									v-model="item.pdt_company"
-									class="input-box"
-									:disabled="is_supply"
-								>
-									<option
-										:value="''"
-									>공급사</option>
-									<option
-										v-for="supply in supply_list"
-										:key="supply.admin_id"
-										:value="supply.admin_id"
-									>{{ supply.shop_name }}</option>
-								</select>
-								<v-icon
-									class="position-absolute color-icon"
-									style="right: 10px; top: 10px;"
-								>mdi mdi-menu-down</v-icon>
-							</div>
-						</td>
+						<td>{{ item.pdt_company }}</td>
 					</tr>
 					<tr>
 						<th>카테고리</th>
-						<td>
-							<div class="mt-10 ">
-								<select
-									v-model="item.pdt_category"
-									class="input-box"
-								>
-									<option
-										:value="''"
-									>카테고리</option>
-									<option
-										v-for="category in category_list"
-										:key="category.category_code"
-										:value="category.category_code"
-									>{{ category.category_name }}</option>
-								</select>
-								<v-icon
-									class="position-absolute color-icon"
-									style="right: 10px; top: 10px;"
-								>mdi mdi-menu-down</v-icon>
-							</div>
-						</td>
+						<td>{{ item.pdt_category }}</td>
 					</tr>
 					<tr>
 						<th>상품 코드</th>
-						<td><input class="input-box" v-model="item.pdt_code" readonly /></td>
+						<td>{{ item.pdt_code }}</td>
 					</tr>
 					<tr>
 						<th>상품명</th>
-						<td><input class="input-box" v-model="item.pdt_name" /></td>
+						<td>{{ item.pdt_name }} </td>
 					</tr>
 					<tr>
 						<th>공급가</th>
+						<td>{{ item.pdt_purchase | makeComma }} 원</td>
+					</tr>
+					<tr>
+						<th>마진가</th>
 						<td>
 							<input
-								v-model="item.pdt_purchase"
+								v-model="item.agency_price"
 								type="number"
-								class="box pa-10"
-								:rules="[rules.max(item, 'pdt_purchase', 10)]"
-							/>
+								class="box flex-1 pa-5"
+								:rules="[rules.max(item, 'agency_price', 10)]"
+							/> 원
+						</td>
+					</tr>
+					<tr>
+						<th>판매가</th>
+						<td>
+							<input
+								v-model="item.agency_sale_price"
+								type="number"
+								class="box flex-1 pa-5"
+								:rules="[rules.max(item, 'agency_sale_price', 10)]"
+								readonly
+							/> 원
 						</td>
 					</tr>
 					<tr>
 						<th>상품 배송비</th>
 						<td>
-							<input
-								v-model="item.pdt_delivery"
-								type="number"
-								class="box pa-10"
-								:rules="[rules.max(item, 'pdt_delivery', 10)]"
-							/>
+							{{ item.pdt_delivery | makeComma }} 원
 							<div class="color-red mt-10 text-left">
 								상품 배송비 책정시 일반 배송비 정책에 포함되지 않으며 추가 배송비로 적용됩니다
 							</div>
@@ -94,75 +64,41 @@
 					</tr>
 					<tr>
 						<th>한줄 설명</th>
-						<td><input class="input-box" v-model="item.pdt_summary" /></td>
+						<td>{{ item.pdt_summary }}</td>
 					</tr>
 					<tr>
 						<th>대표 이미지</th>
-						<td
-						>
-								<span
-									class="pdt-img mr-10 flex-column justify-center"
-								>
-									<img
-										v-if="item.pdt_img"
-										:src="item.pdt_img"
-									/>
-									<v-icon
-										v-else
-										class="color-icon"
-									>mdi mdi-image</v-icon>
-								</span>
+						<td>
+							<span class="pdt-img">
 
-							<label>
+								<img
+									v-if="item.pdt_img"
+									:src="item.pdt_img"
+								/>
 								<v-icon
+									v-else
 									class="color-icon"
 								>mdi mdi-image</v-icon>
-								<input
-									v-show="false"
-									type="file"
-									@change="setPdtImg"
-									accept="image/*"
-								/>
-								<span>{{ new_main_img }}</span>
-							</label>
+							</span>
 						</td>
 					</tr>
 					<tr>
 						<th>상품 이미지</th>
 						<td>
-								<span
-									v-for="(sub, index) in sub_images"
-									:key="sub.pdt_img"
-									class="pdt-img mr-10 position-relative"
-								>
-										<img
-											v-if="sub.pdt_img"
-											:src="sub.pdt_img"
-										/>
-										<v-icon
-											v-else
-											class="color-icon"
-										>mdi mdi-image</v-icon>
-
-										<v-icon
-											v-if="sub.pdt_img"
-											small
-											class="box color-red position-absolute bg-base"
-											style="top: 5px; right: 5px;"
-											@click="removeImg(sub, index)"
-										>mdi mdi-close</v-icon>
-								</span>
-							<label
+							<span
+								v-for="sub in sub_images"
+								:key="sub.pdt_img"
+								class="pdt-img mr-10 position-relative"
 							>
-								<input
-									v-show="false"
-									type="file"
-									@change="setSubImg"
-									multiple
-									accept="image/*"
+								<img
+									v-if="sub.pdt_img"
+									:src="sub.pdt_img"
 								/>
-								<span>{{ new_sub_img }}</span>
-							</label>
+								<v-icon
+									v-else
+									class="color-icon"
+								>mdi mdi-image</v-icon>
+							</span>
 						</td>
 					</tr>
 					</tbody>
@@ -178,14 +114,9 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<editor
+							<Viewer
 								v-if="item.pdt_info"
 								:initialValue="item.pdt_info"
-								:options="editorOptions"
-								height="300px"
-								initialEditType="wysiwyg"
-								ref="pdt_info"
-								class="text-left"
 							/>
 						</td>
 					</tr>
@@ -194,14 +125,9 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<editor
+							<Viewer
 								v-if="item.pdt_notice"
 								:initialValue="item.pdt_notice"
-								:options="editorOptions"
-								height="300px"
-								initialEditType="wysiwyg"
-								ref="pdt_notice"
-								class="text-left"
 							/>
 						</td>
 					</tr>
@@ -212,7 +138,7 @@
 		<div class="text-center mt-10">
 			<button
 				class="pa-10 box bg-green mr-10"
-				@click="save"
+				@click="$emit('update', item)"
 			>저장</button>
 			<button
 				class="pa-10 box bg-gray"
@@ -223,16 +149,16 @@
 </template>
 
 <script>
-import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
-import { Editor } from '@toast-ui/vue-editor';
-
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Viewer } from "@toast-ui/vue-editor";
 
 export default {
 	name: 'ProductDetail'
 	,props: ['Axios', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list', 'pdt_code']
 	,components: {
-		editor: Editor
+		Viewer
 	}
 	,data: function(){
 		return {

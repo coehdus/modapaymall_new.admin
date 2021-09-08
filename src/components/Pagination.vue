@@ -52,7 +52,7 @@
 					this.page_config.total_group > this.page_config.page_group ?
 					this.page_config.page_cnt :
 					this.page_config.total_page - ((this.page_config.page_group - 1) * this.page_config.page_cnt)
-				console.log('length : ' + length)
+
 				if(length <= 0){
 					length = 1
 				}
@@ -84,8 +84,7 @@
 				deep: true
 				,immediate: true
 				,handler: function(call){
-					console.log('page_config')
-					console.log(call)
+
 					if(call.page){
 						this.page_config.page = call.page
 					}
