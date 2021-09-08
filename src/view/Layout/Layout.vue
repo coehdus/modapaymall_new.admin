@@ -8,8 +8,12 @@
 			:member_info="member_info"
 			:codes="codes"
 			:Base64="Base64"
+			:rules="rules"
+			:TOKEN="TOKEN"
+			:Axios="Axios"
 
 			@push="toLocation"
+			@setNotify="setNotify"
 		></Top>
 		<div
 			class="full-height justify-space-between overflow-y-auto"

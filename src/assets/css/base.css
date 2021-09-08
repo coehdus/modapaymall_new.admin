@@ -84,10 +84,15 @@
 .color-red { color: red !important;}
 .color-red-light { color: #FF5D46 !important;}
 
+.color-333 { color: #333 !important;}
+.color-eee { color: #eee !important;}
+.color-bbb { color: #bbb !important;}
+.color-ddd { color: #ddd !important;}
+
+
 .color-purple-light { color: #6f7dff }
 
 .color-black { color: black !important;}
-.color-333 { color: #333}
 
 .vertical-middle { vertical-align: middle !important;}
 .vertical-top { vertical-align: top !important;}
@@ -208,7 +213,7 @@
 .bg-light-gray { background-color: darkgray;}
 .bg-light-green { background-color: #81C784;}
 .bg-light-blue { background-color: #eee;}
-.bg-light-red { background-color: #EF9A9A;}
+.bg-light-red { background-color: #ee6e73;}
 .bg-black { background-color: black;}
 .bg-light-orange { background-color: lightsalmon;}
 
@@ -341,7 +346,7 @@ button:disabled { cursor: no-drop}
 .border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
 .border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
 
-.bg-base { background-color: #333333}
+.bg-base { background-color: #333 !important;}
 
 .logo-position {
 

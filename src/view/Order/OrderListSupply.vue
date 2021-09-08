@@ -2,107 +2,51 @@
 	<div
 		class="full-height flex-column"
 	>
+		<Search
+			:search="search"
+			:option="search_option"
+
+			@change="getData"
+			@click="getData"
+			@toExcel="toExcel"
+			@toItem="toItem"
+		></Search>
+
 		<div
-			class="full-height flex-column overflow-y-auto"
+			class="mt-10 full-height flex-column overflow-y-auto"
 		>
-			<div
-				class="  position-relative"
-			>
-				<div class=" pa-10 justify-space-between bg-white box-shadow mb-10">
-
-					<span >총 <span class="size-em-12 color-red">{{ tCnt }}</span> 건</span>
-					<div>
-						<input
-							v-model="search.sDate"
-							class="box pa-5"
-							placeholder="검색 기간 시작일"
-						/>
-						<span
-							class="pa-5"
-							style="display: inline-block;"
-						> ~ </span>
-						<input
-							v-model="search.eDate"
-							class="box pa-5 mr-10"
-							placeholder="검색 기간 종료일"
-						/>
-
-						<select
-							class="pa-5 mr-10"
-							v-model="search.o_status"
-							@change="getData"
-						>
-							<option
-								:value="''"
-							>결제상태</option>
-							<option
-								v-for="code in codes.o_status"
-								:key="code.code"
-								:value="code.code"
-							>{{ code.name }}</option>
-						</select>
-
-						<select
-							class="pa-5 mr-10"
-							v-model="search.search_type"
-						>
-							<option
-								:value="''"
-							>검색조건</option>
-							<option
-								:value="'pdt_name'"
-							>상품명</option>
-							<option
-								:value="'member_id'"
-							>주문자 ID</option>
-							<option
-								:value="'member_name'"
-							>주문자명</option>
-						</select>
-
-						<input
-							v-model="search.search_value"
-							class="box  pa-5 vertical-middle mr-10"
-							placeholder="검색어를 입력하세요"
-						/>
-
-						<button
-							class="btn-blue pa-5 prl-10 vertical-middle "
-							@click="getData"
-						>검색</button>
-					</div>
-				</div>
-			</div>
 			<ul
 				class=" full-height flex-column overflow-y-auto"
 			>
 				<li
 					v-for="(item) in item_list"
 					:key="item.order_num_new"
-					class="pa-10 box-shadow mb-10 bg-white"
+					class=" mb-50 bg-base"
 				>
 					<div
-						class="justify-space-between color-white"
+						class="justify-space-between color-black"
 						:class="'bg-light-' + item.o_status_color"
 					>
 						<div class="pa-10 flex-1">
-							<span class="color-white">[{{ item.o_status_name }}]</span>
-							<span class="color-white"> {{ item.order_num_new}}</span>
+							<span class="color-black">[{{ item.o_status_name }}]</span>
+							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="pa-10 flex-1 color-white text-center">총 상품가: {{ item.total_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-center">배송비: {{ item.delivery_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-white text-right">{{ item.wDate }}</span>
+						<span class="pa-10 flex-1 color-black text-center">총 상품가: {{ item.total_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-black text-center">배송비: {{ item.delivery_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-black text-right">{{ item.wDate }}</span>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
 							class="pa-10"
 						>
+							주문자 정보:
 							{{ item.member_id }} /
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
 						<div class="pa-10">
+							배송지 정보:
 							{{ item.d_name }} /
 							{{ item.d_tell }} /
 							{{ item.d_post }}
@@ -118,7 +62,6 @@
 						>
 							<div
 								class="pdt-img flex-1"
-								style="max-height: 40px; overflow: hidden;"
 							>
 								<img
 									v-if="odt.pdt_img"
@@ -143,7 +86,7 @@
 										v-if=" odt.step_group == key.slice(-2, -1)"
 										:key="key + '_' + item.uid"
 										class="pa-5 mr-5"
-										:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
+										:class="odt.order_status == key ? 'bg-green' : 'bg-gray'"
 										:disabled="odt.not_confirm"
 										@click="setOdtStatus(odt, key)"
 									>{{ step.name }}</button>
@@ -195,11 +138,12 @@
 <script>
 
 import Pagination from "../../components/Pagination";
+import Search from "@/view/Layout/Search";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: { Pagination},
+	components: {Search, Pagination},
 	props: ['Axios', 'TOKEN', 'codes', 'rules']
 	,data: function (){
 		return {
@@ -215,6 +159,30 @@ export default {
 				ATOKEN: this.TOKEN
 				,o_status: ''
 				,search_type: ''
+				,list_cnt: 10
+			}
+			,search_option:{
+
+				is_excel: true
+				,is_cnt: true
+				,sDate: true
+				,eDate: true
+				,cnt: 0
+				,tCnt: 0
+				,search_type: [
+					{ name: '주문번호', column: 'order_num_new'}
+					,{ name: '아이디', column: 'member_id'}
+					,{ name: '이름', column: 'member_name'}
+				]
+				,select: [
+					{ name: '주문상태', column: 'o_status', items: [
+							{ name: '입금대기', column: '1'}
+							,{ name: '결제완료', column: '2'}
+							,{ name: '취소요청', column: '3'}
+							,{ name: '주문취소', column: '4'}
+						]
+					}
+				]
 			}
 			,items: [
 
@@ -233,6 +201,23 @@ export default {
 				,{ code: 1, name: '일반관리자'}
 			]
 			,tCnt: 0
+			,is_excel: false
+			,excel_data: {
+				name: '주문 목록'
+				,header: [
+					{ key: 0, name: '주문번호', column: 'order_num_new'}
+					,{ key: 0, name: '아이디', column: 'member_id'}
+					,{ key: 0, name: '이름', column: 'member_name'}
+					,{ key: 0, name: '결제금액', column: 'order_price'}
+					,{ key: 0, name: '총 상품금액', column: 'total_price'}
+					,{ key: 0, name: '배송비', column: 'delivery_price'}
+					,{ key: 0, name: '받는분', column: 'delivery_price'}
+					,{ key: 0, name: '우편번호', column: 'd_post'}
+					,{ key: 0, name: '주소', column: 'd_addr1'}
+					,{ key: 0, name: '상세주소', column: 'd_addr2'}
+				]
+				,content: null
+			}
 		}
 	}
 	,computed: {
@@ -352,7 +337,7 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getOrderList'
 					,data: this.search
 				})
@@ -394,6 +379,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,toExcel: function(){
+			this.excel_data.content = this.items
+			this.is_excel = true
+		}
+		,toItem: function (){
+			this.is_item = !this.is_item
 		}
 	}
 	,created() {

@@ -43,14 +43,14 @@
 					<div class="pa-10 under-line">
 						<button
 							v-if="item.o_status == '1'"
-							class=" bg-green prl-10 radius-10"
+							class=" bg-green prl-10  "
 							@click="update(item, 2)"
-						><span class="vertical-middle color-black ">입금 확인</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
+						><span class="vertical-middle color-ddd ">입금 확인</span> <v-icon class="color-ddd">mdi mdi-chevron-right</v-icon></button>
 						<button
 							v-else-if="item.o_status == '2' || item.o_status == '3'"
-							class="bg-light-red prl-10 radius-10"
+							class="bg-light-red prl-10 "
 							@click="update(item, 4)"
-						><span class="vertical-middle color-black">주문 취소</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
+						><span class="vertical-middle color-eee">주문 취소</span> <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
@@ -70,24 +70,21 @@
 							{{ item.d_addr2 }}
 						</div>
 					</div>
-					<ul
-					>
+					<ul>
 						<li
 							v-for="supply in item.supply_list"
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
 							class="under-line-not-last"
 						>
 							<div class="pa-10 justify-space-between under-line-dashed ">
-								<span class="flex-1">{{ supply.seller_id }}</span>
+								<span class="flex-1">공급사: {{ supply.seller_id }}</span>
 								<span class="flex-1"></span>
 								<span class="flex-1 text-center">공급가: {{ supply.total_price | makeComma }}</span>
 								<span class="flex-1 text-center">배송비: {{ supply.delivery_price | makeComma }}</span>
 								<span class="flex-1 text-center">합계금액: {{ supply.delivery_price | makeComma }}</span>
 								<span class="flex-1"></span>
 							</div>
-							<ul
-								class="pa-10"
-							>
+							<ul>
 								<li
 									v-for="odt in supply.odt_list"
 									:key="'item_' + item.uid + 'supply_' + supply.uid + 'odt_' + odt.uid"
@@ -95,7 +92,6 @@
 								>
 									<div
 										class="pdt-img flex-1"
-										style="max-height: 40px; overflow: hidden;"
 									>
 										<img
 											v-if="odt.pdt_img"
@@ -110,6 +106,8 @@
 										<span>상품명: {{ odt.pdt_name }}</span>
 										<span class="color-gray">선택 옵션: {{ odt.op_name }}</span>
 									</div>
+									<div class="flex-1 ">
+									</div>
 									<div class="flex-1">판매가: {{ odt.op_price | makeComma }}</div>
 									<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
 
@@ -120,7 +118,7 @@
 											<button
 												v-if=" odt.order_status == key"
 												:key="key + '_' + item.uid"
-												class="pa-5 mr-5"
+												class="pa-5 mr-5 color-ddd"
 												:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
 												:disabled="odt.not_confirm"
 												@click="setOdtStatus(odt, key)"

@@ -13,20 +13,24 @@
 				class="modal-container"
 			>
 				<div
-					class="modal-content"
+					class="modal-content bg-base"
 				>
-					<div
+					<template
+
 						v-if="option.top"
-						class="modal-top"
 					>
 						<slot name="modal-title">
-							<strong class="size-px-16">{{ option.title }}</strong>
-							<button
-								class="modal-btn-close"
-								@click="close"
-							><v-icon>mdi-close-circle</v-icon></button>
+							<div
+								class="modal-top"
+							>
+								<strong class="size-px-16">{{ option.title }}</strong>
+								<button
+									class="modal-btn-close"
+									@click="close"
+								><v-icon>mdi-close-circle</v-icon></button>
+							</div>
 						</slot>
-					</div>
+					</template>
 
 					<div
 						class="modal-contents"
@@ -83,7 +87,7 @@ export default {
 .modal-wrap .modal-container .modal-content .modal-bottom { margin-top: auto; padding: 0; }
 .modal-btn-close { float: right; padding: 0; height: auto;}
 
-.modal-wrap .modal-container .modal-bottom { border-radius: 0 0 5px 5px}
+.modal-wrap .modal-container .modal-bottom { border-radius: 0 0 5px 5px; background-color: white}
 
 .fade-enter-active,
 .fade-leave-active {

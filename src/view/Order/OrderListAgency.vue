@@ -21,7 +21,7 @@
 				<li
 					v-for="(item) in item_list"
 					:key="item.order_num_new"
-					class=" box-shadow mb-10 "
+					class="  mb-50 "
 				>
 					<div
 						class="justify-space-between color-black"
@@ -41,14 +41,14 @@
 					<div class="pa-10 under-line">
 						<button
 							v-if="item.o_status == '1'"
-							class=" bg-green prl-10 radius-10"
+							class=" bg-green prl-10 "
 							@click="update(item, 2)"
-						><span class="vertical-middle color-black ">입금 확인</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
+						><span class="vertical-middle color-ddd ">입금 확인</span> <v-icon class="color-ddd">mdi mdi-chevron-right</v-icon></button>
 						<button
 							v-else-if="item.o_status == '2' || item.o_status == '3'"
-							class="bg-light-red prl-10 radius-10"
+							class="bg-light-red prl-10 "
 							@click="update(item, 4)"
-						><span class="vertical-middle color-black">주문 취소</span> <v-icon class="color-black">mdi mdi-chevron-right</v-icon></button>
+						><span class="vertical-middle color-eee">주문 취소</span> <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
@@ -75,7 +75,7 @@
 							class="under-line-not-last"
 						>
 							<div class="pa-10 justify-space-between under-line-dashed ">
-								<span class="flex-1 font-weight-bold">{{ supply.seller_id }}</span>
+								<span class="flex-1 ">공급사: {{ supply.seller_id }}</span>
 								<span class="flex-1"></span>
 								<span class="flex-1  text-center">공급가: {{ supply.total_price | makeComma }}</span>
 								<span class="flex-1  text-center">배송비: {{ supply.delivery_price | makeComma }}</span>
@@ -90,7 +90,6 @@
 								>
 									<div
 										class="pdt-img flex-1"
-										style="max-height: 40px; overflow: hidden;"
 									>
 										<img
 											v-if="odt.pdt_img"
@@ -124,7 +123,7 @@
 
 									<div class=" flex-2 inline position-relative text-right">
 
-										<span class="pa-5 box ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
+										<span class="pa-5 box mr-10 ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
 
 										<span class="pa-5 box ">{{ odt.shipping_number ? odt.shipping_number : '송장번호' }}</span>
 
@@ -169,6 +168,7 @@ export default {
 				ATOKEN: this.TOKEN
 				,o_status: ''
 				,search_type: ''
+				,list_cnt: 10
 			}
 			,search_option:{
 
@@ -332,7 +332,7 @@ export default {
 
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getOrderList'
 					,data: this.search
 				})

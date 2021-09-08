@@ -6,7 +6,7 @@
 			class="justify-space-between"
 		>
 			<div class="flex-1 mr-10">
-				<table>
+				<table class="table-td-left">
 					<col width="120px" />
 					<col width="auto" />
 					<tbody>
@@ -571,7 +571,7 @@ export default {
 	margin: 7px 2px;
 }
 
-td { text-align: left }
+.table-td-left td { text-align: left }
 
 .pdt-img {
 	display: inline-block;
