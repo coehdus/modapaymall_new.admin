@@ -32,26 +32,59 @@
 							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="pa-10 flex-1 color-black text-center">총 상품가: {{ item.total_price | makeComma }} 원</span>
+						<span class="pa-10 flex-1 color-black text-center">총 상품가: {{ item.total_purchase | makeComma }} 원</span>
 						<span class="pa-10 flex-1 color-black text-center">배송비: {{ item.delivery_price | makeComma }} 원</span>
 						<span class="pa-10 flex-1 color-black text-right">{{ item.wDate }}</span>
+					</div>
+					<div class="pa-13-10 under-line">
+
+						<template
+							v-for="o_status in codes.o_status"
+						>
+							<span
+								v-if="o_status.code > 0"
+								:key="'o_status_' + o_status.code"
+								class=" pa-3-10 mr-10 color-333"
+								:class="o_status.code != item.o_status ? 'bg-gray' : 'bg-light-' + o_status.color"
+							>{{  o_status.name }}</span>
+						</template>
+
+						<div v-if="false">
+							<button
+								v-if="item.o_status == '1'"
+								class=" bg-green prl-10 "
+							><span class="vertical-middle color-ddd ">입금 확인</span> <v-icon class="color-ddd">mdi mdi-chevron-right</v-icon></button>
+							<button
+								v-else-if="item.o_status == '2' || item.o_status == '3'"
+								class="bg-light-red prl-10 "
+							><span class="vertical-middle color-eee">주문 취소</span> <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
+						</div>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
 							class="pa-10"
 						>
-							주문자 정보:
+							<span class="bg-black pa-5">주문자 정보</span>
 							{{ item.member_id }} /
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
 						<div class="pa-10">
-							배송지 정보:
+							<span class="bg-black pa-5">배송지 정보</span>
 							{{ item.d_name }} /
 							{{ item.d_tell }} /
 							{{ item.d_post }}
 							{{ item.d_addr1 }}
 							{{ item.d_addr2 }}
+						</div>
+					</div>
+
+					<div class="justify-space-between under-line ">
+						<div
+							class="pa-10"
+						>
+							<span class="bg-black pa-5">대리점 정보</span>
+							{{ item.shop_name }}
 						</div>
 					</div>
 					<ul>
@@ -61,24 +94,28 @@
 							class="pa-10 flex-row under-line-dashed"
 						>
 							<div
-								class="pdt-img flex-1"
+								class="pdt-img flex-2 justify-space-between"
 							>
 								<img
 									v-if="odt.pdt_img"
 									:src="odt.pdt_img"
 									style="max-width: 120px;"
-									/>
+								/>
 								<v-icon
 									v-else
 								>mdi mdi-image</v-icon>
+
+								<div class="flex-1 flex-column justify-center ml-10">
+									<span>상품명: {{ odt.pdt_name }}</span>
+									<span class="color-gray mt-5">선택 옵션: {{ odt.op_name }}</span>
+								</div>
 							</div>
-							<div class="flex-1 flex-column">
-								<span>상품명: {{ odt.pdt_name }}</span>
-								<span class="color-gray">선택 옵션: {{ odt.op_name }}</span>
+							<div class="flex-1 text-center flex-column justify-center">
+								공급가: {{ odt.pdt_purchase | makeComma }} 원
 							</div>
-							<div class="flex-1">공급가: {{ odt.pdt_purchase | makeComma }}</div>
-							<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
-							<div>
+							<div class="flex-1 text-center flex-column justify-center">수량: {{ odt.op_cnt | makeComma }}</div>
+							<div class="text-center flex-column justify-center">
+								<div>
 								<template
 									v-for="(step, key) in codes.odt_status"
 								>
@@ -91,35 +128,39 @@
 										@click="setOdtStatus(odt, key)"
 									>{{ step.name }}</button>
 								</template>
+								</div>
 							</div>
 
-							<div class=" flex-2 inline position-relative text-right">
+							<div class=" flex-2 inline position-relative text-right flex-column justify-center">
 
-								<select
-									v-model="odt.shipping_name"
-									class="box pa-5 vertical-middle mr-5"
-									:disabled="odt.not_confirm"
-								>
-									<option
-										:value="null"
-									>택배사 선택</option>
-									<option
-										v-for="(v, index) in codes.parcel"
-										:key="'parcel_' + index"
-										:value="index"
-									>{{ v.name }}</option>
-								</select>
+								<div>
+									<select
+										v-model="odt.shipping_name"
+										class="box pa-5 vertical-middle mr-5"
+										:disabled="odt.not_confirm"
+									>
+										<option
+											:value="null"
+										>택배사 선택</option>
+										<option
+											v-for="(v, index) in codes.parcel"
+											:key="'parcel_' + index"
+											:value="index"
+										>{{ v.name }}</option>
+									</select>
 
-								<input
-									v-model="odt.shipping_number"
-									class="box pa-5 vertical-middle mr-5"
-									placeholder="송장번호"
-									:disabled="odt.not_confirm"
-								/>
-								<button
-									class="btn-success pa-5 vertical-middle"
-									:disabled="odt.not_confirm"
-								>등록</button>
+									<input
+										v-model="odt.shipping_number"
+										class="box pa-5 vertical-middle mr-5"
+										placeholder="송장번호"
+										:disabled="odt.not_confirm"
+									/>
+									<button
+										class="btn-success pa-5 vertical-middle"
+										:disabled="odt.not_confirm"
+										@click="setShipping(odt)"
+									>등록</button>
+								</div>
 							</div>
 						</li>
 					</ul>
@@ -344,7 +385,9 @@ export default {
 
 				if(result.success){
 					this.items = result.data.result
-					this.tCnt = result.data.tCnt
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}

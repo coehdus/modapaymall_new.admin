@@ -24,21 +24,37 @@
 					class="  mb-50 "
 				>
 					<div
-						class="justify-space-between color-black"
+						class="pa-10 justify-space-between color-black"
 						:class="'bg-light-' + item.o_status_color"
 					>
-						<div class="pa-10 flex-1">
+						<div class=" flex-1">
 							<span class="color-black">[{{ item.o_status_name }}]</span>
 							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="pa-10 flex-1 color-black text-center">{{ item.pay_info }}</span>
-						<span class="pa-10 flex-1 color-black text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-black text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-black text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
-						<span class="pa-10 flex-1 color-black text-right">{{ item.wDate }}</span>
+						<span class=" flex-1 color-black text-center">{{ item.pay_info }}</span>
+						<span class=" flex-1 color-black text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
+						<span class=" flex-1 color-black text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
+						<span class=" flex-1 color-black text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
+						<span class="flex-1 color-black text-right">{{ item.wDate }}</span>
 					</div>
 					<div class="pa-10 under-line">
+						<template
+							v-for="o_status in codes.o_status"
+						>
+							<button
+								v-if="o_status.code > 0"
+								:key="'o_status_' + o_status.code"
+								class=" prl-10 mr-10"
+								:class="o_status.code != item.o_status ? 'bg-gray' : 'bg-light-' + o_status.color"
+								@click="update(item, o_status.code)"
+							>
+								<span class="vertical-middle color-333 ">{{  o_status.name }}</span>
+								<v-icon class="color-333">mdi mdi-chevron-right</v-icon>
+							</button>
+						</template>
+
+						<div v-if="false">
 						<button
 							v-if="item.o_status == '1'"
 							class=" bg-green prl-10 "
@@ -49,18 +65,19 @@
 							class="bg-light-red prl-10 "
 							@click="update(item, 4)"
 						><span class="vertical-middle color-eee">주문 취소</span> <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
+						</div>
 					</div>
 					<div class="justify-space-between under-line ">
 						<div
 							class="pa-10 "
 						>
-							주문자 정보:
+							<span class="bg-black pa-5">주문자 정보</span>
 							{{ item.member_id }} /
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
 						<div class="pa-10">
-							배송지 정보:
+							<span class="bg-black pa-5">배송지 정보</span>
 							{{ item.d_name }} /
 							{{ item.d_tell }} /
 							{{ item.d_post }}
@@ -75,11 +92,12 @@
 							class="under-line-not-last"
 						>
 							<div class="pa-10 justify-space-between under-line-dashed ">
-								<span class="flex-1 ">공급사: {{ supply.seller_id }}</span>
+								<span class="flex-1 "><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</span>
 								<span class="flex-1"></span>
-								<span class="flex-1  text-center">공급가: {{ supply.total_price | makeComma }}</span>
-								<span class="flex-1  text-center">배송비: {{ supply.delivery_price | makeComma }}</span>
-								<span class="flex-1  text-center">합계: {{ supply.delivery_price | makeComma }}</span>
+								<span class="flex-1  text-center">공급가: {{ supply.total_purchase | makeComma }} 원</span>
+								<span class="flex-1  text-center">판매가: {{ supply.total_price | makeComma }} 원</span>
+								<span class="flex-1  text-center">배송비: {{ supply.delivery_price | makeComma }} 원</span>
+								<span class="flex-1  text-center">합계: {{ supply.supply_total | makeComma }} 원</span>
 								<span class="flex-1"></span>
 							</div>
 							<ul>
@@ -89,7 +107,7 @@
 									class="pa-10 flex-row under-line-dashed"
 								>
 									<div
-										class="pdt-img flex-1"
+										class="pdt-img flex-2 justify-space-between"
 									>
 										<img
 											v-if="odt.pdt_img"
@@ -99,34 +117,40 @@
 										<v-icon
 											v-else
 										>mdi mdi-image</v-icon>
+
+										<div class="flex-1 flex-column justify-center ml-10">
+											<span>상품명: {{ odt.pdt_name }}</span>
+											<span class="color-gray mt-5">선택 옵션: {{ odt.op_name }}</span>
+										</div>
 									</div>
-									<div class="flex-1 flex-column">
-										<span>상품명: {{ odt.pdt_name }}</span>
-										<span class="color-gray">선택 옵션: {{ odt.op_name }}</span>
+									<div class="flex-1 text-center flex-column justify-center">
+										공급가: {{ odt.pdt_purchase | makeComma }} 원
 									</div>
-									<div class="flex-1">판매가: {{ odt.op_price | makeComma }}</div>
-									<div class="flex-1">수량: {{ odt.op_cnt | makeComma }}</div>
-									<div>
-										<template
-											v-for="(step, key) in codes.odt_status"
-										>
-											<button
-												v-if=" odt.order_status == key"
-												:key="key + '_' + item.uid"
-												class="pa-5 mr-5"
-												:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
-												:disabled="odt.not_confirm"
-												@click="setOdtStatus(odt, key)"
-											>{{ step.name }}</button>
-										</template>
+									<div class="flex-1 text-center flex-column justify-center">
+										판매가: {{ odt.pdt_price | makeComma }} 원
 									</div>
+									<div class="flex-1 text-center flex-column justify-center">수량: {{ odt.op_cnt | makeComma }} 개</div>
 
-									<div class=" flex-2 inline position-relative text-right">
+									<div class=" flex-2 inline position-relative text-right flex-column justify-center">
 
-										<span class="pa-5 box mr-10 ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
+										<div>
+											<template
+												v-for="(step, key) in codes.odt_status"
+											>
+												<button
+													v-if=" odt.order_status == key"
+													:key="key + '_' + item.uid"
+													class="pa-5 mr-5"
+													:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
+													:disabled="odt.not_confirm"
+													@click="setOdtStatus(odt, key)"
+												>{{ step.name }}</button>
+											</template>
 
-										<span class="pa-5 box ">{{ odt.shipping_number ? odt.shipping_number : '송장번호' }}</span>
+											<span class="pa-5 box mr-10 ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
 
+											<span class="pa-5 box ">{{ odt.shipping_number ? odt.shipping_number : '송장번호' }}</span>
+										</div>
 									</div>
 								</li>
 							</ul>
@@ -137,7 +161,7 @@
 		</div>
 
 		<Pagination
-			:options="options"
+			:options="search"
 			class="text-center"
 		></Pagination>
 
@@ -250,6 +274,8 @@ export default {
 							odt.not_confirm = true
 						}
 					})
+
+					supply.supply_total = (Number(supply.total_purchase) + Number(supply.delivery_price))
 				})
 
 				item.ATOKEN = self.TOKEN
@@ -339,7 +365,9 @@ export default {
 
 				if(result.success){
 					this.items = result.data.result
-					this.tCnt = result.data.tCnt
+					this.$set(this.search, 'total_count', result.data.tCnt)
+					this.search_option.tCnt = result.data.tCnt
+					this.search_option.cnt = result.data.cnt
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -410,6 +438,12 @@ export default {
 		items: {
 			deep: true
 			,handler: function(){
+			}
+		}
+		,'search.page': {
+			handler: function(call){
+				this.getData()
+				this.$set(this.$route.params, 'page', call)
 			}
 		}
 	}

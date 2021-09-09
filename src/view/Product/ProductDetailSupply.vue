@@ -43,6 +43,16 @@
 								</div>
 							</td>
 						</tr>
+						<tr>
+							<th>한줄 설명</th>
+							<td>
+								<input
+									v-model="item.pdt_summary"
+									class="box pa-10 full-width"
+									maxlength="150px"
+								/>
+							</td>
+						</tr>
 
 						<tr>
 							<th>대표 이미지</th>
@@ -330,6 +340,7 @@ import { Editor } from '@toast-ui/vue-editor';
 				this.new_item.pdt_notice = pdt_notice
 				this.new_item.pdt_purchase = this.item.pdt_purchase
 				this.new_item.pdt_delivery = this.item.pdt_delivery
+				this.new_item.pdt_summary = this.item.pdt_summary
 
 				for(let [key, val] of Object.entries(this.item_options.option)){
 					this.$set(this.new_item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)

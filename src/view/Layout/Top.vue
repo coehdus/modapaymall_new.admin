@@ -8,7 +8,7 @@
 		>Logo Position</div>
 		<div class=" pa-10 ">
 			<span
-				class="mr-10"
+				class="mr-10 cursor-pointer"
 				@click="setModalShop"
 			>
 				<v-icon
@@ -154,7 +154,7 @@
 				<button
 					class="flex-1 pa-10 btn-default"
 					@click="is_modal = !is_modal"
-				>취소</button>
+				>닫기</button>
 			</div>
 		</Modal>
 	</div>

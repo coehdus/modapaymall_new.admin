@@ -164,6 +164,12 @@
 										:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
 										@click="item.is_use = 0; update(item)"
 									>mdi mdi-power-plug-off</v-icon>
+
+									<v-icon
+										class="pa-5 bg-red color-white ml-10"
+										@click="deleteItem(item)"
+									>mdi mdi-delete</v-icon>
+
 								</div>
 							</td>
 							<td>{{ item.wDate.substring(0, 10) }}</td>
@@ -477,6 +483,30 @@ export default {
 		}
 		,setNotify: function({ type, message}){
 			this.$emit('setNotify', { type: type, message: message })
+		}
+		,deleteItem: async  function(item){
+			if(confirm("삭제하시겠습니까?")){
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postProductDelete'
+						,data: {
+							ATOKEN: this.TOKEN
+							,pdt_uid: item.uid
+							,pdt_code: item.pdt_code
+						}
+					})
+
+					if(result.success){
+						await this.getData()
+						this.$emit('setNotify', { type: 'success', message: result.message})
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message})
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
 		}
 
 	}

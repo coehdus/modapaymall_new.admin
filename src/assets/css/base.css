@@ -109,9 +109,12 @@
 .pa-40 { padding: 40px;}
 .pa-50 { padding: 50px;}
 
+.pa-3-10 { padding: 3px 10px;}
 .pa-5-10 { padding: 5px 10px;}
 .pa-10-5 { padding: 10px 5px;}
 .pa-10-20 { padding: 10px 20px;}
+.pa-13-10 { padding: 13px 10px;}
+.pa-15-10 { padding: 15px 10px;}
 .pa-20-10 { padding: 20px 10px;}
 
 .pl-10 { padding-left: 10px}
@@ -280,7 +283,7 @@ select:disabled { cursor: no-drop}
     font-size: 16px;
 }
 
-button:disabled { cursor: no-drop}
+button:disabled { cursor: no-drop; opacity: 0.3}
 
 /* box */
 
@@ -363,3 +366,5 @@ button:disabled { cursor: no-drop}
 .bg-title {
     padding: 10px;
 }
+
+.cursor-pointer { cursor: pointer;}

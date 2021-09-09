@@ -339,6 +339,7 @@ export default {
 
 			this.new_item.ATOKEN = this.TOKEN
 			this.new_item.pdt_uid = this.item.uid
+			this.new_item.pdt_name = this.item.pdt_name
 			this.new_item.pdt_info =  pdt_info
 			this.new_item.pdt_notice = pdt_notice
 			this.new_item.pdt_purchase = this.item.pdt_purchase

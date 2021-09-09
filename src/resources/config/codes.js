@@ -15,7 +15,7 @@ export const codes = {
 	}
 	,o_status: [
 		{ code: 0, name: '', color: ''}
-		,{ code: 1, name: '입금대기', color: 'gray'}
+		,{ code: 1, name: '결제대기', color: 'gray'}
 		,{ code: 2, name: '결제완료', color: 'green'}
 		,{ code: 3, name: '결제취소요청', color: 'orange'}
 		,{ code: 4, name: '결제취소', color: 'red'}
