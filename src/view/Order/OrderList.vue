@@ -163,14 +163,14 @@
 													:value="null"
 												>택배사 선택</option>
 												<option
-													v-for="(v, index) in codes.parcel"
+													v-for="(v, index) in codes.G000.items"
 													:key="'parcel_' + index"
-													:value="index"
-												>{{ v.name }}</option>
+													:value="v.total_code"
+												>{{ v.code_name }}</option>
 											</select>
 
 											<input
-												v-model="odt.shipping_number"
+												v-model="odt.shipping_num"
 												class="box pa-5 vertical-middle mr-5"
 												placeholder="송장번호"
 												:disabled="odt.not_confirm"

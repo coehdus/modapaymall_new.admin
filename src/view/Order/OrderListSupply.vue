@@ -136,21 +136,21 @@
 								<div>
 									<select
 										v-model="odt.shipping_name"
-										class="box pa-5 vertical-middle mr-5"
+										class="box pa-5 vertical-middle mr-10"
 										:disabled="odt.not_confirm"
 									>
 										<option
-											:value="null"
+											value=""
 										>택배사 선택</option>
 										<option
-											v-for="(v, index) in codes.parcel"
+											v-for="(v, index) in codes.G000.items"
 											:key="'parcel_' + index"
-											:value="index"
-										>{{ v.name }}</option>
+											:value="v.total_code"
+										>{{ v.code_name }}</option>
 									</select>
 
 									<input
-										v-model="odt.shipping_number"
+										v-model="odt.shipping_num"
 										class="box pa-5 vertical-middle mr-5"
 										placeholder="송장번호"
 										:disabled="odt.not_confirm"
@@ -293,9 +293,14 @@ export default {
 
 					odt.ATOKEN = self.TOKEN
 
-					if(item.o_status != 2){
+					if(!odt.shipping_name){
+						odt.shipping_name = ''
+					}
+
+					if(item.o_status != 2 || odt.order_status == 'step5'){
 						odt.not_confirm = true
 					}
+
 				})
 
 				item.ATOKEN = self.TOKEN
@@ -402,6 +407,28 @@ export default {
 				}
 			}else {
 				this.item_new = item
+			}
+		}
+		,setShipping: async function(odt){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postOdtShipping'
+					,data: {
+						ATOKEN: odt.ATOKEN
+						,odt_uid: odt.uid
+						,shipping_num: odt.shipping_num
+						,shipping_name: odt.shipping_name
+					}
+				})
+
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
 			}
 		}
 		,setOdtStatus: async function(odt, step){

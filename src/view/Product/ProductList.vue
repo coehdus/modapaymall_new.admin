@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column position-relative"
+		class=" full-height flex-column position-relative "
 	>
 		<Search
 			:search="search"
@@ -30,7 +30,7 @@
 		</Search>
 
 		<div
-			class="mt-10 full-height full-width justify-space-between flex-column overflow-y-auto position-relative"
+			class="mt-10 full-height flex-column overflow-y-auto position-relative"
 		>
 			<div
 				class="full-width full-height flex-column overflow-y-auto"
@@ -189,17 +189,15 @@
 						</tr>
 					</tbody>
 				</table>
-
-				<div
-					class="mt-auto"
-				>
-					<Pagination
-						:program="program"
-						:align="'center'"
-						:options="search"
-					></Pagination>
-				</div>
 			</div>
+
+			<Pagination
+				:program="program"
+				:align="'center'"
+				:options="search"
+
+				class="mt-auto pa-10"
+			></Pagination>
 		</div>
 
 		<Excel

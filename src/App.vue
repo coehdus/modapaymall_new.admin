@@ -124,8 +124,9 @@ export default {
 				if(!main){
 					code.items = []
 					list[code.main_code] = code
+				}else {
+					list[code.main_code].items.push(code)
 				}
-				list[code.main_code].items.push(code)
 			})
 		}
 	}

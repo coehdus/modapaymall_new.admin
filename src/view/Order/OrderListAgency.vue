@@ -140,7 +140,7 @@
 												<button
 													v-if=" odt.order_status == key"
 													:key="key + '_' + item.uid"
-													class="pa-5 mr-5"
+													class="pa-5 mr-10"
 													:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
 													:disabled="odt.not_confirm"
 													@click="setOdtStatus(odt, key)"
@@ -149,7 +149,7 @@
 
 											<span class="pa-5 box mr-10 ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
 
-											<span class="pa-5 box ">{{ odt.shipping_number ? odt.shipping_number : '송장번호' }}</span>
+											<span class="pa-5 box ">{{ odt.shipping_num ? odt.shipping_num : '송장번호' }}</span>
 										</div>
 									</div>
 								</li>

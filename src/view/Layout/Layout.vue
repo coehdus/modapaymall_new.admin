@@ -28,7 +28,7 @@
 			>
 			</Side>
 
-			<div class="flex-1 full-height flex-column">
+			<div class="flex-1 full-height flex-column overflow-y-auto">
 				<Title
 					v-if="program.title"
 					:program="program"
@@ -62,14 +62,8 @@
 					@push="toLocation"
 					@goBack="goBack()"
 
-					class="pa-10 overflow-y-auto"
+					class="pa-10 full-height flex-column overflow-y-auto"
 				></router-view>
-
-				<Bottom
-
-					:cart_cnt="cart_cnt"
-					@push="toLocation"
-				></Bottom>
 			</div>
 		</div>
 
@@ -87,14 +81,13 @@
 	import Notify from '@/components/AlertMsg'
 	import Side from "@/view/Layout/Side";
 	import Top from "@/view/Layout/Top";
-	import Bottom from "@/view/Layout/Bottom";
 	import Title from "@/view/Layout/Title";
 	import Search from "@/view/Layout/Search";
 	
 	export default{
 		name: 'Layout'
 		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes', 'Base64']
-		,components: {Search, Title, Bottom, Side, Top, Notify }
+		,components: {Search, Title, Side, Top, Notify }
 		,data: function(){
 			return {
 				program: {
@@ -182,6 +175,8 @@
 		,created: function(){
 			this.getCategoryList()
 			this.getSupplyList()
+
+			console.log(this.codes)
 		}
 		,watch: {
 			TOKEN: {
