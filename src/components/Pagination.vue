@@ -1,9 +1,10 @@
 <template>
-	<div :class="'text-' + align">
+	<div :class="'text-' + align" class="ptb-10">
 		<div class="mt-10 justify-center">
 			<div class="pg-prev  mr-10">
 				<v-icon
 					class="box color-icon"
+					smal
 					@click="click(prevGroup)"
 				>mdi mdi-chevron-left</v-icon>
 			</div>
@@ -22,6 +23,7 @@
 			<div class="pg-next">
 				<v-icon
 					class="box color-icon"
+					smal
 					@click="click(nextGroup)"
 				>mdi mdi-chevron-right</v-icon>
 			</div>

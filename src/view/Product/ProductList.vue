@@ -387,7 +387,7 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-
+			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'get'
@@ -406,10 +406,12 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 		,update: async function(item){
-
+			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'post'
@@ -427,6 +429,7 @@ export default {
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getData()
+				this.$emit('offLoading')
 			}
 		}
 		,setItem: function (item){
@@ -484,6 +487,7 @@ export default {
 		}
 		,deleteItem: async  function(item){
 			if(confirm("삭제하시겠습니까?")){
+				this.$emit('onLoading')
 				try{
 					const result = await this.Axios({
 						method: 'post'
@@ -503,6 +507,8 @@ export default {
 					}
 				}catch (e) {
 					console.log(e)
+				}finally {
+					this.$emit('offLoading')
 				}
 			}
 		}

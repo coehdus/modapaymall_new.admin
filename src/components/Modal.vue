@@ -11,6 +11,7 @@
 			></div>
 			<div
 				class="modal-container"
+				:style="option.width ? 'width: ' + option.width + ' !important' : ''"
 			>
 				<div
 					class="modal-content bg-base"
@@ -27,7 +28,7 @@
 								<button
 									class="modal-btn-close"
 									@click="close"
-								><v-icon>mdi-close-circle</v-icon></button>
+								><v-icon class="color-icon">mdi-close-circle</v-icon></button>
 							</div>
 						</slot>
 					</template>
@@ -83,7 +84,7 @@ export default {
 .modal-wrap .modal-container .modal-content {width: 100%; background-color: white; padding: 0; border-radius: 5px 5px 0 0;
 	overflow: auto;  display: flex; flex-direction: column; }
 .modal-wrap .modal-container .modal-content .modal-top { padding: 10px; border-bottom: 1px solid #bbb;}
-.modal-wrap .modal-container .modal-content .modal-contents {min-height: 80px; max-height: 100%; padding: 10px; overflow: auto;}
+.modal-wrap .modal-container .modal-content .modal-contents {padding: 10px; overflow: auto; text-align: center; margin: 40px auto}
 .modal-wrap .modal-container .modal-content .modal-bottom { margin-top: auto; padding: 0; }
 .modal-btn-close { float: right; padding: 0; height: auto;}
 

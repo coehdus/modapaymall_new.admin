@@ -373,7 +373,7 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-
+			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'get'
@@ -391,10 +391,12 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 		,update: async function(item){
-
+			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'post'
@@ -421,6 +423,7 @@ export default {
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getData()
+				this.$emit('offnLoading')
 			}
 		}
 		,setItem: function (item){

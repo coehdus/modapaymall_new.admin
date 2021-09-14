@@ -163,6 +163,31 @@ const routes = [
 		,component: () => import('@/components/Excel')
 	}
 	,{
+		path: prefix + 'Board/Bbs/:b_code/Item'
+		,name: 'BbsItem'
+		,component: () => import('@/view/Board/BbsItem')
+	}
+	,{
+		path: prefix + 'Board/Bbs/:b_code/Detail/:bbs_uid'
+		,name: 'BbsDetail'
+		,component: () => import('@/view/Board/BbsDetail')
+	}
+	,{
+		path: prefix + 'CustomerCenter/Notice/List'
+		,name: 'CustomerCenterNoticeList'
+		,component: () => import('@/view/CustomerCenter/NoticeList')
+	}
+	,{
+		path: prefix + 'CustomerCenter/QnA/List'
+		,name: 'CustomerCenterQnAList'
+		,component: () => import('@/view/CustomerCenter/QnAList')
+	}
+	,{
+		path: prefix + 'CustomerCenter/Review/List'
+		,name: 'CustomerCenterReviewList'
+		,component: () => import('@/view/CustomerCenter/ReviewList')
+	}
+	,{
 		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')

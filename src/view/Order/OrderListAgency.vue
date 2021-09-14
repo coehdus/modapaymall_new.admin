@@ -355,7 +355,7 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-
+			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'get'
@@ -373,6 +373,8 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 		,setItem: function (item){
@@ -385,6 +387,7 @@ export default {
 			}
 		}
 		,setOdtStatus: async function(odt, step){
+			this.$emit('onLoading')
 			odt.next_step = step
 			try{
 				const result = await this.Axios({
@@ -401,6 +404,8 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 		,toExcel: function(){
@@ -411,6 +416,7 @@ export default {
 			this.is_item = !this.is_item
 		}
 		,update: async function(item, o_status){
+			this.$emit('onLoading')
 			item.next_status = o_status
 			try{
 				const result = await this.Axios({
@@ -427,6 +433,8 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 	}

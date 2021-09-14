@@ -127,3 +127,23 @@ h6 {font-size:  16px;}
 
 
 fieldset { color: initial !important;}
+
+
+
+body::-webkit-scrollbar {
+    width: 5px
+}
+
+ul::-webkit-scrollbar,
+div::-webkit-scrollbar {
+    width: 5px;
+}
+ul::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb{
+    background-color: #828282;
+    border-radius: 50px;
+}
+ul::-webkit-scrollbar-track,
+div::-webkit-scrollbar-track{
+    background-color: #eee; /*스크롤바 트랙 색상*/
+}

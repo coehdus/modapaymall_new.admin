@@ -244,9 +244,9 @@ select:disabled { cursor: no-drop}
 /* button */
 .theme-dark .btn { display: inline-block; width: 100%; text-align: center; padding: 10px; font-size: 14px; color: white;}
 
-.theme-dark .btn-primary { background-color: #0165FA; color: white; font-size: 16px; font-weight: 300; }
+.theme-dark .btn-primary { background-color: #0165FA; color: white; }
 
-.theme-dark .btn-danger { background-color: #D50000; color: white; font-size: 16px; font-weight: 300; }
+.theme-dark .btn-danger { background-color: #D50000; color: white;  }
 .theme-dark .btn-default { background-color: #eee; color: #2A2A2A; border: 1px solid #ddd}
 
 .theme-dark .btn-success { background-color: #15ab94; color: white;}

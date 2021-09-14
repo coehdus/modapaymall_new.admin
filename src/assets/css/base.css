@@ -211,6 +211,8 @@
 .bg-orange { background-color: darkorange; color: white;}
 .bg-f5 { background-color: #f5f5f5}
 .bg-eee { background-color: #eee !important}
+.bg-bbb { background-color: #bbb !important}
+.bg-ddd { background-color: #ddd !important}
 .bg-select { background-color: black}
 .bg-blue { background-color: #0D47A1}
 .bg-light-gray { background-color: darkgray;}
@@ -257,9 +259,9 @@ select:disabled { cursor: no-drop}
 /* button */
 .btn { display: inline-block; width: 100%; text-align: center; padding: 10px; font-size: 14px; color: white;}
 
-.btn-primary { background-color: #0165FA; color: white; font-size: 16px; font-weight: 300; }
+.btn-primary { background-color: #0165FA; color: white; }
 
-.btn-danger { background-color: #D50000; color: white; font-size: 16px; font-weight: 300; }
+.btn-danger { background-color: #D50000; color: white; }
 .btn-default { background-color: #eee; color: #2A2A2A; border: 1px solid #ddd}
 
 .btn-success { background-color: #15ab94; color: white;}

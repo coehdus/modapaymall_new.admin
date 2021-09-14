@@ -2,6 +2,9 @@
 	<div
 		class="full-height flex-column bg-base theme-dark"
 	>
+		<Loading
+			v-if="is_loading"
+		></Loading>
 		<Top
 			v-if="program.top"
 			:program="program"
@@ -60,8 +63,10 @@
 					@setNotify="setNotify"
 					@onLoad="setProgram"
 					@push="toLocation"
-					@goBack="goBack()"
+					@goBack="goBack"
 
+					@onLoading="onLoading"
+					@offLoading="offLoading"
 					class="pa-10 full-height flex-column overflow-y-auto"
 				></router-view>
 			</div>
@@ -83,11 +88,12 @@
 	import Top from "@/view/Layout/Top";
 	import Title from "@/view/Layout/Title";
 	import Search from "@/view/Layout/Search";
+	import Loading from "@/view/Layout/Loading";
 	
 	export default{
 		name: 'Layout'
 		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes', 'Base64']
-		,components: {Search, Title, Side, Top, Notify }
+		,components: {Loading, Search, Title, Side, Top, Notify }
 		,data: function(){
 			return {
 				program: {
@@ -102,6 +108,7 @@
 				]
 				,category_list: null
 				,supply_list: null
+				,is_loading: false
 			}
 		}
 		,computed:{
@@ -170,6 +177,14 @@
 				}catch (e) {
 					console.log(e)
 				}
+			}
+			,onLoading: function(){
+				this.is_loading = true
+			}
+			,offLoading: function(){
+				setTimeout(() => {
+					this.is_loading = false
+				}, 500)
 			}
 		}
 		,created: function(){

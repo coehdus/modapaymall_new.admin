@@ -3,12 +3,12 @@
 
 	<div
 		v-show="notify"
-		class="position-fixed text-center"
-		style="bottom: 20%; right: 0; display: block; padding: 10px; width: 100%; z-index: 999 "
+		class="position-fixed text-right"
+		style="bottom: 10%; right: 0; display: block; padding: 10px; width: 100%;"
 	>
 		<span
 			:class="type ? type : 'error'"
-			style="padding: 10px; border-radius: 10px; width: auto; margin: 0 auto; display: inline-block"
+			style="padding: 10px; border-radius: 10px; width: auto; margin: 0 auto; display: inline-block; z-index: 999 "
 		>
 			{{ msg }}
 		</span >

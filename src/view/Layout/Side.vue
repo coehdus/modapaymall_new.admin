@@ -143,6 +143,37 @@
 						]
 					}
 					,{
+						path: 'CustomerCenter'
+						,name: '고객센터'
+						,type: ['admin', 'agency', 'supply']
+						,sub: [
+							{
+								path: 'NoticeList'
+								,name: '공지사항'
+								,type: ['admin']
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'QnAList'
+								,name: '1:1문의'
+								,type: ['admin', 'agency', 'supply']
+								,params: {
+									page: 1
+								}
+							}
+							,{
+								path: 'ReviewList'
+								,name: '상품 리뷰'
+								,type: ['admin', 'agency', 'supply']
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
 						path: 'Settlement'
 						,name: '정산 관리'
 						,type: ['admin', 'agency', 'supply']
@@ -210,7 +241,7 @@
 		}
 		,methods: {
 			toPush: function(menu, sub){
-
+				console.log(menu.path + sub.path)
 				this.$emit('push', menu.path + sub.path )
 			}
 		}
