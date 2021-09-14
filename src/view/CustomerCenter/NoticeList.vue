@@ -152,9 +152,8 @@
 					,bottom: false
 				}
 				,search:{
-					TOKEN: this.TOKEN
+					ATOKEN: this.TOKEN
 					,b_code: 'b_notice'
-					,is_ajax: true
 					,list_cnt: 10
 					,search_type: ''
 				}
@@ -190,7 +189,7 @@
 				try{
 					const result = await this.Axios({
 						method: 'get'
-						,url: 'board/getBbsList'
+						,url: 'management/getBbsList'
 						,data: this.search
 					})
 					if(result.success){

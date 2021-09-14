@@ -206,6 +206,7 @@ export default {
 
 				is_excel: true
 				,is_cnt: true
+				,is_item: false
 				,sDate: true
 				,eDate: true
 				,cnt: 0

@@ -5,92 +5,44 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10">
+			<div class="flex-1 mr-20">
 				<div class="">
 					<h6>제목</h6>
-					<input
-						v-model="item.b_title"
-						class="input-box mt-10"
-						placeholder="제목을 입력하세요"
-					/>
+					<div class="input-box">{{ item.b_title }}</div>
 				</div>
 				<div class="mt-10">
-					<h6>첨부파일</h6>
-
-
-					<label class="mt-10 input-box">
-						<v-icon
-							class="color-icon"
-						>mdi mdi-image</v-icon>
-						{{ file_name }}
-						<input
-							v-show="false"
-							type="file"
-							placeholder="대표 이미지"
-							class="input-box"
-							maxlength="250"
-							@change="setFile"
-							accept="image/*"
-						/>
-					</label>
-
-
-				</div>
-				<div class="mt-10">
-					<button
-						v-for="file in files"
-						:key="'file_' + file.uid"
-						class="mr-10 box pa-10"
-						@click="isDelete(file)"
-					><v-icon
-						class="color-icon mr-10"
-					>mdi mdi-file</v-icon>{{ file.original_name }} <v-icon class="color-red" small>mdi mdi-close</v-icon></button>
-				</div>
-
-			</div>
-			<div class="flex-1">
-				<div class="">
-
 					<h6>내용</h6>
-					<template
-						v-if="item_config.is_answer == 1"
+					<div
 					>
-						<div
-							class="box-conents-for-answer"
-						>
 						<Viewer
 							v-if="item.b_contents"
 							:initialValue="item.b_contents"
-							class="pa-10 bg-gray-light"
+							class="pa-10 bg-gray-light box-conents-for-answer"
 						/>
-						</div>
-					</template>
-					<template
-						v-else
-					>
-						<editor
-							v-if="item.b_contents"
-							:initialValue="item.b_contents"
-							height="550px"
-							initialEditType="wysiwyg"
-							ref="b_contents"
-							class="text-left mt-10"
-						/>
-
-					</template>
-
+					</div>
 				</div>
+				<div class="mt-10">
+					<h6>첨부파일</h6>
+					<div class="mt-10">
+						<button
+							v-for="file in files"
+							:key="'file_' + file.uid"
+							class="mr-10 box pa-10"
+						><v-icon
+							class="color-icon mr-10"
+						>mdi mdi-file</v-icon>{{ file.original_name }} <v-icon class="color-icon" >mdi mdi-arrow-down-bold-box-outline</v-icon></button>
+					</div>
+				</div>
+			</div>
+			<div class="flex-1">
 				<div class="">
-
 					<h6>답변</h6>
-
 					<editor
-						height="350px"
+						height="550px"
 						initialEditType="wysiwyg"
 						ref="b_answer"
-						class="text-left mt-10"
+						class="text-left "
 					/>
-
 				</div>
 			</div>
 		</div>
@@ -145,7 +97,7 @@ export default {
 	,data: function(){
 		return {
 			program: {
-				name: '게시글 수정'
+				name: '1:1문의 '
 				,top: true
 				,title: true
 				,bottom: false

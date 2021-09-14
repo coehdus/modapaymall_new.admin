@@ -9,7 +9,18 @@
 			@change="getData"
 			@click="getData"
 			@toItem="toItem"
-		></Search>
+		>
+			<select
+				slot="add"
+				v-model="search.b_answer"
+				class="pa-5-10 mr-10"
+				@change="getData"
+			>
+				<option value="">답변여부</option>
+				<option value="n">답변대기</option>
+				<option value="y">답변완료</option>
+			</select>
+		</Search>
 
 		<div
 			class="mt-10 full-height flex-column overflow-y-auto"
@@ -21,6 +32,8 @@
 					<col width="80px" />
 					<col width="auto" />
 					<col width="180px" />
+					<col width="120px" />
+					<col width="120px" />
 					<col width="180px" />
 					<col width="180px" />
 				</colgroup>
@@ -29,19 +42,21 @@
 					<th><input type="checkbox" /></th>
 					<th>제목</th>
 					<th>내용</th>
+					<th>아이디</th>
+					<th>작성자</th>
 					<th>등록일시</th>
 					<th>관리</th>
 				</tr>
 				</thead>
 				<tbody>
 				<template
-					v-for="(item) in items"
+					v-for="(item) in item_list"
 				>
 					<tr
 						:key="'bbs_' + item.uid"
 					>
 						<td><input type="checkbox" /></td>
-						<td class="text-left">{{ item.b_title }}</td>
+						<td class="text-left">[<span :class="'color-' + item.is_answer_color">{{ item.is_answer_name }}</span>] {{ item.b_title }}</td>
 						<td>
 							<button
 								class="box pa-5-10"
@@ -59,13 +74,15 @@
 								>mdi mdi-menu-down</v-icon>
 							</button>
 						</td>
+						<td>{{ item.m_id }}</td>
+						<td>{{ item.m_name }}</td>
 						<td>{{ item.wDate }}</td>
 						<td>
 							<button
 								class="btn-success pa-5-10 ml-10"
 
 								@click="toDetail(item)"
-							>수정</button>
+							>답변하기</button>
 							<button
 								class="btn-danger pa-5-10 ml-10"
 								@click="isDelete(item)"
@@ -76,7 +93,7 @@
 						v-if="is_view == item.uid"
 						:key="'bbs_contents_' + item.uid"
 					>
-						<td colspan="5" class="text-left bg-bbb ">
+						<td colspan="7" class="text-left bg-bbb ">
 							<Viewer
 								v-if="item.b_contents"
 								:initialValue="item.b_contents"
@@ -139,7 +156,7 @@ import { Viewer } from "@toast-ui/vue-editor";
 import Modal from "@/components/Modal";
 
 export default {
-	name: 'CustomerCenterNoticeList'
+	name: 'CustomerCenterQnAList'
 	,
 	components: {Modal, Pagination, Search,Viewer},
 	props: ['Axios', 'TOKEN', 'codes', 'rules']
@@ -152,11 +169,11 @@ export default {
 				,bottom: false
 			}
 			,search:{
-				TOKEN: this.TOKEN
-				,b_code: 'qna'
-				,is_ajax: true
+				ATOKEN: this.TOKEN
+				,b_code: 'b_qna'
 				,list_cnt: 10
 				,search_type: ''
+				,b_answer: ''
 			}
 			,search_option: {
 				is_excel: false
@@ -168,6 +185,8 @@ export default {
 				,tCnt: 0
 				,search_type: [
 					{ name: '제목', column: 'title'}
+					,{ name: '아이디', column: 'm_id'}
+					,{ name: '이름', column: 'm_name'}
 				]
 			}
 			,items: [
@@ -184,13 +203,28 @@ export default {
 			}
 		}
 	}
+	,computed: {
+
+		item_list: function(){
+			return this.items.filter(function(item){
+				if(item.b_answer){
+					item.is_answer_color = 'green'
+					item.is_answer_name = '답변 완료'
+				}else{
+					item.is_answer_color = ''
+					item.is_answer_name = '답변 대기'
+				}
+				return item
+			})
+		}
+	}
 	,methods: {
 		getData: async function(){
 			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'board/getBbsList'
+					,url: 'management/getBbsList'
 					,data: this.search
 				})
 				if(result.success){
@@ -212,7 +246,7 @@ export default {
 			this.$router.push({ name: 'BbsItem', params: { b_code: this.search.b_code}})
 		}
 		,toDetail: function(item){
-			this.$router.push({ name: 'BbsDetail', params: { b_code: this.search.b_code, bbs_uid: item.uid }})
+			this.$router.push({ name: 'BbsAnswer', params: { b_code: this.search.b_code, bbs_uid: item.uid }})
 		}
 		,doClear: function(){
 			this.is_modal = false

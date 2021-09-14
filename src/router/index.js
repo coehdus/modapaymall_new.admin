@@ -173,17 +173,22 @@ const routes = [
 		,component: () => import('@/view/Board/BbsDetail')
 	}
 	,{
-		path: prefix + 'CustomerCenter/Notice/List'
+		path: prefix + 'Board/Bbs/:b_code/Answer/:bbs_uid'
+		,name: 'BbsAnswer'
+		,component: () => import('@/view/Board/BbsAnswer')
+	}
+	,{
+		path: prefix + 'CustomerCenter/Notice/List/:page?'
 		,name: 'CustomerCenterNoticeList'
 		,component: () => import('@/view/CustomerCenter/NoticeList')
 	}
 	,{
-		path: prefix + 'CustomerCenter/QnA/List'
+		path: prefix + 'CustomerCenter/QnA/List/:page?'
 		,name: 'CustomerCenterQnAList'
 		,component: () => import('@/view/CustomerCenter/QnAList')
 	}
 	,{
-		path: prefix + 'CustomerCenter/Review/List'
+		path: prefix + 'CustomerCenter/Review/List/:page?'
 		,name: 'CustomerCenterReviewList'
 		,component: () => import('@/view/CustomerCenter/ReviewList')
 	}
