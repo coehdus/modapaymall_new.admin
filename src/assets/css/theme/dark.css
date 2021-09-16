@@ -81,7 +81,7 @@
 .theme-dark .color-gray { color: gray !important;}
 .theme-dark .color-gray-light { color: lightgray !important;}
 .theme-dark .color-gray-dark { color: darkgray !important;}
-.theme-dark .color-red { color: red !important;}
+.theme-dark .color-red { color: #bf360c !important;}
 .theme-dark .color-red-light { color: #FF5D46 !important;}
 .theme-dark .color-purple-light { color: #6f7dff }
 .theme-dark .color-black { color: black !important;}

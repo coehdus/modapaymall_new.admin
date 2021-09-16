@@ -15,6 +15,18 @@
 				slot="add"
 			>
 				<select
+					v-model="search.pdt_category"
+					class="pa-5-10 mr-10"
+					@change="toSearch"
+				>
+					<option value="">카테고리</option>
+					<option
+						v-for="category in category_list"
+						:key="'category_' + category.uid"
+						:value="category.category_code"
+					>{{ category.category_name }}</option>
+				</select>
+				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
 					@change="toSearch"
@@ -87,8 +99,8 @@
 							<td
 								class="text-left"
 							>
+								[{{ item.category_name}}] <br/>
 								[{{ item.shop_name}}] <br/>
-								[{{ item.pdt_category}}] <br/>
 								{{ item.pdt_name }}
 							</td>
 							<td>{{ item.pdt_purchase | makeComma }}</td>
@@ -272,6 +284,7 @@ export default {
 				,is_use: this.$route.params.is_use ? this.$route.params.is_use : ''
 				,list_cnt: this.$route.params.list_cnt ? this.$route.params.list_cnt : 10
 				,page: this.$route.params.page ? this.$route.params.page : 1
+				,pdt_category: ''
 			}
 			,search_option:{
 				is_excel: true

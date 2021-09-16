@@ -4,7 +4,7 @@
 	>
 		<div
 			class="justify-space-between"
-			v-if="Object.keys(item_list).length > 0"
+			v-if="items.length > 0"
 		>
 			<div
 				v-for="(item, key) in item_list"
@@ -19,7 +19,7 @@
 					>mdi mdi-pencil-box-outline</v-icon>
 				</h6>
 				<ul
-					class="mt-10 pa-10 box-shadow full-height"
+					class="mt-10  box-shadow full-height"
 				>
 					<template
 						v-for="(sub, sub_index) in item"
@@ -27,104 +27,97 @@
 					<li
 						v-if="is_view(sub)"
 						:key="sub.category_code"
-						class="justify-space-between mb-10"
+						class="pa-10 justify-space-between mb-10"
+						:class="{ on: isSelect(sub) }"
 					>
 						<input
 							v-model="items[sub.index].category_name"
 							class="input-box flex-3 mr-10"
+							placeholder="카테고리명을 입력하세요"
 						/>
-
 						<span
 							class="flex-1 justify-end"
 						>
+							<v-icon
+								class="flex-1 color-red "
+								@click="isDelete(sub)"
+							>mdi mdi-delete-outline</v-icon>
 							<span
-								v-if="sub_index"
 								class="flex-1 flex-column justify-center"
 							>
 								<v-icon
+									:class="sub_index ? 'color-icon' : ''"
 								>mdi mdi-arrow-up-bold-box-outline</v-icon>
 							</span>
 							<span
-								v-if="sub_index < Object.keys(item).length - 1"
 								class="flex-1 flex-column justify-center"
 							>
 								<v-icon
+									:class="sub_index == Object.keys(item).length - 1 ? '' : 'color-icon'"
 								>mdi mdi-arrow-down-bold-box-outline</v-icon>
 							</span>
 							<v-icon
-								class="flex-1 color-red "
-							>mdi mdi-delete-outline</v-icon>
-							<v-icon
 								@click="setSub(items[sub.index])"
-								class="flex-1"
-								:class="isSelect(sub)"
+								class="flex-1 color-icon"
 							>mdi mdi-arrow-right-bold-box-outline</v-icon>
 						</span>
 					</li>
 					</template>
-					<li
-						v-for="(new_category, index) in new_list['depth' + key.slice(-1)]"
-						:key="'new_category' + key.slice(-1) + index"
-						class="justify-space-between"
-					>
-						<input
-							v-model="item_new[new_category[index]]"
-							placeholder="신규 카테고리"
-							class="input-box flex-3 mb-10 mr-10"
-						/>
+					<template
 
-						<span
-							class="flex-1 justify-space-between"
+						v-if="key.slice(-1) > 1"
 						>
-
-							<span
-								class="flex-1 flex-column justify-center"
-							>
-								<v-icon
-								>mdi mdi-arrow-up-bold-box-outline</v-icon>
-							</span>
-							<span
-								class="flex-1 flex-column justify-center"
-							>
-								<v-icon
-								>mdi mdi-arrow-down-bold-box-outline</v-icon>
-							</span>
-							<v-icon
-								class="flex-1 color-red"
-							>mdi mdi-delete-outline</v-icon>
-						</span>
+					<li
+						v-if="(key.slice(-1) == 2 && !category1) || (key.slice(-1) == 3 && !category2) || (key.slice(-1) == 4 && !category3)"
+						class="pa-10"
+					>
+						상위 카테고리를 선택하세요
 					</li>
+					</template>
 				</ul>
 
 			</div>
 		</div>
 
 		<div
-			class="mt-10"
+			class="mt-30 justify-center"
 		>
 			<button
-				class="btn-identify"
+				class="bg-blue pa-10-20"
+				@click="save"
 			>저장</button>
 		</div>
-		<div>
-			{{ item_list }}
-		</div>
-		<div>
-		{{ item_new }}
-		</div>
-		<div>
-		{{ new_list }}
-		</div>
-		<div>
-			{{ item_now }}
-		</div>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+
+			@close="close"
+		>
+			<div
+				slot="modal-bottom"
+				class="justify-space-between"
+			>
+				<button
+					class="btn bg-red"
+					@click="deleteItem"
+				>삭제</button>
+				<button
+					class="btn bg-gray-light color-333"
+					@click="close"
+				>취소</button>
+			</div>
+		</Modal>
 	</div>
 </template>
 
 <script>
+	import Modal from "@/components/Modal";
 	export default {
 		name: 'ProductCategory'
-		,props: ['Axios', 'member_info', 'TOKEN']
+		,
+		components: {Modal},
+		props: ['Axios', 'member_info', 'TOKEN']
 		,data: function(){
 			return {
 				program: {
@@ -146,6 +139,18 @@
 				,item_now: {
 
 				}
+				,category1: null
+				,category2: null
+				,category3: null
+				,item_delete: null
+				,is_modal: false
+				,modal_option: {
+					top: true
+					,title: '카테고리 삭제'
+					,content: '해당 카테고리를 삭제하시겠습니까?'
+					,bottom: true
+					,width: '360px'
+				}
 			}
 		}
 		,computed: {
@@ -161,11 +166,10 @@
 
 					item.index = index
 					list['depth' + item.depth].push(item)
+
 					index++
 					return item
 				})
-
-				console.log(list)
 
 				return list
 			}
@@ -185,7 +189,14 @@
 					return item
 				})
 
-				console.log(list)
+				return list
+			}
+			,item_save: function(){
+				let list = []
+				this.items.filter(function(item){
+
+					list.push(JSON.stringify(item))
+				})
 
 				return list
 			}
@@ -208,26 +219,96 @@
 					console.log(e)
 				}
 			}
+			,save: async function(){
+				this.$emit('onLoading')
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postCategory'
+						,data: {
+							ATOKEN: this.TOKEN
+							,category: JSON.stringify(this.items)
+						}
+					})
+
+					if(result.success){
+						await this.getData()
+						this.$emit('setNotify', { type: 'success', message: result.message })
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}finally {
+					this.$emit('offLoading')
+				}
+			}
+
+			,deleteItem: async function(){
+				this.$emit('onLoading')
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postCategoryDelete'
+						,data: {
+							ATOKEN: this.TOKEN
+							,category_code: this.item_delete.category_code
+						}
+					})
+
+					if(result.success){
+						this.close()
+						await this.getData()
+						this.$emit('setNotify', { type: 'success', message: result.message })
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}finally {
+					this.$emit('offLoading')
+				}
+			}
 			,addCategory: function(key){
 
 				let item = this.item_new[key]
+				let depth = key.slice(-1)
+
+				if(depth > 1 && !this['category' + (Number(depth) - 1)]){
+					this.$emit('setNotify', { type: 'error', message: '상위 카테고리를 선택하세요'})
+					return false
+				}
+
+				let sort =this.items.length
+				if(depth > 1) {
+					sort = this['category' + (Number(depth) - 1)].sort + '-' + this.items.length
+				}
+
 				if(!item){
 					item = {
-						category_code1: ''
-						,category_code2: ''
-						,category_code3: ''
+						category_code1: this.category1 ? this.category1.category_code : ''
+						,category_code2: this.category2 ? this.category2.category_code : ''
+						,category_code3: this.category3 ? this.category3.category_code : ''
 						,category_code4: ''
 						,category_name: ''
-						,depth: key.slice(-1)
+						,sort: sort
+						,depth: depth
 					}
 				}
 
-				this.item_new.push(item)
+				this.items.push(item)
 			}
 			,setSub: function(item){
+				if(!item.category_code){
+					return false
+				}
 				this.item_now = item
+				this['category' + item.depth] = item
 			}
 			,isSelect: function(item){
+				if(!item.category_code){
+					return false
+				}
 				let item_now = this.item_now
 				let is_view = false
 
@@ -287,6 +368,14 @@
 				}
 				return is_view
 			}
+			,isDelete: function(item){
+				this.item_delete = item
+				this.is_modal = true
+			}
+			,close: function(){
+				this.item_delete = null
+				this.is_modal = false
+			}
 		}
 		,created() {
 			this.$emit('onLoad', this.program)
@@ -294,3 +383,7 @@
 		}
 	}
 </script>
+
+<style>
+ .on { background-color: black}
+</style>
