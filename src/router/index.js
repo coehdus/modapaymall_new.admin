@@ -123,6 +123,21 @@ const routes = [
 		,component: () => import('@/view/Order/OrderListAgency.vue')
 	}
 	,{
+		path: prefix + 'Banner/List/:page?'
+		,name: 'BannerList'
+		,component: () => import('@/view/Banner/BannerList.vue')
+	}
+	,{
+		path: prefix + 'Banner/Item'
+		,name: 'BannerItem'
+		,component: () => import('@/view/Banner/BannerItem.vue')
+	}
+	,{
+		path: prefix + 'Banner/Detail/:banner_uid'
+		,name: 'BannerDetail'
+		,component: () => import('@/view/Banner/BannerDetail.vue')
+	}
+	,{
 		path: prefix + 'Setting/Code/List'
 		,name: 'SettingCodeList'
 		,component: () => import('@/view/Setting/CodeList.vue')

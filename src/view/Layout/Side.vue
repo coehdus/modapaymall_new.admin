@@ -128,6 +128,21 @@
 						]
 					}
 					,{
+						path: 'Banner'
+						,name: '배너 관리'
+						,type: ['admin']
+						,sub: [
+							{
+								path: 'List'
+								,name: '배너 목록'
+								,type: ['admin']
+								,params: {
+									page: 1
+								}
+							}
+						]
+					}
+					,{
 						path: 'Order'
 						,name: '주문 관리'
 						,type: ['admin', 'agency', 'supply']

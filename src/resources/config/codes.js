@@ -8,6 +8,7 @@ export const codes = {
 	,live_url: 'http://delimall.co.kr/Auth/Join/'
 	,dev_url: 'http://localhost:8080/Auth/Join/'
 	,img_url: 'http://delimall.co.kr/API/data/product/'
+	,banner_url: 'http://delimall.co.kr/API/data/banner/'
 	,pay_div: {
 		card: { code: 'card', name: '카드결제', color: 'blue'}
 		,bank: { code: 'bank', name: '무통장 입금', color: 'gray'}
