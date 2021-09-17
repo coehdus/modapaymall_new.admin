@@ -80,18 +80,6 @@
 					</template>
 
 				</div>
-				<div class="">
-
-					<h6>답변</h6>
-
-					<editor
-						height="350px"
-						initialEditType="wysiwyg"
-						ref="b_answer"
-						class="text-left mt-10"
-					/>
-
-				</div>
 			</div>
 		</div>
 
