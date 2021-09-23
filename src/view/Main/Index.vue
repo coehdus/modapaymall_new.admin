@@ -3,7 +3,13 @@
 		<div>
 			<div class="justify-space-between">
 				<GChart
-					type="ComboChart"
+					type="LineChart"
+					:data="chart_data_weekly_cnt"
+					:options="chartOptions3"
+					class="flex-1 mr-10"
+				/>
+				<GChart
+					type="ColumnChart"
 					:data="chart_data_weekly"
 					:options="chartOptions"
 					class="flex-1 mr-10"
@@ -50,6 +56,9 @@
 			<div class="full-height flex-1 flex-column overflow-y-auto mr-10">
 				<h6 class="">최근 문의</h6>
 				<ul class="pa-10 bg-base box full-height overflow-y-auto">
+					<template
+						v-if="qna_items.length > 0"
+					>
 					<li
 						v-for="qna in qna_item_list"
 						:key="'qna_' + qna.uid"
@@ -59,11 +68,18 @@
 						<span>[{{ qna.is_answer }}] {{  qna.b_title  }}</span>
 						<span>{{  qna.wDate | transDate('-')}}</span>
 					</li>
+					</template>
+					<li
+						v-else
+					>등록된 문의가 없습니다</li>
 				</ul>
 			</div>
 			<div class="full-height flex-1 flex-column overflow-y-auto">
 				<h6 class="">공지사항</h6>
 				<ul class="pa-10 bg-base full-height box overflow-y-auto">
+					<template
+						v-if="notice_items.length > 0"
+					>
 					<li
 						v-for="notice in notice_items"
 						:key="'notice_' + notice.uid"
@@ -73,6 +89,10 @@
 						<span>{{  notice.b_title  }}</span>
 						<span>{{  notice.wDate | transDate('-')}}</span>
 					</li>
+					</template>
+					<li
+						v-else
+					>공지사항이 없습니다</li>
 				</ul>
 			</div>
 		</div>
@@ -86,7 +106,7 @@ import { GChart } from 'vue-google-charts'
 
 	export default{
 		name: 'Main'
-		,props: ['Axios', 'TOKEN']
+		,props: ['Axios', 'TOKEN', 'date']
 		,components: { GChart }
 		,data: function(){
 			return {
@@ -117,14 +137,15 @@ import { GChart } from 'vue-google-charts'
 				,chartOptions: {
 					title : '최근 1주일 판매수익',
 					height: 350,
-					seriesType: 'bars',
-					series: {
-						0: { type: 'line'}
-					}
+					seriesType: 'bars'
 					,vAxis: {format: 'short'}
 				}
 				,chartOptions2: {
 					title : '이번달 판매수익',
+					height: 350,
+				}
+				,chartOptions3: {
+					title : '최근 1주일 판매량',
 					height: 350,
 				}
 				,chart_data: []
@@ -149,17 +170,67 @@ import { GChart } from 'vue-google-charts'
 			}
 			,chart_data_weekly: function(){
 				let data = [
-					["판매일", "판매랑", "매출", "수익"]
+					["판매일", "매출", "수익"]
 				]
 
-				this.chart_data.filter(function(item){
-					data.push([
-						item.date
-						,Number(item.total_cnt)
-						,Number(item.total_sale_price)
-						,Number(item.total_revenue_price)
-					])
-				})
+				let start = this.date.getLastWeekDate(this.date.getToday(), '-')
+
+				let date = start
+				for(let i = 0; i < 7; i++){
+
+					let is_do = false
+					this.chart_data.filter(function(item){
+						if(item.date == date) {
+							data.push([
+								item.date
+								, Number(item.total_sale_price)
+								, Number(item.total_revenue_price)
+							])
+							is_do = true
+						}
+					})
+
+					if(!is_do){
+						data.push([
+							date
+							, 0
+							, 0
+						])
+					}
+					date = this.date.getNextDay(date, '-')
+				}
+
+				return data
+			}
+			,chart_data_weekly_cnt: function(){
+				let data = [
+					["판매일", "판매랑"]
+				]
+
+				let start = this.date.getLastWeekDate(this.date.getToday(), '-')
+
+				let date = start
+				for(let i = 0; i < 7; i++){
+
+					let is_do = false
+					this.chart_data.filter(function(item){
+						if(item.date == date) {
+							data.push([
+								item.date
+								, Number(item.total_cnt)
+							])
+							is_do = true
+						}
+					})
+
+					if(!is_do){
+						data.push([
+							date
+							, 0
+						])
+					}
+					date = this.date.getNextDay(date, '-')
+				}
 
 				return data
 			}
@@ -167,6 +238,10 @@ import { GChart } from 'vue-google-charts'
 				let data = [
 					["판매일", "매출", "수익"]
 				]
+
+				if(!this.chart_data2){
+					return null
+				}
 
 				this.chart_data2.filter(function(item){
 					data.push([

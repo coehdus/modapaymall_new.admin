@@ -155,7 +155,7 @@
 									</li>
 								</ul>
 								<div class="color-red mt-10 text-left">
-									옵션 내용은 콤마(,)로 구분하며 상품 정보를 저장시 변경적용됩니다
+									옵션 내용은 콤마(,)로 구분합니다 ex) 사이즈: s,m,l,xl,xxl
 								</div>
 							</td>
 						</tr>
@@ -399,11 +399,28 @@ import { Editor } from '@toast-ui/vue-editor';
 					,opt_cont: ''
 				})
 			}
-			,removeOption: function(option, index){
+			,removeOption: async  function(option, index){
 				//console.log(option)
 				if(option.uid){
-					if(confirm("옵션을 삭제하시겠습니까?")){
+					if(confirm("옵션을 삭제하시겠습니까?1")){
 						this.item_options.option.splice(index, 1)
+
+						try{
+							option.ATOKEN = this.TOKEN
+							const result = await this.Axios({
+								method: 'post'
+								,url: 'management/postProductOptionDelete'
+								,data: option
+							})
+
+							if(result.success){
+								this.item_options.option.splice(index, 1)
+							}else{
+								this.$emit('setNotify', { type: 'error', message: result.message })
+							}
+						}catch (e) {
+							console.log(e)
+						}
 					}
 				}else{
 					this.item_options.option.splice(index, 1)

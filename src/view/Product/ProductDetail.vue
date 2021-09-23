@@ -403,11 +403,28 @@ export default {
 				,opt_cont: ''
 			})
 		}
-		,removeOption: function(option, index){
+		,removeOption: async function(option, index){
 			//console.log(option)
 			if(option.uid){
-				if(confirm("옵션을 삭제하시겠습니까?")){
+				if(confirm("옵션을 삭제하시겠습니까?1")){
 					this.item_options.option.splice(index, 1)
+
+					try{
+						option.ATOKEN = this.TOKEN
+						const result = await this.Axios({
+							method: 'post'
+							,url: 'management/postProductOptionDelete'
+							,data: option
+						})
+
+						if(result.success){
+							this.item_options.option.splice(index, 1)
+						}else{
+							this.$emit('setNotify', { type: 'error', message: result.message })
+						}
+					}catch (e) {
+						console.log(e)
+					}
 				}
 			}else{
 				this.item_options.option.splice(index, 1)
