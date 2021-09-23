@@ -66,6 +66,14 @@
 							/></td>
 						</tr>
 						<tr>
+							<th>결제 수수료</th>
+							<td><input
+								v-model="item.shop_per"
+								placeholder="상점명을 입력하세요"
+								class="input-box"
+							/></td>
+						</tr>
+						<tr>
 							<th>배송비 구분</th>
 							<td>
 								<button

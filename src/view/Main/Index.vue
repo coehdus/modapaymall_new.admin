@@ -9,9 +9,9 @@
 					class="flex-1 mr-10"
 				/>
 				<GChart
-					type="ComboChart"
-					:data="chartData"
-					:options="chartOptions"
+					type="BarChart"
+					:data="chart_data_monthly"
+					:options="chartOptions2"
 					class="flex-1 ml-10"
 				/>
 			</div>
@@ -19,9 +19,9 @@
 		<div
 			class="full-height mt-10 justify-space-between "
 		>
-			<div class="full-height flex-1 overflow-y-auto mr-10 ">
+			<div class="full-height flex-1 flex-column overflow-y-auto mr-10 ">
 				<h6 class="">이번달 정산</h6>
-				<ul class="pa-10 full-height box ">
+				<ul class="pa-10 full-height box overflow-y-auto">
 					<li
 						class="ptb-10 justify-space-between"
 					>
@@ -42,37 +42,41 @@
 					</li>
 				</ul>
 			</div>
-			<div class="full-height flex-1 overflow-y-auto mr-10">
+			<div class="full-height flex-1 flex-column overflow-y-auto mr-10">
 				<h6 class="">이번달 정산</h6>
-				<ul class="pa-10 bg-base full-height box">
+				<ul class="pa-10 bg-base full-height box overflow-y-auto">
 				</ul>
 			</div>
-			<div class="full-height flex-1 overflow-y-auto mr-10">
+			<div class="full-height flex-1 flex-column overflow-y-auto mr-10">
 				<h6 class="">최근 문의</h6>
 				<ul class="pa-10 bg-base box full-height overflow-y-auto">
 					<li
-						class="ptb-10 justify-space-between"
 						v-for="qna in qna_item_list"
 						:key="'qna_' + qna.uid"
+						class="ptb-10 justify-space-between"
+						@click="toQnaDetail(qna)"
 					>
 						<span>[{{ qna.is_answer }}] {{  qna.b_title  }}</span>
 						<span>{{  qna.wDate | transDate('-')}}</span>
 					</li>
 				</ul>
 			</div>
-			<div class="full-height flex-1 overflow-y-auto">
-				<h6 class="">이번달 정산</h6>
-				<ul class="pa-10 bg-base full-height box">
+			<div class="full-height flex-1 flex-column overflow-y-auto">
+				<h6 class="">공지사항</h6>
+				<ul class="pa-10 bg-base full-height box overflow-y-auto">
 					<li
-						class="justify-space-between"
+						v-for="notice in notice_items"
+						:key="'notice_' + notice.uid"
+						class="ptb-10 justify-space-between"
+						@click="toNoticeDetail(notice)"
 					>
-						<span>제목</span>
-						<span>등록일</span>
+						<span>{{  notice.b_title  }}</span>
+						<span>{{  notice.wDate | transDate('-')}}</span>
 					</li>
 				</ul>
 			</div>
 		</div>
-		<div class="mt-auto pa-10 box">1</div>
+		<div class="mt-auto pa-10 "></div>
 	</div>
 </template>
 
@@ -117,12 +121,19 @@ import { GChart } from 'vue-google-charts'
 					series: {
 						0: { type: 'line'}
 					}
+					,vAxis: {format: 'short'}
+				}
+				,chartOptions2: {
+					title : '이번달 판매수익',
+					height: 350,
 				}
 				,chart_data: []
+				,chart_data2: []
 				,settlement_data: {
 
 				}
 				,qna_items: []
+				,notice_items: []
 			}
 		}
 		,computed: {
@@ -152,6 +163,21 @@ import { GChart } from 'vue-google-charts'
 
 				return data
 			}
+			,chart_data_monthly: function(){
+				let data = [
+					["판매일", "매출", "수익"]
+				]
+
+				this.chart_data2.filter(function(item){
+					data.push([
+						item.date
+						,Number(item.total_sale_price)
+						,Number(item.total_revenue_price)
+					])
+				})
+
+				return data
+			}
 		}
 		,methods: {
 			getData: async function(){
@@ -165,8 +191,10 @@ import { GChart } from 'vue-google-charts'
 
 				if(result.success){
 					this.chart_data = result.data.chart_data
+					this.chart_data2 = result.data.chart_data2
 					this.settlement_data = result.data.settlement_data
 					this.qna_items = result.data.qna_list
+					this.notice_items = result.data.notice_list
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}
@@ -184,6 +212,12 @@ import { GChart } from 'vue-google-charts'
 			}
 			,setNotify({ type, message}){
 				this.$emit('setNotify', { type: type, message: message })
+			}
+			,toQnaDetail: function(item){
+				this.$router.push({ name: 'BbsAnswer', params: { b_code: item.b_code, bbs_uid: item.uid}})
+			}
+			,toNoticeDetail: function(item){
+				this.$router.push({ name: 'BbsDetail', params: { b_code: item.b_code, bbs_uid: item.uid}})
 			}
 		}
 		,created: function(){
