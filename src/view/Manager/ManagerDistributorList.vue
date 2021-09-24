@@ -8,6 +8,7 @@
 
 			@change="getData"
 			@click="getData"
+			@toExcel="toExcel"
 			@toItem="toItem"
 		></Search>
 
@@ -16,8 +17,7 @@
 		>
 			<div class="full-width">
 				<table
-					v-if="item_list.length > 0"
-					class=""
+					v-if="items.length > 0"
 				>
 					<colgroup>
 						<col width="80px" />
@@ -25,6 +25,7 @@
 						<col width="150px" />
 						<col width="150px" />
 						<col width="150px" />
+						<col width="auto" />
 						<col width="auto" />
 						<col width="180px" />
 						<col width="150px" />
@@ -36,19 +37,20 @@
 								type="checkbox"
 							/>
 						</th>
-						<th>등급</th>
+						<th>총판명</th>
 						<th>아이디</th>
 						<th>이름</th>
 						<th>연락처</th>
 						<th>사용여부</th>
-						<th>등록일</th>
+						<th>판매여부</th>
+						<th>가입일</th>
 						<th>상세정보</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr
 						v-for="item in item_list"
-						:key="item.admin_id"
+						:key="item.uid"
 						:class="{ 'bg-select': item.uid == item_new.uid }"
 					>
 						<td>
@@ -56,44 +58,24 @@
 								type="checkbox"
 							/>
 						</td>
-						<td class="position-relative">
-							<select
-								v-model="item.admin_level"
-								class="input-box"
-								@change="update(item)"
-							>
-								<option
-									value="0"
-								>등급을 선택하세요</option>
-								<option
-									v-for="level in levels"
-									:key="level.code"
-									:value="level.code"
-								>{{ level.name }}</option>
-							</select>
-							<v-icon
-								class="position-absolute color-icon"
-								style="right: 15px; top: 20px"
-
-							>mdi mdi-menu-down</v-icon>
-						</td>
-						<td>{{ item.admin_id }}</td>
+						<td>{{ item.shop_name }}</td>
+						<td>{{ item.seller_id }}</td>
 						<td>{{ item.admin_name }}</td>
 						<td>{{ item.admin_phone }}</td>
 						<td
-							class="full-height "
+							class="full-height"
 						>
 							<div
 								class=" flex-row justify-center"
 							>
 								<v-icon
-									class="pa-5 "
+									class="pa-5"
 									:class="item.admin_status == 1 ? 'bg-green color-white' : 'btn-default' "
 									@click="item.admin_status = 1; update(item)"
 								>mdi mdi-account-check</v-icon>
 								<v-icon
-									class="pa-5  "
-									:class="item.admin_status == 0 ? 'bg-red color-white' : 'btn-default' "
+									class="pa-5 "
+									:class="item.admin_status != 1 ? 'bg-red color-white' : 'btn-default' "
 									@click="item.admin_status = 0; update(item)"
 								>mdi mdi-account-off</v-icon>
 
@@ -103,8 +85,27 @@
 								>mdi mdi-delete-forever</v-icon>
 							</div>
 						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5 "
+									:class="item.shop_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.shop_status = 1; update(item)"
+								>mdi mdi-cart</v-icon>
+								<v-icon
+									class="pa-5  "
+									:class="item.shop_status != 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.shop_status = 0; update(item)"
+								>mdi mdi-cart-off</v-icon>
+							</div>
+						</td>
 						<td>{{ item.wDate }}</td>
-						<td>
+						<td
+						>
 							<v-icon
 								v-if="item.uid == item_new.uid"
 								class="color-red"
@@ -132,8 +133,9 @@
 							<col width="150px" />
 							<col width="150px" />
 							<col width="150px" />
-							<col width="150px" />
 							<col width="auto" />
+							<col width="auto" />
+							<col width="180px" />
 							<col width="150px" />
 						</colgroup>
 						<thead>
@@ -143,12 +145,13 @@
 									type="checkbox"
 								/>
 							</th>
-							<th>소속 대리점</th>
+							<th>총판명</th>
 							<th>아이디</th>
 							<th>이름</th>
 							<th>연락처</th>
-							<th>가입일</th>
 							<th>사용여부</th>
+							<th>판매여부</th>
+							<th>가입일</th>
 							<th>상세정보</th>
 						</tr>
 						</thead>
@@ -161,15 +164,20 @@
 					</div>
 				</div>
 
-				<Pagination
-					:program="program"
-					:align="'center'"
-					:options="search"
-				></Pagination>
+				<div
+					class="mt-auto"
+				>
+					<Pagination
+						:program="program"
+						:align="'center'"
+						:options="search"
+					></Pagination>
+				</div>
 			</div>
+
 			<SideB
 				v-if="is_item"
-				:title="'관리자 정보'"
+				:title="'총판 정보'"
 				:bg-title="'bg-' + (item_new.uid ? (item_new.admin_status == 1 ? 'green' : 'red') : '')"
 
 				@click="clear_item"
@@ -178,35 +186,40 @@
 					slot="item"
 					class="flex-column overflow-y-auto "
 				>
-					<ManagerAdminItem
+					<ManagerAgencyItem
 						:item_new="item_new"
 						:rules="rules"
-						:levels="levels"
 
 						@click="save"
 						class="bg-white"
-					></ManagerAdminItem>
+					></ManagerAgencyItem>
 				</template>
 			</SideB>
 		</div>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+			:date="date"
+		></Excel>
 	</div>
 </template>
 
 <script>
 import SideB from "../Layout/SideB";
 import Pagination from "../../components/Pagination";
-import Search from "@/view/Layout/Search";
-import ManagerAdminItem from "@/view/Manager/ManagerAdminItem";
+import Search from "../Layout/Search";
+import ManagerAgencyItem from "./ManagerAgencyItem";
+import Excel from "../../components/Excel";
 
 export default {
-	name: 'ManagerAdminList'
-	,
-	components: {ManagerAdminItem, Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'rules']
-	,data: function (){
+	name: 'ManagerDistributorList'
+	, components: {Excel, ManagerAgencyItem, Search, Pagination, SideB}
+	, props: ['Axios', 'rules', 'TOKEN', 'date']
+	, data: function (){
 		return {
 			program: {
-				name: '관리자 목록'
+				name: '총판 목록'
 				,top: true
 				,title: true
 			}
@@ -215,14 +228,15 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,admin_level: ''
 				,admin_status: ''
+				,shop_status: ''
 				,list_cnt: 10
 				,search_type: ''
 			}
 			,search_option:{
 
 				is_item: true
+				,is_excel: true
 				,is_cnt: true
 				,cnt: 0
 				,tCnt: 0
@@ -231,33 +245,37 @@ export default {
 					,{ name: '이름', column: 'admin_name'}
 				]
 				,select: [
-					{ name: '등급', column: 'admin_level', items: [
-							{ column: 99, name: '최고관리자'}
-							,{ column: 50, name: '총판관리자'}
-							,{ column: 1, name: '일반관리자'}
-						]}
-					, { name: '사용 여부', column: 'admin_status', items: [
+					{ name: '사용 여부', column: 'admin_status', items: [
 							{ name: '사용', column: '1'}
 							,{ name: '미사용', column: '0'}
 						]
 					}
+					,{ name: '판매 여부', column: 'shop_status', items: [
+							{ name: '판매 가능', column: '1'}
+							,{ name: '판매 불가', column: '0'}
+						]
+					}
 				]
 			}
-			,is_item: false
 			,items: [
 
 			]
 			,item_new: {
 
 			}
-			,levels: [
-				{ code: 99, name: '최고관리자'}
-				,{ code: 50, name: '일반관리자'}
-			]
-			,status: [
-				{ code: 99, name: '최고관리자'}
-				,{ code: 50, name: '일반관리자'}
-			]
+			,is_item: false
+			,is_excel: false
+			,excel_data: {
+				name: '총판 목록'
+				,header: [
+					{ key: 0, name: '총판명', column: 'shop_name'}
+					,{ key: 0, name: '아이디', column: 'admin_id'}
+					,{ key: 0, name: '이름', column: 'admin_name'}
+					,{ key: 0, name: '연락처', column: 'admin_tell'}
+					,{ key: 0, name: '가입일', column: 'wDate'}
+				]
+				,content: null
+			}
 		}
 	}
 	,computed: {
@@ -277,12 +295,11 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-
 			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getAdminList'
+					,url: 'management/getDistributorList'
 					,data: this.search
 				})
 
@@ -305,52 +322,8 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postAdmin'
+					,url: 'management/postSeller'
 					,data: this.item_new
-				})
-
-				if(result.success){
-					await this.getData()
-					this.clear_item()
-					this.$emit('setNotify', { type: 'success', message: result.message })
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
-			}finally {
-				this.$emit('offLoading')
-			}
-		}
-		,setItem: function (item){
-			if(this.item_new.uid == item.uid){
-				this.clear_item()
-			}else {
-				this.item_new = item
-				this.is_item = true
-			}
-		}
-		,clear_item: function(){
-			this.item_new = {
-				ATOKEN: this.TOKEN
-				,admin_level: 0
-				,admin_type: 'admin'
-			}
-			this.is_item = false
-		}
-		,confirmDelete: function(item){
-			if(confirm("삭제하시겠습니까?")){
-				this.deleteItem(item)
-			}
-		}
-		,deleteItem: async  function(item){
-			this.$emit('onLoading')
-			try{
-				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/postAdminDelete'
-					,data: item
 				})
 
 				if(result.success){
@@ -389,6 +362,54 @@ export default {
 				await this.getData()
 				this.$emit('offLoading')
 			}
+		}
+		,setItem: function (item){
+			if(this.item_new.uid == item.uid){
+				this.clear_item()
+			}else {
+				this.item_new = item
+				this.is_item = true
+			}
+		}
+		,clear_item: function(){
+			this.item_new = {
+				ATOKEN: this.TOKEN
+				,admin_level: 0
+				,admin_type: 'agency'
+			}
+			this.is_item = false
+		}
+		,confirmDelete: function(item){
+			if(confirm("삭제하시겠습니까?")){
+				this.deleteItem(item)
+			}
+		}
+		,deleteItem: async  function(item){
+			this.$emit('onLoading')
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postAdminDelete'
+					,data: item
+				})
+
+				if(result.success){
+					await this.getData()
+					this.clear_item()
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		,toExcel: function(){
+			this.excel_data.content = this.items
+			this.is_excel = true
 		}
 		,toItem: function (){
 			this.is_item = !this.is_item

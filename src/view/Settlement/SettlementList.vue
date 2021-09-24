@@ -63,10 +63,75 @@
 					</template>
 				</select>
 
+				<select
+					v-model="search.admin_type"
+					class="pa-5 box mr-10"
+					@change="getData"
+				>
+					<option value="">구분</option>
+					<template
+						v-for="code in codes.A001.items"
+					>
+						<option
+							v-if="code.sub_code > 1"
+							:key="'admin_type_' + code.total_code"
+							:value="code.total_code"
+						>{{ code.code_name }}</option>
+					</template>
+				</select>
+
+				<select
+					v-model="search.search_type"
+					class="pa-5 box mr-10"
+				>
+					<option value="">검색 구분</option>
+
+					<option
+						value="shop_name"
+					>상점명</option>
+					<option
+						value="admin.admin_id"
+					>아이디</option>
+
+				</select>
+
+				<input
+					v-model="search.search_value"
+					class="pa-5-10 box vertical-middle mr-10 "
+					placeholder="검색어를 입력하세요"
+				/>
+
 				<button
 					class="pa-5-10 btn-blue mr-10 vertical-middle"
 					@click="getData"
 				>검색</button>
+
+				<select
+					v-model="item_do.year"
+					class="pa-5 box mr-10"
+				>
+					<option
+						v-for="year in year_list"
+						:key="'year_' + year"
+						:value="year"
+					>{{ year }}년</option>
+				</select>
+
+				<select
+					v-model="item_do.month"
+					class="pa-5 box mr-10"
+				>
+					<option
+						v-for="month in 12"
+						:key="'month_' + month"
+						:value="month"
+					>{{ month }}월</option>
+				</select>
+
+				<button
+					class="pa-5-10 btn-green vertical-middle"
+					@click="save"
+				>정산 실행 </button>
 			</div>
 
 			<table class="mt-10">
@@ -87,7 +152,7 @@
 					<th>정산금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>
-					<th>정산일시</th>
+					<th>관리</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -107,13 +172,13 @@
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
-						<td>{{ item.wDate }}</td>
+						<td>{{ item.date }}</td>
 					</tr>
 				</template>
 				<tr
 					v-else
 				>
-					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
+					<td colspan="8" class="pa-50">정산 내역이 없습니다</td>
 				</tr>
 				</tbody>
 			</table>

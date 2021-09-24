@@ -38,13 +38,13 @@
 						class="ptb-10 justify-space-between"
 					>
 						<span>총 판매금액</span>
-						<span>{{ settlement_data.total_sale_price | makeComma}} 원</span>
+						<span>{{ Math.floor(settlement_data.total_sale_price) | makeComma}} 원</span>
 					</li>
 					<li
 						class="ptb-10 justify-space-between"
 					>
 						<span>총 수익금액</span>
-						<span>{{ settlement_data.total_revenue_price | makeComma }} 원</span>
+						<span>{{ Math.floor(settlement_data.total_revenue_price) | makeComma }} 원</span>
 					</li>
 				</ul>
 			</div>

@@ -353,7 +353,7 @@ export const date = {
 		}
 		dates = dates.replaceAll('-', '')
 		let date = new Date(dates.substring(0, 4), dates.substring(4, 6) - 1, dates.substring(6, 8))
-		date.setDate(date.getDate() - 7);
+		date.setDate(date.getDate() - 6);
 		let year = date.getFullYear()
 		let month = date.getMonth() + 1
 		let day = date.getDate()

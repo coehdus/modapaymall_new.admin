@@ -53,9 +53,9 @@
 				slot="modal-content"
 				class="bg-base"
 			>
-				<table class="shop-table bg-base">
+				<table class="shop-table bg-base full-width">
 					<col width="150px" />
-					<col width="300px" />
+					<col width="auto" />
 					<tbody>
 						<tr>
 							<th>상점명</th>
@@ -73,7 +73,9 @@
 								class="input-box"
 							/></td>
 						</tr>
-						<tr>
+						<tr
+							v-if="member_info.admin_type_code == 'agency' || member_info.admin_type_code == 'supply'"
+						>
 							<th>배송비 구분</th>
 							<td>
 								<button
@@ -88,7 +90,9 @@
 								>유료</button>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="member_info.admin_type_code == 'agency' || member_info.admin_type_code == 'supply'"
+						>
 							<th>배송비</th>
 							<td class="form-inline">
 								<input
@@ -109,7 +113,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type == 'supply'"
+							v-if="member_info.admin_type_code == 'supply'"
 						>
 							<th>제주도/도서/산간<br/> 추가 배송비</th>
 							<td class="form-inline justify-space-between">
@@ -126,7 +130,9 @@
 								>제주도/도서/산간 지역 목록 <v-icon class="color-icon">mdi mdi-chevron-right</v-icon></button>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="member_info.admin_type_code == 'agency'"
+						>
 							<th>무통장 입금 계좌</th>
 							<td>
 								<textarea
@@ -136,7 +142,9 @@
 								></textarea>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="member_info.admin_type_code == 'supply'"
+						>
 							<th>교환 / 반품 안내</th>
 							<td>
 								<editor
@@ -187,7 +195,6 @@
 				}
 				, is_modal: false
 				,item: {
-
 				}
 			}
 		}
@@ -253,6 +260,7 @@
 						this.item = result.data
 						this.$emit('setNotify', { type: 'success', message: result.message })
 					}else{
+						this.is_modal = true
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
@@ -262,13 +270,15 @@
 			,save: async function(){
 				this.item.ATOKEN = this.TOKEN
 
-				let shop_return = this.$refs.shop_return.invoke("getMarkdown")
+				if(this.member_info.admin_type_code == 'supply') {
+					let shop_return = this.$refs.shop_return.invoke("getMarkdown")
 
-				if(!shop_return){
-					this.$refs.shop_return.invoke("setMarkdown", this.item.shop_return)
+					if (!shop_return) {
+						this.$refs.shop_return.invoke("setMarkdown", this.item.shop_return)
+					}
+					this.item.shop_return = shop_return
+
 				}
-
-				this.item.shop_return = shop_return
 
 				try{
 					const result = await this.Axios({
@@ -278,6 +288,7 @@
 					})
 
 					if(result.success){
+						this.is_modal = false
 						this.$emit('setNotify', { type: 'success', message: result.message })
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })

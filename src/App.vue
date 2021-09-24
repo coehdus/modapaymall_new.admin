@@ -1,5 +1,6 @@
 <template>
-	<Layout 
+	<Layout
+		v-if="is_view"
 		:Axios="Axios"
 		:Notify="Notify"
 		:filter="filter"
@@ -43,8 +44,8 @@ export default {
 		,codes: codes
 		,TOKEN: ''
 		,member_info: {
-
 		}
+		,is_view: false
 	})
 	,methods: {
 		isAuth: function(){
@@ -60,6 +61,7 @@ export default {
 				}
 			})
 			if(skip){
+				this.is_view = true
 				console.log('isAuth skip ! do next !!')
 			}else {
 				if (!TOKEN || TOKEN === 'false') {
@@ -95,6 +97,8 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.is_view = true
 			}
 		}
 		,getBaseInfo: async function(){

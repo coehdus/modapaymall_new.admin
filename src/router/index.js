@@ -53,6 +53,11 @@ const routes = [
 		,component: () => import('@/view/Manager/ManagerAdminList.vue')
 	}
 	,{
+		path: prefix + 'Manager/DistributorList'
+		,name: 'ManagerDistributorList'
+		,component: () => import('@/view/Manager/ManagerDistributorList.vue')
+	}
+	,{
 		path: prefix + 'Manager/AgencyList'
 		,name: 'ManagerAgencyList'
 		,component: () => import('@/view/Manager/ManagerAgencyList.vue')
@@ -151,6 +156,11 @@ const routes = [
 		path: prefix + 'Settlement/Management'
 		,name: 'SettlementManagement'
 		,component: () => import('@/view/Settlement/SettlementManagement')
+	}
+	,{
+		path: prefix + 'Settlement/List'
+		,name: 'SettlementList'
+		,component: () => import('@/view/Settlement/SettlementList')
 	}
 	,{
 		path: prefix + 'Settlement/Agency'
