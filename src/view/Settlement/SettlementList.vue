@@ -106,28 +106,6 @@
 					@click="getData"
 				>검색</button>
 
-				<select
-					v-model="item_do.year"
-					class="pa-5 box mr-10"
-				>
-					<option
-						v-for="year in year_list"
-						:key="'year_' + year"
-						:value="year"
-					>{{ year }}년</option>
-				</select>
-
-				<select
-					v-model="item_do.month"
-					class="pa-5 box mr-10"
-				>
-					<option
-						v-for="month in 12"
-						:key="'month_' + month"
-						:value="month"
-					>{{ month }}월</option>
-				</select>
-
 				<button
 					class="pa-5-10 btn-green vertical-middle"
 					@click="save"
@@ -136,10 +114,6 @@
 
 			<table class="mt-10">
 				<colgroup>
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
 				</colgroup>
 				<thead>
 				<tr>
@@ -148,7 +122,11 @@
 					<th>상점명</th>
 					<th>아이디</th>
 					<th>판매금액</th>
+					<th>판매원가</th>
 					<th>매출금액</th>
+					<th>판매 수수료</th>
+					<th>결제 수수료</th>
+					<th>정산 수수료</th>
 					<th>정산금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>
@@ -169,27 +147,74 @@
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.sale_amount | makeComma }}</td>
 						<td>{{ item.total_amount | makeComma }}</td>
+						<td>{{ item.income_amount | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'supply' ? item.fee : '-' | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'agency' ? item.fee : '-' | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'distributor' ? item.fee : '-' | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
-						<td>{{ item.date }}</td>
+						<td>
+							<button
+								class="btn-blue pa-5-10 mr-10"
+								@click="toDetail(item)"
+							>상세 정보</button>
+							<button
+								v-if="item.is_settlement == '0'"
+								class="btn-success pa-5-10"
+								@click="doSettlementConfirm(item)"
+							>정산 완료</button>
+							<button
+								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+								class="btn-success pa-5-10"
+								@click="doDepositConfirm(item)"
+							>입금 완료</button>
+						</td>
 					</tr>
 				</template>
 				<tr
 					v-else
 				>
-					<td colspan="8" class="pa-50">정산 내역이 없습니다</td>
+					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
 				</tr>
 				</tbody>
 			</table>
 		</div>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+
+			@close="close"
+		>
+			<SettlementDetail
+				slot="modal-content"
+				v-if="item_detail.uid"
+				:Axios="Axios"
+				:user="user"
+				:codes="codes"
+				:TOKEN="TOKEN"
+				:item="item_detail"
+				:year="search.year"
+				:month="search.month"
+
+				@click="close"
+				@onLoading="$emit('onLoading')"
+				@offLoading="$emit('offLoading')"
+				@setNotify="setNotify"
+			></SettlementDetail>
+		</Modal>
 	</div>
 </template>
 
 <script>
+import SettlementDetail from "@/view/Settlement/SettlementDetail";
+import Modal from "@/components/Modal";
 export default {
 	name: 'SettlementList'
-	,props: ['Axios', 'TOKEN', 'codes']
+	,
+	components: {Modal, SettlementDetail},
+	props: ['Axios', 'TOKEN', 'codes', 'user']
 	,data: function(){
 		return {
 			program: {
@@ -215,6 +240,16 @@ export default {
 				,search_type: ''
 				,search_value: ''
 			}
+			,item_detail: {
+
+			}
+			,item_settlement: null
+			,item_deposit: null
+			,is_modal: false
+			,modal_option: {
+				title: '정산 상세 내역'
+				,top: true
+			}
 		}
 	}
 	,computed: {
@@ -235,7 +270,7 @@ export default {
 
 				switch(item.admin_type_code){
 					default:
-						item.admin_type_name = ''
+						item.admin_type_name = '운영관리'
 						break;
 					case "distributor":
 						item.admin_type_name = '총판'
@@ -297,7 +332,7 @@ export default {
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postSettlement'
-					,data: this.item_do
+					,data: this.search
 				})
 
 				if(result.success){
@@ -311,6 +346,26 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,close: function(){
+			this.item_detail = {}
+			this.item_settlement = null
+			this.item_deposit = null
+			this.is_modal = false
+		}
+		,toDetail: function(item){
+			this.is_modal = true
+			this.item_detail = item
+			this.modal_option.title = '정산 상세 내역 - ' + item.shop_name
+		}
+		,doSettlementConfirm: function(item){
+			this.item_settlement = item
+		}
+		,doDepositConfirm: function(item){
+			this.item_deposit = item
+		}
+		,setNotify: function({ type, message }){
+			this.$emit('setNotify', { type: type, message: message })
 		}
 	}
 	,created() {

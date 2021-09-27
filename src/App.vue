@@ -65,6 +65,7 @@ export default {
 				console.log('isAuth skip ! do next !!')
 			}else {
 				if (!TOKEN || TOKEN === 'false') {
+					this.is_view = true
 					console.log('not auth ! to login !!')
 					this.toLogin()
 				}else{
