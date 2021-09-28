@@ -239,17 +239,22 @@ import { GChart } from 'vue-google-charts'
 					["판매일", "매출", "수익"]
 				]
 
-				if(!this.chart_data2){
-					return null
-				}
+				if(this.chart_data2.length > 0){
 
-				this.chart_data2.filter(function(item){
+					this.chart_data2.filter(function(item){
+						data.push([
+							item.date
+							,Number(item.total_sale_price ? item.total_sale_price : 0)
+							,Number(item.total_revenue_price ? item.total_revenue_price : 0)
+						])
+					})
+				}else{
 					data.push([
-						item.date
-						,Number(item.total_sale_price)
-						,Number(item.total_revenue_price)
+						''
+						,0
+						,0
 					])
-				})
+				}
 
 				return data
 			}

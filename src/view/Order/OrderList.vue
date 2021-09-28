@@ -484,12 +484,14 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type == 'supply'){
+		if(this.member_info.admin_type_code == 'supply'){
 			this.$router.push({ name: 'OrderListSupply'})
-		}else if(this.member_info.admin_type == 'agency'){
+		}else if(this.member_info.admin_type_code == 'agency'){
 			this.$router.push({ name: 'OrderListAgency'})
-		}else {
+		}else if(this.member_info.admin_type_code == 'admin' || this.member_info.admin_type_code == 'distributor'){
 			this.getData()
+		}else{
+			this.$router.back()
 		}
 	}
 	,watch: {

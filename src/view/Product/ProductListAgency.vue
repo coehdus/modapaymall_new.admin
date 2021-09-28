@@ -405,8 +405,8 @@ export default {
 						ATOKEN: this.TOKEN
 						,uid: item.uid
 						,pdt_code: item.pdt_code
-						,agency_price: item.agency_price
-						,agency_sale_price: item.agency_sale_price
+						,agency_price: item.agency_price ? item.agency_price : ''
+						,agency_sale_price: item.agency_sale_price ? item.agency_sale_price : ''
 						,agency_use: item.agency_use
 						,pdt_type: item.pdt_type
 					}

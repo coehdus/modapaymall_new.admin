@@ -529,13 +529,16 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type == 'agency'){
+		if(this.member_info.admin_type_code == 'agency'){
 			this.$emit('push', 'ProductListAgency')
-		}else if(this.member_info.admin_type == 'supply'){
+		}else if(this.member_info.admin_type_code == 'supply'){
 			this.$emit('push', 'ProductListSupply')
+		}else if(this.member_info.admin_type_code == "admin" || this.member_info.admin_type_code == "distributor") {
+			this.clear_item()
+			this.getData()
+		}else{
+			this.$router.back()
 		}
-		this.clear_item()
-		this.getData()
 	}
 	,watch: {
 		'search.page': {

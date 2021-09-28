@@ -1,18 +1,15 @@
 <template>
 	<div
-		class="full-height"
+		class="full-height full-width"
 	>
-		<table class="mt-10">
+		<table class="mt-10 full-width">
 			<colgroup>
-				<col width="180px" />
-				<col width="180px" />
-				<col width="180px" />
-				<col width="180px" />
 			</colgroup>
 			<thead>
 			<tr>
 				<th>매출일</th>
 				<th>판매금액</th>
+				<th>판매원가</th>
 				<th>매출금액</th>
 				<th>수수료</th>
 				<th>정산금액</th>
@@ -23,6 +20,7 @@
 				<th>합계</th>
 				<th>{{ item.sale_amount | makeComma}} 원</th>
 				<th>{{ item.total_amount | makeComma }} 원</th>
+				<th>{{ item.income_amount | makeComma }} 원</th>
 				<th>{{ item.fee | makeComma }} 원</th>
 				<th>{{ item.amount | makeComma}} 원</th>
 			</tr>
@@ -38,6 +36,7 @@
 					<td>{{ item.date }}</td>
 					<td>{{ item.sale_amount | makeComma }} 원</td>
 					<td>{{ item.total_amount | makeComma }} 원</td>
+					<td>{{ item.income_amount | makeComma }} 원</td>
 					<td>{{ item.fee | makeComma }} 원</td>
 					<td>{{ item.amount | makeComma }} 원</td>
 				</tr>
@@ -104,3 +103,9 @@
 		}
 	}
 </script>
+
+<style>
+.modal-wrap .modal-container .modal-content .modal-contents {
+	margin: 10px;
+}
+</style>

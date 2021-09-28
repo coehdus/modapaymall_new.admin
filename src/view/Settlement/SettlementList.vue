@@ -202,6 +202,8 @@
 				@onLoading="$emit('onLoading')"
 				@offLoading="$emit('offLoading')"
 				@setNotify="setNotify"
+
+				class="full-width"
 			></SettlementDetail>
 		</Modal>
 	</div>
