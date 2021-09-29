@@ -127,6 +127,7 @@
 					<th>판매 수수료</th>
 					<th>결제 수수료</th>
 					<th>정산 수수료</th>
+					<th>차감 금액</th>
 					<th>정산금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>
@@ -151,6 +152,7 @@
 						<td>{{ item.admin_type_code == 'supply' ? item.fee : '-' | makeComma }}</td>
 						<td>{{ item.admin_type_code == 'agency' ? item.fee : '-' | makeComma }}</td>
 						<td>{{ item.admin_type_code == 'distributor' ? item.fee : '-' | makeComma }}</td>
+						<td>{{ item.minus_amount | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>

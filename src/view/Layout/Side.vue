@@ -260,7 +260,7 @@
 							,{
 								path: 'Delivery'
 								,name: '배송비 정산'
-								,type: ['admin', 'distributor']
+								,type: ['admin', 'distributor', 'agency', 'supply']
 								,params: {
 									page: 1
 								}

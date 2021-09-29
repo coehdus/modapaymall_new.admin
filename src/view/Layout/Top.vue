@@ -14,7 +14,7 @@
 				<v-icon
 					class="color-icon"
 				>mdi mdi-store</v-icon>
-				상점 설정
+				[{{ member_info.admin_type_name }}] 상점 설정
 			</span>
 			<span
 				v-show="member_info.admin_type == 'agency'"

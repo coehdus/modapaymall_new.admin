@@ -84,6 +84,7 @@
 					<th>아이디</th>
 					<th>판매금액</th>
 					<th>매출금액</th>
+					<th>차감금액</th>
 					<th>정산금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>
@@ -104,6 +105,7 @@
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.sale_amount | makeComma }}</td>
 						<td>{{ item.total_amount | makeComma }}</td>
+						<td>{{ item.minus_amount | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
