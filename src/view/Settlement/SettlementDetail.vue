@@ -18,7 +18,7 @@
 			<tfoot>
 			<tr>
 				<th>합계</th>
-				<th>{{ item.sale_amount | makeComma}} 원</th>
+				<th>{{ user.admin_type_code == 'supply' ? item.total_amount : item.sale_amount | makeComma}} 원</th>
 				<th>{{ item.total_amount | makeComma }} 원</th>
 				<th>{{ item.income_amount | makeComma }} 원</th>
 				<th>{{ item.fee | makeComma }} 원</th>
@@ -31,7 +31,7 @@
 			>
 				<tr
 					v-for="item in item_list"
-					:key="'settlement_' + item.uid"
+					:key="'settlement_' + item.date"
 				>
 					<td>{{ item.date }}</td>
 					<td>{{ item.sale_amount | makeComma }} 원</td>

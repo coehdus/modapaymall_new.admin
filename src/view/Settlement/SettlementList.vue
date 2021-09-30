@@ -127,6 +127,7 @@
 					<th>판매 수수료</th>
 					<th>결제 수수료</th>
 					<th>정산 수수료</th>
+					<th>수수료율</th>
 					<th>차감 금액</th>
 					<th>정산금액</th>
 					<th>정산여부</th>
@@ -140,7 +141,7 @@
 				>
 					<tr
 						v-for="item in item_list"
-						:key="'settlement_' + item.uid"
+						:key="'settlement_' + item.date"
 					>
 						<td>{{ item.year }}.{{ item.month }}</td>
 						<td>{{ item.admin_type_name }}</td>
@@ -149,10 +150,11 @@
 						<td>{{ item.sale_amount | makeComma }}</td>
 						<td>{{ item.total_amount | makeComma }}</td>
 						<td>{{ item.income_amount | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'supply' ? item.fee : '-' | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'agency' ? item.fee : '-' | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'distributor' ? item.fee : '-' | makeComma }}</td>
-						<td>{{ item.minus_amount | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'supply' ? item.fee * -1 : '-' | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'agency' ? item.fee * -1 : '-' | makeComma }}</td>
+						<td>{{ item.admin_type_code == 'distributor' ? item.fee * -1 : '-' | makeComma }}</td>
+						<td>{{ item.admin_per }}</td>
+						<td>{{ item.minus_amount * -1 | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>

@@ -6,7 +6,7 @@
 			class="side-container flex-column"
 		>
 			<ul
-				class="side-content overflow-y-auto"
+				class="side-content overflow-y-auto pb-50"
 			>
 				<template
 					v-for="item in items"
@@ -228,7 +228,7 @@
 							,{
 								path: 'Agency'
 								,name: '대리점 정산'
-								,type: ['admin', 'distributor']
+								,type: []
 								,params: {
 									page: 1
 								}
@@ -244,7 +244,7 @@
 							,{
 								path: 'Supply'
 								,name: '공급사 정산'
-								,type: ['admin', 'distributor']
+								,type: []
 								,params: {
 									page: 1
 								}
@@ -259,7 +259,7 @@
 							}
 							,{
 								path: 'Delivery'
-								,name: '배송비 정산'
+								,name: '배송비 내역'
 								,type: ['admin', 'distributor', 'agency', 'supply']
 								,params: {
 									page: 1
@@ -268,7 +268,7 @@
 							,{
 								path: 'Minus'
 								,name: '정산 차감'
-								,type: ['admin', 'distributor']
+								,type: []
 								,params: {
 									page: 1
 								}

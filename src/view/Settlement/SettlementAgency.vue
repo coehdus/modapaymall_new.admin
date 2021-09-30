@@ -71,10 +71,6 @@
 
 			<table class="mt-10">
 				<colgroup>
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
 				</colgroup>
 				<thead>
 				<tr>
@@ -84,6 +80,7 @@
 					<th>아이디</th>
 					<th>판매금액</th>
 					<th>매출금액</th>
+					<th>결제 수수료</th>
 					<th>차감금액</th>
 					<th>정산금액</th>
 					<th>정산여부</th>
@@ -105,11 +102,17 @@
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.sale_amount | makeComma }}</td>
 						<td>{{ item.total_amount | makeComma }}</td>
-						<td>{{ item.minus_amount | makeComma }}</td>
+						<td>{{ item.fee * -1 | makeComma }}</td>
+						<td>{{ item.minus_amount * -1 | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
-						<td>{{ item.wDate }}</td>
+						<td>
+							<button
+								class="btn-blue pa-5-10 mr-10"
+								@click="toDetail(item)"
+							>상세 정보</button>
+						</td>
 					</tr>
 				</template>
 				<tr
@@ -120,13 +123,43 @@
 				</tbody>
 			</table>
 		</div>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+
+			@close="close"
+		>
+			<SettlementDetail
+				slot="modal-content"
+				v-if="item_detail.uid"
+				:Axios="Axios"
+				:user="user"
+				:codes="codes"
+				:TOKEN="TOKEN"
+				:item="item_detail"
+				:year="search.year"
+				:month="search.month"
+
+				@click="close"
+				@onLoading="$emit('onLoading')"
+				@offLoading="$emit('offLoading')"
+				@setNotify="setNotify"
+
+				class="full-width"
+			></SettlementDetail>
+		</Modal>
 	</div>
 </template>
 
 <script>
+import Modal from "@/components/Modal";
+import SettlementDetail from "@/view/Settlement/SettlementDetail";
 export default {
 	name: 'SettlementList'
-	,props: ['Axios', 'TOKEN', 'codes']
+	,
+	components: {SettlementDetail, Modal},
+	props: ['Axios', 'TOKEN', 'codes', 'user']
 	,data: function(){
 		return {
 			program: {
@@ -151,6 +184,14 @@ export default {
 				,is_deposit: ''
 				,search_type: ''
 				,search_value: ''
+			}
+			,is_modal: false
+			,modal_option: {
+				title: '정산 상세 내역'
+				,top: true
+			}
+			,item_detail: {
+
 			}
 		}
 	}
@@ -248,6 +289,20 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,close: function(){
+			this.item_detail = {}
+			this.item_settlement = null
+			this.item_deposit = null
+			this.is_modal = false
+		}
+		,toDetail: function(item){
+			this.is_modal = true
+			this.item_detail = item
+			this.modal_option.title = '정산 상세 내역 - ' + item.shop_name
+		}
+		,setNotify: function({ type, message }){
+			this.$emit('setNotify', { type: type, message: message })
 		}
 	}
 	,created() {

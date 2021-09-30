@@ -28,9 +28,9 @@
 				</select>
 
 				<button
-					class="pa-5-10 bg-black"
+					class="pa-5-10 btn-success"
 					@click="save"
-				>정산 실행 <v-icon class="color-icon">mdi mdi-chevron-right</v-icon></button>
+				>정산 실행 <v-icon class="color-white">mdi mdi-chevron-right</v-icon></button>
 			</div>
 			<table>
 				<thead>
@@ -38,6 +38,8 @@
 						<th>정산일</th>
 						<th>정산여부</th>
 						<th>지급여부</th>
+						<th>정산 실행일시</th>
+						<th>정산 변경일시</th>
 						<th>관리</th>
 					</tr>
 				</thead>
@@ -52,7 +54,9 @@
 						<td>{{ item.year }}.{{ item.month }}</td>
 						<td>{{ item.date }}</td>
 						<td>{{ item.date }}</td>
-						<td>{{ item.date }}</td>
+						<td>{{ item.wDate }}</td>
+						<td>{{ item.mDate }}</td>
+						<td></td>
 					</tr>
 					</template>
 					<tr

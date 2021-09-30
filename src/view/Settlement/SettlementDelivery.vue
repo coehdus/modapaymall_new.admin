@@ -138,7 +138,7 @@
 						<td>{{ item.supply_id }}</td>
 						<td>{{ item.agency_amount | makeComma }}</td>
 						<td>{{ item.supply_amount | makeComma }}</td>
-						<td>{{ item.supply_amount | makeComma }}</td>
+						<td>{{ item.supply_amount * -1 | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
 						<td>
@@ -178,7 +178,7 @@ export default {
 	,data: function(){
 		return {
 			program: {
-				name: '배송비 정산'
+				name: '배송비 내역'
 				,top: true
 				,title: true
 				,bottom: false
