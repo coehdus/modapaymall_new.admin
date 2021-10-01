@@ -118,7 +118,7 @@
 				<tr
 					v-else
 				>
-					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
+					<td colspan="12" class="pa-50">정산 내역이 없습니다</td>
 				</tr>
 				</tbody>
 			</table>

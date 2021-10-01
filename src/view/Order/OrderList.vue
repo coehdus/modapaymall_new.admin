@@ -135,25 +135,25 @@
 									<div class="flex-1 text-center flex-column justify-center">수량: {{ odt.op_cnt | makeComma }} 개</div>
 
 									<div class="text-center flex-column justify-center">
+
 										<div>
-											<template
-												v-for="(step, key) in codes.odt_status"
-											>
-												<button
-													v-if=" odt.step_group == key.slice(-2, -1)"
-													:key="key + '_' + item.uid"
-													class="pa-5 mr-5"
-													:class="odt.order_status == key ? 'bg-green' : 'bg-gray'"
-													:disabled="odt.not_confirm"
-													@click="setOdtStatus(odt, key)"
-												>{{ step.name }}</button>
-											</template>
+											<span
+												class="pa-5-10"
+												:class="'bg-' + odt.order_status_color"
+											>{{ odt.order_status_name }}</span>
 										</div>
 									</div>
 
 									<div class=" flex-2 inline position-relative text-right flex-column justify-center">
 
 										<div>
+
+											<button
+												v-if="odt.order_status == 'step21'"
+												class="bg-gray pa-5-10 vertical-middle mr-10 "
+												@click="isCancel(odt)"
+											>주문 취소 <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
+
 											<select
 												v-model="odt.shipping_name"
 												class="box pa-5 vertical-middle mr-5"
@@ -202,6 +202,27 @@
 			:date="date"
 		></Excel>
 
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+			@close="modalClear"
+		>
+			<div
+				slot="modal-bottom"
+				class="justify-space-between"
+			>
+				<button
+					class="flex-1 pa-10"
+					@click="doAction"
+					:class="'bg-' + modal_option.color"
+				>확인</button>
+				<button
+					class="flex-1 pa-10 bg-gray"
+					@click="modalClear"
+				>취소</button>
+			</div>
+		</Modal>
+
 	</div>
 </template>
 
@@ -210,11 +231,12 @@
 import Pagination from "../../components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
+import Modal from "@/components/Modal";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Excel, Search, Pagination},
+	components: {Modal, Excel, Search, Pagination},
 	props: ['Axios', 'TOKEN', 'codes', 'rules', 'member_info', 'date']
 	,data: function (){
 		return {
@@ -278,6 +300,16 @@ export default {
 				]
 				,content: null
 			}
+			,is_modal: false
+			,modal_option: {
+				title: ''
+				,top: true
+				,content: ''
+				,bottom: true
+				,width: '360px'
+				,color: ''
+			}
+			,item_cancel: null
 		}
 	}
 	,computed: {
@@ -480,6 +512,45 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,isCancel: function(odt){
+			this.item_cancel = odt
+			this.is_modal = true
+			this.modal_option.title = '주문상품 취소'
+			this.modal_option.content = '해당 상품을 주문취소처리 하시겠습니까?'
+			this.modal_option.color = 'red'
+		}
+		,toCancel: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postOdtCancel'
+					,data: {
+						ATOKEN: this.TOKEN
+						,odt_uid: this.item_cancel.uid
+					}
+				})
+
+				if(result.success){
+					await this.getData()
+					this.$emit('setNotify', { type: 'success', message: result.message})
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch (e) {
+				console.log(e)
+			}finally {
+				this.modalClear()
+			}
+		}
+		,doAction: function(){
+			if(this.item_cancel){
+				this.toCancel()
+			}
+		}
+		,modalClear: function(){
+			this.item_cancel = null
+			this.is_modal = false
 		}
 	}
 	,created() {

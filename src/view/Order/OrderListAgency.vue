@@ -134,20 +134,18 @@
 									<div class=" flex-2 inline position-relative text-right flex-column justify-center">
 
 										<div>
-											<template
-												v-for="(step, key) in codes.odt_status"
-											>
-												<button
-													v-if=" odt.order_status == key"
-													:key="key + '_' + item.uid"
-													class="pa-5 mr-10"
-													:class="odt.order_status == key ? 'bg-green' : 'bg-default'"
-													:disabled="odt.not_confirm"
-													@click="setOdtStatus(odt, key)"
-												>{{ step.name }}</button>
-											</template>
 
-											<span class="pa-5 box mr-10 ">{{ odt.shipping_name ? odt.shipping_name : '택배사' }}</span>
+											<span
+												class="pa-5-10 mr-10"
+												:class="'bg-' + odt.order_status_color"
+											>{{ odt.order_status_name }}</span>
+
+											<button
+												v-if="odt.order_status == 'step21'"
+												class="bg-gray pa-5-10"
+											>주문 취소 <v-icon>mdi mdi-chevron->right</v-icon></button>
+
+											<span class="pa-5 box mr-10 ">{{ odt.delivery_name ? odt.delivery_name : '택배사' }}</span>
 
 											<span class="pa-5 box ">{{ odt.shipping_num ? odt.shipping_num : '송장번호' }}</span>
 										</div>
