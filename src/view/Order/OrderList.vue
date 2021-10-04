@@ -79,14 +79,14 @@
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
-						<div class="pa-10">
-							<span class="bg-black pa-5">배송지 정보</span>
-							{{ item.d_name }} /
-							{{ item.d_tell }} /
-							{{ item.d_post }}
-							{{ item.d_addr1 }}
-							{{ item.d_addr2 }}
-						</div>
+					</div>
+					<div class="pa-10 under-line">
+						<span class="bg-black pa-5">배송지 정보</span>
+						{{ item.d_name }} /
+						{{ item.d_tell }} /
+						{{ item.d_post }}
+						{{ item.d_addr1 }}
+						{{ item.d_addr2 }}
 					</div>
 					<ul>
 						<li
@@ -94,12 +94,12 @@
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
 							class="under-line-not-last"
 						>
-							<div class="pa-10 justify-space-between under-line-dashed ">
-								<span class="flex-1"><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</span>
+							<div class="pa-10  under-line-dashed ">
+								<span class="flex-1"><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</span> /
 								<span class="flex-1"></span>
-								<span class="flex-1 text-center">공급가: {{ supply.total_purchase | makeComma }} 원</span>
-								<span class="flex-1 text-center">판매가: {{ supply.total_price | makeComma }} 원</span>
-								<span class="flex-1 text-center">배송비: {{ supply.delivery_price | makeComma }} 원</span>
+								<span class="flex-1 text-center">공급가: {{ supply.total_purchase | makeComma }} 원</span> /
+								<span class="flex-1 text-center">판매가: {{ supply.total_price | makeComma }} 원</span> /
+								<span class="flex-1 text-center">배송비: {{ supply.delivery_price | makeComma }} 원</span> /
 								<span class="flex-1 text-center">합계: {{ supply.supply_total | makeComma }} 원</span>
 								<span class="flex-1"></span>
 							</div>

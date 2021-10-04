@@ -116,9 +116,11 @@
 					<th>총판</th>
 					<th>대리점</th>
 					<th>공급사</th>
-					<th>대리점 배송비</th>
-					<th>공급사 배송비</th>
-					<th>대리점 차감 금액</th>
+					<th>판매 배송비</th>
+					<th>결제 수수료</th>
+					<th>대리점 지급 금액</th>
+					<th>공급 배송비</th>
+					<th>정산 금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>
 					<th>관리</th>
@@ -136,9 +138,11 @@
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.agency_id}}</td>
 						<td>{{ item.supply_id }}</td>
-						<td>{{ item.agency_amount | makeComma }}</td>
-						<td>{{ item.supply_amount | makeComma }}</td>
-						<td>{{ item.supply_amount * -1 | makeComma }}</td>
+						<td>{{ item.agency_total | makeComma }}</td>
+						<td>{{ item.fee * -1 | makeComma }}</td>
+						<td>{{ item.agency_total - item.fee | makeComma }}</td>
+						<td>{{ item.supply_total | makeComma }}</td>
+						<td>{{ item.agency_total - item.fee - item.supply_total | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
 						<td>
@@ -211,6 +215,9 @@ export default {
 						item.is_deposit_name = '지급완료'
 					}
 				}
+
+				item.agency_total = Number(item.agency_amount) + Number(item.island_amount)
+				item.supply_total = Number(item.supply_amount) + Number(item.island_amount)
 
 				return item
 			})

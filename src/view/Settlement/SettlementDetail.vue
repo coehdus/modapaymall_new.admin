@@ -34,7 +34,7 @@
 					:key="'settlement_' + item.date"
 				>
 					<td>{{ item.date }}</td>
-					<td>{{ item.sale_amount | makeComma }} 원</td>
+					<td>{{ user.admin_type_code == 'supply' ? item.total_amount : item.sale_amount | makeComma }} 원</td>
 					<td>{{ item.total_amount | makeComma }} 원</td>
 					<td>{{ item.income_amount | makeComma }} 원</td>
 					<td>{{ item.fee | makeComma }} 원</td>

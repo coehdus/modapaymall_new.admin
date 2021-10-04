@@ -206,7 +206,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
 export default {
 	name: 'ProductItem'
-	,props: ['Axios', 'member_info', 'rules', 'supply_list', 'category_list', 'update_item', 'codes']
+	,props: ['Axios', 'member_info', 'rules', 'supply_list', 'category_list', 'update_item', 'codes', 'TOKEN']
 	,components: {
 		editor: Editor
 	}
@@ -219,7 +219,8 @@ export default {
 				,bottom: false
 			}
 			,item: {
-				pdt_company: ''
+				ATOKEN: this.TOKEN
+				,pdt_company: ''
 				,pdt_category: ''
 			}
 			,sub_img: [

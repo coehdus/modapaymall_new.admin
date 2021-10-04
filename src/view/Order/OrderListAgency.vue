@@ -76,14 +76,14 @@
 							{{ item.member_name }} /
 							{{ item.member_tell }}
 						</div>
-						<div class="pa-10">
-							<span class="bg-black pa-5">배송지 정보</span>
-							{{ item.d_name }} /
-							{{ item.d_tell }} /
-							{{ item.d_post }}
-							{{ item.d_addr1 }}
-							{{ item.d_addr2 }}
-						</div>
+					</div>
+					<div class="pa-10 under-line">
+						<span class="bg-black pa-5">배송지 정보</span>
+						{{ item.d_name }} /
+						{{ item.d_tell }} /
+						{{ item.d_post }}
+						{{ item.d_addr1 }}
+						{{ item.d_addr2 }}
 					</div>
 					<ul>
 						<li

@@ -153,8 +153,8 @@
 						<td>{{ item.admin_type_code == 'supply' ? item.fee * -1 : '-' | makeComma }}</td>
 						<td>{{ item.admin_type_code == 'agency' ? item.fee * -1 : '-' | makeComma }}</td>
 						<td>{{ item.admin_type_code == 'distributor' ? item.fee * -1 : '-' | makeComma }}</td>
-						<td>{{ item.admin_per }}</td>
-						<td>{{ item.minus_amount * -1 | makeComma }}</td>
+						<td>{{ item.admin_per }} %</td>
+						<td>{{ item.minus_amount | makeComma }}</td>
 						<td>{{ item.amount | makeComma }}</td>
 						<td>{{ item.is_settlement_name }}</td>
 						<td>{{ item.is_deposit_name }}</td>
@@ -167,7 +167,7 @@
 								v-if="item.is_settlement == '0'"
 								class="btn-success pa-5-10"
 								@click="doSettlementConfirm(item)"
-							>정산 완료</button>
+							>정산 완료 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 							<button
 								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
 								class="btn-success pa-5-10"
@@ -290,7 +290,6 @@ export default {
 						item.admin_type_name = '공급사'
 						break;
 				}
-
 
 				return item
 			})

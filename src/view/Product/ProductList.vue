@@ -462,8 +462,8 @@ export default {
 			this.is_excel = true
 		}
 		,toItem: function (){
-			//this.$router.push({ name: 'ProductItem'})
-			this.is_item_view = !this.is_item_view
+			this.$router.push({ name: 'ProductItem'})
+			//this.is_item_view = !this.is_item_view
 		}
 		,toSearch: function(){
 			console.log('toSearch : ' + this.search.page)

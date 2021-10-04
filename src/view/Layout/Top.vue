@@ -28,9 +28,9 @@
 				{{ member_info.admin_name }}
 				({{ member_info.admin_id}}) 님 환영합니다
 				<button
-					class="btn-blue prl-10 size-px-12 vertical-middle"
+					class="btn-blue pa-5-10 size-px-12 vertical-middle"
 					@click="confirmLogout"
-				><span class="vertical-middle">로그아웃</span><v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
+				><span class="vertical-middle">로그아웃</span><v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 			</span>
 
 		</div>
