@@ -102,20 +102,20 @@
 					</tr>
 				</template>
 				</tbody>
-			</table>
-			<div
-				v-else
-				class="full-height flex-column justify-center"
-			>
-				<div class="text-center">
-					<v-icon
-						class="size-px-48 color-icon"
-					>mdi mdi-cloud-off-outline</v-icon>
-					<br/>
-					<br/>
-					<div class="font-weight-bold size-px-24">No Data</div>
-				</div>
+			</table>	<div
+			v-else
+			class="full-height flex-column justify-center"
+		>
+			<div class="text-center">
+				<v-icon
+					class="size-px-48 color-icon"
+				>mdi mdi-cloud-off-outline</v-icon>
+				<br/>
+				<br/>
+				<div class="font-weight-bold size-px-24">No Data</div>
 			</div>
+		</div>
+
 
 			<Pagination
 				:program="program"

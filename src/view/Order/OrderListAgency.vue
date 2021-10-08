@@ -10,12 +10,40 @@
 			@click="getData"
 			@toExcel="toExcel"
 			@toItem="toItem"
-		></Search>
+		>
+			<select
+				slot="add"
+				v-model="search.o_status"
+				class="pa-5-10 mr-10"
+				@change="toSearch"
+			>
+				<option value="">{{ codes.O001.code_name }}</option>
+				<option
+					v-for="o_status in codes.O001.items"
+					:key="'o_status_' + o_status.total_code"
+					:value="o_status.code_value"
+				>{{ o_status.code_name }}</option>
+			</select>
+			<select
+				slot="add"
+				v-model="search.order_status"
+				class="pa-5-10 mr-10"
+				@change="toSearch"
+			>
+				<option value="">{{ codes.O002.code_name }}</option>
+				<option
+					v-for="order_status in codes.O002.items"
+					:key="'order_status' + order_status.total_code"
+					:value="order_status.code_value"
+				>{{ order_status.code_name }}</option>
+			</select>
+		</Search>
 
 		<div
 			class="mt-10 full-height flex-column overflow-y-auto"
 		>
 			<ul
+				v-if="items.length > 0"
 				class=" full-height flex-column overflow-y-auto"
 			>
 				<li
@@ -27,16 +55,19 @@
 						class="pa-10 justify-space-between color-black"
 						:class="'bg-light-' + item.o_status_color"
 					>
-						<div class=" flex-1">
+						<div class=" ">
 							<span class="color-black">[{{ item.o_status_name }}]</span>
 							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class=" flex-1 color-black text-center">{{ item.pay_info }}</span>
-						<span class=" flex-1 color-black text-center">총 판매가: {{ item.total_price | makeComma }} 원</span>
-						<span class=" flex-1 color-black text-center">총 배송비: {{ item.delivery_price | makeComma }} 원</span>
-						<span class=" flex-1 color-black text-center">결제금액: {{ item.order_price | makeComma }} 원</span>
-						<span class="flex-1 color-black text-right">{{ item.wDate }}</span>
+						<span class=" color-black text-center ml-40">
+							총 판매가: {{ item.total_price | makeComma }} 원 /
+							총 배송비: {{ item.delivery_price | makeComma }} 원 /
+							결제금액: <span class="font-weight-bold">{{ item.order_price | makeComma }}</span> 원
+						</span>
+
+						<span class=" flex-1 color-black ">{{ item.pay_info }}</span>
+						<span class=" flex-1 color-black text-right">{{ item.wDate }}</span>
 					</div>
 					<div class="pa-10 under-line">
 						<template
@@ -89,79 +120,153 @@
 						<li
 							v-for="supply in item.supply_list"
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
-							class="under-line-not-last"
+							class=""
 						>
-							<div class="pa-10 justify-space-between under-line-dashed ">
-								<span class="flex-1 "><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</span>
-								<span class="flex-1"></span>
-								<span class="flex-1  text-center">공급가: {{ supply.total_purchase | makeComma }} 원</span>
-								<span class="flex-1  text-center">판매가: {{ supply.total_price | makeComma }} 원</span>
-								<span class="flex-1  text-center">배송비: {{ supply.delivery_price | makeComma }} 원</span>
-								<span class="flex-1  text-center">합계: {{ supply.supply_total | makeComma }} 원</span>
-								<span class="flex-1"></span>
-							</div>
-							<ul>
-								<li
-									v-for="odt in supply.odt_list"
-									:key="'item_' + item.uid + 'supply_' + supply.uid + 'odt_' + odt.uid"
-									class="pa-10 flex-row under-line-dashed"
-								>
-									<div
-										class="pdt-img flex-2 justify-space-between"
+							<table class="mt-10">
+								<colgroup>
+									<col width="80px" />
+									<col width="250px" />
+									<col width="180px" />
+									<col width="180px" />
+									<col width="180px" />
+									<col width="200px" />
+									<col width="auto" />
+								</colgroup>
+								<thead>
+								<tr>
+									<th colspan="2">상품명</th>
+									<th>판매가</th>
+									<th>공급가</th>
+									<th>공급수량</th>
+									<th>주문 상태</th>
+									<th>관리</th>
+								</tr>
+								</thead>
+								<tbody>
+									<tr
+										v-for="odt in supply.odt_list"
+										:key="'item_' + item.uid + 'supply_' + supply.uid + 'odt_' + odt.uid"
 									>
-										<img
-											v-if="odt.pdt_img"
-											:src="odt.pdt_img"
-											style="max-width: 120px;"
-										/>
-										<v-icon
-											v-else
-										>mdi mdi-image</v-icon>
-
-										<div class="flex-1 flex-column justify-center ml-10">
+										<td>
+											<div
+												style="max-width: 60px; max-height: 60px; overflow: hidden"
+											>
+												<img
+													v-if="odt.pdt_img"
+													:src="odt.pdt_img"
+													style="width: 100%"
+												/>
+												<v-icon
+													v-else
+												>mdi mdi-image</v-icon>
+											</div>
+										</td>
+										<td class="text-left">
 											<span>상품명: {{ odt.pdt_name }}</span>
+											<br/>
 											<span class="color-gray mt-5">선택 옵션: {{ odt.op_name }}</span>
-										</div>
-									</div>
-									<div class="flex-1 text-center flex-column justify-center">
-										공급가: {{ odt.pdt_purchase | makeComma }} 원
-									</div>
-									<div class="flex-1 text-center flex-column justify-center">
-										판매가: {{ odt.pdt_price | makeComma }} 원
-									</div>
-									<div class="flex-1 text-center flex-column justify-center">수량: {{ odt.op_cnt | makeComma }} 개</div>
+										</td>
+										<td class="  ">
+											판매가: {{ odt.pdt_price | makeComma }} 원
+										</td>
+										<td class="  ">
+											공급가: {{ odt.pdt_purchase | makeComma }} 원
+										</td>
+										<td class=" ">수량: {{ odt.op_cnt | makeComma }} 개</td>
 
-									<div class=" flex-2 inline position-relative text-right flex-column justify-center">
-
-										<div>
-
+										<td class=" ">
 											<span
-												class="pa-5-10 mr-10"
-												:class="'bg-' + odt.order_status_color"
+												class="pa-5-10"
+												:class="'color-' + odt.order_status_color"
 											>{{ odt.order_status_name }}</span>
+										</td>
 
+										<td class="text-right">
 											<button
 												v-if="odt.order_status == 'step21'"
-												class="bg-gray pa-5-10"
-											>주문 취소 <v-icon>mdi mdi-chevron->right</v-icon></button>
+												class="bg-red pa-5-10 mr-10"
+												@click="isCancel(odt)"
+											><span class="vertical-middle">주문 취소</span> <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 
-											<span class="pa-5 box mr-10 ">{{ odt.delivery_name ? odt.delivery_name : '택배사' }}</span>
+											<button
+												v-if="odt.order_status == 'step31'"
+												class="bg-gray pa-5-10 vertical-middle mr-10 "
+												@click="isReturn(odt)"
+											><span class="vertical-middle">내용 확인</span> <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 
-											<span class="pa-5 box ">{{ odt.shipping_num ? odt.shipping_num : '송장번호' }}</span>
-										</div>
-									</div>
-								</li>
-							</ul>
+											<button
+												v-if="odt.order_status == 'step41'"
+												class="bg-gray pa-5-10 vertical-middle mr-10 "
+												@click="isReturn(odt)"
+											><span class="vertical-middle">내용 확인</span> <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
+
+											<span class="pa-5 box mr-10 vertical-middle">{{ odt.delivery_name ? odt.delivery_name : '택배사' }}</span>
+
+											<span class="pa-5 box vertical-middle">{{ odt.shipping_num ? odt.shipping_num : '송장번호' }}</span>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="2" class="text-left"><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</td>
+										<td >판매가: {{ supply.total_price | makeComma }} 원</td>
+										<td >공급가: {{ supply.total_purchase | makeComma }} 원</td>
+										<td >공급 배송비: {{ supply.delivery_price | makeComma }} 원</td>
+										<td >공급가 합계: {{ supply.supply_total | makeComma }} 원</td>
+										<td ></td>
+									</tr>
+								</tfoot>
+							</table>
 						</li>
 					</ul>
 				</li>
 			</ul>
+			<div
+				v-else
+				class="full-height flex-column justify-center"
+			>
+				<div class="text-center">
+					<v-icon
+						class="size-px-48 color-icon"
+					>mdi mdi-cloud-off-outline</v-icon>
+					<br/>
+					<br/>
+					<div class="font-weight-bold size-px-24">No Data</div>
+				</div>
+			</div>
 		</div>
 
 		<Pagination
 			:options="search"
 			class="text-center"
 		></Pagination>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+			@close="modalClear"
+		>
+			<div
+				v-if="modal_option.is_reason"
+				slot="modal-content"
+				v-html="modal_option.content"
+				class="text-left"
+			></div>
+			<div
+				slot="modal-bottom"
+				class="justify-space-between"
+			>
+				<button
+					class="flex-1 pa-10"
+					@click="doAction"
+					:class="'bg-' + modal_option.color"
+				>확인</button>
+				<button
+					class="flex-1 pa-10 bg-gray"
+					@click="modalClear"
+				>취소</button>
+			</div>
+		</Modal>
 
 	</div>
 </template>
@@ -170,11 +275,12 @@
 
 import Pagination from "../../components/Pagination";
 import Search from "../Layout/Search";
+import Modal from "@/components/Modal";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Search, Pagination},
+	components: {Modal, Search, Pagination},
 	props: ['Axios', 'TOKEN', 'codes', 'rules']
 	,data: function (){
 		return {
@@ -188,7 +294,8 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,o_status: ''
+				,o_status: this.$route.query.o_status ? this.$route.query.o_status : ''
+				,order_status: this.$route.query.order_status ? this.$route.query.order_status : ''
 				,search_type: ''
 				,list_cnt: 10
 			}
@@ -204,15 +311,6 @@ export default {
 					{ name: '주문번호', column: 'order_num_new'}
 					,{ name: '아이디', column: 'member_id'}
 					,{ name: '이름', column: 'member_name'}
-				]
-				,select: [
-					{ name: '주문상태', column: 'o_status', items: [
-							{ name: '입금대기', column: '1'}
-							,{ name: '결제완료', column: '2'}
-							,{ name: '취소요청', column: '3'}
-							,{ name: '주문취소', column: '4'}
-						]
-					}
 				]
 			}
 			,items: [
@@ -232,6 +330,19 @@ export default {
 				,{ code: 1, name: '일반관리자'}
 			]
 			,tCnt: 0
+			,is_modal: false
+			,modal_option: {
+				title: ''
+				,top: true
+				,content: ''
+				,bottom: true
+				,width: '360px'
+				,color: ''
+				,is_reason: false
+			}
+			,item_cancel: null
+			,item_return: null
+			,item_change: null
 		}
 	}
 	,computed: {
@@ -384,18 +495,23 @@ export default {
 				this.item_new = item
 			}
 		}
-		,setOdtStatus: async function(odt, step){
+		,setOdtStatus: async function(odt, next_step){
 			this.$emit('onLoading')
-			odt.next_step = step
+
 			try{
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postOdtUpdate'
-					,data: odt
+					,data: {
+						ATOKEN: this.TOKEN
+						,uid: odt.uid
+						,o_status: odt.o_status
+						,next_step: next_step
+					}
 				})
 
 				if(result.success){
-					odt.order_status = step
+					odt.order_status = next_step
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -413,18 +529,22 @@ export default {
 		,toItem: function (){
 			this.is_item = !this.is_item
 		}
-		,update: async function(item, o_status){
+		,update: async function(item, next_status){
 			this.$emit('onLoading')
-			item.next_status = o_status
+
 			try{
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postOrderUpdate'
-					,data: item
+					,data: {
+						ATOKEN: this.TOKEN
+						,uid: item.uid
+						,next_status: next_status
+					}
 				})
 
 				if(result.success){
-					item.o_status = o_status
+					item.o_status = next_status
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -434,6 +554,111 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,isCancel: function(odt){
+			this.item_cancel = odt
+			this.is_modal = true
+			this.modal_option.title = '주문상품 취소'
+			this.modal_option.content = '해당 상품을 주문취소처리 하시겠습니까?'
+			this.modal_option.color = 'red'
+		}
+		,toCancel: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postOdtCancel'
+					,data: {
+						ATOKEN: this.TOKEN
+						,odt_uid: this.item_cancel.uid
+					}
+				})
+
+				if(result.success){
+					await this.getData()
+					this.$emit('setNotify', { type: 'success', message: result.message})
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch (e) {
+				console.log(e)
+			}finally {
+				this.modalClear()
+			}
+		}
+		,doAction: function(){
+			if(this.item_cancel){
+				this.toCancel()
+			}
+		}
+		,modalClear: function(){
+			this.item_cancel = null
+			this.item_return = null
+			this.item_change = null
+			this.is_modal = false
+			this.modal_option = {
+				title: ''
+				,top: true
+				,content: ''
+				,bottom: true
+				,width: '360px'
+				,color: ''
+				,is_reason: false
+			}
+		}
+		,toSearch: function(){
+			this.$router.push({ name: this.$route.name, params: this.$route.params, query: {
+					o_status: this.search.o_status
+					,order_status: this.search.order_status
+					,list_cnt: this.search.list_cnt
+					,search_type: this.search_type
+					,search_value: this.search_value
+				}
+			})
+		}
+		,isReturn: async  function(odt){
+			this.is_modal = true
+
+			try{
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getOdtStep'
+					,data: {
+						ATOKEN: this.TOKEN
+						,odt_uid: odt.uid
+						,step: odt.order_status
+					}
+				})
+
+				if(result.success){
+					odt.history = result.data
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+					return
+				}
+			}catch(e){
+				console.log(e)
+			}
+
+			if(odt.order_status == 'step31'){
+				this.item_change = odt
+				this.modal_option.title = '교환'
+				this.modal_option.content = odt.pdt_name + ' 상품을 교환 처리하시겠습니까?'
+				this.modal_option.content += '<br/><br/>사유: ' + odt.history.reason
+				this.modal_option.content += '<br/><br/>상세사유: ' + odt.history.reason_text
+				this.modal_option.is_reason = true
+			}else if(odt.order_status == 'step41'){
+				this.item_return = odt
+				this.modal_option.title = '반품'
+				this.modal_option.content = odt.pdt_name + ' 상품을 반품 처리하시겠습니까?'
+				this.modal_option.content += '<br/><br/>사유: ' + odt.history.reason
+				this.modal_option.content += '<br/><br/>상세사유: ' + odt.history.reason_text
+				this.modal_option.is_reason = true
+			}else{
+				this.$emit('setNotify', { type: 'error', message: '교환 또는 반품처리 할 수 없는 주문상품입니다'})
+				return
+			}
+
+			this.modal_option.color = 'red'
 		}
 	}
 	,created() {

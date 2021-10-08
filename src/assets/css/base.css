@@ -162,6 +162,9 @@
 .ml-10 { margin-left: 10px}
 .ml-15 { margin-left: 15px}
 .ml-20 { margin-left: 20px}
+.ml-30 { margin-left: 30px}
+.ml-40 { margin-left: 40px}
+.ml-50 { margin-left: 50px}
 
 .indent-10 { text-indent: 10px}
 
@@ -201,20 +204,20 @@
 /* background */
 
 .bg-default { background-color: #eee}
-.bg-gray { background-color: gray; color: white}
-.bg-gray-light { background-color: #eee;}
+.bg-gray { background-color: gray;  color: #333}
+.bg-gray-light { background-color: #eee; }
 .bg-gray-dark { background-color: darkgray}
 .bg-dark { background-color: #828282}
 .bg-white { background-color: white}
-.bg-green { background-color: #0f9d58; color: white;}
-.bg-red { background-color: #bf360c; color: white;}
-.bg-orange { background-color: darkorange; color: white;}
+.bg-green { background-color: #0f9d58; color: #eee;}
+.bg-red { background-color: #bf360c; color: #eee;}
+.bg-orange { background-color: darkorange; color: #eee;}
 .bg-f5 { background-color: #f5f5f5}
 .bg-eee { background-color: #eee !important}
 .bg-bbb { background-color: #bbb !important}
 .bg-ddd { background-color: #ddd !important}
 .bg-select { background-color: black}
-.bg-blue { background-color: #0D47A1}
+.bg-blue { background-color: #0D47A1; color: #eee}
 .bg-light-gray { background-color: darkgray;}
 .bg-light-green { background-color: #81C784;}
 .bg-light-blue { background-color: #eee;}

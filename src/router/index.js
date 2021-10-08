@@ -118,7 +118,7 @@ const routes = [
 		,component: () => import('@/view/Order/OrderList.vue')
 	}
 	,{
-		path: prefix + 'Order/ListSupply:page?'
+		path: prefix + 'Order/ListSupply/:page?'
 		,name: 'OrderListSupply'
 		,component: () => import('@/view/Order/OrderListSupply.vue')
 	}

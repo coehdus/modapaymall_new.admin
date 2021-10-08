@@ -6,8 +6,8 @@
 			<thead>
 				<tr>
 					<th
-						v-for="th in excel_data.header"
-						:key="'th_' + th.column"
+						v-for="(th, index) in excel_data.header"
+						:key="'th_' + th.column + '_' + index"
 					>{{ th.name }}</th>
 				</tr>
 			</thead>

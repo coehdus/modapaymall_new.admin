@@ -184,7 +184,8 @@
 /* background */
 
 .theme-dark .bg-default { background-color: #eee}
-.theme-dark .bg-gray { background-color: gray; color: white}
+.theme-dark .bg-gray { background-color: gray; color: #333}
+.theme-dark .bg-gray-white { background-color: gray; color: white}
 .theme-dark .bg-gray-light { background-color: #eee;}
 .theme-dark .bg-gray-dark { background-color: darkgray}
 .theme-dark .bg-dark { background-color: #828282}
