@@ -141,7 +141,7 @@
 				>
 					<tr
 						v-for="item in item_list"
-						:key="'settlement_' + item.date"
+						:key="'settlement_' + item.uid"
 					>
 						<td>{{ item.year }}.{{ item.month }}</td>
 						<td>{{ item.admin_type_name }}</td>
@@ -165,14 +165,16 @@
 							>상세 정보</button>
 							<button
 								v-if="item.is_settlement == '0'"
+								v-show="false"
 								class="btn-success pa-5-10"
 								@click="doSettlementConfirm(item)"
-							>정산 완료 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
+							>정산 확인 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 							<button
 								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+								v-show="false"
 								class="btn-success pa-5-10"
 								@click="doDepositConfirm(item)"
-							>입금 완료</button>
+							>지급 완료 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 						</td>
 					</tr>
 				</template>
@@ -206,6 +208,7 @@
 				@onLoading="$emit('onLoading')"
 				@offLoading="$emit('offLoading')"
 				@setNotify="setNotify"
+				@success="success"
 
 				class="full-width"
 			></SettlementDetail>
@@ -260,17 +263,18 @@ export default {
 	}
 	,computed: {
 		item_list: function(){
-			return this.items.filter(function(item){
-				if(item.is_settlement == 0) {
-					item.is_settlement_name = '정산대기'
-					item.is_deposit_name = '-'
-				}else{
-					item.is_settlement_name = '정산완료'
 
-					if(item.is_deposit == 0) {
-						item.is_deposit_name = '지급대기'
-					}else{
-						item.is_deposit_name = '지급완료'
+			let self = this
+			return this.items.filter(function(item){
+
+				for(let i = 0; i < self.codes.S001.items.length; i ++){
+					if(item.is_settlement == self.codes.S001.items[i].code_value){
+						item.is_settlement_name = self.codes.S001.items[i].code_name
+					}
+				}
+				for(let i = 0; i < self.codes.S002.items.length; i ++){
+					if(item.is_deposit == self.codes.S002.items[i].code_value){
+						item.is_deposit_name = self.codes.S002.items[i].code_value == '0' ? '-' : self.codes.S002.items[i].code_name
 					}
 				}
 
@@ -351,6 +355,10 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,success: function(){
+			this.close()
+			this.getData()
 		}
 		,close: function(){
 			this.item_detail = {}

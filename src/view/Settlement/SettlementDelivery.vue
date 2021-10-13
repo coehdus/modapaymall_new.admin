@@ -154,12 +154,12 @@
 								v-if="item.is_settlement == '0'"
 								class="btn-success pa-5-10"
 								@click="doSettlementConfirm(item)"
-							>정산 완료</button>
+							>정산 확인</button>
 							<button
 								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
 								class="btn-success pa-5-10"
 								@click="doDepositConfirm(item)"
-							>입금 완료</button>
+							>지급 완료</button>
 						</td>
 					</tr>
 				</template>

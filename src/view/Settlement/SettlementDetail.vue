@@ -1,8 +1,21 @@
 <template>
 	<div
-		class="full-height full-width"
+		class="full-height full-width overflow-y-auto"
 	>
-		<table class="mt-10 full-width">
+		<div
+			v-if="step.reason"
+			class="mt-10 justify-space-between"
+		>
+			<div class="font-weight-bold">
+				정산 로그: {{ step.reason }}
+			</div>
+
+			<div class="mr-10">
+				처리일시: {{ step.wDate}}
+			</div>
+		</div>
+
+		<table class="mt-20 full-width">
 			<colgroup>
 			</colgroup>
 			<thead>
@@ -48,6 +61,52 @@
 			</tr>
 			</tbody>
 		</table>
+
+		<textarea
+			v-model="reason"
+			placeholder="보류시 사유를 입력해주세요"
+			class="mt-30"
+		></textarea>
+
+		<div
+			class="mt-20 justify-center"
+		>
+			<button
+				v-if="item.is_settlement != '1'"
+				class="bg-green pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'confirm')"
+			>정산 확인</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit != '1'"
+				class="bg-green pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'confirm')"
+			>지급 확인</button>
+
+			<button
+				v-if="item.is_settlement == '0'"
+				class="bg-orange pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'hold')"
+			>정산 보류</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+				class="bg-orange pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'hold')"
+			>지급 보류</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+				class="bg-red pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'cancel')"
+			>정산 취소</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '1'"
+				class="bg-red pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'cancel')"
+			>지급 취소</button>
+		</div>
 	</div>
 </template>
 
@@ -70,6 +129,10 @@
 					,month: this.month
 				}
 				,items: []
+				,reason: ''
+				,step: {
+
+				}
 			}
 		}
 		,computed: {
@@ -89,7 +152,31 @@
 					})
 
 					if(result.success){
-						this.items = result.data
+						this.items = result.data.list
+						this.step = result.data.step
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
+			,doUpdate: async function(type, status) {
+				let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
+
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: url
+						,data: {
+							ATOKEN: this.TOKEN
+							,s_uid: this.item.uid
+							,reason: this.reason
+						}
+					})
+
+					if(result.success){
+						this.$emit('success')
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
