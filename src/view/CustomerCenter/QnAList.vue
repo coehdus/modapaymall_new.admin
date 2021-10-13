@@ -224,7 +224,7 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getBbsList'
+					,url: 'management/getBbsQnaList'
 					,data: this.search
 				})
 				if(result.success){

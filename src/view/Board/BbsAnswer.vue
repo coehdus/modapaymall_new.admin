@@ -38,7 +38,9 @@
 				<div class="">
 					<h6>답변</h6>
 					<editor
+						v-if="item.b_answer || item.b_answer === ''"
 						height="550px"
+						:initialValue="item.b_answer"
 						initialEditType="wysiwyg"
 						ref="b_answer"
 						class="text-left "
@@ -172,6 +174,7 @@ export default {
 				if(result.success){
 					this.item = result.data.result
 					this.files = result.data.files
+					this.item.b_answer = this.item.b_answer ? this.item.b_answer : ''
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -184,27 +187,19 @@ export default {
 		,save: async function(){
 			this.$emit('onLoading')
 
-			console.log(this.member_info)
-			let b_contents = this.$refs.b_contents.invoke("getMarkdown")
+			let b_answer = this.$refs.b_answer.invoke("getMarkdown")
 
-			if(!b_contents){
-				this.$refs.b_contents.invoke("setMarkdown", this.item.b_contents)
-			}
-
-			this.item.b_contents = b_contents
+			this.item.b_answer = b_answer
 
 			try{
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postBbs'
+					,url: 'management/postBbsAnswer'
 					,data: {
 						ATOKEN: this.TOKEN
-						,uid: this.$route.params.bbs_uid
+						,bbs_uid: this.$route.params.bbs_uid
 						,b_code: this.$route.params.b_code
-						,b_title: this.item.b_title
-						,b_contents: b_contents
-						,b_file: this.item.b_file
-						,m_name: this.member_info.admin_name
+						,b_answer: b_answer
 					}
 				})
 
