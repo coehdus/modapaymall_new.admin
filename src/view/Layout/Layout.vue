@@ -133,8 +133,8 @@
 			,setProgram: function(program){
 				this.program = program
 			}
-			,toLocation: function(path, params){
-				this.$router.push({ name: path, params: params}).catch(function(e){
+			,toLocation: function({ name, params, query}){
+				this.$router.push({ name: name, params: params, query: query}).catch(function(e){
 					console.log(e)
 				});
 			}

@@ -8,7 +8,7 @@
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option
 						v-for="year in year_list"
@@ -20,7 +20,7 @@
 				<select
 					v-model="search.month"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option
 						v-for="month in 12"
@@ -32,7 +32,7 @@
 				<select
 					v-model="search.is_settlement"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option value="">정산여부</option>
 					<template
@@ -49,7 +49,7 @@
 				<select
 					v-model="search.is_deposit"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option value="">지급여부</option>
 					<template
@@ -66,7 +66,7 @@
 				<select
 					v-model="search.admin_type"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option value="">구분</option>
 					<template
@@ -136,8 +136,8 @@
 					>
 						<td>{{ item.year }}.{{ item.month }}</td>
 						<td>{{ item.admin_id }}</td>
-						<td>{{ item.agency_id}}</td>
-						<td>{{ item.supply_id }}</td>
+						<td>{{ item.agency_name}}</td>
+						<td>{{ item.supply_name }}</td>
 						<td>{{ item.agency_total | makeComma }}</td>
 						<td>{{ item.fee * -1 | makeComma }}</td>
 						<td>{{ item.agency_total - item.fee | makeComma }}</td>
@@ -150,16 +150,6 @@
 								class="btn-blue pa-5-10 mr-10"
 								@click="toDetail(item)"
 							>상세 정보</button>
-							<button
-								v-if="item.is_settlement == '0'"
-								class="btn-success pa-5-10"
-								@click="doSettlementConfirm(item)"
-							>정산 확인</button>
-							<button
-								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
-								class="btn-success pa-5-10"
-								@click="doDepositConfirm(item)"
-							>지급 완료</button>
 						</td>
 					</tr>
 				</template>
@@ -172,13 +162,83 @@
 			</table>
 
 		</div>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="modal_option"
+
+			@close="close"
+		>
+			<SettlementDeliveryDetail
+				slot="modal-content"
+				v-if="item_detail.uid"
+				:Axios="Axios"
+				:user="user"
+				:codes="codes"
+				:TOKEN="TOKEN"
+				:item="item_detail"
+				:year="search.year"
+				:month="search.month"
+
+				@click="close"
+				@onLoading="$emit('onLoading')"
+				@offLoading="$emit('offLoading')"
+
+				class="full-width"
+			></SettlementDeliveryDetail>
+
+			<div
+				slot="modal-bottom"
+				class="pa-10 justify-center bg-base"
+			>
+				<button
+					v-if="item_detail.is_settlement != '1'"
+					class="bg-green pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlementDelivery', 'confirm')"
+				>정산 확인</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit != '1'"
+					class="bg-green pa-5-10 mr-10 color-eee"
+					@click="doUpdate('depositDelivery', 'confirm')"
+				>지급 확인</button>
+
+				<button
+					v-if="item_detail.is_settlement == '0'"
+					class="bg-orange pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlementDelivery', 'hold')"
+				>정산 보류</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
+					class="bg-orange pa-5-10 mr-10 color-eee"
+					@click="doUpdate('depositDelivery', 'hold')"
+				>지급 보류</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
+					class="bg-red pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlementDelivery', 'cancel')"
+				>정산 취소</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '1'"
+					class="bg-red pa-5-10 mr-10 color-eee"
+					@click="doUpdate('depositDelivery', 'cancel')"
+				>지급 취소</button>
+			</div>
+		</Modal>
 	</div>
 </template>
 
 <script>
+import Modal from "@/components/Modal";
+import SettlementDeliveryDetail from "@/view/Settlement/SettlementDeliveryDetail";
 export default {
 	name: 'SettlementDelivery'
-	,props: ['Axios', 'TOKEN', 'codes']
+	,
+	components: {SettlementDeliveryDetail, Modal},
+	props: ['Axios', 'TOKEN', 'user', 'codes']
 	,data: function(){
 		return {
 			program: {
@@ -189,30 +249,42 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,year: new Date().getFullYear()
-				,month:  new Date().getMonth() + 1
-				,admin_type: ''
-				,is_settlement: ''
-				,is_deposit: ''
-				,search_type: ''
-				,search_value: ''
+				,year: this.$route.query.year ? this.$route.query.year : new Date().getFullYear()
+				,month:  this.$route.query.month ? this.$route.query.month : new Date().getMonth() + 1
+				,admin_type: this.$route.query.admin_type ? this.$route.query.admin_type : ''
+				,is_settlement: this.$route.query.is_settlement ? this.$route.query.is_settlement : ''
+				,is_deposit: this.$route.query.is_deposit ? this.$route.query.is_deposit : ''
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
 			}
 			,items: []
+			,item: {
+
+			}
+			,item_detail: {
+
+			}
+			,is_modal: false
+			,modal_option: {
+				title: '배송비 정산 내역'
+				,top: true
+				,bottom: true
+			}
 		}
 	}
 	,computed: {
 		item_list: function (){
+			let self = this
 			return this.items.filter(function(item){
-				if(item.is_settlement == 0) {
-					item.is_settlement_name = '정산대기'
-					item.is_deposit_name = '-'
-				}else{
-					item.is_settlement_name = '정산완료'
 
-					if(item.is_deposit == 0) {
-						item.is_deposit_name = '지급대기'
-					}else{
-						item.is_deposit_name = '지급완료'
+				for(let i = 0; i < self.codes.S001.items.length; i ++){
+					if(item.is_settlement == self.codes.S001.items[i].code_value){
+						item.is_settlement_name = self.codes.S001.items[i].code_name
+					}
+				}
+				for(let i = 0; i < self.codes.S002.items.length; i ++){
+					if(item.is_deposit == self.codes.S002.items[i].code_value){
+						item.is_deposit_name = self.codes.S002.items[i].code_value == '0' ? '-' : self.codes.S002.items[i].code_name
 					}
 				}
 
@@ -251,6 +323,51 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,doUpdate: async function(type, status){
+			let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
+
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: url
+					,data: {
+						ATOKEN: this.TOKEN
+						,s_uid: this.item_detail.uid
+						,reason: this.item_detail.reason === undefined ? '' : this.item_detail.reason
+					}
+				})
+
+				if(result.success){
+					this.close()
+					this.getSearch()
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+		,toDetail: function(item){
+			this.item_detail = item
+			this.is_modal = true
+		}
+		,close: function() {
+			this.is_modal = false
+		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: {
+					page: this.search.page
+					,search_type: this.search.search_type
+					,search_value: this.search.search_value
+					,list_cnt: this.search.list_cnt
+					,year: this.search.year
+					,month: this.search.month
+					,is_settlement: this.search.is_settlement
+					,is_deposit: this.search.is_deposit
+				}})
+			this.getData()
 		}
 	}
 	,created() {

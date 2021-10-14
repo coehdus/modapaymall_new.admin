@@ -296,8 +296,7 @@
 		}
 		,methods: {
 			toPush: function(menu, sub){
-				console.log(menu.path + sub.path)
-				this.$emit('push', menu.path + sub.path )
+				this.$router.push({ name: menu.path + sub.path })
 			}
 		}
 		,created: function(){
