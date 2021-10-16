@@ -57,7 +57,7 @@ export default{
 	name: 'Password'
 	,
 	components: {},
-	props: ['Axios', 'member_info', 'rules', 'type']
+	props: ['Axios', 'user', 'rules', 'type']
 	,data: function(){
 		return {
 			program: {
@@ -68,7 +68,7 @@ export default{
 				,class: 'blue'
 			}
 			,item: {
-				member_id: this.member_info.member_id
+				member_id: this.user.member_id
 				,old_password: ''
 				,member_password: ''
 				,password_confirm: ''

@@ -4,7 +4,7 @@
 	>
 		<div
 			class="logo bg-base pa-10 color-white text-center"
-			@click="$emit('push', 'Index')"
+			@click="$emit('push', {name: 'Index'})"
 		>Logo Position</div>
 		<div class=" pa-10 ">
 			<span
@@ -14,10 +14,10 @@
 				<v-icon
 					class="color-icon"
 				>mdi mdi-store</v-icon>
-				[{{ member_info.admin_type_name }}] 상점 설정
+				[{{ user.admin_type_name }}] 상점 설정
 			</span>
 			<span
-				v-show="member_info.admin_type == 'agency'"
+				v-show="user.admin_type == 'agency'"
 				@click="copy"
 				class="mr-10 bg-black pa-5-10 radius-10"
 			>
@@ -25,8 +25,8 @@
 			</span>
 			<span>
 				{{ admin_div_name }}
-				{{ member_info.admin_name }}
-				({{ member_info.admin_id}}) 님 환영합니다
+				{{ user.admin_name }}
+				({{ user.admin_id}}) 님 환영합니다
 				<button
 					class="btn-blue pa-5-10 size-px-12 vertical-middle"
 					@click="confirmLogout"
@@ -65,11 +65,13 @@
 								class="input-box"
 							/></td>
 						</tr>
-						<tr>
+						<tr
+							v-if="user.admin_type_code != 'supply'"
+						>
 							<th>결제 수수료</th>
 							<td>
 								<input
-									v-if="member_info.admin_type_code == 'admin'"
+									v-if="user.admin_type_code == 'admin'"
 									v-model="item.shop_per"
 									placeholder="상점명을 입력하세요"
 									class="input-box"
@@ -80,7 +82,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type_code == 'agency' || member_info.admin_type_code == 'supply'"
+							v-if="user.admin_type_code == 'agency' || user.admin_type_code == 'supply'"
 						>
 							<th>배송비 구분</th>
 							<td>
@@ -97,7 +99,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type_code == 'agency' || member_info.admin_type_code == 'supply'"
+							v-if="user.admin_type_code == 'agency' || user.admin_type_code == 'supply'"
 						>
 							<th>배송비</th>
 							<td class="form-inline">
@@ -119,7 +121,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type_code == 'supply'"
+							v-if="user.admin_type_code == 'supply'"
 						>
 							<th>제주도/도서/산간<br/> 추가 배송비</th>
 							<td class="form-inline justify-space-between">
@@ -137,7 +139,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type_code == 'agency'"
+							v-if="user.admin_type_code == 'admin'"
 						>
 							<th>무통장 입금 계좌</th>
 							<td>
@@ -149,7 +151,7 @@
 							</td>
 						</tr>
 						<tr
-							v-if="member_info.admin_type_code == 'supply'"
+							v-if="user.admin_type_code == 'supply'"
 						>
 							<th>교환 / 반품 안내</th>
 							<td>
@@ -191,7 +193,7 @@
 	export default{
 		name: 'Top'
 		, components: { Modal, editor: Editor }
-		, props: ['member_info', 'codes', 'Base64', 'rules', 'TOKEN', 'Axios']
+		, props: ['user', 'codes', 'Base64', 'rules', 'TOKEN', 'Axios']
 		,data: function(){
 			return {
 				modal_option: {
@@ -207,7 +209,7 @@
 		,computed: {
 			admin_div_name: function(){
 				let name = ''
-				switch(this.member_info.admin_type){
+				switch(this.user.admin_type){
 					case 'admin':
 						name = '관리자'
 						break;
@@ -247,7 +249,7 @@
 			}
 
 			,copy: function (){
-				this.clipBoard(this.codes.dev_url + encodeURI(this.Base64.encode(this.member_info.admin_id)));
+				this.clipBoard(this.codes.dev_url + encodeURI(this.Base64.encode(this.user.admin_id)));
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,setModalShop: function(){
@@ -277,7 +279,7 @@
 			,save: async function(){
 				this.item.ATOKEN = this.TOKEN
 
-				if(this.member_info.admin_type_code == 'supply') {
+				if(this.user.admin_type_code == 'supply') {
 					let shop_return = this.$refs.shop_return.invoke("getMarkdown")
 
 					if (!shop_return) {

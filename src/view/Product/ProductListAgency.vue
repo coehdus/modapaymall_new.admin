@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getSearchData"
-			@click="getSearchData"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		>
@@ -16,7 +16,7 @@
 			>
 				<label
 					class=" pa-5 vertical-middle mr-10"
-					@click="search.agency_use = search.agency_use == 1 ? null : 1; getSearchData()"
+					@click="search.agency_use = search.agency_use == 1 ? null : 1; getSearch()"
 				>
 					<v-icon
 						v-if="search.agency_use == 1"
@@ -33,7 +33,7 @@
 				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
-					@change="toSearch"
+					@change="getSearch"
 				>
 					<option value="">공급사</option>
 					<option
@@ -241,7 +241,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {ProductDetail, Excel, Search, Pagination,},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules', 'date', 'category_list', 'supply_list']
+	props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date', 'category_list', 'supply_list']
 	,data: function (){
 		return {
 			program: {
@@ -251,10 +251,12 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,pdt_company: ''
-				,search_type: 'pdt_name'
-				,agency_use: null
-				,list_cnt: 10
+				,page: this.$route.query.page ? this.$route.query.page : 1
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : 'pdt_name'
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
+				,pdt_company: this.$route.query.pdt_company ? this.$route.query.pdt_company : ''
+				,agency_use: this.$route.query.agency_use ? this.$route.query.agency_use : null
+				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
 			}
 			,search_option:{
 				is_excel: true
@@ -345,14 +347,14 @@ export default {
 			})
 		}
 		,is_supply: function(){
-			if(this.member_info.admin_type == 'supply'){
+			if(this.user.admin_type == 'supply'){
 				return true
 			}else{
 				return false
 			}
 		}
 		,is_agency: function(){
-			if(this.member_info.admin_type == 'agency'){
+			if(this.user.admin_type == 'agency'){
 				return true
 			}else{
 				return false
@@ -422,7 +424,7 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getData()
+				await this.getSearch()
 				this.$emit('offnLoading')
 			}
 		}
@@ -437,8 +439,8 @@ export default {
 		,toItem: function (){
 			this.is_item = !this.is_item
 		}
-		,getSearchData: function(){
-			this.$set(this.search, 'page', 1)
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, param: this.$route.params, query: this.search})
 			this.getData()
 		}
 		,setPdtType: function(item, type){
@@ -455,22 +457,6 @@ export default {
 
 			this.update(item)
 		}
-		,toSearch: function(){
-			console.log('toSearch : ' + this.search.page)
-			if(this.search.page > 1) {
-				console.log(1111)
-				this.search.page = 1
-				this.$set(this.search, 'page', 1)
-			}else if(this.$route.params.page == 1) {
-				console.log(2222)
-				delete this.search.page
-				this.getData()
-			}else{
-				console.log(3333)
-				this.$set(this.search, 'page', 1)
-				this.getData()
-			}
-		}
 		,setProgram: function(program){
 			this.$emit('onLoad', program)
 		}
@@ -481,7 +467,7 @@ export default {
 		}
 		,goSuccess: function(){
 			this.is_detail_view = false
-			this.getData()
+			this.getSearch()
 		}
 		,setNotify: function({ type, message}){
 			this.$emit('setNotify', { type: type, message: message })
@@ -490,15 +476,12 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type == 'agency'){
-			this.$emit('push', 'ProductListAgency')
-		}
 		this.getData()
 	}
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.getData()
+				this.getSearch()
 			}
 		}
 	}

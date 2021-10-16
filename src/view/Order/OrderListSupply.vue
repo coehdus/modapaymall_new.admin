@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		>
@@ -61,7 +61,7 @@
 						</div>
 
 						<span class="flex-1  color-black ml-40">
-							총 판매가: {{ item.total_purchase | makeComma }} 원 /
+							총 공급가: {{ item.total_purchase | makeComma }} 원 /
 							총 배송비: {{ item.delivery_price | makeComma }} 원
 						</span>
 						<span class=" flex-1 color-black text-right">{{ item.wDate }}</span>
@@ -323,10 +323,12 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
+				,page: this.$route.query.page ? this.$route.query.page : 1
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
+				,list_cnt:  this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
 				,o_status: this.$route.query.o_status ? this.$route.query.o_status : ''
 				,order_status: this.$route.query.order_status ? this.$route.query.order_status : ''
-				,search_type: ''
-				,list_cnt: 10
 			}
 			,search_option:{
 
@@ -421,8 +423,8 @@ export default {
 					if(!odt.shipping_name){
 						odt.shipping_name = ''
 					}
-
-					if(item.o_status != 2 || odt.order_status == 'step4' || odt.order_status == 'step5'){
+``
+					if(item.o_status != 2 || odt.order_status == 'step4' || odt.order_status == 'step5' || odt.order_status == 'step33'|| odt.order_status == 'step43'){
 						odt.not_confirm = true
 					}
 
@@ -527,6 +529,10 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
+			this.getData()
+		}
 		,setItem: function (item){
 			if(this.item_new.uid == item.uid){
 				this.item_new = {
@@ -579,7 +585,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -688,7 +694,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -711,7 +717,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -734,7 +740,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -748,7 +754,7 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		this.getData()
+		this.getSearch()
 	}
 	,watch: {
 		items: {

@@ -136,7 +136,7 @@
 import Modal from "@/components/Modal";
 export default {
 	name: 'BbsItem'
-	,props: ['Axios', 'member_info', 'codes', 'rules', 'TOKEN']
+	,props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 	,components: {Modal}
 	,data: function(){
 		return {

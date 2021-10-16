@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="toSearch"
-			@click="toSearch"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		>
@@ -17,7 +17,7 @@
 				<select
 					v-model="search.pdt_category"
 					class="pa-5-10 mr-10"
-					@change="toSearch"
+					@change="getSearch"
 				>
 					<option value="">카테고리</option>
 					<option
@@ -29,7 +29,7 @@
 				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
-					@change="toSearch"
+					@change="getSearch"
 				>
 					<option value="">공급사</option>
 					<option
@@ -190,11 +190,11 @@
 								<v-icon
 									v-if="item.uid == item_new.uid"
 									class="color-red"
-									@click="setItem(item)"
+									@click="toDetail(item)"
 								>mdi mdi-close-box-outline</v-icon>
 								<v-icon
 									v-else
-									@click="setItem(item)"
+									@click="toDetail(item)"
 									class="color-icon"
 								>mdi mdi-arrow-right-bold-box-outline</v-icon>
 							</td>
@@ -222,7 +222,7 @@
 			v-if="is_item_view"
 			:Axios="Axios"
 			:rules="rules"
-			:member_info="member_info"
+			:user="user"
 			:supply_list="supply_list"
 			:category_list="category_list"
 			:codes="codes"
@@ -240,7 +240,7 @@
 			v-if="is_detail_view"
 			:Axios="Axios"
 			:rules="rules"
-			:member_info="member_info"
+			:user="user"
 			:supply_list="supply_list"
 			:category_list="category_list"
 			:codes="codes"
@@ -269,7 +269,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {ProductDetail, ProductItem, Excel, Search, Pagination},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'date', 'rules', 'supply_list', 'category_list']
+	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules', 'supply_list', 'category_list']
 	,data: function (){
 		return {
 			program: {
@@ -279,11 +279,11 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,pdt_company: this.$route.params.pdt_company ? this.$route.params.pdt_company : ''
-				,search_type: this.$route.params.search_type ? this.$route.params.search_type : 'pdt_name'
-				,is_use: this.$route.params.is_use ? this.$route.params.is_use : ''
-				,list_cnt: this.$route.params.list_cnt ? this.$route.params.list_cnt : 10
-				,page: this.$route.params.page ? this.$route.params.page : 1
+				,pdt_company: this.$route.query.pdt_company ? this.$route.query.pdt_company : ''
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : 'pdt_name'
+				,is_use: this.$route.query.is_use ? this.$route.query.is_use : ''
+				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
+				,page: this.$route.query.page ? this.$route.query.page : 1
 				,pdt_category: ''
 			}
 			,search_option:{
@@ -371,14 +371,14 @@ export default {
 			})
 		}
 		,is_supply: function(){
-			if(this.member_info.admin_type == 'supply'){
+			if(this.user.admin_type == 'supply'){
 				return true
 			}else{
 				return false
 			}
 		}
 		,is_agency: function(){
-			if(this.member_info.admin_type == 'agency'){
+			if(this.user.admin_type == 'agency'){
 				return true
 			}else{
 				return false
@@ -406,6 +406,7 @@ export default {
 					method: 'get'
 					,url: 'management/getProductList'
 					,data: this.search
+					,auth: true
 				})
 
 				if(result.success){
@@ -422,6 +423,10 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, paramas: this.$route.params, query: this.search })
+			this.getData()
 		}
 		,update: async function(item){
 			this.$emit('onLoading')
@@ -441,13 +446,23 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getData()
+				await this.getSearch()
 				this.$emit('offLoading')
 			}
 		}
-		,setItem: function (item){
-			this.item = item
-			this.is_detail_view = !this.is_detail_view
+		,toDetail: function (item){
+			let name = 'ProductDetail'
+			switch(this.user.admin_type_code){
+				case 'admin':
+					break;
+				case 'supply':
+					name += 'supply'
+					break;
+				case 'agency':
+					name += 'agency'
+					break;
+			}
+			this.$emit('push', { name: name, params: { pdt_code: item.pdt_code }})
 		}
 		,clear_item: function(){
 			this.item_new = {
@@ -464,22 +479,6 @@ export default {
 		,toItem: function (){
 			this.$router.push({ name: 'ProductItem'})
 			//this.is_item_view = !this.is_item_view
-		}
-		,toSearch: function(){
-			console.log('toSearch : ' + this.search.page)
-			if(this.search.page > 1) {
-				console.log(1111)
-				this.search.page = 1
-				this.$set(this.search, 'page', 1)
-			}else if(this.$route.params.page == 1) {
-				console.log(2222)
-				delete this.search.page
-				this.getData()
-			}else{
-				console.log(3333)
-				this.$set(this.search, 'page', 1)
-				this.getData()
-			}
 		}
 		,setProgram: function(program){
 			this.$emit('onLoad', program)
@@ -529,11 +528,11 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type_code == 'agency'){
-			this.$emit('push', 'ProductListAgency')
-		}else if(this.member_info.admin_type_code == 'supply'){
-			this.$emit('push', 'ProductListSupply')
-		}else if(this.member_info.admin_type_code == "admin" || this.member_info.admin_type_code == "distributor") {
+		if(this.user.admin_type_code == 'agency'){
+			this.$emit('push', { name: 'ProductListAgency'})
+		}else if(this.user.admin_type_code == 'supply'){
+			this.$emit('push', { name: 'ProductListSupply'})
+		}else if(this.user.admin_type_code == "admin" || this.user.admin_type_code == "distributor") {
 			this.clear_item()
 			this.getData()
 		}else{
@@ -543,7 +542,7 @@ export default {
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.$emit('push', 'ProductList', this.search)
+				this.getSearch()
 			}
 		}
 	}

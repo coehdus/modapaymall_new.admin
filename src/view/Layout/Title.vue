@@ -7,7 +7,6 @@
 		<span
 			v-if="is_cart_view"
 			class=" ptb-5 flex-column "
-			@click="$emit('push', 'Cart')"
 		>
 			<v-icon class="mr-10">mdi mdi-cart-outline</v-icon>
 			<span

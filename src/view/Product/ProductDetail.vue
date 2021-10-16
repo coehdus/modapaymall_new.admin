@@ -165,6 +165,41 @@
 							</label>
 						</td>
 					</tr>
+					<tr>
+						<th>상품 옵션 <v-icon
+							small
+							class="box color-green "
+							@click="addOption"
+						>mdi mdi-plus</v-icon></th>
+						<td>
+							<ul>
+								<li
+									v-for="(option, index) in item_options.option"
+									:key="'option_' + option.uid"
+									class="mb-10"
+								>
+									<input
+										v-model="option.opt_name"
+										class="box pa-10 mr-10"
+										placeholder="옵션명"
+									>
+									<input
+										v-model="option.opt_cont"
+										class="box pa-10 mr-10"
+										placeholder="옵션 내용"
+									>
+									<v-icon
+
+										class="box pa-5 color-red "
+										@click="removeOption(option, index)"
+									>mdi mdi-close</v-icon>
+								</li>
+							</ul>
+							<div class="color-red mt-10 text-left">
+								옵션 내용은 콤마(,)로 구분합니다 ex) 사이즈: s,m,l,xl,xxl
+							</div>
+						</td>
+					</tr>
 					</tbody>
 				</table>
 			</div>
@@ -230,7 +265,7 @@ import { Editor } from '@toast-ui/vue-editor';
 
 export default {
 	name: 'ProductDetail'
-	,props: ['Axios', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list', 'pdt_code']
+	,props: ['Axios', 'user', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list']
 	,components: {
 		editor: Editor
 	}
@@ -264,6 +299,7 @@ export default {
 			}
 			,new_main_img: '이미지 선택'
 			,new_sub_img: '이미지 선택'
+			,pdt_code: this.$route.params.pdt_code
 		}
 	}
 	,computed: {
@@ -296,6 +332,13 @@ export default {
 				}
 				return item
 			})
+		}
+		,is_supply: function(){
+			if(this.user.admin_type == 'suppy'){
+				return true
+			}else{
+				return false
+			}
 		}
 	}
 	,methods: {
@@ -474,6 +517,9 @@ export default {
 		}
 	}
 	,created() {
+		if(this.user.admin_type_code == 'supply'){
+			this.$emit('push', {name: 'ProductDetailSupply', params: this.$route.params})
+		}
 		this.$emit('onLoad', this.program)
 		this.getData()
 	}

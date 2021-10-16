@@ -69,7 +69,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
 	export default {
 		name: 'BbsItem'
-		,props: ['Axios', 'member_info', 'codes', 'rules', 'TOKEN']
+		,props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 		,components: {
 			editor: Editor
 		}
@@ -126,7 +126,7 @@ import { Editor } from '@toast-ui/vue-editor';
 							,b_title: this.item.b_title
 							,b_contents: b_contents
 							,b_file: this.item.b_file
-							,m_name: this.member_info.admin_name
+							,m_name: this.user.admin_name
 						}
 					})
 

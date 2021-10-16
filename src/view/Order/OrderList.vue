@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		>
@@ -350,7 +350,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {Modal, Excel, Search, Pagination},
-	props: ['Axios', 'TOKEN', 'codes', 'rules', 'member_info', 'date']
+	props: ['Axios', 'TOKEN', 'codes', 'rules', 'user', 'date']
 	,data: function (){
 		return {
 			program: {
@@ -363,10 +363,12 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
+				,page: this.$route.query.page ? this.$route.query.page : 1
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
+				,list_cnt:  this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
 				,o_status: this.$route.query.o_status ? this.$route.query.o_status : ''
 				,order_status: this.$route.query.order_status ? this.$route.query.order_status : ''
-				,search_type: ''
-				,list_cnt: 10
 			}
 			,search_option:{
 
@@ -580,6 +582,10 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
+			this.getData()
+		}
 		,setItem: function (item){
 			if(this.item_new.uid == item.uid){
 				this.item_new = {
@@ -728,7 +734,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -751,7 +757,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -774,7 +780,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -798,12 +804,12 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type_code == 'supply'){
+		if(this.user.admin_type_code == 'supply'){
 			this.$router.push({ name: 'OrderListSupply'})
-		}else if(this.member_info.admin_type_code == 'agency'){
+		}else if(this.user.admin_type_code == 'agency'){
 			this.$router.push({ name: 'OrderListAgency'})
-		}else if(this.member_info.admin_type_code == 'admin' || this.member_info.admin_type_code == 'distributor'){
-			this.getData()
+		}else if(this.user.admin_type_code == 'admin' || this.user.admin_type_code == 'distributor'){
+			this.getSearch()
 		}else{
 			this.$router.back()
 		}
@@ -815,9 +821,8 @@ export default {
 			}
 		}
 		,'search.page': {
-			handler: function(call){
-				this.getData()
-				this.$set(this.$route.params, 'page', call)
+			handler: function(){
+				this.getSearch()
 			}
 		}
 	}

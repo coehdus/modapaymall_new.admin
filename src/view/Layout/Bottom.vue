@@ -46,16 +46,16 @@
 		}
 		,methods: {
 			toHome: function(){
-				this.$emit('push', 'Index')
+				this.$emit('push', { name: 'Index'})
 			}
 			,toMyPage: function(){
-				this.$emit('push', 'MyPage')
+				this.$emit('push', { name: 'MyPage'})
 			}
 			,toCart: function(){
-				this.$emit('push', 'Cart')
+				this.$emit('push', { name: 'Cart'})
 			}
 			,toOrderList: function (){
-				this.$emit('push', 'OrderList')
+				this.$emit('push', { name: 'OrderList'})
 			}
 		}
 	}

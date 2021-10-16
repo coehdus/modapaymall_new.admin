@@ -117,7 +117,7 @@
 		name: 'ProductCategory'
 		,
 		components: {Modal},
-		props: ['Axios', 'member_info', 'TOKEN']
+		props: ['Axios', 'user', 'TOKEN']
 		,data: function(){
 			return {
 				program: {

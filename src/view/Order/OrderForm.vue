@@ -9,7 +9,7 @@
 				<div
 					class="mt-10 pa-10 bg-white box-shadow"
 				>
-					<div class="input-box">{{ member_info.member_name }}</div>
+					<div class="input-box">{{ user.member_name }}</div>
 					<input
 						type="number"
 						v-model="item.member_tell"
@@ -22,8 +22,8 @@
 						class="mt-10 input-box"
 						placeholder="이메일"
 					/>
-					<div class="mt-5 input-box">{{ member_info.member_post }} {{ member_info.member_addr1 }}</div>
-					<div class="mt-5 input-box">{{ member_info.member_addr2 }}</div>
+					<div class="mt-5 input-box">{{ user.member_post }} {{ user.member_addr1 }}</div>
+					<div class="mt-5 input-box">{{ user.member_addr2 }}</div>
 				</div>
 			</div>
 			<div class="mt-30">
@@ -260,7 +260,7 @@
 import DaumPost from '@/components/Daum/DaumPost'
 export default{
 	name: 'Cart'
-	,props: ['Axios', 'cart_items', 'member_info']
+	,props: ['Axios', 'cart_items', 'user']
 	,components: { DaumPost }
 	,data: function(){
 		return {

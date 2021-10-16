@@ -188,7 +188,7 @@
 		name: 'MemberList'
 		,
 		components: {Search, MemberItem, Excel, Pagination, SideB},
-		props: ['Axios', 'rules', 'TOKEN', 'member_info', 'date']
+		props: ['Axios', 'rules', 'TOKEN', 'user', 'date']
 		,data: function (){
 			return {
 				program: {
@@ -254,7 +254,7 @@
 				})
 			}
 			,is_agency: function(){
-				if(this.member_info.admin_type == 'agency'){
+				if(this.user.admin_type == 'agency'){
 					return true
 				}else{
 					return false
@@ -345,7 +345,7 @@
 			,clear_item: function(){
 				this.item_new = {
 					ATOKEN: this.TOKEN
-					,admin_code: this.member_info.admin_type == 'agency' ? this.member_info.admin_id : ''
+					,admin_code: this.user.admin_type == 'agency' ? this.user.admin_id : ''
 				}
 				this.is_item = false
 			}

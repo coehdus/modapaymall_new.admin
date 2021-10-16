@@ -8,7 +8,7 @@
 		<Top
 			v-if="program.top"
 			:program="program"
-			:member_info="member_info"
+			:user="user"
 			:codes="codes"
 			:Base64="Base64"
 			:rules="rules"
@@ -24,7 +24,7 @@
 			<Side
 				v-if="is_side"
 				:Axios="Axios"
-				:member_info="member_info"
+				:user="user"
 
 				@toggleSide="toggleSide"
 				@push="toLocation"
@@ -52,8 +52,7 @@
 					:rules="rules"
 					:TOKEN="TOKEN"
 					:cart_items="cart_items"
-					:member_info="member_info"
-					:user="member_info"
+					:user="user"
 					:filter="filter"
 					:key="$route.fullPath"
 					:date="date"
@@ -93,7 +92,7 @@
 	
 	export default{
 		name: 'Layout'
-		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'member_info', 'filter', 'date', 'codes', 'Base64']
+		,props: ['Axios', 'Notify', 'metaInfo', 'rules', 'TOKEN', 'user', 'filter', 'date', 'codes', 'Base64']
 		,components: {Loading, Search, Title, Side, Top, Notify }
 		,data: function(){
 			return {

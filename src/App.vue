@@ -9,7 +9,7 @@
 		:Base64="Base64"
 		:metaInfo="metaInfo"
 		:TOKEN="TOKEN"
-		:member_info="member_info"
+		:user="user"
 		:codes="codes"
 	/>
 </template>
@@ -43,7 +43,7 @@ export default {
 		,metaInfo: metaInfo
 		,codes: codes
 		,TOKEN: ''
-		,member_info: {
+		,user: {
 		}
 		,is_view: false
 	})
@@ -110,13 +110,14 @@ export default {
 					,data: {
 						ATOKEN: this.TOKEN
 					}
+					,auth: true
 				})
 
 				if(result.success){
 					if(result.data.admin_info.admin_status != '1' || result.data.admin_info.is_delete != '0'){
 						document.location.href = 'ADMIN/Auth/Notice'
 					}else {
-						this.member_info = result.data.admin_info
+						this.user = result.data.admin_info
 					}
 				}else{
 					this.toLogin()

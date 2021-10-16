@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		></Search>
@@ -152,7 +152,7 @@
 						</td>
 						<td>{{ item.wDate.substring(0, 10) }}</td>
 						<td
-							@click="setItem(item)"
+							@click="toDetail(item)"
 						>
 							<v-icon
 								class="color-icon"
@@ -215,7 +215,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {Excel, Search, Pagination, SideB},
-	props: ['Axios', 'TOKEN', 'member_info', 'codes', 'rules', 'date']
+	props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date']
 	,data: function (){
 		return {
 			program: {
@@ -225,9 +225,9 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,pdt_company: ''
-				,search_type: 'pdt_name'
-				,list_cnt: 10
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : 'pdt_name'
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
+				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
 			}
 			,search_option:{
 				is_excel: true
@@ -295,14 +295,14 @@ export default {
 			})
 		}
 		,is_supply: function(){
-			if(this.member_info.admin_type == 'supply'){
+			if(this.user.admin_type == 'supply'){
 				return true
 			}else{
 				return false
 			}
 		}
 		,is_agency: function(){
-			if(this.member_info.admin_type == 'agency'){
+			if(this.user.admin_type == 'agency'){
 				return true
 			}else{
 				return false
@@ -333,6 +333,10 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, param: this.$route.params, query: this.search})
+			this.getData()
+		}
 		,update: async function(item){
 			this.$emit('onLoading')
 			try{
@@ -351,12 +355,12 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getData()
+				await this.getSearch()
 				this.$emit('onLoading')
 			}
 		}
-		,setItem: function (item){
-			this.$router.push({ name: 'ProductDetail', params: { pdt_code: item.pdt_code }})
+		,toDetail: function (item){
+			this.$router.push({ name: 'ProductDetailSupply', params: { pdt_code: item.pdt_code }})
 		}
 		,getSupplyList: async function(){
 			this.$emit('onLoading')
@@ -390,18 +394,13 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.member_info.admin_type == 'agency'){
-			this.$emit('push', 'ProductListAgency')
-		}else if(this.member_info.admin_type == 'supply'){
-			this.$emit('push', 'ProductListSupply')
-		}
 		this.getData()
 		this.getSupplyList()
 	}
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.getData()
+				this.getSearch()
 			}
 		}
 	}

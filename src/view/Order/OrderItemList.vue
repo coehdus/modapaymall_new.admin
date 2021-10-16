@@ -43,7 +43,7 @@
 <script>
 	export default {
 		name: 'OrderItemList'
-		,props: ['Axios', 'date', 'member_info', 'TOKEN']
+		,props: ['Axios', 'date', 'user', 'TOKEN']
 		,data: function(){
 			return {
 				program: {

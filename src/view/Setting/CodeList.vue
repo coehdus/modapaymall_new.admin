@@ -76,7 +76,7 @@
 <script>
 	export default {
 		name: 'SettingCodeList'
-		,props: ['Axios', 'member_info']
+		,props: ['Axios', 'user']
 		,data: function(){
 			return {
 				program: {

@@ -78,12 +78,12 @@ const routes = [
 		,component: () => import('@/view/Product/ProductList.vue')
 	}
 	,{
-		path: prefix + 'Product/ListAgency/'
+		path: prefix + 'Product/ListAgency/:page?'
 		,name: 'ProductListAgency'
 		,component: () => import('@/view/Product/ProductListAgency.vue')
 	}
 	,{
-		path: prefix + 'Product/ListSupply/'
+		path: prefix + 'Product/ListSupply'
 		,name: 'ProductListSupply'
 		,component: () => import('@/view/Product/ProductListSupply.vue')
 	}
@@ -95,6 +95,11 @@ const routes = [
 	,{
 		path: prefix + 'Product/Detail/:pdt_code?'
 		,name: 'ProductDetail'
+		,component: () => import('@/view/Product/ProductDetail.vue')
+	}
+	,{
+		path: prefix + 'Product/DetailSupply/:pdt_code?'
+		,name: 'ProductDetailSupply'
 		,component: () => import('@/view/Product/ProductDetailSupply.vue')
 	}
 	,{
@@ -186,11 +191,6 @@ const routes = [
 		path: prefix + 'Settlement/Minus'
 		,name: 'SettlementMinus'
 		,component: () => import('@/view/Settlement/SettlementMinus')
-	}
-	,{
-		path: prefix + 'Etc/Excel/Download'
-		,name: 'EtcExcelDownload'
-		,component: () => import('@/components/Excel')
 	}
 	,{
 		path: prefix + 'Board/Bbs/:b_code/Item'

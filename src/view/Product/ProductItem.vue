@@ -135,6 +135,47 @@
 						</label>
 					</div>
 				</div>
+
+				<div class="pa-10 ">
+					<div class="pa-10 box justify-space-between">
+						<div>
+								상품 옵션 <v-icon
+								small
+								class="box color-green "
+								@click="addOption"
+							>mdi mdi-plus</v-icon>
+						</div>
+
+						<div class="color-red mt-10 text-left">
+							옵션 내용은 콤마(,)로 구분합니다 ex) 사이즈: s,m,l,xl,xxl
+						</div>
+					</div>
+					<div class="mt-10">
+						<ul>
+							<li
+								v-for="(option, index) in item_options.option"
+								:key="'option_' + option.uid"
+								class="mb-10"
+							>
+								<input
+									v-model="option.opt_name"
+									class="box pa-10 mr-10"
+									placeholder="옵션명"
+								>
+								<input
+									v-model="option.opt_cont"
+									class="box pa-10 mr-10"
+									placeholder="옵션 내용"
+								>
+								<v-icon
+
+									class="box pa-5 color-red "
+									@click="removeOption(option, index)"
+								>mdi mdi-close</v-icon>
+							</li>
+						</ul>
+					</div>
+				</div>
 			</div>
 
 			<div class="flex-1 prl-10">
@@ -206,7 +247,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
 export default {
 	name: 'ProductItem'
-	,props: ['Axios', 'member_info', 'rules', 'supply_list', 'category_list', 'update_item', 'codes', 'TOKEN']
+	,props: ['Axios', 'user', 'rules', 'supply_list', 'category_list', 'update_item', 'codes', 'TOKEN']
 	,components: {
 		editor: Editor
 	}
@@ -229,6 +270,9 @@ export default {
 			,editorOptions: {
 				hideModeSwitch: true
 			}
+			,item_options: {
+				option: []
+			}
 		}
 	}
 	,computed: {
@@ -240,7 +284,7 @@ export default {
 			}
 		}
 		,is_supply: function(){
-			if(this.member_info.admin_type == 'suppy'){
+			if(this.user.admin_type == 'suppy'){
 				return true
 			}else{
 				return false
@@ -296,6 +340,12 @@ export default {
 			this.item.pdt_info = pdt_info
 			this.item.pdt_notice = pdt_notice
 
+			for(let [key, val] of Object.entries(this.item_options.option)){
+				this.$set(this.item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)
+			}
+
+			this.$set(this.item, 'opt_cnt', Object.keys(this.item_options.option).length)
+
 			try{
 				const result = await this.Axios({
 					method: 'post'
@@ -305,12 +355,46 @@ export default {
 
 				if(result.success){
 					this.$emit('setNotify', { type: 'success', message: result.message })
-					this.$emit('goSuccess')
+					this.$emit('goBack')
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
+			}
+		}
+		,addOption: function(){
+			this.item_options.option.push({
+				uid: ''
+				,opt_name: ''
+				,opt_cont: ''
+			})
+		}
+		,removeOption: async  function(option, index){
+			//console.log(option)
+			if(option.uid){
+				if(confirm("옵션을 삭제하시겠습니까?1")){
+					this.item_options.option.splice(index, 1)
+
+					try{
+						option.ATOKEN = this.TOKEN
+						const result = await this.Axios({
+							method: 'post'
+							,url: 'management/postProductOptionDelete'
+							,data: option
+						})
+
+						if(result.success){
+							this.item_options.option.splice(index, 1)
+						}else{
+							this.$emit('setNotify', { type: 'error', message: result.message })
+						}
+					}catch (e) {
+						console.log(e)
+					}
+				}
+			}else{
+				this.item_options.option.splice(index, 1)
 			}
 		}
 	}

@@ -18,11 +18,11 @@
 						class="pa-10 justify-space-between"
 					>
 						<span>아이디</span>
-						<span>{{ member_info.member_id }}</span>
+						<span>{{ user.member_id }}</span>
 					</li>
 					<li
 						class="pa-10 justify-space-between bg-gray-light"
-						@click="$emit('push', 'Password')"
+						@click="$emit('push', { name: 'Password' })"
 					>
 						<span>비밀번호 변경</span>
 						<span><v-icon>mdi-chevron-right</v-icon></span>
@@ -31,33 +31,33 @@
 						class="pa-10 justify-space-between"
 					>
 						<span>이름</span>
-						<span>{{ member_info.member_name }}</span>
+						<span>{{ user.member_name }}</span>
 					</li>
 					<li
 						class="pa-10 justify-space-between"
 					>
 						<span>연락처</span>
-						<span>{{ member_info.member_tell }}</span>
+						<span>{{ user.member_tell }}</span>
 					</li>
 					<li
 						class="pa-10 justify-space-between"
 					>
 						<span>이메일</span>
-						<span>{{ member_info.member_email }}</span>
+						<span>{{ user.member_email }}</span>
 					</li>
 					<li
 						class="pa-10 "
 					>
-						<div class=" text-right">{{ member_info.member_post }} {{ member_info.member_addr1 }}</div>
+						<div class=" text-right">{{ user.member_post }} {{ user.member_addr1 }}</div>
 					</li>
 					<li
 						class="pa-10 "
 					>
-						<div class=" text-right">{{ member_info.member_addr2 }}</div>
+						<div class=" text-right">{{ user.member_addr2 }}</div>
 					</li>
 					<li
 						class="pa-10 justify-space-between bg-gray-light"
-						@click="$emit('push', 'Shipping')"
+						@click="$emit('push', { name: 'Shipping' })"
 					>
 						<span>주소록</span>
 						<span><v-icon>mdi-chevron-right</v-icon></span>
@@ -115,7 +115,7 @@ import Title from "@/view/Layout/Title";
 
 export default{
 	name: 'Mypage'
-	,props: ['Axios', 'member_info', 'rules', 'codes']
+	,props: ['Axios', 'user', 'rules', 'codes']
 	,components: { Title }
 	,data: function(){
 		return {

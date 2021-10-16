@@ -12,7 +12,7 @@
 					v-for="item in items"
 				>
 					<li
-						v-if="item.type.indexOf(member_info.admin_type_code) > -1"
+						v-if="item.type.indexOf(user.admin_type_code) > -1"
 						:key="item.path"
 						class="li-side-content "
 						:class="'li-side-depth-' + item.depth"
@@ -29,7 +29,7 @@
 								v-for="sub in item.sub"
 							>
 								<li
-									v-if="sub.type.indexOf(member_info.admin_type_code) > -1"
+									v-if="sub.type.indexOf(user.admin_type_code) > -1"
 									:key="item.path + sub.path"
 									class="pa-10 "
 									:class="{'bg-black': $route.name.indexOf(item.path + sub.path) > -1}"
@@ -57,7 +57,7 @@
 <script>
 	export default{
 		name: 'Side'
-		,props: ['Axios', 'member_info']
+		,props: ['Axios', 'user']
 		,data: function(){
 			return {
 				items: [

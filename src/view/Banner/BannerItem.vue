@@ -99,7 +99,7 @@
 
 export default {
 	name: 'BbsItem'
-	,props: ['Axios', 'member_info', 'codes', 'rules', 'TOKEN']
+	,props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 	,components: {}
 	,data: function(){
 		return {

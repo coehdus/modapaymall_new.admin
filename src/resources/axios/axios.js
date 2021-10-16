@@ -7,6 +7,8 @@ let location = window.location.href
 
 let baseUrl = ''
 
+console.log(process.env)
+
 if(location.indexOf(domain) > -1){
 	baseUrl = server
 }else{
@@ -49,7 +51,6 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 	const getHeader = function(){
 		
 		let default_header = {
-
 		}
 		
 		if(authorize){

@@ -97,7 +97,7 @@
 		name: 'Shipping'
 		,
 		components: {Modal, ShippingItem},
-		props:['Axios', 'member_info', 'rules', 'TOKEN']
+		props:['Axios', 'user', 'rules', 'TOKEN']
 		,data: function(){
 			return {
 				program: {

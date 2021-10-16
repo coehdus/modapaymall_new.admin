@@ -94,7 +94,7 @@ import { Viewer } from "@toast-ui/vue-editor";
 import Modal from "@/components/Modal";
 export default {
 	name: 'BbsDetail'
-	,props: ['Axios', 'member_info', 'codes', 'rules', 'TOKEN']
+	,props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 	,components: { Modal, editor: Editor ,Viewer }
 	,data: function(){
 		return {

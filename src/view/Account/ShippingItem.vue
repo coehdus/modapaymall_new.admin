@@ -126,7 +126,7 @@
 		name: 'ShippingItem'
 		,
 		components: { DaumPost},
-		props: ['Axios', 'item', 'member_info', 'rules']
+		props: ['Axios', 'item', 'user', 'rules']
 		,data: function(){
 			return {
 				program: {

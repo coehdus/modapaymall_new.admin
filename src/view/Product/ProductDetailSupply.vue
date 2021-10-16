@@ -265,7 +265,7 @@ import { Editor } from '@toast-ui/vue-editor';
 		}
 		,computed: {
 			item: function(){
-				console.log('item_ori : ' + typeof this.item_ori)
+
 				if(!this.item_ori){
 					return false
 				}
@@ -356,8 +356,6 @@ import { Editor } from '@toast-ui/vue-editor';
 					})
 
 					if(result.success){
-						this.$router.go(this.$router.currentRoute)
-						this.clear()
 						await this.getData()
 						this.$emit('setNotify', { type: 'success', message: result.message })
 					}else{
