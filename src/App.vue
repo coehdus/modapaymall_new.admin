@@ -113,7 +113,11 @@ export default {
 				})
 
 				if(result.success){
-					this.member_info = result.data.admin_info
+					if(result.data.admin_info.admin_status != '1' || result.data.admin_info.is_delete != '0'){
+						document.location.href = 'ADMIN/Auth/Notice'
+					}else {
+						this.member_info = result.data.admin_info
+					}
 				}else{
 					this.toLogin()
 					console.log(result.message)

@@ -13,6 +13,11 @@ const routes = [
 		,component: () => import('@/view/Main/Index.vue')
 	}
 	,{
+		path: prefix + 'Auth/Notice'
+		,name: 'AuthNotice'
+		,component: () => import('@/view/Auth/Notice.vue')
+	}
+	,{
 		path: prefix + 'Index'
 		,name: 'Index'
 		,component: () => import('@/view/Main/Index.vue')

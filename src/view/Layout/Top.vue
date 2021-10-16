@@ -232,6 +232,7 @@
 			,confirmLogout: function() {
 				if(confirm("로그아웃 하시겠습니까?")){
 					sessionStorage.removeItem('delimallAT')
+					sessionStorage.removeItem('delimallAT2')
 					document.location.href= '/ADMIN/Auth/Login'
 				}
 			}
