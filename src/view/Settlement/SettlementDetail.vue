@@ -63,57 +63,19 @@
 		</table>
 
 		<textarea
+			v-if="user.admin_type_code == codes.type_code_amdin"
 			v-model="reason"
 			placeholder="보류시 사유를 입력해주세요"
 			class="mt-30"
 		></textarea>
 
-		<div
-			class="mt-20 justify-center"
-		>
-			<button
-				v-if="item.is_settlement != '1'"
-				class="bg-green pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'confirm')"
-			>정산 확인</button>
-
-			<button
-				v-if="item.is_settlement == '1' && item.is_deposit != '1'"
-				class="bg-green pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'confirm')"
-			>지급 확인</button>
-
-			<button
-				v-if="item.is_settlement == '0'"
-				class="bg-orange pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'hold')"
-			>정산 보류</button>
-
-			<button
-				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
-				class="bg-orange pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'hold')"
-			>지급 보류</button>
-
-			<button
-				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
-				class="bg-red pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'cancel')"
-			>정산 취소</button>
-
-			<button
-				v-if="item.is_settlement == '1' && item.is_deposit == '1'"
-				class="bg-red pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'cancel')"
-			>지급 취소</button>
-		</div>
 	</div>
 </template>
 
 <script>
 	export default{
 		name: 'SettlementDetail'
-		,props: ['Axios', 'user', 'TOKEN', 'item', 'year', 'month']
+		,props: ['Axios', 'user', 'codes', 'TOKEN', 'item', 'year', 'month']
 		,data: function(){
 			return {
 				program: {
@@ -154,29 +116,6 @@
 					if(result.success){
 						this.items = result.data.list
 						this.step = result.data.step
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
-					}
-				}catch (e) {
-					console.log(e)
-				}
-			}
-			,doUpdate: async function(type, status) {
-				let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
-
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: url
-						,data: {
-							ATOKEN: this.TOKEN
-							,s_uid: this.item.uid
-							,reason: this.reason
-						}
-					})
-
-					if(result.success){
-						this.$emit('success')
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}

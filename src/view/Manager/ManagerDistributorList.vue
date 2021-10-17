@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch"
+			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
 		></Search>
@@ -109,11 +109,11 @@
 							<v-icon
 								v-if="item.uid == item_new.uid"
 								class="color-red"
-								@click="setItem(item)"
+								@click="toDetail(item)"
 							>mdi mdi-close-box-outline</v-icon>
 							<v-icon
 								v-else
-								@click="setItem(item)"
+								@click="toDetail(item)"
 								class="color-icon"
 							>mdi mdi-arrow-right-bold-box-outline</v-icon>
 						</td>
@@ -228,10 +228,12 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,admin_status: ''
-				,shop_status: ''
-				,list_cnt: 10
-				,search_type: ''
+				,page: this.$route.query.page ? this.$route.query.page : 1
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
+				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
+				,admin_status: this.$route.query.admin_status ? this.$route.query.admin_status :''
+				,shop_status: this.$route.query.shop_status ? this.$route.query.shop_status :''
 			}
 			,search_option:{
 
@@ -327,7 +329,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.clear_item()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
@@ -359,17 +361,12 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getData()
+				await this.getSearch()
 				this.$emit('offLoading')
 			}
 		}
-		,setItem: function (item){
-			if(this.item_new.uid == item.uid){
-				this.clear_item()
-			}else {
-				this.item_new = item
-				this.is_item = true
-			}
+		,toDetail: function (item){
+			this.$emit('push', { name: 'ManagerDetail', params: { type: 'distributor', idx: item.uid }})
 		}
 		,clear_item: function(){
 			this.item_new = {
@@ -394,7 +391,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.clear_item()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
@@ -412,7 +409,11 @@ export default {
 			this.is_excel = true
 		}
 		,toItem: function (){
-			this.is_item = !this.is_item
+			this.$emit('push', { name: 'ManagerItem', params: { type: 'distributor'}})
+		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search })
+			this.getData()
 		}
 	}
 	,created() {
@@ -423,7 +424,7 @@ export default {
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.getData()
+				this.getSearch()
 			}
 		}
 	}

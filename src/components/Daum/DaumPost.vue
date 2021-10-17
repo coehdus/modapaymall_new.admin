@@ -2,26 +2,31 @@
 
 	<div
 		v-if="overlay"
-		style="position: fixed; width: 100%; height: 100%; z-index: 9999; top: 0; left: 0; overflow: auto"
+		class="position-fixed full-width full-height overflow-y-auto"
+		style="z-index: 9999; top: 0; left: 0;"
 	>
 		<div
-			style="width: 100%; top: 0; left: 0; position: absolute; top: 0; background-color: black; color: white; height: 100%; opacity: 0.5"
+			class="position-absolute full-width full-height bg-black opacity-05"
+			style="top: 0; left: 0;"
 		>
 		</div>
 		<div
-			style="position: relative; z-index: 1; padding: 10px; height: 100%; overflow: auto"
+			class="position-relative full-height overflow-y-auto flex-column justify-center"
+			style="z-index: 1; margin: auto; "
+			:style="config.width ? 'width: ' + config.width: ''"
 		>
 			<div
-				style="background-color: #0f6ecd; color: white; padding: 10px; display: flex; justify-content: space-between"
+				class="bg-blue-light full-width justify-space-between pa-10"
 			>
-				<span style="color: white; font-size: 24px" >주소 찾기</span>
+				<span class=" white size-px-24">주소 찾기</span>
 				<button
 					@click="daumComplate"
-				><v-icon large style="color: white; ">mdi-close-box-outline</v-icon></button>
+				><v-icon large class="color-icon"
+				>mdi-close-box-outline</v-icon></button>
 			</div>
 			<VueDaumPostcode
 				@complete="daumComplate"
-				style="padding: 0;"
+				class="full-width overflow-y-auto"
 			>
 			</VueDaumPostcode>
 		</div>

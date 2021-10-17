@@ -6,8 +6,8 @@
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch"
+			@click="getSearch"
 			@toItem="toItem"
 		></Search>
 
@@ -215,10 +215,12 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,admin_level: ''
-				,admin_status: ''
-				,list_cnt: 10
-				,search_type: ''
+				,page: this.$route.query.page ? this.$route.query.page : 1
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type :''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value :''
+				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt :10
+				,admin_level: this.$route.query.admin_level ? this.$route.query.admin_level :''
+				,admin_status: this.$route.query.admin_status ? this.$route.query.admin_status :''
 			}
 			,search_option:{
 
@@ -300,6 +302,10 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search })
+			this.getData()
+		}
 		,save: async function(){
 			this.$emit('onLoading')
 			try{
@@ -310,7 +316,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.clear_item()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
@@ -354,7 +360,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.clear_item()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
@@ -386,7 +392,7 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getData()
+				await this.getSearch()
 				this.$emit('offLoading')
 			}
 		}
@@ -402,7 +408,7 @@ export default {
 	,watch: {
 		'search.page': {
 			handler: function(){
-				this.getData()
+				this.getSearch()
 			}
 		}
 	}

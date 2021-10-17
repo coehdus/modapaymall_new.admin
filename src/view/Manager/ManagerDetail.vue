@@ -1,0 +1,477 @@
+<template>
+	<div class="full-height">
+		<div
+			class="full-height"
+		>
+			<div
+				class="justify-space-between"
+			>
+				<div class="flex-1 bg-base pa-10 mr-10">
+					<h6 class="under-line-identify">계정정보</h6>
+					<table class="table th-left td-left">
+						<col width="120px">
+						<col width="auto">
+						<col width="120px">
+						<col width="auto">
+						<tbody>
+						<tr>
+							<th>영업단 구분 <span class="color-red">*</span></th>
+							<td colspan="3">
+
+								<select
+									v-model="item.admin_type"
+									class="pa-5-10 "
+								>
+									<template
+										v-for="(agency, index) in codes.A001.items"
+									>
+										<option
+											v-if="agency.code_value == $route.params.type"
+											:key="'agency_' + index"
+											:value="agency.total_code"
+										>{{ agency.code_name }}</option>
+									</template>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>아이디</th>
+							<td colspan="3">
+								{{ item.admin_id }}
+							</td>
+						</tr>
+						<tr>
+							<th>이름 <span class="color-red">*</span></th>
+							<td>
+								<input
+									type="text"
+									v-model="item.admin_name"
+									maxlength="20"
+									class="input-box"
+									placeholder="대표자 성명을 입력하세요"
+								/>
+							</td>
+							<th>휴대폰 번호</th>
+							<td>
+								<input
+									type="number"
+									v-model="item.admin_phone"
+									:ruels="[rules.max(item, 'admin_phone', 12)]"
+									class="input-box"
+									placeholder="대표자 휴대폰번호를 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+
+							<th>계정상태</th>
+							<td class="">
+								<template
+									v-for="(code, index) in codes.S003.items"
+								>
+									<span
+										v-if="code.code_value == item.admin_status"
+										:key="'admin_status_' + index"
+									>{{ code.code_name }}</span>
+								</template>
+							</td>
+							<th>비밀번호</th>
+							<td class="text-right">
+								<button
+									class="bg-blue-light pa-5-10"
+									@click="isPassword"
+								>비밀번호 초기화 <v-icon small class="vertical-bottom color-icon">mdi mdi-chevron-right</v-icon></button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+
+
+					<div class="mt-10">
+						<h6>정산 정보</h6>
+						<table class="table th-left td-left">
+
+							<col width="120px">
+							<col width="auto">
+							<col width="120px">
+							<col width="auto">
+							<tbody>
+							<tr>
+								<th>서비스 수수료 <span class="color-red">*</span></th>
+								<td>
+									<div class="justify-start">
+										<div class="flex-1 text-left">
+											카드 결제 수수료
+											<input
+												v-model="item.admin_per"
+												type="number"
+												:rules="[rules.max(item, 'fee_quick', 3)]"
+												class="box pa-5-10 width-fee "
+											/> %
+										</div>
+									</div>
+								</td>
+								<th>정산주기</th>
+								<td class="text-left">영업일 기준 / 월 정산</td>
+							</tr>
+							<tr>
+								<th>은행</th>
+								<td>
+									<select
+										v-model="item.bank_name"
+										class="input-box"
+									>
+										<option :value="''">은행을 선택하세요</option>
+										<option
+											v-for="code in codes.B001.items"
+											:key="code.total_code"
+											:value="code.code_name"
+										>{{ code.code_name}}</option>
+									</select>
+								</td>
+								<th>계좌번호</th>
+								<td>
+									<input
+										v-model="item.bank_account"
+										type="number"
+										class="input-box full-width"
+										:rules="[rules.max(item, 'bank_name', 25)]"
+										placeholder="정산 계좌 번호"
+									/>
+								</td>
+							</tr>
+							<tr>
+								<th>예금주</th>
+								<td>
+									<input
+										v-model="item.holder_name"
+										class="input-box full-width"
+										placeholder="정산 계좌 예금주"
+										maxlength="15"
+									/>
+								</td>
+								<th>이메일</th>
+								<td>
+									<input
+										v-model="item.bank_email"
+										type="email"
+										class="input-box full-width"
+										placeholder="세금계산서 발행 이메일"
+										maxlength="50"
+									/>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="flex-1 bg-base pa-10">
+					<h6 class="under-line-identify">상점 정보</h6>
+					<table class="table th-left td-left">
+						<col width="120px">
+						<col width="auto">
+						<tbody>
+						<tr>
+							<th>사업자 구분 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<label
+									class="cont-radio"
+									v-for="code in codes.B002.items"
+									:key="code.total_code"
+								>
+									<input
+										v-model="item.business_type"
+										type="radio"
+										:value="code.total_code"
+										class="box"
+									/>
+									{{ code.code_name }}
+								</label>
+							</td>
+						</tr>
+						<tr
+							v-if="item.business_type == 'B002002'"
+						>
+							<th>사업자등록번호 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="number"
+									v-model="item.front"
+									:ruels="[rules.max(item, 'front', 15)]"
+									class="input-box-inline"
+									placeholder="사업자 등록 번호"
+								/>
+							</td>
+						</tr>
+						<tr
+							v-if="item.business_type == 'B002001'"
+						>
+							<th>사업자등록번호 <span class="color-red">*</span></th>
+							<td>
+								<input
+									type="number"
+									v-model="item.front"
+									:ruels="[rules.max(item, 'front', 15)]"
+									class="input-box-inline"
+									placeholder="사업자 등록 번호"
+								/>
+							</td>
+							<th>법인등록번호 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="number"
+									v-model="item.back"
+									:ruels="[rules.max(item, 'back', 15)]"
+									class="input-box-inline"
+									placeholder="법인 등록 번호"
+								/>
+							</td>
+						</tr>
+						<tr
+							v-if="item.business_type == 'B002003'"
+						>
+							<th>주민등록 번호 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									v-model="item.front"
+									type="number"
+									:ruels="[rules.max(item, 'front', 6)]"
+									class="input-box-inline mr-10"
+									placeholder="주민등록 앞번호"
+								/>
+								<input
+									v-model="item.back"
+									type="password"
+									maxlength="7"
+									class="input-box-inline"
+									placeholder="주민등록 뒷번호"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>상점명 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="text"
+									v-model="item.shop_name"
+									maxlength="50"
+									class="input-box-inline"
+									placeholder="상점명을 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>사업장 주소 <span class="color-red">*</span></th>
+							<td colspan="3">
+
+								<input
+									v-model="item.shop_post"
+
+									class="input-box-inline mr-10"
+									type="text" placeholder="우편번호"
+									readonly
+
+									@click="daumPost('company')"
+								>
+
+								<button
+									class="box pa-5-10 bg-identify"
+									@click="daumPost('company')"
+								>주소 검색</button>
+
+								<input
+									v-model="item.shop_addr1"
+
+									class="input-box full-width mt-10" type="text" placeholder="주소"
+									readonly
+
+									@click="daumPost('company')"
+								>
+								<input
+									v-model="item.shop_addr2"
+
+									class="input-box full-width mt-10" type="text" placeholder="상세주소를 입력하세요."
+									maxlength="50"
+								>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div
+			class="justify-center"
+		>
+			<button
+				class="bg-green pa-10-20 mr-10"
+				@click="save"
+			>저장</button>
+			<button
+				class="bg-default pa-10-20"
+				@click="toList"
+			>목록</button>
+		</div>
+		<DaumPost
+			:overlay="is_post"
+			:config="daum_config"
+			@callBack="addPost"
+		></DaumPost>
+	</div>
+</template>
+
+<script>
+
+import DaumPost from "@/components/Daum/DaumPost";
+export default {
+	name: 'AgencyItem'
+	,
+	components: {DaumPost},
+	props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
+	,data: function(){
+		return {
+			program: {
+				name: this.codes.admin_type[this.$route.params.type].name + ' 등록'
+				, top: true
+				, title: true
+				, bottom: false
+			}
+			,item: {
+				bank_name: ''
+				,admin_type: this.codes.admin_type[this.$route.params.type].total_code
+				,business_type: 'B002001'
+				,admin_level: 0
+				,admin_per: this.codes.admin_type[this.$route.params.type].admin_per
+			}
+			,sample: {
+				agency_list: [
+					{ idx:1, code: 1, name: '총판1'}
+					, { idx:1, code: 2, name: '대리점1-1'}
+					, { idx:1, code: 3, name: '리셀러1-1-1'}
+					, { idx:1, code: 4, name: '대리점1-2'}
+					, { idx:1, code: 5, name: '총판2'}
+					, { idx:1, code: 6, name: '대리점2-1'}
+					, { idx:1, code: 7, name: '리셀러2-1-1'}
+				]
+			}
+			,is_modal: false
+			,modal_option: {
+				title: '비밀번호 초기화'
+				,content: '비밀번호를 초기화 하고 등록된 연락처로 전송하시겠습니까?'
+				,top: true
+				,bottom: true
+				,width: '360px'
+			}
+			,is_modal2: false
+			,modal_option2: {
+				title: '영업점 계정상태 변경'
+				,top: true
+				,bottom: true
+				,width: '360px'
+			}
+			,is_modal3: false
+			,modal_option3: {
+				title: '첨부파일 삭제'
+				,top: true
+				,bottom: true
+				,content: '해당 첨부파일을 삭제하시겠습니까?'
+				,width: '360px'
+			}
+			,is_post: false
+			,daum_config: {
+				width: '360px'
+			}
+		}
+	}
+	,computed: {
+
+	}
+	, methods: {
+		getData: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getAdmin'
+					,data: {
+						ATOKEN: this.TOKEN
+						,uid: this.$route.params.idx
+					}
+				})
+				if(result.success){
+					this.item = result.data
+					if(this.item.bank_info){
+						this.item.bank_name = this.item.bank_info.split(' ')[0]
+						this.item.bank_account = this.item.bank_info.split(' ')[1]
+						this.item.holder_name = this.item.bank_info.split(' ')[2]
+					}
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$router.back();
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		,save: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postAdmin'
+					,data: this.item
+				})
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.toList()
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		,isPassword: function(){
+			this.clear()
+			this.is_modal = true
+		}
+		,isStatus: function(){
+			this.clear()
+			this.is_modal2 = true
+		}
+		,clear: function(){
+			this.is_modal = false
+			this.is_modal2 = false
+			this.is_modal3 = false
+		}
+		,toList: function(){
+			this.$router.back()
+		}
+
+		,daumPost: function () {
+			this.is_post = true
+		}
+		, addPost: function (call) {
+
+			this.$set(this.item, 'shop_post', call.zonecode)
+			this.$set(this.item, 'shop_addr1', call.address)
+
+			this.is_post = false
+		}
+	}
+	, created() {
+		this.$emit('onLoad', this.program)
+		this.getData()
+	}
+}
+</script>
+
+<style>
+.width-fee { width: 60px !important; text-align: right;}
+</style>

@@ -413,7 +413,7 @@ export default {
 			this.is_excel = true
 		}
 		,toItem: function (){
-			this.is_item = !this.is_item
+			this.$emit('push', { name: 'ManagerItem', params: { type: 'supply'}})
 		}
 	}
 	,created() {

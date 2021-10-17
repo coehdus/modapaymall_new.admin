@@ -218,18 +218,35 @@
 .bg-ddd { background-color: #ddd !important}
 .bg-select { background-color: black}
 .bg-blue { background-color: #0D47A1; color: #eee}
+
+.bg-blue-light { background-color: #0f6ecd; color:  #eee}
 .bg-light-gray { background-color: darkgray;}
 .bg-light-green { background-color: #81C784;}
 .bg-light-blue { background-color: #eee;}
 .bg-light-red { background-color: #ee6e73;}
 .bg-black { background-color: black;}
 .bg-light-orange { background-color: lightsalmon;}
+.bg-base { background-color: #333 !important;}
+.bg-title {
+    padding: 10px;
+}
+
+.opacity-01 { opacity: 0.1}
+.opacity-02 { opacity: 0.2}
+.opacity-03 { opacity: 0.3}
+.opacity-04 { opacity: 0.4}
+.opacity-05 { opacity: 0.5}
+.opacity-06 { opacity: 0.6}
+.opacity-07 { opacity: 0.7}
+.opacity-08 { opacity: 0.8}
+.opacity-09 { opacity: 0.9}
+.opacity-10 { opacity: 1}
 
 
 /* input */
 .select-list-type { border: 1px solid #ddd; width: 100%; padding: 13px; color: black; height: auto;}
 
-input { font-size: 14px; letter-spacing: -0.5px; color: #bbb}
+input { font-size: 12px; letter-spacing: -0.5px; color: #bbb}
 input:disabled,
 input:read-only { background-color: #eee; color: #bbb;}
 
@@ -244,8 +261,8 @@ input:read-only { background-color: #eee; color: #bbb;}
 .box { border: 1px solid #bbb;}
 .radius-5 { border-radius: 5px}
 .radius-10 { border-radius: 10px}
-.input-box { width: 100%; padding: 10px; border: 1px solid #ddd;}
-.input-box-inline { display: inline-block; padding: 10px; border: 1px solid #ddd; vertical-align: middle}
+.input-box { width: 100%; padding: 5px 10px; border: 1px solid #ddd;}
+.input-box-inline { padding: 5px 10px; border: 1px solid #ddd;}
 
 .login-checkbox { width: 20px !important; vertical-align: middle; margin-right: 0px;}
 
@@ -354,8 +371,6 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 .border-tb { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
 .border-lr { border-left: 1px solid #ddd; border-right: 1px solid #ddd;}
 
-.bg-base { background-color: #333 !important;}
-
 .logo-position {
 
 }
@@ -368,8 +383,36 @@ button:disabled { cursor: no-drop; opacity: 0.3}
     border: 1px solid #ddd;
 }
 
-.bg-title {
-    padding: 10px;
-}
+
 
 .cursor-pointer { cursor: pointer;}
+
+
+
+/* table */
+.table { width: 100%; font-size: 12px}
+
+.table th
+,.table td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd
+}
+
+.table th { background-color: #black; }
+.th-left th { text-align: left }
+.td-left td { text-align: left }
+
+.table tr{
+    background-color: #333;
+}
+
+.table-even thead tr { background-color: #eee}
+.table-even tbody tr:nth-child(even){
+    background-color: #eee;
+}
+
+.table-odd thead tr { background-color: #fff}
+.table-odd tbody tr:nth-child(odd){
+    background-color: #eee;
+}

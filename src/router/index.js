@@ -73,6 +73,16 @@ const routes = [
 		,component: () => import('@/view/Manager/ManagerSupplyList.vue')
 	}
 	,{
+		path: prefix + 'Manager/Item/:type'
+		,name: 'ManagerItem'
+		,component: () => import('@/view/Manager/ManagerItem.vue')
+	}
+	,{
+		path: prefix + 'Manager/Detail/:type/:idx'
+		,name: 'ManagerDetail'
+		,component: () => import('@/view/Manager/ManagerDetail.vue')
+	}
+	,{
 		path: prefix + 'Product/List/:page?'
 		,name: 'ProductList'
 		,component: () => import('@/view/Product/ProductList.vue')
@@ -184,8 +194,8 @@ const routes = [
 	}
 	,{
 		path: prefix + 'Settlement/Delivery'
-		,name: 'SettlementDelivery'
-		,component: () => import('@/view/Settlement/SettlementDelivery')
+		,name: 'SettlementDeliveryList'
+		,component: () => import('@/view/Settlement/SettlementDeliveryList')
 	}
 	,{
 		path: prefix + 'Settlement/Minus'

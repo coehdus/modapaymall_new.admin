@@ -9,6 +9,37 @@ export const codes = {
 	,dev_url: 'http://localhost:8080/Auth/Join/'
 	,img_url: 'http://delimall.co.kr/API/data/product/'
 	,banner_url: 'http://delimall.co.kr/API/data/banner/'
+	,admin_type: {
+		admin: {
+			name: '관리자'
+			,code: 'admin'
+			,total_code: 'A001001'
+			,admin_per: 0
+		}
+		,distributor: {
+			name: '총판'
+			,code: 'distributor'
+			,total_code: 'A001002'
+			,admin_per: 3.3
+		}
+		,agency: {
+			name: '대리점'
+			,code: 'agency'
+			,total_code: 'A001003'
+			,admin_per: 5.5
+		}
+		,supply: {
+			name: '공급사'
+			,code: 'supply'
+			,total_code: 'A001004'
+			,admin_per: 0
+		}
+
+	}
+	,type_code_amdin: 'admin'
+	,type_code_agency: 'agency'
+	,type_code_supply: 'supply'
+	,type_code_distributor: 'distributor'
 	,pay_div: {
 		card: { code: 'card', name: '카드결제', color: 'blue'}
 		,bank: { code: 'bank', name: '무통장 입금', color: 'gray'}

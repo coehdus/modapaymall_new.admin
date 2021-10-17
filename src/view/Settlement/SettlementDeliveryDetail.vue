@@ -63,6 +63,7 @@
 		</table>
 
 		<textarea
+			v-if="user.admin_type_code == codes.type_code_amdin"
 			v-model="item.reason"
 			placeholder="보류시 사유를 입력해주세요"
 			class="mt-30"
@@ -73,7 +74,7 @@
 <script>
 export default{
 	name: 'SettlementDeliveryDetail'
-	,props: ['Axios', 'user', 'TOKEN', 'item', 'year', 'month']
+	,props: ['Axios', 'user', 'codes', 'TOKEN', 'item', 'year', 'month']
 	,data: function(){
 		return {
 			program: {

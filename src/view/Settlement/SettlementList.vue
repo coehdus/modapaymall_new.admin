@@ -117,7 +117,7 @@
 				</colgroup>
 				<thead>
 				<tr>
-					<th>정산일</th>
+					<th>정산월</th>
 					<th>구분</th>
 					<th>상점명</th>
 					<th>아이디</th>
@@ -164,13 +164,13 @@
 								@click="toDetail(item)"
 							>상세 정보</button>
 							<button
-								v-if="item.is_settlement == '0'"
+								v-if="item_detail.is_settlement == '0'"
 								v-show="false"
 								class="btn-success pa-5-10"
 								@click="doSettlementConfirm(item)"
 							>정산 확인 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
 							<button
-								v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+								v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
 								v-show="false"
 								class="btn-success pa-5-10"
 								@click="doDepositConfirm(item)"
@@ -212,6 +212,58 @@
 
 				class="full-width"
 			></SettlementDetail>
+
+			<div
+				v-if="user.admin_type_code == codes.type_code_amdin"
+				slot="modal-bottom"
+				class="bg-base pa-10 justify-center"
+			>
+				<button
+					v-if="item_detail.is_settlement != '1'"
+					class="bg-green pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlement', 'confirm')"
+				>정산 확인</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit != '1'"
+					class="bg-green pa-5-10 mr-10 color-eee"
+					@click="doUpdate('deposit', 'confirm')"
+				>지급 확인</button>
+
+				<button
+					v-if="item_detail.is_settlement == '0'"
+					class="bg-orange pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlement', 'hold')"
+				>정산 보류</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
+					class="bg-orange pa-5-10 mr-10 color-eee"
+					@click="doUpdate('deposit', 'hold')"
+				>지급 보류</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
+					class="bg-red pa-5-10 mr-10 color-eee"
+					@click="doUpdate('settlement', 'cancel')"
+				>정산 취소</button>
+
+				<button
+					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '1'"
+					class="bg-red pa-5-10 mr-10 color-eee"
+					@click="doUpdate('deposit', 'cancel')"
+				>지급 취소</button>
+			</div>
+			<div
+				v-else
+				class="mt-20 justify-center"
+				slot="modal-bottom"
+			>
+				<button
+					class="pa-10 bg-green"
+					@click="close"
+				>확인</button>
+			</div>
 		</Modal>
 	</div>
 </template>
@@ -258,6 +310,7 @@ export default {
 			,modal_option: {
 				title: '정산 상세 내역'
 				,top: true
+				,bottom: true
 			}
 		}
 	}
@@ -392,6 +445,30 @@ export default {
 					,is_deposit: this.search.is_deposit
 				}})
 			this.getData()
+		}
+		,doUpdate: async function(type, status) {
+			let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
+
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: url
+					,data: {
+						ATOKEN: this.TOKEN
+						,s_uid: this.item_detail.uid
+						,reason: this.reason
+					}
+				})
+
+				if(result.success){
+					this.close()
+					this.getData()
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
 		}
 	}
 	,created() {
