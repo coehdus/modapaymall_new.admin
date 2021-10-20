@@ -17,7 +17,7 @@
 				[{{ user.admin_type_name }}] 상점 설정
 			</span>
 			<span
-				v-show="user.admin_type == 'agency'"
+				v-show="user.admin_type_code == 'agency'"
 				@click="copy"
 				class="mr-10 bg-black pa-5-10 radius-10"
 			>
