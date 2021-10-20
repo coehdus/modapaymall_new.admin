@@ -5,10 +5,10 @@ export const codes = {
 		title: 'delimall'
 		,copyright: 'delimall'
 	}
-	,live_url: 'http://delimall.co.kr/Auth/Join/'
-	,dev_url: 'http://localhost:8080/Auth/Join/'
-	,img_url: 'http://delimall.co.kr/API/data/product/'
-	,banner_url: 'http://delimall.co.kr/API/data/banner/'
+	,live_url: 'https://delimall.co.kr/Auth/Join/'
+	,dev_url: 'https://localhost:8080/Auth/Join/'
+	,img_url: 'https://delimall.co.kr/API/data/product/'
+	,banner_url: 'https://delimall.co.kr/API/data/banner/'
 	,admin_type: {
 		admin: {
 			name: '관리자'

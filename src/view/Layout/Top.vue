@@ -3,9 +3,9 @@
 		class="top bg-base"
 	>
 		<div
-			class="logo bg-base pa-10 color-white text-center"
+			class="logo bg-base pa-10 color-white text-center size-px-20 font-weight-bold"
 			@click="$emit('push', {name: 'Index'})"
-		>Logo Position</div>
+		>딜리몰 관리자</div>
 		<div class=" pa-10 ">
 			<span
 				class="mr-10 cursor-pointer"
@@ -18,7 +18,7 @@
 			</span>
 			<span
 				v-show="user.admin_type_code == 'agency'"
-				@click="copy"
+				@click="isCopy"
 				class="mr-10 bg-black pa-5-10 radius-10"
 			>
 				대리점 코드 발급
@@ -181,6 +181,29 @@
 				>닫기</button>
 			</div>
 		</Modal>
+		<Modal
+			:is_modal="is_modal2"
+			:option="modal_option2"
+
+			@close="close"
+		>
+			<div slot="modal-content" class="bg-white">
+				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.admin_id))"></qr-code>
+			</div>
+			<div
+				slot="modal-bottom"
+				class="justify-space-between"
+			>
+				<button
+					class="flex-1 bg-blue pa-10"
+					@click="copy"
+				>URL 복사</button>
+				<button
+					class="flex-1 bg-default pa-10"
+					@click="close"
+				>닫기</button>
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -190,19 +213,32 @@
 
 	import { Editor } from '@toast-ui/vue-editor';
 	import Modal from "@/components/Modal";
+
+	import Vue from 'vue'
+	import VueQRCodeComponent from 'vue-qrcode-component'
+	Vue.component('qr-code', VueQRCodeComponent)
+
 	export default{
 		name: 'Top'
 		, components: { Modal, editor: Editor }
 		, props: ['user', 'codes', 'Base64', 'rules', 'TOKEN', 'Axios']
 		,data: function(){
 			return {
-				modal_option: {
-					top: true
-					,title: '상점 설정'
-					,bottom: true
-				}
+
+				item: {}
 				, is_modal: false
-				,item: {
+				, modal_option: {
+					top: true
+					, title: '상점 설정'
+					, bottom: true
+				}
+				, is_modal2: false
+				, modal_option2: {
+					top: true
+					, title: '대리점 QR 코드'
+					, bottom: true
+					, width: '360px'
+					, bg: 'bg-white'
 				}
 			}
 		}
@@ -249,7 +285,8 @@
 			}
 
 			,copy: function (){
-				this.clipBoard(this.codes.dev_url + encodeURI(this.Base64.encode(this.user.admin_id)));
+
+				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.admin_id)));
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,setModalShop: function(){
@@ -305,6 +342,13 @@
 				}catch (e) {
 					console.log(e)
 				}
+			}
+			,close: function(){
+				this.is_modal = false
+				this.is_modal2 = false
+			}
+			,isCopy: function(){
+				this.is_modal2 = true
 			}
 		}
 		,created() {

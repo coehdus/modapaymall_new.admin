@@ -10,7 +10,7 @@
 			>
 				<span
 					class="size-em-15 font-weight-bold vertical-middle"
-				>Logo Position</span>
+				><img src="@/assets/images/delimall/logo.png" style="width: 40%"></span>
 			</div>
 			<div class="pa-10">
 				<input

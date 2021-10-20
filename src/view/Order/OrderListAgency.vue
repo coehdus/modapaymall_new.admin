@@ -2,6 +2,25 @@
 	<div
 		class="full-height flex-column "
 	>
+		<div>
+			<ul
+				class=" justify-space-between"
+			>
+				<li
+					class="flex-1 pa-10 box text-center "
+					:class="{'bg-bbb color-333': search.order_status == ''}"
+					@click="search.order_status = ''; getSearch()"
+				>주문 전체</li>
+				<li
+					v-for="order_status in codes.O002.items"
+					:key="'order_status' + order_status.total_code"
+
+					class="flex-1 pa-10 box text-center "
+					:class="{'bg-bbb color-333': order_status.code_value == search.order_status}"
+					@click="search.order_status = order_status.code_value; getSearch()"
+				>{{ order_status.code_name }}</li>
+			</ul>
+		</div>
 		<Search
 			:search="search"
 			:option="search_option"
@@ -10,12 +29,14 @@
 			@click="getSearch"
 			@toExcel="toExcel"
 			@toItem="toItem"
+
+			class="mt-10"
 		>
 			<select
 				slot="add"
 				v-model="search.o_status"
 				class="pa-5-10 mr-10"
-				@change="toSearch"
+				@change="getSearch"
 			>
 				<option value="">{{ codes.O001.code_name }}</option>
 				<option
@@ -28,7 +49,7 @@
 				slot="add"
 				v-model="search.order_status"
 				class="pa-5-10 mr-10"
-				@change="toSearch"
+				@change="getSearch"
 			>
 				<option value="">{{ codes.O002.code_name }}</option>
 				<option
@@ -610,16 +631,6 @@ export default {
 				,color: ''
 				,is_reason: false
 			}
-		}
-		,toSearch: function(){
-			this.$router.push({ name: this.$route.name, params: this.$route.params, query: {
-					o_status: this.search.o_status
-					,order_status: this.search.order_status
-					,list_cnt: this.search.list_cnt
-					,search_type: this.search_type
-					,search_value: this.search_value
-				}
-			})
 		}
 		,isReturn: async  function(odt){
 			this.is_modal = true

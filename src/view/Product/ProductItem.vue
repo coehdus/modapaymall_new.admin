@@ -8,28 +8,32 @@
 		>
 			<div class="flex-1 mr-10">
 				<div class="pa-10">
-					<div class="">
+					<div class="position-relative">
 						<select
 							v-model="item.pdt_company"
-							class="input-box"
+							class="input-box "
 							:disabled="is_supply"
 						>
 							<option
 								:value="''"
 							>공급사</option>
-							<option
+							<template
 								v-for="supply in supply_list"
+							>
+							<option
+								v-if="user.admin_type_code == 'admin' || user.admin_type_code == 'distributor' || user.admin_id == supply.admin_id"
 								:key="supply.admin_id"
 								:value="supply.admin_id"
 							>{{ supply.shop_name }}</option>
+							</template>
 						</select>
 						<v-icon
 							class="position-absolute color-icon"
-							style="right: 10px; top: 10px;"
+							style="right: 10px; top: 5px;"
 						>mdi mdi-menu-down</v-icon>
 					</div>
 
-					<div class="mt-10 ">
+					<div class="mt-10 position-relative">
 						<select
 							v-model="item.pdt_category"
 							class="input-box"
@@ -45,7 +49,7 @@
 						</select>
 						<v-icon
 							class="position-absolute color-icon"
-							style="right: 10px; top: 10px;"
+							style="right: 10px; top: 5px;"
 						>mdi mdi-menu-down</v-icon>
 					</div>
 
@@ -261,7 +265,7 @@ export default {
 			}
 			,item: {
 				ATOKEN: this.TOKEN
-				,pdt_company: ''
+				,pdt_company: this.user.admin_type_code == 'supply' ? this.user.admin_id : ''
 				,pdt_category: ''
 			}
 			,sub_img: [

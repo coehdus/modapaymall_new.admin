@@ -35,6 +35,7 @@
 
 					<div
 						class="modal-contents"
+						:class="option.bg"
 					><slot name="modal-content">{{ option.content }}</slot></div>
 				</div>
 

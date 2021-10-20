@@ -110,7 +110,9 @@
 								<tr>
 									<th>서비스 수수료 <span class="color-red">*</span></th>
 									<td>
-										<div class="justify-start">
+										<div
+											v-if="$route.params.type != 'supply'"
+											class="justify-start">
 											<div class="flex-1 text-left">
 												카드 결제 수수료
 												<input
@@ -120,6 +122,12 @@
 													class="box pa-5-10 width-fee "
 												/> %
 											</div>
+										</div>
+										<div
+											v-else
+											class="text-center"
+										>
+											-
 										</div>
 									</td>
 									<th>정산주기</th>

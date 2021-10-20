@@ -64,23 +64,6 @@
 				</select>
 
 				<select
-					v-model="search.admin_type"
-					class="pa-5 box mr-10"
-					@change="getSearch"
-				>
-					<option value="">구분</option>
-					<template
-						v-for="code in codes.A001.items"
-					>
-						<option
-							v-if="code.sub_code > 1"
-							:key="'admin_type_' + code.total_code"
-							:value="code.total_code"
-						>{{ code.code_name }}</option>
-					</template>
-				</select>
-
-				<select
 					v-model="search.search_type"
 					class="pa-5 box mr-10"
 				>
@@ -119,7 +102,7 @@
 					<th>판매 배송비</th>
 					<th>결제 수수료</th>
 					<th>대리점 지급 금액</th>
-					<th>공급 배송비</th>
+					<th>공급사 배송비</th>
 					<th>정산 금액</th>
 					<th>정산여부</th>
 					<th>지급여부</th>

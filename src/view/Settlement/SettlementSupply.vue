@@ -8,7 +8,7 @@
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option
 						v-for="year in year_list"
@@ -20,7 +20,7 @@
 				<select
 					v-model="search.month"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option
 						v-for="month in 12"
@@ -32,7 +32,7 @@
 				<select
 					v-model="search.is_settlement"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option value="">정산여부</option>
 					<template
@@ -49,7 +49,7 @@
 				<select
 					v-model="search.is_deposit"
 					class="pa-5 box mr-10"
-					@change="getData"
+					@change="getSearch"
 				>
 					<option value="">지급여부</option>
 					<template
@@ -65,7 +65,7 @@
 
 				<button
 					class="pa-5-10 btn-blue mr-10 vertical-middle"
-					@click="getData"
+					@click="getSearch"
 				>검색</button>
 			</div>
 
@@ -177,13 +177,13 @@ export default {
 			}
 			,search: {
 				ATOKEN: this.TOKEN
-				,year: new Date().getFullYear()
-				,month:  new Date().getMonth() + 1
-				,admin_type: ''
-				,is_settlement: ''
-				,is_deposit: ''
-				,search_type: ''
-				,search_value: ''
+				,year: this.$route.query.year ? this.$route.query.year: new Date().getFullYear()
+				,month:  this.$route.query.month ? this.$route.query.month: new Date().getMonth() + 1
+				,admin_type: this.$route.query.admin_type ? this.$route.query.admin_type: ''
+				,is_settlement: this.$route.query.is_settlement ? this.$route.query.is_settlement: ''
+				,is_deposit: this.$route.query.is_deposit ? this.$route.query.is_deposit: ''
+				,search_type: this.$route.query.search_type ? this.$route.query.search_type: ''
+				,search_value: this.$route.query.search_value ? this.$route.query.search_value:  ''
 			}
 			,is_modal: false
 			,modal_option: {
@@ -279,7 +279,7 @@ export default {
 				})
 
 				if(result.success){
-					await this.getData()
+					await this.getSearch()
 					this.$emit('setNotify', { type: 'success', message: result.message})
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
@@ -303,6 +303,10 @@ export default {
 		}
 		,setNotify: function({ type, message }){
 			this.$emit('setNotify', { type: type, message: message })
+		}
+		,getSearch: function(){
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
+			this.getData()
 		}
 	}
 	,created() {

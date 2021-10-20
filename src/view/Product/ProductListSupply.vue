@@ -231,7 +231,7 @@ export default {
 			}
 			,search_option:{
 				is_excel: true
-				,is_item: false
+				,is_item: true
 				,is_cnt: true
 				,cnt: 0
 				,tCnt: 0
@@ -389,7 +389,8 @@ export default {
 			this.is_excel = true
 		}
 		,toItem: function (){
-			this.is_item = !this.is_item
+			this.$router.push({ name: 'ProductItem'})
+			//this.is_item_view = !this.is_item_view
 		}
 	}
 	,created() {

@@ -74,6 +74,7 @@
 						<th>공급가</th>
 						<th>마진가</th>
 						<th>판매가</th>
+						<th>수수료</th>
 						<th>배송비</th>
 						<th>재고</th>
 						<th>판매여부</th>
@@ -142,6 +143,9 @@
 								:rules="[rules.max(item, 'agency_sale_price', 10)]"
 								readonly
 							/> 원
+						</td>
+						<td>
+							{{ item.agency_sale_price * 0.055 | makeComma }}
 						</td>
 						<td>{{ item.shop_delivery_price | makeComma }}</td>
 						<td>{{ item.is_sold_name }}</td>
