@@ -70,33 +70,21 @@
 								path: 'AdminList'
 								,name: '관리자 목록'
 								,type: ['admin']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'DistributorList'
 								,name: '총판 목록'
 								,type: ['admin']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'AgencyList'
 								,name: '대리점 목록'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'SupplyList'
 								,name: '공급사 목록'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -109,9 +97,6 @@
 								path: 'List'
 								,name: '회원목록'
 								,type: ['admin', 'distributor', 'agency']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -129,9 +114,6 @@
 								path: 'List'
 								,name: '상품 목록'
 								,type: ['admin', 'distributor', 'agency', 'supply']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -144,9 +126,6 @@
 								path: 'List'
 								,name: '배너 목록'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -159,17 +138,11 @@
 								path: 'List'
 								,name: '주문 목록'
 								,type: ['admin', 'distributor', 'agency']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'ListSupply'
 								,name: '주문 목록'
 								,type: ['supply']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -182,25 +155,16 @@
 								path: 'NoticeList'
 								,name: '공지사항'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'QnAList'
 								,name: '1:1문의'
 								,type: ['admin', 'distributor', 'agency', 'supply']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'ReviewList'
 								,name: '상품 리뷰'
 								,type: ['admin', 'distributor', 'agency', 'supply']
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -213,65 +177,41 @@
 								path: 'Management'
 								,name: '정산 실행'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'List'
 								,name: '정산 내역'
 								,type: ['admin', 'distributor']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'Agency'
 								,name: '대리점 정산'
 								,type: []
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'Agency'
 								,name: '정산내역'
 								,type: ['agency']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'Supply'
 								,name: '공급사 정산'
 								,type: []
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'Supply'
 								,name: '정산내역'
 								,type: ['supply']
-								,params: {
-									page: 1
-								}
 							}
 							,{
-								path: 'Delivery'
+								path: 'DeliveryList'
 								,name: '배송비 내역'
 								,type: ['admin', 'distributor', 'agency', 'supply']
-								,params: {
-									page: 1
-								}
 							}
 							,{
 								path: 'Minus'
 								,name: '정산 차감'
 								,type: []
-								,params: {
-									page: 1
-								}
 							}
 						]
 					}
@@ -296,6 +236,7 @@
 		}
 		,methods: {
 			toPush: function(menu, sub){
+				console.log('toPush : ' +menu.path + sub.path)
 				this.$router.push({ name: menu.path + sub.path })
 			}
 		}

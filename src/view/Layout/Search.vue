@@ -84,6 +84,7 @@
 				v-model="search.search_value"
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색어를 입력하세요"
+				@keyup.enter="$emit('click')"
 			/>
 
 			<button

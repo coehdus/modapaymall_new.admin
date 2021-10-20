@@ -433,7 +433,6 @@ export default {
 						let order_status = self.codes.odt_status[odt.order_status]
 
 						if(order_status){
-							odt.order_status_name = order_status.name
 							odt.order_status_color = order_status.color
 						}
 						odt.step_group = odt.order_status.slice(-2, -1)

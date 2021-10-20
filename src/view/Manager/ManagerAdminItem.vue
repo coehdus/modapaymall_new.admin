@@ -55,6 +55,7 @@
 					placeholder="비밀번호"
 					class="input-box"
 					maxlength="25"
+					@keyup.enter="$emit('click')"
 				/>
 				<input
 					v-model="item_new.admin_password_confirm"
@@ -62,6 +63,7 @@
 					placeholder="비밀번호 확인"
 					class="input-box mt-10"
 					maxlength="25"
+					@keyup.enter="$emit('click')"
 				/>
 			</div>
 			<div class="mt-10">
@@ -71,6 +73,7 @@
 					placeholder="연락처"
 					class="input-box"
 					:rules="[rules.max(item_new, 'admin_phone', 15)]"
+					@keyup.enter="$emit('click')"
 				/>
 			</div>
 			<div class="mt-10">
@@ -79,6 +82,7 @@
 					placeholder="이메일"
 					class="input-box"
 					maxlength="25"
+					@keyup.enter="$emit('click')"
 				/>
 			</div>
 			<div class="mt-10">

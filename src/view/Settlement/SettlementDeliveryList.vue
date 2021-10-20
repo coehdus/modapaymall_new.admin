@@ -299,8 +299,8 @@ export default {
 					}
 				}
 
-				item.agency_total = Number(item.agency_amount) + Number(item.island_amount)
-				item.supply_total = Number(item.supply_amount) + Number(item.island_amount)
+				item.agency_total = Number(item.agency_amount)
+				item.supply_total = Number(item.supply_amount)
 
 				return item
 			})

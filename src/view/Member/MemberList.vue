@@ -316,6 +316,7 @@
 			}
 			,save: async function(){
 				try{
+					this.$emit('onLoading')
 					const result = await this.Axios({
 						method: 'post'
 						,url: 'management/postMember'
@@ -332,6 +333,8 @@
 				}catch (e) {
 					console.log(e)
 					this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				}finally {
+					this.$emit('offLoading')
 				}
 			}
 			,setItem: function (item){

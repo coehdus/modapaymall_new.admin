@@ -19,6 +19,7 @@
 					:class="{  input: isIdInput, 'error-underline': error.type == 'id' }"
 					type="text" placeholder="아이디를 입력하세요."
 					maxlength="15"
+					@keyup.enter="login"
 				/>
 			</div>
 			<div class="pa-10 toggle-password">
@@ -29,6 +30,7 @@
 					:type="toggleType"
 					placeholder="비밀번호를 입력하세요."
 					maxlength="50"
+					@keyup.enter="login"
 				/>
 				<v-icon
 					v-if="toggleType == 'text'"

@@ -99,8 +99,7 @@
 							<td
 								class="text-left"
 							>
-								[{{ item.category_name}}] <br/>
-								[{{ item.shop_name}}] <br/>
+								[{{ item.shop_name}}] [{{ item.category_name}}] <br/>
 								{{ item.pdt_name }}
 							</td>
 							<td>{{ item.pdt_purchase | makeComma }}</td>

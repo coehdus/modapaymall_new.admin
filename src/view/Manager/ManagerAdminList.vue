@@ -217,7 +217,6 @@ export default {
 				ATOKEN: this.TOKEN
 				,page: this.$route.query.page ? this.$route.query.page : 1
 				,search_type: this.$route.query.search_type ? this.$route.query.search_type :''
-				,search_value: this.$route.query.search_value ? this.$route.query.search_value :''
 				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt :10
 				,admin_level: this.$route.query.admin_level ? this.$route.query.admin_level :''
 				,admin_status: this.$route.query.admin_status ? this.$route.query.admin_status :''

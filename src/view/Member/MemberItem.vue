@@ -17,13 +17,13 @@
 			</select>
 			<v-icon
 				class="position-absolute color-icon"
-				style="right: 10px; top: 10px;"
+				style="right: 10px; top: 5px;"
 			>mdi mdi-menu-down</v-icon>
 		</div>
 		<div class="mt-10">
 			<div
 				v-if="item_new.uid"
-				class="input-box bg-gray-light"
+				class="input-box bg-222"
 			>{{ item_new.member_id }}</div>
 			<input
 				v-else
@@ -102,6 +102,7 @@
 				placeholder="비밀번호"
 				class="input-box"
 				maxlength="25"
+				@keyup.enter="$emit('click')"
 			/>
 			<input
 				v-model="item_new.member_password_confirm"
@@ -109,6 +110,7 @@
 				placeholder="비밀번호 확인"
 				class="input-box mt-10"
 				maxlength="25"
+				@keyup.enter="$emit('click')"
 			/>
 		</div>
 		<div class="mt-10">
