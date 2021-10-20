@@ -27,6 +27,17 @@
 					>{{ month }}월</option>
 				</select>
 
+				<select
+					v-model="item_do.day"
+					class="pa-5 box mr-10"
+				>
+					<option
+						v-for="day in 31"
+						:key="'day_' + day"
+						:value="day"
+					>{{ day }}일</option>
+				</select>
+
 				<button
 					class="pa-5-10 btn-success"
 					@click="save"
@@ -36,10 +47,10 @@
 				<thead>
 					<tr>
 						<th>정산일</th>
-						<th>정산여부</th>
-						<th>지급여부</th>
 						<th>정산 실행일시</th>
 						<th>정산 변경일시</th>
+						<th>정산여부</th>
+						<th>지급여부</th>
 						<th>관리</th>
 					</tr>
 				</thead>
@@ -51,11 +62,11 @@
 						v-for="item in item_list"
 						:key="'settlement_' + item.uid"
 					>
-						<td>{{ item.year }}.{{ item.month }}</td>
-						<td>{{ item.date }}</td>
-						<td>{{ item.date }}</td>
+						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
 						<td>{{ item.wDate }}</td>
 						<td>{{ item.mDate }}</td>
+						<td>{{ item.date }}</td>
+						<td>{{ item.date }}</td>
 						<td></td>
 					</tr>
 					</template>
@@ -88,6 +99,7 @@ export default {
 				ATOKEN: this.TOKEN
 				,year: new Date().getFullYear()
 				,month:  new Date().getMonth() + 1
+				,day: new Date().getDate()
 			}
 		}
 	}

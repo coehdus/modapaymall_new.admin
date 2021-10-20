@@ -30,6 +30,18 @@
 				</select>
 
 				<select
+					v-model="search.day"
+					class="pa-5 box mr-10"
+					@change="getSearch"
+				>
+					<option
+						v-for="day in 31"
+						:key="'day_' + day"
+						:value="day"
+					>{{ day }}월</option>
+				</select>
+
+				<select
 					v-model="search.is_settlement"
 					class="pa-5 box mr-10"
 					@change="getSearch"
@@ -117,7 +129,7 @@
 				</colgroup>
 				<thead>
 				<tr>
-					<th>정산월</th>
+					<th>정산일</th>
 					<th>구분</th>
 					<th>상점명</th>
 					<th>아이디</th>
@@ -143,7 +155,7 @@
 						v-for="item in item_list"
 						:key="'settlement_' + item.uid"
 					>
-						<td>{{ item.year }}.{{ item.month }}</td>
+						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
 						<td>{{ item.admin_type_name }}</td>
 						<td>{{ item.shop_name}}</td>
 						<td>{{ item.admin_id }}</td>
@@ -295,6 +307,7 @@ export default {
 				ATOKEN: this.TOKEN
 				,year: this.$route.query.year ? this.$route.query.year : new Date().getFullYear()
 				,month:  this.$route.query.month ? this.$route.query.month : new Date().getMonth() + 1
+				,day: this.$route.query.day ? this.$route.query.day : new Date().getDate()
 				,admin_type: this.$route.query.admin_type ? this.$route.query.admin_type : ''
 				,is_settlement: this.$route.query.is_settlement ? this.$route.query.is_settlement : ''
 				,is_deposit: this.$route.query.is_deposit ? this.$route.query.is_deposit : ''
@@ -434,16 +447,7 @@ export default {
 			this.$emit('setNotify', { type: type, message: message })
 		}
 		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: {
-					page: this.search.page
-					,search_type: this.search.search_type
-					,search_value: this.search.search_value
-					,list_cnt: this.search.list_cnt
-					,year: this.search.year
-					,month: this.search.month
-					,is_settlement: this.search.is_settlement
-					,is_deposit: this.search.is_deposit
-				}})
+			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
 			this.getData()
 		}
 		,doUpdate: async function(type, status) {
