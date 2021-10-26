@@ -38,7 +38,7 @@
 						v-for="day in 31"
 						:key="'day_' + day"
 						:value="day"
-					>{{ day }}월</option>
+					>{{ day }}일</option>
 				</select>
 
 				<select

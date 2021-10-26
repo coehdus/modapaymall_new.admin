@@ -117,7 +117,7 @@
 						v-for="item in item_list"
 						:key="'settlement_' + item.uid"
 					>
-						<td>{{ item.year }}.{{ item.month }}</td>
+						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.agency_name}}</td>
 						<td>{{ item.supply_name }}</td>
