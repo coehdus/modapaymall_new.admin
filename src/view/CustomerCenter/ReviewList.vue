@@ -12,85 +12,78 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height flex-column overflow-y-auto"
+			class="mt-10 pa-10 bg-white full-height flex-column overflow-y-auto"
 		>
-			<table
+			<div
 				v-if="items.length > 0"
 			>
-				<colgroup>
-					<col width="60px" />
-					<col width="180px" />
-					<col width="auto" />
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
-				</colgroup>
-				<thead>
-				<tr>
-					<th colspan="2">상품명</th>
-					<th>리뷰</th>
-					<th>평점</th>
-					<th>작성자</th>
-					<th>등록일시</th>
-				</tr>
-				</thead>
-				<tbody>
-				<template
-					v-for="(item) in items"
-				>
-					<tr
-						:key="'bbs_' + item.uid"
-					>
-						<td>
-							<div class="pdt-img">
-							<img
-								v-if="item.pdt_img1"
-								:src="codes.img_url + item.pdt_img1"
-							/>
-							<v-icon
-								v-else
-							>mdi mid-image</v-icon>
-							</div>
-						</td>
-						<td class="text-left">{{ item.pdt_name }}</td>
-						<td class="text-left">{{ item.b_contents }}</td>
-						<td>{{ item.b_point }}</td>
-						<td>{{ item.m_name }}</td>
-						<td>{{ item.wDate }}</td>
+				<table class="table" >
+					<colgroup>
+						<col width="120px" />
+						<col width="180px" />
+						<col width="auto" />
+						<col width="180px" />
+						<col width="180px" />
+						<col width="180px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th colspan="2">상품명</th>
+						<th>리뷰</th>
+						<th>평점</th>
+						<th>작성자</th>
+						<th>등록일시</th>
 					</tr>
-					<tr
-						v-if="is_view == item.uid"
-						:key="'bbs_contents_' + item.uid"
+					</thead>
+					<tbody>
+					<template
+						v-for="(item) in items"
 					>
-						<td colspan="5" class="text-left bg-bbb ">
-							<Viewer
-								v-if="item.b_contents"
-								:initialValue="item.b_contents"
-							/>
-						</td>
-					</tr>
-				</template>
-				</tbody>
-			</table>
-			<div
-				v-else
-				class="full-height flex-column justify-center"
-			>
-				<div class="text-center">
-					<v-icon
-						class="size-px-48 color-icon"
-					>mdi mdi-cloud-off-outline</v-icon>
-					<br/>
-					<br/>
-					<div class="font-weight-bold size-px-24">No Data</div>
-				</div>
+						<tr
+							:key="'bbs_' + item.uid"
+						>
+							<td>
+								<div class="pdt-img">
+								<img
+									v-if="item.pdt_img1"
+									:src="codes.img_url + item.pdt_img1"
+								/>
+								<v-icon
+									v-else
+								>mdi mid-image</v-icon>
+								</div>
+							</td>
+							<td class="text-left">{{ item.pdt_name }}</td>
+							<td class="text-left">{{ item.b_contents }}</td>
+							<td>{{ item.b_point }}</td>
+							<td>{{ item.m_name }}</td>
+							<td>{{ item.wDate }}</td>
+						</tr>
+						<tr
+							v-if="is_view == item.uid"
+							:key="'bbs_contents_' + item.uid"
+						>
+							<td colspan="5" class="text-left bg-bbb ">
+								<Viewer
+									v-if="item.b_contents"
+									:initialValue="item.b_contents"
+								/>
+							</td>
+						</tr>
+					</template>
+					</tbody>
+				</table>
+
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="search"
+				></Pagination>
 			</div>
 
-			<Pagination
-				:program="program"
-				:align="'center'"
-				:options="search"
-			></Pagination>
+			<Empty
+				v-else
+			></Empty>
 		</div>
 
 		<Modal
@@ -123,11 +116,12 @@ import Pagination from "@/components/Pagination";
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import { Viewer } from "@toast-ui/vue-editor";
 import Modal from "@/components/Modal";
+import Empty from "@/view/Layout/Empty";
 
 export default {
 	name: 'CustomerCenterReviewList'
 	,
-	components: {Modal, Pagination, Search,Viewer},
+	components: {Empty, Modal, Pagination, Search,Viewer},
 	props: ['Axios', 'TOKEN', 'codes', 'rules']
 	,data: function(){
 		return {

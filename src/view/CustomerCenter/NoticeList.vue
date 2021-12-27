@@ -12,99 +12,94 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height flex-column overflow-y-auto"
+			class="mt-10 pa-10 bg-white full-height flex-column overflow-y-auto"
 		>
-			<table
+			<div
 				v-if="items.length > 0"
 			>
-				<colgroup>
-					<col width="80px" />
-					<col width="auto" />
-					<col width="180px" />
-					<col width="180px" />
-					<col width="180px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th><input type="checkbox" /></th>
-						<th>제목</th>
-						<th>내용</th>
-						<th>등록일시</th>
-						<th>관리</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template
-						v-for="(item) in items"
-					>
-						<tr
-							:key="'bbs_' + item.uid"
+				<table class="table">
+					<colgroup>
+						<col width="80px" />
+						<col width="auto" />
+						<col width="180px" />
+						<col width="180px" />
+						<col width="180px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><input type="checkbox" /></th>
+							<th>제목</th>
+							<th>내용</th>
+							<th>등록일시</th>
+							<th>관리</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template
+							v-for="(item) in items"
 						>
-							<td><input type="checkbox" /></td>
-							<td class="text-left">{{ item.b_title }}</td>
-							<td>
-								<button
-									class="box pa-5-10"
-									@click="is_view == item.uid ? is_view = null : is_view = item.uid"
-								>내용보기
-									<v-icon
-										v-if="is_view == item.uid "
-										small
-										class=" color-icon cursor-pointer"
-									>mdi mdi-menu-up</v-icon>
-									<v-icon
-										v-else
-										small
-										class=" color-icon cursor-pointer"
-									>mdi mdi-menu-down</v-icon>
-								</button>
-							</td>
-							<td>{{ item.wDate }}</td>
-							<td>
-								<button
-									class="btn-success pa-5-10 ml-10"
+							<tr
+								:key="'bbs_' + item.uid"
+							>
+								<td><input type="checkbox" /></td>
+								<td class="text-left">{{ item.b_title }}</td>
+								<td>
+									<button
+										class="box pa-5-10"
+										@click="is_view == item.uid ? is_view = null : is_view = item.uid"
+									>내용보기
+										<v-icon
+											v-if="is_view == item.uid "
+											small
+											class=" color-icon cursor-pointer"
+										>mdi mdi-menu-up</v-icon>
+										<v-icon
+											v-else
+											small
+											class=" color-icon cursor-pointer"
+										>mdi mdi-menu-down</v-icon>
+									</button>
+								</td>
+								<td>{{ item.wDate }}</td>
+								<td>
+									<button
+										class="btn-success pa-5-10 ml-10"
 
-									@click="toDetail(item)"
-								>수정</button>
-								<button
-									class="btn-danger pa-5-10 ml-10"
-									@click="isDelete(item)"
-								>삭제</button>
-							</td>
-						</tr>
-						<tr
-							v-if="is_view == item.uid"
-							:key="'bbs_contents_' + item.uid"
-						>
-							<td colspan="5" class="text-left bg-bbb ">
-								<Viewer
-									v-if="item.b_contents"
-									:initialValue="item.b_contents"
-								/>
-							</td>
-						</tr>
-					</template>
-				</tbody>
-			</table>
-			<div
-				v-else
-				class="full-height flex-column justify-center"
-			>
-				<div class="text-center">
-					<v-icon
-						class="size-px-48 color-icon"
-					>mdi mdi-cloud-off-outline</v-icon>
-					<br/>
-					<br/>
-					<div class="font-weight-bold size-px-24">No Data</div>
-				</div>
+										@click="toDetail(item)"
+									>수정</button>
+									<button
+										class="btn-danger pa-5-10 ml-10"
+										@click="isDelete(item)"
+									>삭제</button>
+								</td>
+							</tr>
+							<tr
+								v-if="is_view == item.uid"
+								:key="'bbs_contents_' + item.uid"
+							>
+								<td colspan="5" class="text-left bg-bbb ">
+									<Viewer
+										v-if="item.b_contents"
+										:initialValue="item.b_contents"
+									/>
+								</td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="search"
+
+					@click="getSearch"
+				></Pagination>
 			</div>
 
-			<Pagination
-				:program="program"
-				:align="'center'"
-				:options="search"
-			></Pagination>
+			<Empty
+				v-else
+			></Empty>
 		</div>
 
 		<Modal
@@ -137,11 +132,12 @@
 	import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 	import { Viewer } from "@toast-ui/vue-editor";
 	import Modal from "@/components/Modal";
+	import Empty from "@/view/Layout/Empty";
 
 	export default {
 		name: 'CustomerCenterNoticeList'
 		,
-		components: {Modal, Pagination, Search,Viewer},
+		components: {Empty, Modal, Pagination, Search,Viewer},
 		props: ['Axios', 'TOKEN', 'codes', 'rules']
 		,data: function(){
 			return {
@@ -151,12 +147,12 @@
 					,title: true
 					,bottom: false
 				}
-				,search:{
+				,search: this.$storage.init({
 					ATOKEN: this.TOKEN
 					,b_code: 'b_notice'
 					,list_cnt: 10
 					,search_type: ''
-				}
+				})
 				,search_option: {
 					is_excel: false
 					,is_item: true
@@ -198,6 +194,7 @@
 						this.$set(this.search, 'total_count', result.data.tCnt)
 						this.$set(this.search_option, 'tCnt', result.data.tCnt)
 						this.$set(this.search_option, 'cnt', result.data.cnt)
+						this.$storage.setQuery(this.search)
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}

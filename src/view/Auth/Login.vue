@@ -6,16 +6,21 @@
 			class="bg-login-content pa-10"
 		>
 			<div
-				class="pa-10 text-center"
+				class=" text-center"
 			>
 				<span
+					v-if="$production"
 					class="size-em-15 font-weight-bold vertical-middle"
 				><img src="@/assets/images/delimall/logo.png" style="width: 40%"></span>
+				<div
+					v-else
+					class="bg-333 pa-10 color-eee "
+				>{{ $production_title }}</div>
 			</div>
 			<div class="pa-10">
 				<input
 					v-model="item.member_id"
-					class="input-underline"
+					class="input-underline full-width"
 					:class="{  input: isIdInput, 'error-underline': error.type == 'id' }"
 					type="text" placeholder="아이디를 입력하세요."
 					maxlength="15"
@@ -25,7 +30,7 @@
 			<div class="pa-10 toggle-password">
 				<input
 					v-model="item.member_pw"
-					class="input-underline"
+					class="input-underline full-width"
 					:class="{ input: isPwInput, 'error-underline': error.type == 'pw'  }"
 					:type="toggleType"
 					placeholder="비밀번호를 입력하세요."
@@ -36,13 +41,13 @@
 					v-if="toggleType == 'text'"
 					class="toggle"
 					:class="{ on: toggleType == 'text' }"
-					@click="toggleis_on_pw"
+					@click="toggles_on_pw"
 				>mdi-eye</v-icon>
 				<v-icon
 					v-else
 					class="toggle"
 					:class="{ on: toggleType == 'text' }"
-					@click="toggleis_on_pw"
+					@click="toggles_on_pw"
 				>mdi-eye-off</v-icon>
 			</div>
 			<div
@@ -136,7 +141,7 @@ export default{
 
 				if (result.success) {
 
-					sessionStorage.setItem('delimallAT', result.data.TOKEN)
+					sessionStorage.setItem(process.env.VUE_APP_NAME + 'AT', result.data.TOKEN)
 
 					this.error.type = ''
 
@@ -155,7 +160,7 @@ export default{
 				this.$emit('setNotify', {type: 'error', message: E})
 			}
 		}
-		,toggleis_on_pw: function(){
+		,toggles_on_pw: function(){
 			if(this.is_on_pw){
 				this.is_on_pw = false
 			}else{
@@ -163,12 +168,11 @@ export default{
 			}
 		}
 		,toMain: function(){
-			document.location.href = '/ADMIN'
+			document.location.href = '/NEW_ADMIN'
 		}
 	}
 	,created: function(){
 		this.$emit('onLoad', this.program)
-
 	}
 	,watch: {
 

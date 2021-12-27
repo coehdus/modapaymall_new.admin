@@ -2,7 +2,6 @@
 	<div
 		class="full-height flex-column justify-center bg-error"
 	>
-		
 		<div 
 			class="text-white text-center size-px-20"
 		>
@@ -30,6 +29,7 @@
 					name: "Not Found Page"
 					,title: true
 					,bottom: false
+					,not_side: true
 				}
 			}
 		}

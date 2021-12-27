@@ -13,20 +13,20 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height full-width justify-space-between overflow-y-auto"
+			class="mt-10 full-height bg-white pa-10 justify-space-between overflow-y-auto"
 		>
-			<div class="full-width">
-				<table
-					v-if="item_list.length > 0"
-				>
+			<div
+				v-if="item_list.length > 0"
+			>
+				<table class="table table-even">
 					<colgroup>
 						<col width="80px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
 						<col width="auto" />
-						<col width="180px" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
 						<col width="150px" />
 					</colgroup>
 					<thead>
@@ -56,7 +56,7 @@
 									type="checkbox"
 								/>
 							</td>
-							<td>{{ item.admin_name }}</td>
+							<td class="text-left">{{ item.admin_name }}</td>
 							<td>{{ item.member_id }}</td>
 							<td>{{ item.member_name }}</td>
 							<td>{{ item.member_phone }}</td>
@@ -86,13 +86,7 @@
 							<td>{{ item.join_date }}</td>
 							<td>
 								<v-icon
-									v-if="item.uid == item_new.uid"
-									class="color-red"
-									@click="setItem(item)"
-								>mdi mdi-close-box-outline</v-icon>
-								<v-icon
-									v-else
-									@click="setItem(item)"
+									@click="toDetail(item)"
 									class="color-icon"
 								>mdi mdi-arrow-right-bold-box-outline</v-icon>
 							</td>
@@ -100,74 +94,15 @@
 					</tbody>
 				</table>
 
-				<div
-					v-else
-					class="flex-column justify-center "
-				>
-					<table
-						class=""
-					>
-						<colgroup>
-							<col width="80px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="auto" />
-							<col width="180px" />
-							<col width="150px" />
-						</colgroup>
-						<thead>
-						<tr>
-							<th>
-								<input
-									type="checkbox"
-								/>
-							</th>
-							<th>소속 대리점</th>
-							<th>아이디</th>
-							<th>이름</th>
-							<th>연락처</th>
-							<th>가입일</th>
-							<th>사용여부</th>
-							<th>상세정보</th>
-						</tr>
-						</thead>
-					</table>
-					<div class="pa-50 text-center bg-base under-line">
-						<v-icon
-							class="size-px-48 color-gray"
-						>mdi-cloud-off-outline</v-icon>
-						<p class="mt-10 size-px-16 color-gray">조회된 내역이 없습니다.</p>
-					</div>
-				</div>
-
 				<Pagination
 					:program="program"
 					:align="'center'"
 					:options="search"
 				></Pagination>
 			</div>
-			<SideB
-				v-if="is_item"
-				:title="'회원 정보'"
-				:bg-title="'bg-' + (item_new.uid ? (item_new.member_status == 1 ? 'green' : 'red') : '')"
-				@click="clear_item"
-			>
-				<template
-					slot="item"
-					class="flex-column overflow-y-auto "
-				>
-					<MemberItem
-						:item_new="item_new"
-						:rules="rules"
-						:admin_list="admin_list"
-
-						@click="save"
-						class=""
-					></MemberItem>
-				</template>
-			</SideB>
+			<Empty
+				v-else
+			></Empty>
 		</div>
 
 		<Excel
@@ -179,16 +114,16 @@
 </template>
 
 <script>
-	import SideB from "../Layout/SideB";
+
 	import Pagination from "../../components/Pagination";
 	import Excel from "@/components/Excel";
-	import MemberItem from "@/view/Member/MemberItem";
 	import Search from "@/view/Layout/Search";
+	import Empty from "@/view/Layout/Empty";
+
 	export default {
 		name: 'MemberList'
-		,
-		components: {Search, MemberItem, Excel, Pagination, SideB},
-		props: ['Axios', 'rules', 'TOKEN', 'user', 'date']
+		, components: {Empty, Search, Excel, Pagination}
+		, props: ['Axios', 'rules', 'TOKEN', 'user', 'date']
 		,data: function (){
 			return {
 				program: {
@@ -196,13 +131,13 @@
 					,top: true
 					,title: true
 				}
-				,search: {
+				,search: this.$storage.init({
 					ATOKEN: this.TOKEN
 					,search_type: ''
 					,admin_code: ''
 					,member_status: ''
 					,list_cnt: 10
-				}
+				})
 				,search_option:{
 					is_excel: true
 					,is_item: true
@@ -288,6 +223,7 @@
 						this.$set(this.search, 'total_count', result.data.tCnt)
 						this.search_option.tCnt = result.data.tCnt
 						this.search_option.cnt = result.data.cnt
+						this.$storage.setQuery(this.search)
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
@@ -337,13 +273,8 @@
 					this.$emit('offLoading')
 				}
 			}
-			,setItem: function (item){
-				if(this.item_new.uid == item.uid){
-					this.clear_item()
-				}else {
-					this.item_new = item
-					this.is_item = true
-				}
+			,toDetail: function (item){
+				this.$storage.push({ name: 'MemberDetail', params: {idx: item.uid}, not_query: true})
 			}
 			,clear_item: function(){
 				this.item_new = {
@@ -415,11 +346,6 @@
 			this.getAdminList()
 		}
 		,watch: {
-			'search.page': {
-				handler: function(){
-					this.getData()
-				}
-			}
 		}
 	}
 </script>

@@ -6,5 +6,5 @@ module.exports = {
 
 
 module.exports = {
-  publicPath: '/ADMIN/',
+  publicPath: '/NEW_ADMIN/',
 }

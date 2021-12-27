@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height flex-column bg-base theme-dark"
+		class="full-height flex-column bg-base"
 	>
 		<Loading
 			v-if="is_loading"
@@ -25,6 +25,7 @@
 				v-if="is_side"
 				:Axios="Axios"
 				:user="user"
+				:program="program"
 
 				@toggleSide="toggleSide"
 				@push="toLocation"
@@ -132,10 +133,24 @@
 			,setProgram: function(program){
 				this.program = program
 			}
-			,toLocation: function({ name, params, query}){
+			,toLocation: function({ name, params, query, not_query}){
 				this.$router.push({ name: name, params: params, query: query}).catch(function(e){
 					console.log(e)
 				});
+
+				if(!not_query) {
+					localStorage.removeItem('query')
+					this.query = {}
+				}else{
+					this.setQuery()
+				}
+			}
+			,setQuery: function(){
+				let store = localStorage.getItem('query')
+				if(store){
+					let query = JSON.parse(store)
+					this.query = query
+				}
 			}
 			,goBack: function(){
 				this.$router.back()

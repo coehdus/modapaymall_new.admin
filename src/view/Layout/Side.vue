@@ -1,6 +1,7 @@
 <template>
 	<div
-		class="side bg-base"
+		v-if="!program.not_side"
+		class="side bg-333"
 	>
 		<div
 			class="side-container flex-column"
@@ -14,7 +15,7 @@
 					<li
 						v-if="item.type.indexOf(user.admin_type_code) > -1"
 						:key="item.path"
-						class="li-side-content "
+						class="li-side-content cursor-pointer"
 						:class="'li-side-depth-' + item.depth"
 					>
 						<div
@@ -26,13 +27,13 @@
 						</div>
 						<ul>
 							<template
-								v-for="sub in item.sub"
+								v-for="(sub, index) in item.sub"
 							>
 								<li
-									v-if="sub.type.indexOf(user.admin_type_code) > -1"
-									:key="item.path + sub.path"
+									v-if="!sub.not_view && sub.type.indexOf(user.admin_type_code) > -1"
+									:key="item.path + sub.path + '_' + index"
 									class="pa-10 "
-									:class="{'bg-black': $route.name.indexOf(item.path + sub.path) > -1}"
+									:class="{'bg-black': $route.name ? $route.name.indexOf(item.path + sub.path) > -1 : false}"
 									@click="toPush(item, sub)"
 								>
 									<div
@@ -41,7 +42,7 @@
 										<span class="flex-column justify-center ptb-5">{{ sub.name }}</span>
 										<v-icon
 											v-show="$route.name != item.path + sub.path"
-											class="color-icon"
+											class="color-icon-dark"
 										>mdi mdi-chevron-right</v-icon>
 									</div>
 								</li>
@@ -57,34 +58,43 @@
 <script>
 	export default{
 		name: 'Side'
-		,props: ['Axios', 'user']
+		,props: ['Axios', 'user', 'program']
 		,data: function(){
 			return {
 				items: [
 					{
-						path: 'Manager'
-						,name: '관리자'
-						,type: ['admin', 'distributor']
-						,sub: [
+						path: 'Agency'
+						,name: '영업점 '
+						, type: ['admin', 'distributor']
+						, sub: [
 							{
-								path: 'AdminList'
-								,name: '관리자 목록'
+								path: 'List'
+								,name: '영업점 목록'
 								,type: ['admin']
 							}
-							,{
-								path: 'DistributorList'
-								,name: '총판 목록'
-								,type: ['admin']
-							}
-							,{
-								path: 'AgencyList'
-								,name: '대리점 목록'
-								,type: ['admin', 'distributor']
-							}
-							,{
-								path: 'SupplyList'
+						]
+					}
+					,{
+						path: 'Supply'
+						,name: '공급사 '
+						, type: ['admin']
+						, sub: [
+							{
+								path: 'List'
 								,name: '공급사 목록'
 								,type: ['admin', 'distributor']
+							}
+							,{
+								path: 'Item'
+								,name: '공급사 등록'
+								,type: ['admin', 'distributor']
+								,not_view: true
+							}
+							,{
+								path: 'Detail'
+								,name: '공급사 상세정보'
+								,type: ['admin', 'distributor']
+								,not_view: true
 							}
 						]
 					}
@@ -118,18 +128,6 @@
 						]
 					}
 					,{
-						path: 'Banner'
-						,name: '배너 관리'
-						,type: ['admin', 'distributor']
-						,sub: [
-							{
-								path: 'List'
-								,name: '배너 목록'
-								,type: ['admin', 'distributor']
-							}
-						]
-					}
-					,{
 						path: 'Order'
 						,name: '주문 관리'
 						,type: ['admin', 'distributor', 'agency', 'supply']
@@ -143,28 +141,6 @@
 								path: 'ListSupply'
 								,name: '주문 목록'
 								,type: ['supply']
-							}
-						]
-					}
-					,{
-						path: 'CustomerCenter'
-						,name: '고객센터'
-						,type: ['admin', 'distributor', 'agency', 'supply']
-						,sub: [
-							{
-								path: 'NoticeList'
-								,name: '공지사항'
-								,type: ['admin', 'distributor']
-							}
-							,{
-								path: 'QnAList'
-								,name: '1:1문의'
-								,type: ['admin', 'distributor', 'agency', 'supply']
-							}
-							,{
-								path: 'ReviewList'
-								,name: '상품 리뷰'
-								,type: ['admin', 'distributor', 'agency', 'supply']
 							}
 						]
 					}
@@ -215,6 +191,57 @@
 							}
 						]
 					}
+					,{
+						path: 'Banner'
+						,name: '배너 관리'
+						,type: ['admin', 'distributor']
+						,sub: [
+							{
+								path: 'List'
+								,name: '배너 목록'
+								,type: ['admin', 'distributor']
+							}
+						]
+					}
+					,{
+						path: 'CustomerCenter'
+						,name: '고객센터'
+						,type: ['admin', 'distributor', 'agency', 'supply']
+						,sub: [
+							{
+								path: 'NoticeList'
+								,name: '공지사항'
+								,type: ['admin', 'distributor']
+							}
+							,{
+								path: 'QnAList'
+								,name: '1:1문의'
+								,type: ['admin', 'distributor', 'agency', 'supply']
+							}
+							,{
+								path: 'ReviewList'
+								,name: '상품 리뷰'
+								,type: ['admin', 'distributor', 'agency', 'supply']
+							}
+						]
+					}
+					,{
+						path: 'Manager'
+						, name: '설정'
+						, type: ['admin']
+						, sub: [
+							{
+								path: 'List'
+								, name: '관리자 목록'
+								, type: ['admin']
+							}
+							,{
+								path: 'Setting'
+								, name: '관리설정'
+								, type: ['admin']
+							}
+						]
+					}
 				]
 				,item_new: {
 
@@ -237,11 +264,11 @@
 		,methods: {
 			toPush: function(menu, sub){
 				console.log('toPush : ' +menu.path + sub.path)
-				this.$router.push({ name: menu.path + sub.path })
+				this.$storage.push({ name: menu.path + sub.path, params: sub.params})
 			}
 		}
 		,created: function(){
-			console.log('in side !!')
+			console.log('in side !!' + this.$route.name)
 		}
 	}
 </script>
@@ -251,6 +278,7 @@
 	.side {
 		width: 180px;
 		height: 100%;
+		color: #bbb
 	}
 	.bg-side {
 		width: 100%; height: 100%;

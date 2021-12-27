@@ -5,8 +5,8 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10">
-				<div class="">
+			<div class="flex-1 mr-10 ">
+				<div class=" bg-white pa-10">
 					<h6>배너 타입</h6>
 					<select
 						v-model="item.type"
@@ -17,7 +17,7 @@
 						<option value="normal">일반</option>
 					</select>
 				</div>
-				<div class="mt-10">
+				<div class="mt-10 bg-white pa-10">
 					<h6>제목</h6>
 					<input
 						v-model="item.banner_name"
@@ -25,7 +25,7 @@
 						placeholder="제목을 입력하세요"
 					/>
 				</div>
-				<div class="mt-10">
+				<div class="mt-10 bg-white pa-10">
 					<h6>
 						<span class="vertical-middle">배너 이미지</span>
 						<v-icon

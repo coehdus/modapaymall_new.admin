@@ -53,9 +53,39 @@ const routes = [
 		,component: () => import('@/view/Member/MemberList.vue')
 	}
 	,{
-		path: prefix + 'Manager/AdminList'
-		,name: 'ManagerAdminList'
-		,component: () => import('@/view/Manager/ManagerAdminList.vue')
+		path: prefix + 'Manager/List/:page?'
+		,name: 'ManagerList'
+		,component: () => import('@/view/Manager/ManagerList.vue')
+	}
+	,{
+		path: prefix + 'Manager/Item'
+		,name: 'ManagerItem'
+		,component: () => import('@/view/Manager/ManagerItem.vue')
+	}
+	,{
+		path: prefix + 'Manager/Detail/:idx'
+		,name: 'ManagerDetail'
+		,component: () => import('@/view/Manager/ManagerDetail.vue')
+	}
+	,{
+		path: prefix + 'Manager/Setting'
+		,name: 'ManagerSetting'
+		,component: () => import('@/view/Manager/Setting.vue')
+	}
+	,{
+		path: prefix + 'Agency/List'
+		,name: 'AgencyList'
+		,component: () => import('@/view/Agency/AgencyList.vue')
+	}
+	,{
+		path: prefix + 'Agency/Item'
+		,name: 'AgencyItem'
+		,component: () => import('@/view/Agency/AgencyItem.vue')
+	}
+	,{
+		path: prefix + 'Agency/Detail/:idx'
+		,name: 'AgencyDetail'
+		,component: () => import('@/view/Agency/AgencyDetail.vue')
 	}
 	,{
 		path: prefix + 'Manager/DistributorList'
@@ -68,19 +98,19 @@ const routes = [
 		,component: () => import('@/view/Manager/ManagerAgencyList.vue')
 	}
 	,{
-		path: prefix + 'Manager/SupplyList'
-		,name: 'ManagerSupplyList'
-		,component: () => import('@/view/Manager/ManagerSupplyList.vue')
+		path: prefix + 'Supply/List'
+		,name: 'SupplyList'
+		,component: () => import('@/view/Supply/SupplyList.vue')
 	}
 	,{
-		path: prefix + 'Manager/Item/:type'
-		,name: 'ManagerItem'
-		,component: () => import('@/view/Manager/ManagerItem.vue')
+		path: prefix + 'Supply/Item'
+		,name: 'SupplyItem'
+		,component: () => import('@/view/Supply/SupplyItem.vue')
 	}
 	,{
-		path: prefix + 'Manager/Detail/:type/:idx'
-		,name: 'ManagerDetail'
-		,component: () => import('@/view/Manager/ManagerDetail.vue')
+		path: prefix + 'Supply/Detail/:idx'
+		,name: 'SupplyDetail'
+		,component: () => import('@/view/Supply/SupplyDetail.vue')
 	}
 	,{
 		path: prefix + 'Product/List/:page?'

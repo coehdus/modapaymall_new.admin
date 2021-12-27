@@ -6,19 +6,19 @@
 					type="LineChart"
 					:data="chart_data_weekly_cnt"
 					:options="chartOptions3"
-					class="flex-1 mr-10"
+					class="flex-1 mr-10 box"
 				/>
 				<GChart
 					type="ColumnChart"
 					:data="chart_data_weekly"
 					:options="chartOptions"
-					class="flex-1 mr-10"
+					class="flex-1 mr-10 box"
 				/>
 				<GChart
 					type="BarChart"
 					:data="chart_data_monthly"
-					:options="chartOptions2"
-					class="flex-1 ml-10"
+					:options="chartOptions2 "
+					class="flex-1 box"
 				/>
 			</div>
 		</div>
@@ -50,12 +50,12 @@
 			</div>
 			<div class="full-height flex-1 flex-column overflow-y-auto mr-10">
 				<h6 class="">이번달 정산</h6>
-				<ul class="pa-10 bg-base full-height box overflow-y-auto">
+				<ul class="pa-10 full-height box overflow-y-auto">
 				</ul>
 			</div>
 			<div class="full-height flex-1 flex-column overflow-y-auto mr-10">
 				<h6 class="">최근 문의</h6>
-				<ul class="pa-10 bg-base box full-height overflow-y-auto">
+				<ul class="pa-10  box full-height overflow-y-auto">
 					<template
 						v-if="qna_items.length > 0"
 					>
@@ -76,7 +76,7 @@
 			</div>
 			<div class="full-height flex-1 flex-column overflow-y-auto">
 				<h6 class="">공지사항</h6>
-				<ul class="pa-10 bg-base full-height box overflow-y-auto">
+				<ul class="pa-10 full-height box overflow-y-auto">
 					<template
 						v-if="notice_items.length > 0"
 					>
@@ -151,7 +151,7 @@ import { GChart } from 'vue-google-charts'
 				,chart_data: []
 				,chart_data2: []
 				,settlement_data: {
-
+					total_cnt: 0
 				}
 				,qna_items: []
 				,notice_items: []

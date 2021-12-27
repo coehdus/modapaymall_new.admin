@@ -22,11 +22,11 @@
 					<colgroup>
 						<col width="80px" />
 						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
-						<col width="150px" />
 						<col width="auto" />
-						<col width="180px" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
 						<col width="150px" />
 					</colgroup>
 					<thead>
@@ -57,10 +57,12 @@
 							/>
 						</td>
 						<td class="position-relative">
+
 							<select
 								v-model="item.admin_level"
-								class="input-box"
+								class="input-box position-relative cursor-pointer"
 								@change="update(item)"
+								style="z-index: 1"
 							>
 								<option
 									value="0"
@@ -73,9 +75,9 @@
 							</select>
 							<v-icon
 								class="position-absolute color-icon"
-								style="right: 15px; top: 20px"
-
+								style="right: 15px; top: 16px; z-index: 0"
 							>mdi mdi-menu-down</v-icon>
+
 						</td>
 						<td>{{ item.admin_id }}</td>
 						<td>{{ item.admin_name }}</td>
@@ -108,11 +110,11 @@
 							<v-icon
 								v-if="item.uid == item_new.uid"
 								class="color-red"
-								@click="setItem(item)"
+								@click="toDetail(item)"
 							>mdi mdi-close-box-outline</v-icon>
 							<v-icon
 								v-else
-								@click="setItem(item)"
+								@click="toDetail(item)"
 								class="color-icon"
 							>mdi mdi-arrow-right-bold-box-outline</v-icon>
 						</td>
@@ -128,11 +130,11 @@
 					>
 						<colgroup>
 							<col width="80px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
+							<col width="auto" />
+							<col width="auto" />
+							<col width="auto" />
+							<col width="auto" />
+							<col width="auto" />
 							<col width="auto" />
 							<col width="150px" />
 						</colgroup>
@@ -213,14 +215,15 @@ export default {
 			,options: {
 
 			}
-			,search: {
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,page: this.$route.query.page ? this.$route.query.page : 1
-				,search_type: this.$route.query.search_type ? this.$route.query.search_type :''
-				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt :10
-				,admin_level: this.$route.query.admin_level ? this.$route.query.admin_level :''
-				,admin_status: this.$route.query.admin_status ? this.$route.query.admin_status :''
-			}
+				,page: 1
+				,search_type: ''
+				,search_value: ''
+				,list_cnt: 10
+				,admin_level: ''
+				,admin_status: ''
+			})
 			,search_option:{
 
 				is_item: true
@@ -288,6 +291,7 @@ export default {
 				})
 
 				if(result.success){
+					this.$storage.setQuery(this.search)
 					this.items = result.data.result
 					this.$set(this.search, 'total_count', result.data.tCnt)
 					this.search_option.tCnt = result.data.tCnt
@@ -301,8 +305,11 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
-		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search })
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
 			this.getData()
 		}
 		,save: async function(){
@@ -397,6 +404,9 @@ export default {
 		}
 		,toItem: function (){
 			this.is_item = !this.is_item
+		}
+		,toDetail: function(item){
+			this.$storage.push({ name: 'ManagerDetail', params: { idx: item.uid}, not_query: true})
 		}
 	}
 	,created() {

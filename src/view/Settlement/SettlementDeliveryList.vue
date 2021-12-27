@@ -1,10 +1,8 @@
 <template>
 	<div class="full-height">
 
-		<div class="full-height">
-			<div
-				class="pa-10 box text-right"
-			>
+		<div class="full-height flex-column">
+			<div class="pa-10 box text-right" >
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
@@ -90,60 +88,58 @@
 				>검색</button>
 			</div>
 
-			<table class="mt-10">
-				<colgroup>
-				</colgroup>
-				<thead>
-				<tr>
-					<th>정산일</th>
-					<th>총판</th>
-					<th>대리점</th>
-					<th>공급사</th>
-					<th>판매 배송비</th>
-					<th>결제 수수료</th>
-					<th>대리점 지급 금액</th>
-					<th>공급사 배송비</th>
-					<th>정산 금액</th>
-					<th>정산여부</th>
-					<th>지급여부</th>
-					<th>관리</th>
-				</tr>
-				</thead>
-				<tbody>
-				<template
+			<div class="mt-10 pa-10 bg-white full-height">
+				<table
 					v-if="items.length > 0"
+					class="table"
 				>
-					<tr
-						v-for="item in item_list"
-						:key="'settlement_' + item.uid"
-					>
-						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-						<td>{{ item.admin_id }}</td>
-						<td>{{ item.agency_name}}</td>
-						<td>{{ item.supply_name }}</td>
-						<td>{{ item.agency_total | makeComma }}</td>
-						<td>{{ item.fee * -1 | makeComma }}</td>
-						<td>{{ item.agency_total - item.fee | makeComma }}</td>
-						<td>{{ item.supply_total | makeComma }}</td>
-						<td>{{ item.agency_total - item.fee - item.supply_total | makeComma }}</td>
-						<td>{{ item.is_settlement_name }}</td>
-						<td>{{ item.is_deposit_name }}</td>
-						<td>
-							<button
-								class="btn-blue pa-5-10 mr-10"
-								@click="toDetail(item)"
-							>상세 정보</button>
-						</td>
+					<colgroup>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>정산일</th>
+						<th>총판</th>
+						<th>대리점</th>
+						<th>공급사</th>
+						<th>판매 배송비</th>
+						<th>결제 수수료</th>
+						<th>대리점 지급 금액</th>
+						<th>공급사 배송비</th>
+						<th>정산 금액</th>
+						<th>정산여부</th>
+						<th>지급여부</th>
+						<th>관리</th>
 					</tr>
-				</template>
-				<tr
+					</thead>
+					<tbody>
+						<tr
+							v-for="item in item_list"
+							:key="'settlement_' + item.uid"
+						>
+							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
+							<td>{{ item.admin_id }}</td>
+							<td>{{ item.agency_name}}</td>
+							<td>{{ item.supply_name }}</td>
+							<td>{{ item.agency_total | makeComma }}</td>
+							<td>{{ item.fee * -1 | makeComma }}</td>
+							<td>{{ item.agency_total - item.fee | makeComma }}</td>
+							<td>{{ item.supply_total | makeComma }}</td>
+							<td>{{ item.agency_total - item.fee - item.supply_total | makeComma }}</td>
+							<td>{{ item.is_settlement_name }}</td>
+							<td>{{ item.is_deposit_name }}</td>
+							<td>
+								<button
+									class="btn-blue pa-5-10 mr-10"
+									@click="toDetail(item)"
+								>상세 정보</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<Empty
 					v-else
-				>
-					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
-				</tr>
-				</tbody>
-			</table>
-
+				></Empty>
+			</div>
 		</div>
 
 		<Modal
@@ -228,10 +224,11 @@
 <script>
 import Modal from "@/components/Modal";
 import SettlementDeliveryDetail from "@/view/Settlement/SettlementDeliveryDetail";
+import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'SettlementDelivery'
 	,
-	components: {SettlementDeliveryDetail, Modal},
+	components: {Empty, SettlementDeliveryDetail, Modal},
 	props: ['Axios', 'TOKEN', 'user', 'codes']
 	,data: function(){
 		return {

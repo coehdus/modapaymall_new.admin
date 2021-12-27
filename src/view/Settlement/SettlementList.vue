@@ -1,10 +1,8 @@
 <template>
 	<div class="full-height">
 
-		<div class="full-height">
-			<div
-				class="pa-10 box text-right"
-			>
+		<div class="full-height flex-column">
+			<div class="pa-10 box text-right">
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
@@ -124,79 +122,78 @@
 				>정산 실행 </button>
 			</div>
 
-			<table class="mt-10">
-				<colgroup>
-				</colgroup>
-				<thead>
-				<tr>
-					<th>정산일</th>
-					<th>구분</th>
-					<th>상점명</th>
-					<th>아이디</th>
-					<th>판매금액</th>
-					<th>판매원가</th>
-					<th>매출금액</th>
-					<th>판매 수수료</th>
-					<th>결제 수수료</th>
-					<th>정산 수수료</th>
-					<th>수수료율</th>
-					<th>배송비 차감 금액</th>
-					<th>정산금액</th>
-					<th>정산여부</th>
-					<th>지급여부</th>
-					<th>관리</th>
-				</tr>
-				</thead>
-				<tbody>
-				<template
-					v-if="items.length > 0"
+			<div class="mt-10 pa-10 bg-white full-height">
+				<table
+					v-if="items.lnegth > 0"
+					class="table"
 				>
-					<tr
-						v-for="item in item_list"
-						:key="'settlement_' + item.uid"
-					>
-						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-						<td>{{ item.admin_type_name }}</td>
-						<td>{{ item.shop_name}}</td>
-						<td>{{ item.admin_id }}</td>
-						<td>{{ item.sale_amount | makeComma }}</td>
-						<td>{{ item.total_amount | makeComma }}</td>
-						<td>{{ item.income_amount | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'supply' ? item.fee * -1 : '-' | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'agency' ? item.fee * -1 : '-' | makeComma }}</td>
-						<td>{{ item.admin_type_code == 'distributor' ? item.fee * -1 : '-' | makeComma }}</td>
-						<td>{{ item.admin_per }} %</td>
-						<td>{{ item.minus_amount | makeComma }}</td>
-						<td>{{ item.amount | makeComma }}</td>
-						<td>{{ item.is_settlement_name }}</td>
-						<td>{{ item.is_deposit_name }}</td>
-						<td>
-							<button
-								class="btn-blue pa-5-10 mr-10"
-								@click="toDetail(item)"
-							>상세 정보</button>
-							<button
-								v-if="item_detail.is_settlement == '0'"
-								v-show="false"
-								class="btn-success pa-5-10"
-								@click="doSettlementConfirm(item)"
-							>정산 확인 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
-							<button
-								v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
-								v-show="false"
-								class="btn-success pa-5-10"
-								@click="doDepositConfirm(item)"
-							>지급 완료 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
-						</td>
+					<colgroup>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>정산일</th>
+						<th>구분</th>
+						<th>상점명</th>
+						<th>아이디</th>
+						<th>판매금액</th>
+						<th>판매원가</th>
+						<th>매출금액</th>
+						<th>판매 수수료</th>
+						<th>결제 수수료</th>
+						<th>정산 수수료</th>
+						<th>수수료율</th>
+						<th>배송비 차감 금액</th>
+						<th>정산금액</th>
+						<th>정산여부</th>
+						<th>지급여부</th>
+						<th>관리</th>
 					</tr>
-				</template>
-				<tr
+					</thead>
+					<tbody>
+						<tr
+							v-for="item in item_list"
+							:key="'settlement_' + item.uid"
+						>
+							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
+							<td>{{ item.admin_type_name }}</td>
+							<td>{{ item.shop_name}}</td>
+							<td>{{ item.admin_id }}</td>
+							<td>{{ item.sale_amount | makeComma }}</td>
+							<td>{{ item.total_amount | makeComma }}</td>
+							<td>{{ item.income_amount | makeComma }}</td>
+							<td>{{ item.admin_type_code == 'supply' ? item.fee * -1 : '-' | makeComma }}</td>
+							<td>{{ item.admin_type_code == 'agency' ? item.fee * -1 : '-' | makeComma }}</td>
+							<td>{{ item.admin_type_code == 'distributor' ? item.fee * -1 : '-' | makeComma }}</td>
+							<td>{{ item.admin_per }} %</td>
+							<td>{{ item.minus_amount | makeComma }}</td>
+							<td>{{ item.amount | makeComma }}</td>
+							<td>{{ item.is_settlement_name }}</td>
+							<td>{{ item.is_deposit_name }}</td>
+							<td>
+								<button
+									class="btn-blue pa-5-10 mr-10"
+									@click="toDetail(item)"
+								>상세 정보</button>
+								<button
+									v-if="item_detail.is_settlement == '0'"
+									v-show="false"
+									class="btn-success pa-5-10"
+									@click="doSettlementConfirm(item)"
+								>정산 확인 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
+								<button
+									v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
+									v-show="false"
+									class="btn-success pa-5-10"
+									@click="doDepositConfirm(item)"
+								>지급 완료 <v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<Empty
 					v-else
-				>
-					<td colspan="16" class="pa-50">정산 내역이 없습니다</td>
-				</tr>
-				</tbody>
-			</table>
+				></Empty>
+			</div>
 		</div>
 
 		<Modal
@@ -283,10 +280,11 @@
 <script>
 import SettlementDetail from "@/view/Settlement/SettlementDetail";
 import Modal from "@/components/Modal";
+import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'SettlementList'
 	,
-	components: {Modal, SettlementDetail},
+	components: {Empty, Modal, SettlementDetail},
 	props: ['Axios', 'TOKEN', 'codes', 'user']
 	,data: function(){
 		return {

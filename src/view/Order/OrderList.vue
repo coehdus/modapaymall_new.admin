@@ -1,26 +1,27 @@
 <template>
 	<div
-		class="full-height flex-column "
+		class="  "
 	>
 		<div>
 			<ul
-				class=" justify-space-between"
+				class=" justify-space-between "
 			>
 				<li
-					class="flex-1 pa-10 box text-center "
-					:class="{'bg-bbb color-333': search.order_status == ''}"
+					class="flex-1 pa-10 text-center cursor-pointer mr-1"
+					:class="search.order_status == '' ? 'bg-green ': 'bg-default'"
 					@click="search.order_status = ''; getSearch()"
 				>주문 전체</li>
 				<li
 					v-for="order_status in codes.O002.items"
 					:key="'order_status' + order_status.total_code"
 
-					class="flex-1 pa-10 box text-center "
-					:class="{'bg-bbb color-333': order_status.code_value == search.order_status}"
+					class="flex-1 pa-10 text-center cursor-pointer mr-1"
+					:class="order_status.code_value == search.order_status ? 'bg-' + order_status.code_value2 : 'bg-default'"
 					@click="search.order_status = order_status.code_value; getSearch()"
 				>{{ order_status.code_name }}</li>
 			</ul>
 		</div>
+
 		<Search
 			:search="search"
 			:option="search_option"
@@ -35,7 +36,7 @@
 				slot="add"
 				v-model="search.o_status"
 				class="pa-5-10 mr-10"
-				@change="toSearch"
+				@change="getSearch"
 			>
 				<option value="">{{ codes.O001.code_name }}</option>
 				<option
@@ -48,7 +49,7 @@
 				slot="add"
 				v-model="search.order_status"
 				class="pa-5-10 mr-10"
-				@change="toSearch"
+				@change="getSearch"
 			>
 				<option value="">{{ codes.O002.code_name }}</option>
 				<option
@@ -60,17 +61,18 @@
 		</Search>
 
 		<div
-			class="mt-10 full-height flex-column overflow-y-auto"
+			class="mt-10  bg-white  "
 		>
 			<ul
 				v-if="items.length > 0"
-				class=" full-height flex-column overflow-y-auto"
+				class=" full-height  "
 			>
 				<li
 					v-for="(item) in item_list"
 					:key="item.order_num_new"
 					class="mb-50 "
 				>
+
 					<div
 						class="pa-10 justify-space-between color-black"
 						:class="'bg-light-' + item.o_status_color"
@@ -80,16 +82,18 @@
 							<span class="color-black"> {{ item.order_num_new}}</span>
 						</div>
 
-						<span class="color-black text-center ml-40">
-							총 판매가: {{ item.total_price | makeComma }} 원 /
-							총 배송비: {{ item.delivery_price | makeComma }} 원 /
+						<div class="color-black text-center ml-40">
+							총 판매가: <span class="font-weight-bold">{{ item.total_price | makeComma }}</span> 원 /
+							총 배송비: <span class="font-weight-bold">{{ item.delivery_price | makeComma }}</span> 원 /
 							결제금액: <span class="font-weight-bold">{{ item.order_price | makeComma }}</span> 원
-						</span>
+						</div>
 
 						<span class=" flex-1 color-black ">{{ item.pay_info }}</span>
 						<span class=" flex-1 color-black text-right">{{ item.wDate }}</span>
 					</div>
-					<div class="pa-10 under-line">
+
+
+					<div class=" pa-10 under-line ">
 
 						<template
 							v-for="o_status in codes.o_status"
@@ -98,7 +102,7 @@
 								v-if="o_status.code > 0"
 								:key="'o_status_' + o_status.code"
 								class=" prl-10 mr-10"
-								:class="o_status.code != item.o_status ? 'bg-gray' : 'bg-light-' + o_status.color"
+								:class="o_status.code != item.o_status ? 'bg-default' : 'bg-light-' + o_status.color"
 								@click="update(item, o_status.code)"
 							>
 								<span class="vertical-middle color-333 ">{{  o_status.name }}</span>
@@ -119,55 +123,127 @@
 							><span class="vertical-middle color-eee">주문 취소</span> <v-icon class="color-eee">mdi mdi-chevron-right</v-icon></button>
 						</div>
 					</div>
-					<div class="justify-space-between under-line ">
-						<div
-							class="pa-10"
-						>
-							<span class="bg-black pa-5">주문자 정보</span>
-							{{ item.member_id }} /
-							{{ item.member_name }} /
-							{{ item.member_tell }}
-						</div>
-					</div>
-					<div class="pa-10 under-line">
-						<span class="bg-black pa-5">배송지 정보</span>
-						{{ item.d_name }} /
-						{{ item.d_tell }} /
-						{{ item.d_post }}
-						{{ item.d_addr1 }}
-						{{ item.d_addr2 }}
-					</div>
 
-					<div class="justify-space-between under-line ">
-						<div
-							class="pa-10"
+					<div class="pa-10 justify-space-between">
+						<table
+							class="table mr-10 box th-left td-right"
 						>
-							<span class="bg-black pa-5">대리점 정보</span>
-							{{ item.shop_name }}
-						</div>
+							<col width="120px" />
+							<col width="auto" />
+							<tbody>
+								<tr>
+									<th colspan="2" class="text-center">결제 정보</th>
+								</tr>
+								<tr>
+									<th>주문번호</th>
+									<td>{{ item.order_num_new}}</td>
+								</tr>
+								<tr>
+									<th>결제 상태</th>
+									<td>{{ item.o_status_name}}</td>
+								</tr>
+								<tr>
+									<th>총 상품가</th>
+									<td>{{ item.total_price | makeComma }} 원</td>
+								</tr>
+								<tr>
+									<th>총 배송비</th>
+									<td>{{ item.delivery_price | makeComma }} 원</td>
+								</tr>
+								<tr>
+									<th>결제금액</th>
+									<td>{{ item.order_price | makeComma }}</td>
+								</tr>
+							</tbody>
+						</table>
+						<table
+							class="table mr-10 box th-left td-right"
+						>
+							<col width="120px" />
+							<col width="auto" />
+							<tbody>
+								<tr>
+									<th colspan="2" class="text-center">주문자 정보</th>
+								</tr>
+								<tr>
+									<th>대리점</th>
+									<td>{{ item.o_status_name}}</td>
+								</tr>
+								<tr>
+									<th>이름</th>
+									<td>{{ item.member_name}}</td>
+								</tr>
+								<tr>
+									<th>아이디</th>
+									<td>{{ item.member_id }}</td>
+								</tr>
+								<tr>
+									<th>연락처</th>
+									<td>{{ item.member_tell }} </td>
+								</tr>
+								<tr>
+									<th>-</th>
+									<td>-</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table
+							class="table mr-10 box th-left td-right"
+						>
+							<col width="120px" />
+							<col width="auto" />
+							<tbody>
+								<tr>
+									<th colspan="2" class="text-center">배송지 정보</th>
+								</tr>
+								<tr>
+									<th>배송지</th>
+									<td>{{ item.d_name}}</td>
+								</tr>
+								<tr>
+									<th>이름</th>
+									<td>{{ item.d_name}}</td>
+								</tr>
+								<tr>
+									<th>연락처</th>
+									<td>{{ item.d_tell }} </td>
+								</tr>
+								<tr>
+									<th>주소</th>
+									<td>{{ item.d_post }} {{ item.d_addr1 }} </td>
+								</tr>
+								<tr>
+									<th>상세주소</th>
+									<td>{{ item.d_addr2 }}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table class="table"></table>
 					</div>
 					<ul>
 						<li
 							v-for="supply in item.supply_list"
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
-							class="mt-10 "
+							class=" pa-10"
 						>
-							<table>
+							<table class="table">
 								<colgroup>
-									<col width="80px" />
-									<col width="250px" />
-									<col width="180px" />
-									<col width="180px" />
-									<col width="180px" />
-									<col width="200px" />
+									<col width="120px" />
+									<col width="300px" />
 									<col width="auto" />
+									<col width="auto" />
+									<col width="auto" />
+									<col width="auto" />
+									<col width="450px" />
 								</colgroup>
 								<thead>
 									<tr>
 										<th colspan="2">상품명</th>
-										<th>판매가</th>
 										<th>공급가</th>
-										<th>공급수량</th>
+										<th>판매가</th>
+										<th>판매 수량</th>
 										<th>주문 상태</th>
 										<th>관리</th>
 									</tr>
@@ -197,10 +273,10 @@
 											<span class="color-gray mt-5">선택 옵션: {{ odt.op_name }}</span>
 										</td>
 										<td class="  ">
-											판매가: {{ odt.pdt_price | makeComma }} 원
+											공급가: {{ odt.pdt_purchase | makeComma }} 원
 										</td>
 										<td class="  ">
-											공급가: {{ odt.pdt_purchase | makeComma }} 원
+											판매가: {{ odt.pdt_price | makeComma }} 원
 										</td>
 										<td class=" ">수량: {{ odt.op_cnt | makeComma }} 개</td>
 
@@ -212,9 +288,7 @@
 										</td>
 										<td>
 											<div class=" inline position-relative text-right flex-column justify-center">
-
 												<div>
-
 													<button
 														v-if="odt.order_status == 'step1'"
 														class="pa-5 mr-10 bg-blue vertical-middle"
@@ -286,17 +360,17 @@
 											</div>
 										</td>
 									</tr>
-								</tbody>
-								<tfoot>
-									<tr>
-										<td colspan="2" class="text-left"><span class="bg-black pa-5">공급사 정보</span> {{ supply.seller_id }}</td>
-										<td class="text-center">판매가: {{ supply.total_price | makeComma }} 원</td>
-										<td class="text-center">공급가: {{ supply.total_purchase | makeComma }} 원</td>
-										<td class="text-center">공급 배송비: {{ supply.delivery_total | makeComma }} 원</td>
+
+									<tr class="top-line">
+										<th>공급사 정보</th>
+										<td class="text-left"> {{ supply.seller_id }}</td>
+										<td class="text-center">총 공급가: {{ supply.total_purchase | makeComma }} 원</td>
+										<td class="text-center">총 판매가: {{ supply.total_price | makeComma }} 원</td>
+										<td >총 수량: {{ supply.total_count | makeComma }} 개</td>
+										<td class="text-center">배송비: {{ supply.delivery_total | makeComma }} 원</td>
 										<td class="text-center">공급가 합계: {{ supply.supply_total | makeComma }} 원</td>
-										<td ></td>
 									</tr>
-								</tfoot>
+								</tbody>
 							</table>
 						</li>
 					</ul>
@@ -381,15 +455,15 @@ export default {
 			,options: {
 
 			}
-			,search: {
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,page: this.$route.query.page ? this.$route.query.page : 1
-				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
-				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
-				,list_cnt:  this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
-				,o_status: this.$route.query.o_status ? this.$route.query.o_status : ''
-				,order_status: this.$route.query.order_status ? this.$route.query.order_status : ''
-			}
+				,page: 1
+				,search_type: ''
+				,search_value: ''
+				,list_cnt: 10
+				,o_status: ''
+				,order_status: ''
+			})
 			,search_option:{
 
 				is_excel: true
@@ -443,6 +517,7 @@ export default {
 
 				item.supply_list.filter(function(supply){
 
+					supply.total_count = 0
 					supply.odt_list.filter(function(odt){
 						if(odt.pdt_img1){
 							odt.pdt_img = self.codes.img_url + odt.pdt_img1
@@ -462,9 +537,12 @@ export default {
 						if(item.o_status != 2){
 							odt.not_confirm = true
 						}
+
+						supply.total_count += Number(odt.op_cnt)
 					})
 
 					supply.supply_total = (Number(supply.total_purchase) + Number(supply.delivery_total))
+
 				})
 
 				item.ATOKEN = self.TOKEN
@@ -592,6 +670,7 @@ export default {
 					this.$set(this.search, 'total_count', result.data.tCnt)
 					this.search_option.tCnt = result.data.tCnt
 					this.search_option.cnt = result.data.cnt
+					this.$storage.setQuery(this.search)
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -601,8 +680,11 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
-		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
+		,getSearch: function(page){
+
+			if(page){
+				this.search.page = page
+			}
 			this.getData()
 		}
 		,setItem: function (item){
@@ -810,40 +892,13 @@ export default {
 				this.modalClear()
 			}
 		}
-		,toSearch: function(){
-			this.$router.push({ name: this.$route.name, params: this.$route.params, query: {
-					o_status: this.search.o_status
-					,order_status: this.search.order_status
-					,list_cnt: this.search.list_cnt
-					,search_type: this.search_type
-					,search_value: this.search_value
-				}
-			})
-		}
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.user.admin_type_code == 'supply'){
-			this.$router.push({ name: 'OrderListSupply'})
-		}else if(this.user.admin_type_code == 'agency'){
-			this.$router.push({ name: 'OrderListAgency'})
-		}else if(this.user.admin_type_code == 'admin' || this.user.admin_type_code == 'distributor'){
-			this.getData()
-		}else{
-			this.$router.back()
-		}
+		this.getData()
 	}
 	,watch: {
-		items: {
-			deep: true
-			,handler: function(){
-			}
-		}
-		,'search.page': {
-			handler: function(){
-				this.getSearch()
-			}
-		}
+
 	}
 }
 </script>

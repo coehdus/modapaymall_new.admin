@@ -5,8 +5,8 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10">
-				<table class="table-td-left">
+			<div class="flex-1 mr-10 pa-10 bg-white">
+				<table class="table td-left">
 					<col width="120px" />
 					<col width="auto" />
 					<tbody>
@@ -75,6 +75,17 @@
 								type="number"
 								class="box pa-10"
 								:rules="[rules.max(item, 'pdt_purchase', 10)]"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<th>판매가</th>
+						<td>
+							<input
+								v-model="item.pdt_price"
+								type="number"
+								class="box pa-10"
+								:rules="[rules.max(item, 'pdt_price', 10)]"
 							/>
 						</td>
 					</tr>
@@ -203,8 +214,8 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="flex-1">
-				<table>
+			<div class="flex-1 pa-10 bg-white">
+				<table class="table td-left">
 					<col width="120px" />
 					<col width="auto" />
 					<tbody>
@@ -217,7 +228,7 @@
 								v-if="item.pdt_info"
 								:initialValue="item.pdt_info"
 								:options="editorOptions"
-								height="300px"
+								height="350px"
 								initialEditType="wysiwyg"
 								ref="pdt_info"
 								class="text-left"
@@ -233,7 +244,7 @@
 								v-if="item.pdt_notice"
 								:initialValue="item.pdt_notice"
 								:options="editorOptions"
-								height="300px"
+								height="250px"
 								initialEditType="wysiwyg"
 								ref="pdt_notice"
 								class="text-left"
@@ -246,11 +257,11 @@
 		</div>
 		<div class="text-center mt-10">
 			<button
-				class="pa-10 box bg-green mr-10"
+				class="pa-10 box bg-identify mr-10"
 				@click="save"
 			>저장</button>
 			<button
-				class="pa-10 box bg-gray"
+				class="pa-10 box"
 				@click="$emit('goBack')"
 			>목록</button>
 		</div>
@@ -386,6 +397,7 @@ export default {
 			this.new_item.pdt_info =  pdt_info
 			this.new_item.pdt_notice = pdt_notice
 			this.new_item.pdt_purchase = this.item.pdt_purchase
+			this.new_item.pdt_price = this.item.pdt_price
 			this.new_item.pdt_delivery = this.item.pdt_delivery
 			this.new_item.pdt_summary = this.item.pdt_summary
 			this.new_item.pdt_category = this.item.pdt_category

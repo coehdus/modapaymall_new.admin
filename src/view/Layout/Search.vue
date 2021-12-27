@@ -1,5 +1,5 @@
 <template>
-	<div class=" ptb-10 bg-base box justify-space-between">
+	<div class=" ptb-10 box justify-space-between">
 
 		<div
 			v-show="option.is_cnt"
@@ -41,7 +41,7 @@
 					:key="'select_' + index"
 					v-model="search[select.column]"
 					class="pa-5-10 box vertical-middle mr-10 "
-					@change="$emit('click')"
+					@change="$emit('click', 1)"
 				>
 					<option
 						:value="''"
@@ -57,7 +57,7 @@
 			<select
 				class="pa-5-10 mr-10"
 				v-model="search.list_cnt"
-				@change="$emit('click')"
+				@change="$emit('click', 1)"
 			>
 				<option
 					v-for="cnt in list_cnt"
@@ -84,12 +84,12 @@
 				v-model="search.search_value"
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색어를 입력하세요"
-				@keyup.enter="$emit('click')"
+				@keyup.enter="$emit('click', 1)"
 			/>
 
 			<button
 				class="btn-blue pa-5-10 vertical-middle mr-10"
-				@click="$emit('click')"
+				@click="$emit('click', 1)"
 			>검색</button>
 
 			<button

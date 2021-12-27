@@ -53,12 +53,12 @@ html, body {
 }
 html, body, table {
     font-size: 14px;
-    color:  #bbb;
+    //color:  #bbb;
     font-family: Noto Sans KR,sans-serif,Dotum,Helvetica,AppleSDGothicNeo;
 }
 
 a, button, small, label, span, input {
-
+    vertical-align: middle;
 }
 
 a {color:  black;}
@@ -77,7 +77,7 @@ a:active {
 input[type=text],
 input[type=number],
 input[type=email],
-input[type=password] { width: auto; letter-spacing: 1px}
+input[type=password] { letter-spacing: 1px}
 
 input[type=checkbox],
 input[type=radio] { vertical-align: text-bottom }
@@ -97,7 +97,7 @@ a:hover {border: 0;}
 a:hover img {display: none;}
 a:hover img {display: inline;}
 
-select {border:  1px solid #ddd; padding:  1px; vertical-align:  middle; color: #bbb}
+select {border:  1px solid #ddd; padding:  1px; vertical-align:  middle; color: #333}
 
 button {border:  none; margin:  0; padding:  0; cursor:  pointer; vertical-align: middle}
 

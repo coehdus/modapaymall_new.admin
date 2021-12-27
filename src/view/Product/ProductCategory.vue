@@ -1,15 +1,15 @@
 <template>
 	<div
-		class="full-height flex-column"
+		class="full-height flex-column pa-10"
 	>
 		<div
-			class="justify-space-between"
+			class="justify-space-between  "
 			v-if="items.length > 0"
 		>
 			<div
 				v-for="(item, key) in item_list"
 				:key="'title_' + key"
-				class="full-height flex-1 mr-20 flex-column"
+				class=" flex-1 mr-10 bg-white pa-10 flex-column"
 			>
 				<h6 class="mt-10 justify-space-between">
 					<span>{{ key.slice(-1) }} 차 카테고리</span>
@@ -19,7 +19,7 @@
 					>mdi mdi-pencil-box-outline</v-icon>
 				</h6>
 				<ul
-					class="mt-10  box-shadow full-height"
+					class="mt-10  box full-height"
 				>
 					<template
 						v-for="(sub, sub_index) in item"
@@ -28,7 +28,7 @@
 						v-if="is_view(sub)"
 						:key="sub.category_code"
 						class="pa-10 justify-space-between mb-10"
-						:class="{ on: isSelect(sub) }"
+						:class="{ 'bg-eee': isSelect(sub) }"
 					>
 						<input
 							v-model="items[sub.index].category_name"
@@ -80,7 +80,7 @@
 		</div>
 
 		<div
-			class="mt-30 justify-center"
+			class="mt-auto justify-center"
 		>
 			<button
 				class="bg-blue pa-10-20"

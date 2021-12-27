@@ -50,7 +50,7 @@ export default {
 	,methods: {
 		isAuth: function(){
 			console.log('isAuth start !!')
-			let TOKEN = sessionStorage.getItem('delimallAT')
+			let TOKEN = sessionStorage.getItem(process.env.VUE_APP_NAME + 'AT')
 			let skip = false
 			let except = ['auth']
 			let path = document.location.href
@@ -115,7 +115,7 @@ export default {
 
 				if(result.success){
 					if(result.data.admin_info.admin_status != '1' || result.data.admin_info.is_delete != '0'){
-						document.location.href = 'ADMIN/Auth/Notice'
+						document.location.href = 'NEW_ADMIN/Auth/Notice'
 					}else {
 						this.user = result.data.admin_info
 					}
@@ -142,6 +142,7 @@ export default {
 	}
 	,created() {
 		this.isAuth()
+		console.log(this.$route)
 	}
 };
 </script>

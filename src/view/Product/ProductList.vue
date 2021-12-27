@@ -1,6 +1,6 @@
 <template>
 	<div
-		class=" full-height flex-column position-relative "
+		class=" full-height flex-column position-relative"
 	>
 		<Search
 			:search="search"
@@ -42,22 +42,23 @@
 		</Search>
 
 		<div
-			class="mt-10 full-height flex-column overflow-y-auto position-relative"
+			class="mt-10 pa-10 bg-white full-height flex-column overflow-y-auto position-relative"
 		>
 			<div
-				class="full-width full-height flex-column overflow-y-auto"
+				v-if="items.length > 0"
 			>
-				<table class="mt-10 ">
+				<table class="table">
 					<colgroup>
-						<col width="80px" />
+						<col width="120px" />
 						<col width="auto" />
 						<col width="120px" />
+
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
+						<col width="150px" />
 						<col width="120px" />
-						<col width="120px" />
-						<col width="120px" />
+
 						<col width="80px" />
 					</colgroup>
 					<thead>
@@ -66,8 +67,7 @@
 								colspan="2"
 							>상품명</th>
 							<th>공급가</th>
-							<th>공급 배송비</th>
-							<th>상품 배송비</th>
+							<th>판매가</th>
 							<th>재고</th>
 							<th>판매여부</th>
 							<th
@@ -103,8 +103,7 @@
 								{{ item.pdt_name }}
 							</td>
 							<td>{{ item.pdt_purchase | makeComma }}</td>
-							<td>{{ item.shop_delivery_price | makeComma }}</td>
-							<td>{{ item.pdt_delivery | makeComma }}</td>
+							<td>{{ item.pdt_price | makeComma }}</td>
 							<td
 								class="full-height"
 							>{{ item.is_sold_name }}</td>
@@ -150,16 +149,16 @@
 									v-if="is_agency"
 									class=" flex-row justify-center"
 								>
-									<v-icon
-										class="pa-5 "
+									<i
+										class="pa-5 mdi mdi-power-plug"
 										:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
 										@click="item.is_use = 1; update(item)"
-									>mdi mdi-power-plug</v-icon>
-									<v-icon
-										class="pa-5  "
+									></i>
+									<i
+										class="pa-5  mdi mdi-power-plug-off"
 										:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
 										@click="item.is_use = 0; update(item)"
-									>mdi mdi-power-plug-off</v-icon>
+									></i>
 								</div>
 								<div
 									v-else
@@ -200,15 +199,19 @@
 						</tr>
 					</tbody>
 				</table>
+
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="search"
+
+					class="mt-auto pa-10"
+				></Pagination>
 			</div>
 
-			<Pagination
-				:program="program"
-				:align="'center'"
-				:options="search"
-
-				class="mt-auto pa-10"
-			></Pagination>
+			<Empty
+				v-else
+			></Empty>
 		</div>
 
 		<Excel
@@ -264,10 +267,11 @@ import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import ProductItem from "./ProductItem";
 import ProductDetail from "@/view/Product/ProductDetail";
+import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {ProductDetail, ProductItem, Excel, Search, Pagination},
+	components: {Empty, ProductDetail, ProductItem, Excel, Search, Pagination},
 	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules', 'supply_list', 'category_list']
 	,data: function (){
 		return {
@@ -276,15 +280,16 @@ export default {
 				,top: true
 				,title: true
 			}
-			,search: {
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,pdt_company: this.$route.query.pdt_company ? this.$route.query.pdt_company : ''
-				,search_type: this.$route.query.search_type ? this.$route.query.search_type : 'pdt_name'
-				,is_use: this.$route.query.is_use ? this.$route.query.is_use : ''
-				,list_cnt: this.$route.query.list_cnt ? this.$route.query.list_cnt : 10
-				,page: this.$route.query.page ? this.$route.query.page : 1
+				,pdt_company: ''
+				,search_type: 'pdt_name'
+				,is_use: ''
+				,is_supply_delete: ''
+				,list_cnt: 10
+				,page: 1
 				,pdt_category: ''
-			}
+			})
 			,search_option:{
 				is_excel: true
 				, is_item: true
@@ -299,6 +304,12 @@ export default {
 						name: '사용 여부', column: 'is_use', items: [
 							{name: '사용', column: '1'}
 							, {name: '미사용', column: '0'}
+						]
+					}
+					,{
+						name: '판매 여부', column: 'is_supply_delete', items: [
+							{name: '판매', column: '1'}
+							, {name: '미판매', column: '0'}
 						]
 					}
 				]
@@ -321,7 +332,6 @@ export default {
 					,{ key: 0, name: '공급사', column: 'shop_name'}
 					,{ key: 0, name: '상품명', column: 'pdt_name'}
 					,{ key: 0, name: '공급가', column: 'pdt_purchase'}
-					,{ key: 0, name: '공급 배송비', column: 'pdt_delivery'}
 					,{ key: 0, name: '재고', column: 'is_sold_name'}
 					,{ key: 0, name: '판매여부', column: 'is_supply_sale_name'}
 					,{ key: 0, name: '사용여부', column: 'is_use_name'}
@@ -413,7 +423,7 @@ export default {
 					this.$set(this.search, 'total_count', result.data.tCnt)
 					this.$set(this.search_option, 'tCnt', result.data.tCnt)
 					this.$set(this.search_option, 'cnt', result.data.cnt)
-
+					this.$storage.setQuery(this.search)
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -424,7 +434,7 @@ export default {
 			}
 		}
 		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, paramas: this.$route.params, query: this.search })
+			this.$storage.setQuery(this.search)
 			this.getData()
 		}
 		,update: async function(item){
@@ -461,7 +471,7 @@ export default {
 					name += 'agency'
 					break;
 			}
-			this.$emit('push', { name: name, params: { pdt_code: item.pdt_code }})
+			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})
 		}
 		,clear_item: function(){
 			this.item_new = {

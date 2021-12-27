@@ -12,10 +12,11 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height flex-column overflow-y-auto"
+			class="mt-10 pa-10 bg-white full-height overflow-y-auto"
 		>
 			<table
 				v-if="items.length > 0"
+				class="table"
 			>
 				<colgroup>
 					<col width="80px" />
@@ -102,7 +103,7 @@
 						v-if="is_view == item.uid"
 						:key="'banner_file_' + item.uid"
 					>
-						<td colspan="5" class="text-left bg-bbb ">
+						<td colspan="7" class="text-left bg-eee">
 							<span
 								v-for="file in item.files"
 								:key="'file_' + file.uid"

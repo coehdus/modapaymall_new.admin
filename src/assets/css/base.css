@@ -1,10 +1,11 @@
 
 /* text decoration */
+.top-line { border-top: 1px solid #ddd }
 .under-line { border-bottom: 1px solid #ddd}
 .under-line-not-last:not(:last-child) { border-bottom: 1px solid #ddd }
 .text-right { text-align: right !important; }
 .text-center { text-align: center; }
-.text-left { text-align: left; }
+.text-left { text-align: left !important; }
 .text-under-line { border-bottom: 1px solid #ddd}
 
 .size-px-8 { font-size: 8px !important}
@@ -94,6 +95,9 @@
 
 .color-black { color: black !important;}
 
+.color-icon { color: #333 !important;}
+.color-icon-dark { color: #bbb !important}
+
 .vertical-middle { vertical-align: middle !important;}
 .vertical-top { vertical-align: top !important;}
 .vertical-bottom { vertical-align: bottom !important;}
@@ -131,6 +135,8 @@
 .ptb-10 { padding: 10px 0 !important;}
 .ptb-20 { padding: 20px 0 !important;}
 .ptb-30 { padding: 30px 0 !important;}
+.ptb-40 { padding: 40px 0 !important;}
+.ptb-50 { padding: 50px 0 !important;}
 
 .prl-5 { padding-right: 5px !important; padding-left: 5px !important;}
 .prl-10 { padding-right: 10px !important; padding-left: 10px !important;}
@@ -153,6 +159,7 @@
 .mb-40 { margin-bottom: 40px !important;}
 .mb-50 { margin-bottom: 50px !important;}
 
+.mr-1 {margin-right: 1px}
 .mr-5 { margin-right: 5px}
 .mr-10 { margin-right: 10px}
 .mr-15 { margin-right: 15px}
@@ -198,35 +205,39 @@
 .overflow-hidden { overflow: hidden}
 
 .full-height { height: 100%;}
-.full-width { width: 100%}
+.full-width { width: 100% !important;}
 .height-auto { height: auto !important;}
 
 /* background */
 
-.bg-default { background-color: #eee}
-.bg-gray { background-color: gray;  color: #333}
+.bg-default { border: 1px solid #ddd !important; background-color: #ddd; color: #333 !important;}
+.bg-identify { border: 1px solid #0f6ecd; background-color: #0f6ecd !important; color: white; box-sizing: border-box;}
+.bg-identify-outline { border: 1px solid #0f6ecd; color: #0f6ecd; box-sizing: content-box }
+.bg-danger { border: 1px solid #bf360c; background-color: #bf360c !important; color: white}
+.bg-gray { border: 1px solid gray; background-color: gray;  color: #eee}
 .bg-gray-light { background-color: #eee; }
 .bg-gray-dark { background-color: darkgray}
 .bg-dark { background-color: #828282}
-.bg-white { background-color: white}
-.bg-green { background-color: #0f9d58; color: #eee;}
-.bg-red { background-color: #bf360c; color: #eee;}
-.bg-orange { background-color: darkorange; color: #eee;}
+.bg-white { background-color: white !important;}
+.bg-green { border: 1px solid #0f9d58; background-color: #0f9d58; color: #eee;}
+.bg-red { border: 1px solid #bf360c; background-color: #bf360c; color: #eee;}
+.bg-orange { border: 1px solid darkorange; background-color: darkorange; color: #eee;}
 .bg-f5 { background-color: #f5f5f5}
 .bg-eee { background-color: #eee !important}
 .bg-bbb { background-color: #bbb !important}
 .bg-ddd { background-color: #ddd !important}
 .bg-select { background-color: black}
 .bg-blue { background-color: #0D47A1; color: #eee}
+.bg-333 { background-color: #333;}
 
-.bg-blue-light { background-color: #0f6ecd; color:  #eee}
+.bg-blue-light { background-color: #0e6dcd; color:  #eee}
 .bg-light-gray { background-color: darkgray;}
 .bg-light-green { background-color: #81C784;}
 .bg-light-blue { background-color: #eee;}
 .bg-light-red { background-color: #ee6e73;}
 .bg-black { background-color: black;}
 .bg-light-orange { background-color: lightsalmon;}
-.bg-base { background-color: #333 !important;}
+.bg-base { background-color: #EBF0F8 !important;}
 .bg-title {
     padding: 10px;
 }
@@ -246,7 +257,7 @@
 /* input */
 .select-list-type { border: 1px solid #ddd; width: 100%; padding: 13px; color: black; height: auto;}
 
-input { font-size: 12px; letter-spacing: -0.5px; color: #bbb}
+input { font-size: 12px; letter-spacing: -0.5px; color: #333}
 input:disabled,
 input:read-only { background-color: #eee; color: #bbb;}
 
@@ -258,11 +269,11 @@ input:read-only { background-color: #eee; color: #bbb;}
 .input-underline:focus,
 .input-underline.input  { border-bottom: 1px solid #009BFA}
 
-.box { border: 1px solid #bbb;}
+.box { border: 1px solid #bbb; background-color: white;}
 .radius-5 { border-radius: 5px}
 .radius-10 { border-radius: 10px}
-.input-box { width: 100%; padding: 5px 10px; border: 1px solid #ddd;}
-.input-box-inline { padding: 5px 10px; border: 1px solid #ddd;}
+.input-box { width: 100%; padding: 5px 10px; border: 1px solid #bbb; color: #333 !important;}
+.input-box-inline { padding: 5px 10px; border: 1px solid #bbb;}
 
 .login-checkbox { width: 20px !important; vertical-align: middle; margin-right: 0px;}
 
@@ -282,13 +293,14 @@ select:disabled { cursor: no-drop}
 .btn-primary { background-color: #0165FA; color: white; }
 
 .btn-danger { background-color: #D50000; color: white; }
-.btn-default { background-color: #eee; color: #2A2A2A; border: 1px solid #ddd}
+.btn-default { background-color: #bbb; color: #333 !important; border: 1px solid #bbb; }
 
 .btn-success { background-color: #15ab94; color: white;}
 .btn-cancel { background-color: #FF5D46; color: white;}
-.btn-blue { background-color: #0f6ecd; color: white;}
+.btn-blue { border: 1px solid #0f6ecd; background-color: #0f6ecd; color: white;}
+.btn-blue-outline { border: 1px solid #0f6ecd; color: #0f6ecd; }
 .btn-orange { background-color: #faa05a; color: white}
-.btn-green { background-color: #15ab94; color: white;}
+.btn-green { border: 1px solid #15ab94; background-color: #15ab94; color: white; box-sizing: border-box}
 
 .btn-group-red { background-color: #eee; color: black}
 .btn-group-red.on { background-color: white; border: 1px solid #F14E37; color: #F14E37}
@@ -300,7 +312,7 @@ select:disabled { cursor: no-drop}
 
     width: 100%; height: 100%;
     border: none;
-    background-color: #0D47A1;
+    background-color: #0f6ecd;
     color: white;
     font-size: 16px;
 }
@@ -390,29 +402,34 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 
 
 /* table */
-.table { width: 100%; font-size: 12px}
+.table { width: 100%; font-size: 12px; table-layout: fixed}
 
-.table th
-,.table td {
+.table > tbody > tr > th
+,.table > tbody > tr > td
+,.table > thead > tr > th
+,.table > thead > tr > td {
     text-align: center;
     padding: 10px;
     border: 1px solid #ddd
 }
 
-.table th { background-color: #black; }
-.th-left th { text-align: left }
-.td-left td { text-align: left }
+.table th { background-color: #EBF0F9 !important; }
+.table.th-left > tbody > tr > th{ text-align: left ;}
+.table.td-left > tbody > tr > td { text-align: left ;}
+.table.td-right > tbody > tr > td { text-align: right ;}
 
 .table tr{
-    background-color: #333;
+    background-color: #fff;
 }
 
-.table-even thead tr { background-color: #eee}
+.table-even thead tr { background-color: #0D47A1}
 .table-even tbody tr:nth-child(even){
     background-color: #eee;
 }
 
 .table-odd thead tr { background-color: #fff}
 .table-odd tbody tr:nth-child(odd){
-    background-color: #eee;
+    background-color: #0D47A1;
 }
+
+.th-white th { background-color: white}

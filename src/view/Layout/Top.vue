@@ -1,37 +1,43 @@
 <template>
 	<div
-		class="top bg-base"
+		class="top bg-333"
 	>
 		<div
-			class="logo bg-base pa-10 color-white text-center size-px-20 font-weight-bold"
+			class="logo pa-10 text-center size-px-20 font-weight-bold cursor-pointer"
 			@click="$emit('push', {name: 'Index'})"
-		>딜리몰 관리자</div>
-		<div class=" pa-10 ">
-			<span
-				class="mr-10 cursor-pointer"
-				@click="setModalShop"
-			>
-				<v-icon
-					class="color-icon"
-				>mdi mdi-store</v-icon>
-				[{{ user.admin_type_name }}] 상점 설정
-			</span>
-			<span
-				v-show="user.admin_type_code == 'agency'"
-				@click="isCopy"
-				class="mr-10 bg-black pa-5-10 radius-10"
-			>
-				대리점 코드 발급
-			</span>
-			<span>
-				{{ admin_div_name }}
+		>{{ $production_title }}</div>
+		<div class=" pa-10 flex-1 justify-space-between">
+
+			<div>
+				<span
+					class="mr-10 cursor-pointer vertical-middle"
+					@click="setModalShop"
+				>
+					<v-icon
+						class="color-icon-dark vertical-middle"
+					>mdi mdi-store</v-icon>
+					<span class="vertical-middle"> [{{ user.admin_type_name }}] 상점 설정</span>
+				</span>
+
+				<span
+					v-show="user.admin_type_code == 'agency'"
+					@click="isCopy"
+					class="mr-10 bg-black pa-5-10 radius-10"
+				>
+					대리점 코드 발급
+				</span>
+			</div>
+
+			<div class="">
+				<span class="vertical-middle">{{ admin_div_name }}
 				{{ user.admin_name }}
 				({{ user.admin_id}}) 님 환영합니다
+				</span>
 				<button
-					class="btn-blue pa-5-10 size-px-12 vertical-middle"
+					class="btn-blue pa-5-10 size-px-12 ml-10 radius-5"
 					@click="confirmLogout"
-				><span class="vertical-middle">로그아웃</span><v-icon small class="color-eee">mdi mdi-chevron-right</v-icon></button>
-			</span>
+				>로그아웃</button>
+			</div>
 
 		</div>
 
@@ -363,6 +369,8 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+		color: #bbb;
+		padding: 5px 0;
 	}
 
 	.top .logo {

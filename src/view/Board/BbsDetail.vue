@@ -5,7 +5,7 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10">
+			<div class="flex-1 mr-10 pa-10 bg-white">
 				<div class="">
 					<h6>제목</h6>
 					<input
@@ -48,7 +48,7 @@
 				</div>
 
 			</div>
-			<div class="flex-1">
+			<div class="flex-1 pa-10 bg-white">
 				<div class="">
 
 					<h6>내용</h6>

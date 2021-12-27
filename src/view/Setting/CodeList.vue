@@ -20,8 +20,20 @@
 				maxlength="25"
 			>
 			<input
+				v-model="new_item.code_index"
+				placeholder="code_index"
+				class="box pa-10 mr-10"
+				maxlength="50"
+			>
+			<input
 				v-model="new_item.code_value"
-				placeholder="코드값"
+				placeholder="code_value"
+				class="box pa-10 mr-10"
+				maxlength="50"
+			>
+			<input
+				v-model="new_item.code_color"
+				placeholder="code_color"
 				class="box pa-10 mr-10"
 				maxlength="50"
 			>
@@ -38,7 +50,7 @@
 				v-for="(item, key) in item_list"
 				:key="item.total_code"
 				class="pa-10 box radius-10 mr-10"
-				:class="main_code == key ? 'bg-blue color-white' : 'bg-default' "
+				:class="main_code == key ? 'bg-identify color-eee' : 'bg-default' "
 				@click="main_code = key; $set(new_item, 'main_code', key)"
 			> {{ item.code_name }}</button>
 		</div>
@@ -56,16 +68,28 @@
 					:key="item.main_code + key + sub.sub_code"
 				>
 					<input
+						class="input-box-inline mr-10 mb-10"
 						v-model="sub.main_code"
 					>
 					<input
+						class="input-box-inline mr-10 mb-10"
 						v-model="sub.sub_code"
 					>
 					<input
+						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_name"
 					>
 					<input
+						class="input-box-inline mr-10 mb-10"
+						v-model="sub.code_index"
+					>
+					<input
+						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_value"
+					>
+					<input
+						class="input-box-inline mr-10 mb-10"
+						v-model="sub.code_color"
 					>
 				</li>
 			</ul>

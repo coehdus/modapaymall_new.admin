@@ -2,7 +2,7 @@
 	<div
 		class="bg-title position-relative justify-space-between "
 	>
-		<span class=" font-weight-bold size-em-15 vertical-middle">{{ program.name }}</span>
+		<h5>{{ program.name }}</h5>
 
 		<span
 			v-if="is_cart_view"

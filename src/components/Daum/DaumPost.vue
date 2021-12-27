@@ -21,7 +21,7 @@
 				<span class=" white size-px-24">주소 찾기</span>
 				<button
 					@click="daumComplate"
-				><v-icon large class="color-icon"
+				><v-icon large class="color-eee"
 				>mdi-close-box-outline</v-icon></button>
 			</div>
 			<VueDaumPostcode

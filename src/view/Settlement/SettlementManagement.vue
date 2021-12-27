@@ -3,7 +3,7 @@
 
 		<div class="full-height">
 			<div
-				class="pa-10 text-right"
+				class="pa-10 text-right box"
 			>
 				<select
 					v-model="item_do.year"
@@ -41,42 +41,37 @@
 				<button
 					class="pa-5-10 btn-success"
 					@click="save"
-				>정산 실행 <v-icon class="color-white">mdi mdi-chevron-right</v-icon></button>
+				>정산 실행</button>
 			</div>
-			<table>
-				<thead>
-					<tr>
-						<th>정산일</th>
-						<th>정산 실행일시</th>
-						<th>정산 변경일시</th>
-						<th>정산여부</th>
-						<th>지급여부</th>
-						<th>관리</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template
-						v-if="items.length > 0"
-					>
-					<tr
-						v-for="item in item_list"
-						:key="'settlement_' + item.uid"
-					>
-						<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-						<td>{{ item.wDate }}</td>
-						<td>{{ item.mDate }}</td>
-						<td>{{ item.date }}</td>
-						<td>{{ item.date }}</td>
-						<td></td>
-					</tr>
-					</template>
-					<tr
-						v-else
-					>
-						<td colspan="4" class="pa-50">정산 내역이 없습니다</td>
-					</tr>
-				</tbody>
-			</table>
+
+
+			<div class="mt-10 pa-10 bg-white">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>정산일</th>
+							<th>정산 실행일시</th>
+							<th>정산 변경일시</th>
+							<th>정산여부</th>
+							<th>지급여부</th>
+							<th>관리</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="item in item_list"
+							:key="'settlement_' + item.uid"
+						>
+							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
+							<td>{{ item.wDate }}</td>
+							<td>{{ item.mDate }}</td>
+							<td>{{ item.date }}</td>
+							<td>{{ item.date }}</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </template>

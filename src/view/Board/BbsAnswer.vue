@@ -5,7 +5,7 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-20">
+			<div class="flex-1 mr-20 pa-10 bg-white">
 				<div class="">
 					<h6>제목</h6>
 					<div class="input-box">{{ item.b_title }}</div>
@@ -34,7 +34,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex-1">
+			<div class="flex-1 pa-10 bg-white">
 				<div class="">
 					<h6>답변</h6>
 					<editor

@@ -12,8 +12,7 @@
 				<button
 
 					v-for="item in (setLength)"
-					class="box prl-10 mr-10 bg-page size-px-14"
-					style="line-height: 170%"
+					class="box prl-10 mr-10 bg-page size-px-14 line-height-170"
 					:class="{ active: page_config.page == page_config.page_group * page_config.page_cnt - page_config.page_cnt + item}"
 					:key="item"
 					@click="click(page_config.page_group * page_config.page_cnt - page_config.page_cnt + item)"
@@ -123,7 +122,8 @@
 
 <style>
 	.active {
-		background-color: #bbb !important;
-		color: #333;
+		border: 1px solid #0f6ecd;
+		background-color: #0f6ecd !important;
+		color: #eee;
 	}
 </style>
