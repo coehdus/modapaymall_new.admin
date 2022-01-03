@@ -84,7 +84,7 @@
 								>mdi mdi-menu-down</v-icon>
 
 							</td>
-							<td>{{ item.admin_id }}</td>
+							<td>{{ item.account_id }}</td>
 							<td>{{ item.admin_name }}</td>
 							<td>{{ item.admin_phone }}</td>
 							<td

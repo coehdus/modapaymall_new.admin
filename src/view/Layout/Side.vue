@@ -13,7 +13,7 @@
 					v-for="item in items"
 				>
 					<li
-						v-if="item.type.indexOf(user.admin_type_code) > -1"
+						v-if="item.type.indexOf(user.account_type_code) > -1"
 						:key="item.path"
 						class="li-side-content cursor-pointer"
 						:class="'li-side-depth-' + item.depth"
@@ -30,7 +30,7 @@
 								v-for="(sub, index) in item.sub"
 							>
 								<li
-									v-if="!sub.not_view && sub.type.indexOf(user.admin_type_code) > -1"
+									v-if="!sub.not_view && sub.type.indexOf(user.account_type_code) > -1"
 									:key="item.path + sub.path + '_' + index"
 									class="pa-10 "
 									:class="{'bg-black': $route.name ? $route.name.indexOf(item.path + sub.path) > -1 : false}"

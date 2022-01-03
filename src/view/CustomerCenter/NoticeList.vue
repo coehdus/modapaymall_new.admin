@@ -17,7 +17,7 @@
 			<div
 				v-if="items.length > 0"
 			>
-				<table class="table">
+				<table class="table table-even">
 					<colgroup>
 						<col width="80px" />
 						<col width="auto" />

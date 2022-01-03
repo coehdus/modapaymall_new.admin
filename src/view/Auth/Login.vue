@@ -77,6 +77,8 @@
 
 <script>
 
+import { Base64 } from 'js-base64'
+
 export default{
 	name: 'Login'
 	,props: ['Axios', 'codes']
@@ -141,7 +143,7 @@ export default{
 
 				if (result.success) {
 
-					sessionStorage.setItem(process.env.VUE_APP_NAME + 'AT', result.data.TOKEN)
+					sessionStorage.setItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT', result.data.TOKEN)
 
 					this.error.type = ''
 
@@ -168,7 +170,7 @@ export default{
 			}
 		}
 		,toMain: function(){
-			document.location.href = '/NEW_ADMIN'
+			document.location.href = process.env.VUE_APP_PUBLIC_PATH
 		}
 	}
 	,created: function(){

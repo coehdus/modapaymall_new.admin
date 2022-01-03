@@ -70,6 +70,7 @@
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.main_code"
+						placeholder="메인코드"
 					>
 					<input
 						class="input-box-inline mr-10 mb-10"

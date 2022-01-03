@@ -46,7 +46,7 @@
 
 
 			<div class="mt-10 pa-10 bg-white">
-				<table class="table">
+				<table class="table table-even">
 					<thead>
 						<tr>
 							<th>정산일</th>

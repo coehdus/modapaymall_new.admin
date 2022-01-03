@@ -19,7 +19,7 @@
 				v-if="item_list.length > 0"
 				class=""
 			>
-				<table class="table">
+				<table class="table table-even">
 					<colgroup>
 						<col width="80px" />
 						<col width="auto" />

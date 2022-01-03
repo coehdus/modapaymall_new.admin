@@ -7,7 +7,7 @@
 				class="justify-space-between "
 			>
 				<div class="flex-1 bg-white pa-10 mr-10">
-					<h6 class="under-line-identify">계정정보</h6>
+					<h6 class="under-line-identify">운영정보</h6>
 					<table class="table th-left td-left">
 						<col width="120px">
 						<col width="auto">

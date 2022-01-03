@@ -20,8 +20,6 @@ export const rules = {
 	}
 	,id: (obj, part, {min, max}) => {
 		if(obj[part]){
-			console.log(obj[part])
-
 			obj[part] = obj[part].replace(/[^a-z0-9]/, '')
 			//return { result: false, type: 'kor'}
 

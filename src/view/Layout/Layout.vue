@@ -203,8 +203,8 @@
 			}
 		}
 		,created: function(){
-			this.getCategoryList()
-			this.getSupplyList()
+			//this.getCategoryList()
+			//this.getSupplyList()
 
 			console.log(this.codes)
 		}

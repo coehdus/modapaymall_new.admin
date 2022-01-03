@@ -3,6 +3,7 @@
 		<div
 			class="full-height"
 		>
+			
 			<div
 				class="justify-space-between "
 			>
@@ -15,21 +16,10 @@
 						<col width="auto">
 						<tbody>
 							<tr>
-								<th>아이디 <span class="color-red">*</span></th>
-								<td>
-									<input
-										v-model="item.admin_id"
-										class="input-box full-width pa-5-10 mr-10"
-										placeholder="아이디를 입력하세요"
-										:rules="[rules.id(item, 'admin_id', {min: 4, max: 25 })]"
-
-										@keyup.enter="save"
-									/>
-								</td>
 								<th>등급</th>
 								<td class="position-relative">
 									<select
-										v-model="item.admin_level"
+										v-model="item.account_level"
 										class="input-box position-relative cursor-pointer"
 										style="z-index: 1"
 									>
@@ -45,12 +35,47 @@
 										style="right: 15px; top: 11px; z-index: 0"
 									>mdi mdi-menu-down</v-icon>
 								</td>
+								<th></th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>아이디 <span class="color-red">*</span></th>
+								<td>
+									<input
+										v-model="item.account_id"
+										class="input-box full-width pa-5-10 mr-10"
+										placeholder="아이디를 입력하세요"
+										:rules="[rules.id(item, 'account_id', {min: 4, max: 25 })]"
+
+										@keyup.enter="save"
+									/>
+								</td>
+
+								<th>등록일</th>
+								<td class="position-relative">
+									<input
+										v-model="item.join_date"
+										class="input-box full-width"
+										placeholder="등록일을 선택하세요"
+										readonly
+										@click="is_data_pick = !is_data_pick"
+									/>
+									<v-date-picker
+										v-if="is_data_pick"
+										v-model="item.join_date"
+										no-title
+										scrollable
+										class="position-absolute box"
+										style="top: 45px; left: -5px"
+										@change="is_data_pick = false"
+									></v-date-picker>
+								</td>
 							</tr>
 							<tr>
 								<th>비밀번호 <span class="color-red">*</span></th>
 								<td class="">
 									<input
-										v-model="item.admin_password"
+										v-model="item.account_password"
 										type="password"
 										class="input-box full-width"
 										placeholder="비밀번호"
@@ -63,7 +88,7 @@
 								<th>비밀번호 확인 <span class="color-red">*</span></th>
 								<td class="">
 									<input
-										v-model="item.admin_password_confirm"
+										v-model="item.account_password_confirm"
 										type="password"
 										class="input-box full-width"
 										placeholder="비밀번호를 한번 더 입력하세요"
@@ -78,7 +103,7 @@
 								<td>
 									<input
 										type="text"
-										v-model="item.admin_name"
+										v-model="item.account_name"
 										class="input-box full-width"
 										placeholder="이름을 입력하세요"
 										maxlength="20"
@@ -90,8 +115,8 @@
 								<td>
 									<input
 										type="number"
-										v-model="item.admin_phone"
-										:ruels="[rules.max(item, 'admin_phone', 12)]"
+										v-model="item.account_phone"
+										:ruels="[rules.max(item, 'account_phone', 12)]"
 										class="input-box full-width"
 										placeholder="휴대폰번호를 입력하세요"
 
@@ -118,23 +143,16 @@
 				@click="toList"
 			>목록</button>
 		</div>
-		<DaumPost
-			:overlay="is_post"
-			:config="daum_config"
-			@callBack="addPost"
-		></DaumPost>
 	</div>
 </template>
 
 <script>
 
-import DaumPost from "@/components/Daum/DaumPost";
 export default {
 	name: 'ManagerItem'
-	,
-	components: {DaumPost},
-	props: ['Axios', 'user', 'codes', 'rules']
-	,data: function(){
+	, components: {}
+	, props: ['Axios', 'user', 'codes', 'rules', 'date']
+	, data: function(){
 		return {
 			program: {
 				name: '관리자 등록'
@@ -143,42 +161,17 @@ export default {
 				, bottom: false
 			}
 			,item: {
-				admin_type: 'A001001'
-				, admin_level: ''
+				account_type: 'A001001'
+				, account_level: ''
+				, join_date: this.date.getToday('-')
 			}
+			, is_data_pick: false
 			,sample: {
 
 			}
-			,is_modal: false
-			,modal_option: {
-				title: '비밀번호 초기화'
-				,content: '비밀번호를 초기화 하고 등록된 연락처로 전송하시겠습니까?'
-				,top: true
-				,bottom: true
-				,width: '360px'
-			}
-			,is_modal2: false
-			,modal_option2: {
-				title: '영업점 계정상태 변경'
-				,top: true
-				,bottom: true
-				,width: '360px'
-			}
-			,is_modal3: false
-			,modal_option3: {
-				title: '첨부파일 삭제'
-				,top: true
-				,bottom: true
-				,content: '해당 첨부파일을 삭제하시겠습니까?'
-				,width: '360px'
-			}
-			,is_post: false
-			,daum_config: {
-				width: '360px'
-			}
 		}
 	}
-	,computed: {
+	, computed: {
 
 	}
 	, methods: {
@@ -202,36 +195,14 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
-		,isPassword: function(){
-			this.clear()
-			this.is_modal = true
-		}
-		,isStatus: function(){
-			this.clear()
-			this.is_modal2 = true
-		}
-		,clear: function(){
-			this.is_modal = false
-			this.is_modal2 = false
-			this.is_modal3 = false
-		}
 		,toList: function(){
-			this.$router.back()
-		}
-
-		,daumPost: function () {
-			this.is_post = true
-		}
-		, addPost: function (call) {
-
-			this.$set(this.item, 'shop_post', call.zonecode)
-			this.$set(this.item, 'shop_addr1', call.address)
-
-			this.is_post = false
+			this.$storage.push({ name: 'ManagerList'})
 		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
+
+
 	}
 }
 </script>

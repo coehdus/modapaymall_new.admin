@@ -17,7 +17,7 @@
 						<tr>
 							<th>아이디</th>
 							<td>
-								{{ item.admin_id }}
+								{{ item.account_id }}
 							</td>
 							<th>등급</th>
 							<td class="position-relative">
@@ -226,7 +226,7 @@ export default {
 				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postAdmin'
+					,url: 'management/putAdmin'
 					,data: this.item
 				})
 				if(result.success){

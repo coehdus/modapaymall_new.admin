@@ -11,7 +11,7 @@
 			<div>
 				<span
 					class="mr-10 cursor-pointer vertical-middle"
-					@click="setModalShop"
+					@click="toSetting"
 				>
 					<v-icon
 						class="color-icon-dark vertical-middle"
@@ -44,22 +44,22 @@
 		<Modal
 			:is_modal="is_modal"
 			:option="modal_option"
+			:top="true"
+			:bottom="true"
+
+			title="상점 설정"
+			:bottom_class="'justify-center pb-10'"
+			:click_class="'mr-10 bg-identify'"
+
+			@close="is_modal = !is_modal"
+			@click="save"
+			@cancel="is_modal = !is_modal"
 		>
 			<div
-				slot="modal-title"
-				class="bg-base pa-10-20 color-ddd"
-			>
-				<strong class="size-px-24">{{ modal_option.title }}</strong>
-				<button
-					class="modal-btn-close "
-					@click="is_modal = !is_modal"
-				><v-icon class="color-icon">mdi-close-circle</v-icon></button>
-			</div>
-			<div
 				slot="modal-content"
-				class="bg-base"
+				class="bg-base "
 			>
-				<table class="shop-table bg-base full-width">
+				<table class="table table-even">
 					<col width="150px" />
 					<col width="auto" />
 					<tbody>
@@ -173,19 +173,6 @@
 					</tbody>
 				</table>
 			</div>
-			<div
-				slot="modal-bottom"
-				class="justify-space-between"
-			>
-				<button
-					class="flex-1 pa-10 btn-identify"
-					@click="save"
-				>저장</button>
-				<button
-					class="flex-1 pa-10 btn-default"
-					@click="is_modal = !is_modal"
-				>닫기</button>
-			</div>
 		</Modal>
 		<Modal
 			:is_modal="is_modal2"
@@ -224,6 +211,8 @@
 	import VueQRCodeComponent from 'vue-qrcode-component'
 	Vue.component('qr-code', VueQRCodeComponent)
 
+	import { Base64 } from 'js-base64'
+
 	export default{
 		name: 'Top'
 		, components: { Modal, editor: Editor }
@@ -234,9 +223,6 @@
 				item: {}
 				, is_modal: false
 				, modal_option: {
-					top: true
-					, title: '상점 설정'
-					, bottom: true
 				}
 				, is_modal2: false
 				, modal_option2: {
@@ -275,9 +261,9 @@
 			}
 			,confirmLogout: function() {
 				if(confirm("로그아웃 하시겠습니까?")){
-					sessionStorage.removeItem('delimallAT')
-					sessionStorage.removeItem('delimallAT2')
-					document.location.href= '/ADMIN/Auth/Login'
+					sessionStorage.removeItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
+					sessionStorage.removeItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT2')
+					document.location.href= process.env.VUE_APP_PUBLIC_PATH
 				}
 			}
 
@@ -295,7 +281,7 @@
 				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.admin_id)));
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
-			,setModalShop: function(){
+			,toSetting: function(){
 				this.is_modal = true
 			}
 			,getData: async function(){

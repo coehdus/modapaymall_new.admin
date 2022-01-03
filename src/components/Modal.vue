@@ -54,13 +54,13 @@
 					>
 						<button
 							v-if="!options.is_click"
-							class="flex-1 pa-10-20"
+							class="pa-10-20"
 							:class="class_click"
 							@click="click"
 						>{{ name_click }}</button>
 						<button
 							v-if="!options.is_cancel"
-							class="flex-1 pa-10-20 "
+							class="pa-10-20 "
 							:class="class_cancel"
 							@click="cancel"
 						>{{ name_cancel }}</button>
@@ -100,7 +100,7 @@ export default {
 			}else if(this.options.click_class){
 				class_name = this.options.click_class
 			}else{
-				class_name = 'btn-identify'
+				class_name = 'bg-identify flex-1'
 			}
 
 			return class_name
@@ -112,7 +112,7 @@ export default {
 			}else if(this.options.cancel_class){
 				class_name = this.options.cancel_class
 			}else{
-				class_name = 'btn-default'
+				class_name = 'btn-default flex-1'
 			}
 
 			return class_name
@@ -183,7 +183,7 @@ export default {
 .modal-wrap .modal-container .modal-content .modal-bottom { margin-top: auto; padding: 0; }
 .modal-btn-close { float: right; padding: 0; height: auto;}
 
-.modal-wrap .modal-container .modal-bottom {padding: 0; border-radius: 0 0 5px 5px; background-color: #eee}
+.modal-wrap .modal-container .modal-bottom {padding: 0; border-radius: 0 0 5px 5px; background-color: white;}
 
 .fade-enter-active,
 .fade-leave-active {

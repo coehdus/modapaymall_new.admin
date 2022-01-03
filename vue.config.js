@@ -4,7 +4,6 @@ module.exports = {
   ]
 }
 
-
 module.exports = {
-  publicPath: '/NEW_ADMIN/',
+  publicPath: process.env.VUE_APP_PUBLIC_PATH,
 }

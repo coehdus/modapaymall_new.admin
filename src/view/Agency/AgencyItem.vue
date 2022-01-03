@@ -68,12 +68,12 @@
 									class="pa-5-10 bg-blue-light "
 								>중복 체크</button>
 							</td>
-							<th>가입일</th>
+							<th>등록일</th>
 							<td class="position-relative">
 								<input
 									v-model="item.join_date"
 									class="input-box full-width"
-									placeholder="가입일을 선택하세요"
+									placeholder="등록일을 선택하세요"
 									readonly
 									@click="is_data_pick = !is_data_pick"
 								/>

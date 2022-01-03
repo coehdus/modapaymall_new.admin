@@ -167,7 +167,7 @@
 								</tr>
 								<tr>
 									<th>대리점</th>
-									<td>{{ item.o_status_name}}</td>
+									<td>{{ item.shop_name}}</td>
 								</tr>
 								<tr>
 									<th>이름</th>
@@ -220,7 +220,7 @@
 							</tbody>
 						</table>
 
-						<table class="table"></table>
+						<table class="table table-even"></table>
 					</div>
 					<ul>
 						<li
@@ -228,7 +228,7 @@
 							:key="'item_' + item.uid + 'supply_' + supply.uid"
 							class=" pa-10"
 						>
-							<table class="table">
+							<table class="table table-even">
 								<colgroup>
 									<col width="120px" />
 									<col width="300px" />

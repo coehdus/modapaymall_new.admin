@@ -28,7 +28,7 @@
 			<div
 				v-if="items.length > 0"
 			>
-				<table class="table">
+				<table class="table table-even">
 					<colgroup>
 						<col width="80px" />
 						<col width="auto" />
@@ -94,7 +94,8 @@
 							v-if="is_view == item.uid"
 							:key="'bbs_contents_' + item.uid"
 						>
-							<td colspan="7" class="text-left bg-bbb ">
+							<td><i class="mdi mdi-keyboard-return size-px-20 color-icon 180"></i></td>
+							<td colspan="6" class="text-left  ">
 								<Viewer
 									v-if="item.b_contents"
 									:initialValue="item.b_contents"

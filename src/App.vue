@@ -50,7 +50,7 @@ export default {
 	,methods: {
 		isAuth: function(){
 			console.log('isAuth start !!')
-			let TOKEN = sessionStorage.getItem(process.env.VUE_APP_NAME + 'AT')
+			let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
 			let skip = false
 			let except = ['auth']
 			let path = document.location.href
@@ -86,7 +86,7 @@ export default {
 					method: 'post'
 					,url: 'management/getCodeList'
 					,data: {
-						ATOKEN: this.TOKEN
+						UTOKEN: this.TOKEN
 					}
 				})
 
@@ -114,8 +114,8 @@ export default {
 				})
 
 				if(result.success){
-					if(result.data.admin_info.admin_status != '1' || result.data.admin_info.is_delete != '0'){
-						document.location.href = 'NEW_ADMIN/Auth/Notice'
+					if(result.data.admin_info.account_status != '1'){
+						document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Auth/Notice'
 					}else {
 						this.user = result.data.admin_info
 					}
@@ -148,26 +148,5 @@ export default {
 </script>
 
 <style>
-	table { width: 100% }
-	table thead {
 
-	}
-
-	th {
-		background-color: #545454;
-	}
-
-
-	.pdt-img img { width: 100% }
-
-	td, th {
-		padding: 10px;
-		border: none;
-		border-bottom: 1px solid #ddd;
-		text-align: center;
-	}
-
-	td:first-child {
-		text-align: center;
-	}
 </style>
