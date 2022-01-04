@@ -432,10 +432,11 @@ export default {
 			}
 			,item: {
 				supply_type: ''
-				,business_type: 'B002001'
-				,bank_code: ''
-				,join_date: this.date.getToday('-')
-				,delivery_type: '0'
+				, business_type: 'B002001'
+				, bank_code: ''
+				, join_date: this.date.getToday('-')
+				, delivery_type: '0'
+				, sales_fee: 0.5
 			}
 			,is_data_pick: false
 			,is_modal: false

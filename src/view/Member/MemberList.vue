@@ -13,7 +13,7 @@
 		></Search>
 
 		<div
-			class="mt-10 full-height bg-white pa-10 justify-space-between overflow-y-auto"
+			class="mt-10 pa-10 bg-white full-height"
 		>
 			<div
 				v-if="item_list.length > 0"
@@ -56,7 +56,7 @@
 									type="checkbox"
 								/>
 							</td>
-							<td class="text-left">{{ item.admin_name }}</td>
+							<td>{{ item.agency_name }}</td>
 							<td>{{ item.member_id }}</td>
 							<td>{{ item.member_name }}</td>
 							<td>{{ item.member_phone }}</td>
@@ -98,6 +98,8 @@
 					:program="program"
 					:align="'center'"
 					:options="search"
+
+					@click="getSearch"
 				></Pagination>
 			</div>
 			<Empty
@@ -137,6 +139,7 @@
 					,admin_code: ''
 					,member_status: ''
 					,list_cnt: 10
+					, page: 1
 				})
 				,search_option:{
 					is_excel: true
@@ -337,6 +340,13 @@
 			}
 			,toItem: function (){
 				this.is_item = !this.is_item
+			}
+			,getSearch: function(page){
+				if(page){
+					this.search.page = page
+				}
+
+				this.getData()
 			}
 		}
 		,created() {

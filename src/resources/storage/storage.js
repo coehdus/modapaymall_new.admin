@@ -21,6 +21,7 @@ export const storage = {
         if(query) {
             for (const property in obj) {
 
+                if(property == 'ATOKEN') continue
                 if(query[property] || query[property] === 0){
                     obj[property] = query[property]
                 }

@@ -37,7 +37,9 @@ export const rules = {
 		}
 	}
 	,demical: (obj, part, {min, max}) => {
+
 		if(obj[part]){
+			obj[part] += ''
 			const temp = obj[part].split('.')
 			const num = Array.isArray(temp) ? temp[0] : temp
 			const dem = temp[1]

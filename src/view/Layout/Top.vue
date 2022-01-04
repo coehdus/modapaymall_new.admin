@@ -16,7 +16,7 @@
 					<v-icon
 						class="color-icon-dark vertical-middle"
 					>mdi mdi-store</v-icon>
-					<span class="vertical-middle"> [{{ user.admin_type_name }}] 상점 설정</span>
+					<span class="vertical-middle"> [{{ user.account_type_name }}] 상점 설정</span>
 				</span>
 
 				<span
@@ -31,7 +31,7 @@
 			<div class="">
 				<span class="vertical-middle">{{ admin_div_name }}
 				{{ user.admin_name }}
-				({{ user.admin_id}}) 님 환영합니다
+				({{ user.account_id }}) 님 환영합니다
 				</span>
 				<button
 					class="btn-blue pa-5-10 size-px-12 ml-10 radius-5"

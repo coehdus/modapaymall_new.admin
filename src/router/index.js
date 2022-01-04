@@ -53,6 +53,11 @@ const routes = [
 		,component: () => import('@/view/Member/MemberList.vue')
 	}
 	,{
+		path: prefix + 'Member/Detail/:idx'
+		,name: 'MemberDetail'
+		,component: () => import('@/view/Member/MemberDetail.vue')
+	}
+	,{
 		path: prefix + 'Manager/List/:page?'
 		,name: 'ManagerList'
 		,component: () => import('@/view/Manager/ManagerList.vue')

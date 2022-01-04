@@ -75,22 +75,27 @@
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.sub_code"
+						placeholder="서브코드"
 					>
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_name"
+						placeholder="코드명"
 					>
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_index"
+						placeholder="code_index"
 					>
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_value"
+						placeholder="code_value"
 					>
 					<input
 						class="input-box-inline mr-10 mb-10"
 						v-model="sub.code_color"
+						placeholder="code_color"
 					>
 				</li>
 			</ul>

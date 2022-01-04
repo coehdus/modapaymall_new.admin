@@ -114,10 +114,10 @@ export default {
 				})
 
 				if(result.success){
-					if(result.data.admin_info.account_status != '1'){
+					if(result.data.account_info.account_status != '1'){
 						document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Auth/Notice'
 					}else {
-						this.user = result.data.admin_info
+						this.user = result.data.account_info
 					}
 				}else{
 					this.toLogin()

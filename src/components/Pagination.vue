@@ -13,7 +13,7 @@
 
 					v-for="item in (setLength)"
 					class="box prl-10 mr-10 bg-page size-px-14 line-height-170"
-					:class="{ active: page_config.page == page_config.page_group * page_config.page_cnt - page_config.page_cnt + item}"
+					:class="{ active: page_config.page === page_config.page_group * page_config.page_cnt - page_config.page_cnt + item}"
 					:key="item"
 					@click="click(page_config.page_group * page_config.page_cnt - page_config.page_cnt + item)"
 
@@ -76,8 +76,7 @@
 		}
 		,methods: {
 			click: function(page){
-				this.$set(this.options, 'page', page)
-				//this.$router.push(this.options.link + page)
+				this.$emit('click', page)
 			}
 		}
 		,watch: {

@@ -14,22 +14,6 @@
 			<template
 				slot="add"
 			>
-				<label
-					class=" pa-5 vertical-middle mr-10"
-					@click="search.agency_use = search.agency_use == 1 ? null : 1; getSearch()"
-				>
-					<v-icon
-						v-if="search.agency_use == 1"
-						class="color-green"
-					>mdi mdi-checkbox-marked</v-icon>
-					<v-icon
-						v-else
-						class="color-icon"
-					>mdi mdi-checkbox-blank-outline</v-icon>
-					<span
-						:class="{ 'color-green': search.agency_use == 1}"
-					>진열 상품만 보기</span>
-				</label>
 				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
@@ -47,18 +31,17 @@
 		</Search>
 
 		<div
-			class="mt-10 full-height full-width justify-space-between flex-column overflow-y-auto position-relative"
+			class="mt-10 pa-10 bg-white full-height  overflow-y-auto position-relative"
 		>
 			<div
-				class="full-width full-height flex-column overflow-y-auto"
+				v-if="items.length > 0"
+
+				class="full-height flex-column"
 			>
-				<table class="mt-10 ">
+				<table class="table table-even ">
 					<colgroup>
-						<col width="80px" />
+						<col width="120px" />
 						<col width="auto" />
-						<col width="120px" />
-						<col width="120px" />
-						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
@@ -71,14 +54,10 @@
 						<th
 							colspan="2"
 						>상품명</th>
-						<th>공급가</th>
-						<th>마진가</th>
 						<th>판매가</th>
-						<th>수수료</th>
 						<th>배송비</th>
 						<th>재고</th>
 						<th>판매여부</th>
-						<th>진열여부</th>
 						<th>등록일</th>
 						<th>상세정보</th>
 					</tr>
@@ -123,30 +102,7 @@
 								><input type="checkbox" class="vertical-middle" @change="setPdtType(item, 'reccom')" :checked="item.is_reccom"/> 추천 상품</label>
 							</div>
 						</td>
-						<td>{{ item.pdt_purchase | makeComma }} 원</td>
-						<td>
-							<input
-								v-model="item.agency_price"
-								type="number"
-								class="box flex-1 pa-5"
-								style="width: 80px"
-								@change="update(item)"
-								:rules="[rules.max(item, 'agency_price', 10)]"
-							/> 원
-						</td>
-						<td>
-							<input
-								v-model="item.agency_sale_price"
-								type="number"
-								class="box flex-1 pa-5"
-								style="width: 80px"
-								:rules="[rules.max(item, 'agency_sale_price', 10)]"
-								readonly
-							/> 원
-						</td>
-						<td>
-							{{ item.agency_sale_price * 0.055 | makeComma }}
-						</td>
+						<td>{{ item.pdt_price | makeComma }} 원</td>
 						<td>{{ item.shop_delivery_price | makeComma }}</td>
 						<td>{{ item.is_sold_name }}</td>
 						<td>
@@ -154,7 +110,6 @@
 								v-if="item.is_use == 1"
 								class="pa-5 "
 								:class="item.is_use == 1 ? 'bg-green color-white' : 'btn-default' "
-
 							>mdi mdi-cart</v-icon>
 							<v-icon
 								v-else
@@ -162,27 +117,9 @@
 								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
 							>mdi mdi-cart-off</v-icon>
 						</td>
-						<td
-							class="full-height"
-						>
-							<div
-								class=" flex-row justify-center"
-							>
-								<v-icon
-									class="pa-5 "
-									:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.agency_use = 1; update(item)"
-								>mdi mdi-power-plug</v-icon>
-								<v-icon
-									class="pa-5  "
-									:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.agency_use = 0; update(item)"
-								>mdi mdi-power-plug-off</v-icon>
-							</div>
-						</td>
 						<td>{{ item.wDate.substring(0, 10) }}</td>
 						<td
-							@click="setItem(item)"
+							@click="toView(item)"
 						>
 							<v-icon
 								class="color-icon"
@@ -199,9 +136,14 @@
 						:program="program"
 						:align="'center'"
 						:options="search"
+
+						@click="getSearch"
 					></Pagination>
 				</div>
 			</div>
+			<Empty
+				v-else
+			></Empty>
 		</div>
 
 		<Excel
@@ -239,11 +181,12 @@ import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import ProductDetail from "@/view/Product/ProductDetailAgency";
+import Empty from "@/view/Layout/Empty";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {ProductDetail, Excel, Search, Pagination,},
+	components: {Empty, ProductDetail, Excel, Search, Pagination,},
 	props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date', 'category_list', 'supply_list']
 	,data: function (){
 		return {
@@ -442,8 +385,11 @@ export default {
 		,toItem: function (){
 			this.is_item = !this.is_item
 		}
-		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, param: this.$route.params, query: this.search})
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
 			this.getData()
 		}
 		,setPdtType: function(item, type){
@@ -482,11 +428,6 @@ export default {
 		this.getData()
 	}
 	,watch: {
-		'search.page': {
-			handler: function(){
-				this.getSearch()
-			}
-		}
 	}
 }
 </script>

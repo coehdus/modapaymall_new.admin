@@ -16,7 +16,7 @@
 					:key="'order_status' + order_status.total_code"
 
 					class="flex-1 pa-10 text-center cursor-pointer mr-1"
-					:class="order_status.code_value == search.order_status ? 'bg-' + order_status.code_value2 : 'bg-default'"
+					:class="order_status.code_value == search.order_status ? 'bg-' + order_status.code_color : 'bg-default'"
 					@click="search.order_status = order_status.code_value; getSearch()"
 				>{{ order_status.code_name }}</li>
 			</ul>
@@ -61,7 +61,7 @@
 		</Search>
 
 		<div
-			class="mt-10  bg-white  "
+			class="mt-10  bg-white pa-10  full-height"
 		>
 			<ul
 				v-if="items.length > 0"
@@ -376,19 +376,9 @@
 					</ul>
 				</li>
 			</ul>
-			<div
+			<Empty
 				v-else
-				class="full-height flex-column justify-center"
-			>
-				<div class="text-center">
-					<v-icon
-						class="size-px-48 color-icon"
-					>mdi mdi-cloud-off-outline</v-icon>
-					<br/>
-					<br/>
-					<div class="font-weight-bold size-px-24">No Data</div>
-				</div>
-			</div>
+			></Empty>
 		</div>
 
 		<Pagination
@@ -439,11 +429,12 @@ import Pagination from "../../components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import Modal from "@/components/Modal";
+import Empty from "@/view/Layout/Empty";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Modal, Excel, Search, Pagination},
+	components: {Empty, Modal, Excel, Search, Pagination},
 	props: ['Axios', 'TOKEN', 'codes', 'rules', 'user', 'date']
 	,data: function (){
 		return {

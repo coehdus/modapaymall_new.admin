@@ -220,43 +220,6 @@
 			:date="date"
 		></Excel>
 
-		<ProductItem
-			v-if="is_item_view"
-			:Axios="Axios"
-			:rules="rules"
-			:user="user"
-			:supply_list="supply_list"
-			:category_list="category_list"
-			:codes="codes"
-
-			@onLoad="setProgram"
-			@goBack="goBack"
-			@goSuccess="goSuccess"
-			@setNotify="setNotify"
-
-			class="position-absolute bg-base full-width full-height"
-			style="top: 0; right: 0"
-		></ProductItem>
-
-		<ProductDetail
-			v-if="is_detail_view"
-			:Axios="Axios"
-			:rules="rules"
-			:user="user"
-			:supply_list="supply_list"
-			:category_list="category_list"
-			:codes="codes"
-			:pdt_code="item.pdt_code"
-			:TOKEN="TOKEN"
-
-			@onLoad="setProgram"
-			@goBack="goBack"
-			@goSuccess="goSuccess"
-			@setNotify="setNotify"
-
-			class="pa-10 position-absolute bg-base full-width full-height"
-			style="top: 0; right: 0"
-		></ProductDetail>
 	</div>
 </template>
 
@@ -265,13 +228,11 @@
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
-import ProductItem from "./ProductItem";
-import ProductDetail from "@/view/Product/ProductDetail";
 import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Empty, ProductDetail, ProductItem, Excel, Search, Pagination},
+	components: {Empty, Excel, Search, Pagination},
 	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules', 'supply_list', 'category_list']
 	,data: function (){
 		return {
@@ -537,16 +498,7 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.user.admin_type_code == 'agency'){
-			this.$emit('push', { name: 'ProductListAgency'})
-		}else if(this.user.admin_type_code == 'supply'){
-			this.$emit('push', { name: 'ProductListSupply'})
-		}else if(this.user.admin_type_code == "admin" || this.user.admin_type_code == "distributor") {
-			this.clear_item()
-			this.getData()
-		}else{
-			this.$router.back()
-		}
+		this.getData()
 	}
 	,watch: {
 		'search.page': {

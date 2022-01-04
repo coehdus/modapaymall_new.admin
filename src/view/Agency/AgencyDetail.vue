@@ -28,8 +28,9 @@
 										v-for="(agency, index) in codes.B003.items"
 									>
 										<option
+											v-if="agency.code_index > 1"
 											:key="'agency_' + index"
-											:value="agency.code_index"
+											:value="agency.total_code"
 										>{{ agency.code_name }}</option>
 									</template>
 								</select>
@@ -168,7 +169,7 @@
 										<option
 											v-for="code in codes.B001.items"
 											:key="code.total_code"
-											:value="code.code_name"
+											:value="code.bank_code"
 										>{{ code.code_name}}</option>
 									</select>
 								</td>
@@ -178,7 +179,7 @@
 										v-model="item.bank_account"
 										type="number"
 										class="input-box full-width"
-										:rules="[rules.max(item, 'bank_name', 25)]"
+										:rules="[rules.max(item, 'bank_account', 25)]"
 										placeholder="정산 계좌 번호"
 									/>
 								</td>
