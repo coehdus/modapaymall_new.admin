@@ -166,7 +166,7 @@
 				,item_new: {
 					ATOKEN: this.TOKEN
 				}
-				,admin_list: [
+				,agency_list: [
 
 				]
 				,is_excel: false
@@ -198,13 +198,13 @@
 					return false
 				}
 			}
-			,select_option_admin: function(){
+			,select_option_agency: function(){
 				let list = []
-				this.admin_list.filter(function(item){
+				this.agency_list.filter(function(item){
 
 					list.push({
-						name: item.admin_name
-						,column: item.admin_id
+						name: item.agency_name
+						,column: item.uid
 					})
 				})
 
@@ -235,7 +235,7 @@
 					console.log(e)
 				}
 			}
-			,getAdminList: async function() {
+			,getAgencyList: async function() {
 				try{
 					const result = await this.Axios({
 						method: 'post'
@@ -244,8 +244,8 @@
 					})
 
 					if(result.success){
-						this.admin_list = result.data.result
-						this.search_option.select[0].items = this.select_option_admin
+						this.agency_list = result.data.result
+						this.search_option.select[0].items = this.select_option_agency
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
@@ -348,12 +348,15 @@
 
 				this.getData()
 			}
+			,do: async function(){
+				await this.getAgencyList()
+
+				await this.getData()
+			}
 		}
 		,created() {
 			this.$emit('onLoad', this.program)
-			this.clear_item()
-			this.getData()
-			this.getAdminList()
+			this.do()
 		}
 		,watch: {
 		}

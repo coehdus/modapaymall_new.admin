@@ -58,8 +58,6 @@
 					:key="$route.fullPath"
 					:date="date"
 					:codes="codes"
-					:category_list="category_list"
-					:supply_list="supply_list"
 
 					@setNotify="setNotify"
 					@onLoad="setProgram"
@@ -154,44 +152,6 @@
 			}
 			,goBack: function(){
 				this.$router.back()
-			}
-			,getSupplyList: async function(){
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'management/getSupplyList'
-						,data: {
-							ATOKEN: this.TOKEN
-						}
-					})
-
-					if(result.success){
-						this.supply_list = result.data.result
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
-					}
-				}catch (e) {
-					console.log(e)
-				}
-			}
-			,getCategoryList: async function(){
-				try{
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'management/getCategoryList'
-						,data: {
-							ATOKEN: this.TOKEN
-						}
-					})
-
-					if(result.success){
-						this.category_list = result.data.result
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
-					}
-				}catch (e) {
-					console.log(e)
-				}
 			}
 			,onLoading: function(){
 				this.is_loading = true

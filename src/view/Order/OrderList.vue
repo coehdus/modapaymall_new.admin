@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="  "
+		class="full-height flex-column"
 	>
 		<div>
 			<ul
@@ -61,7 +61,7 @@
 		</Search>
 
 		<div
-			class="mt-10  bg-white pa-10  full-height"
+			class="mt-10  bg-white   full-height overflow-y-auto"
 		>
 			<ul
 				v-if="items.length > 0"
@@ -167,7 +167,7 @@
 								</tr>
 								<tr>
 									<th>대리점</th>
-									<td>{{ item.shop_name}}</td>
+									<td>{{ item.agency_name}}</td>
 								</tr>
 								<tr>
 									<th>이름</th>
@@ -376,9 +376,14 @@
 					</ul>
 				</li>
 			</ul>
-			<Empty
+			<div
 				v-else
+				class="pa-10 bg-white full-height"
+			>
+			<Empty
+
 			></Empty>
+			</div>
 		</div>
 
 		<Pagination

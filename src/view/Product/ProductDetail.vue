@@ -24,9 +24,9 @@
 									>공급사</option>
 									<option
 										v-for="supply in supply_list"
-										:key="supply.admin_id"
-										:value="supply.admin_id"
-									>{{ supply.shop_name }}</option>
+										:key="supply.supply_id"
+										:value="supply.supply_id"
+									>{{ supply.supply_name }}</option>
 								</select>
 								<v-icon
 									class="position-absolute color-icon"
@@ -262,7 +262,7 @@
 			>저장</button>
 			<button
 				class="pa-10 box"
-				@click="$emit('goBack')"
+				@click="$storage.push({ name: 'ProductList', not_query: true})"
 			>목록</button>
 		</div>
 	</div>
@@ -276,7 +276,7 @@ import { Editor } from '@toast-ui/vue-editor';
 
 export default {
 	name: 'ProductDetail'
-	,props: ['Axios', 'user', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list']
+	,props: ['Axios', 'user', 'cart_cnt', 'TOKEN', 'rules', 'codes']
 	,components: {
 		editor: Editor
 	}
@@ -311,11 +311,13 @@ export default {
 			,new_main_img: '이미지 선택'
 			,new_sub_img: '이미지 선택'
 			,pdt_code: this.$route.params.pdt_code
+			,category_list: []
+			,supply_list: []
 		}
 	}
 	,computed: {
 		item: function(){
-			console.log('item_ori : ' + typeof this.item_ori)
+
 			if(!this.item_ori){
 				return false
 			}
@@ -345,7 +347,7 @@ export default {
 			})
 		}
 		,is_supply: function(){
-			if(this.user.admin_type == 'suppy'){
+			if(this.user.admin_type == 'supply'){
 				return true
 			}else{
 				return false
@@ -417,8 +419,8 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('goSuccess')
 					this.$emit('setNotify', { type: 'success', message: result.message })
+					await this.getData()
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -426,29 +428,6 @@ export default {
 				console.log(e)
 			}finally {
 				console.log('save finished !!')
-			}
-		}
-		,getCategory: async function(){
-
-		}
-
-		,getSupplyList: async  function(){
-			try{
-				const result = await this.Axios({
-					method: 'get'
-					,url: 'management/getSupplyList'
-					,data: {
-						ATOKEN: this.TOKEN
-					}
-				})
-
-				if(result.success){
-					this.supply_list = result.data.result
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
 			}
 		}
 		,addOption: function(){
@@ -527,13 +506,57 @@ export default {
 			this.item_ori = null
 			console.log('clear finished !!')
 		}
+		,getCategoryList: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getCategoryList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.category_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+
+		,getSupplyList: async  function(){
+			try{
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getSupplyList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.supply_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+
+		, do: async function(){
+			await this.getCategoryList()
+
+			await this.getSupplyList()
+
+			await this.getData()
+		}
 	}
 	,created() {
-		if(this.user.admin_type_code == 'supply'){
-			this.$emit('push', {name: 'ProductDetailSupply', params: this.$route.params})
-		}
 		this.$emit('onLoad', this.program)
-		this.getData()
+		this.do()
 	}
 	,watch:{
 

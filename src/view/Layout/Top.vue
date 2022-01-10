@@ -16,22 +16,23 @@
 					<v-icon
 						class="color-icon-dark vertical-middle"
 					>mdi mdi-store</v-icon>
-					<span class="vertical-middle"> [{{ user.account_type_name }}] 상점 설정</span>
-				</span>
+					<span class="vertical-middle mr-10"> [{{ user.role_name }}] 상점 설정</span>
 
-				<span
-					v-show="user.admin_type_code == 'agency'"
+				</span>
+				<button
+					v-show="user.role == 'agency'"
 					@click="isCopy"
-					class="mr-10 bg-black pa-5-10 radius-10"
+					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
 				>
 					대리점 코드 발급
-				</span>
+				</button>
 			</div>
 
 			<div class="">
-				<span class="vertical-middle">{{ admin_div_name }}
-				{{ user.admin_name }}
-				({{ user.account_id }}) 님 환영합니다
+
+				<span class="vertical-middle">
+					{{ user.admin_name }}
+					({{ user.account_id }}) 님 환영합니다
 				</span>
 				<button
 					class="btn-blue pa-5-10 size-px-12 ml-10 radius-5"
@@ -178,14 +179,24 @@
 			:is_modal="is_modal2"
 			:option="modal_option2"
 
+			:top="true"
+			:bottom="true"
+			:slot_bottom="true"
+			title="대리점 QR 코드"
+
+			width="360px"
+			content_class="bg-white text-center"
+
 			@close="close"
+			@click="close"
+			@cancel="close"
 		>
-			<div slot="modal-content" class="bg-white">
-				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.admin_id))"></qr-code>
+
+			<div slot="modal-content" class="bg-white text-center">
+				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.uid))"></qr-code>
 			</div>
-			<div
+			<template
 				slot="modal-bottom"
-				class="justify-space-between"
 			>
 				<button
 					class="flex-1 bg-blue pa-10"
@@ -195,7 +206,7 @@
 					class="flex-1 bg-default pa-10"
 					@click="close"
 				>닫기</button>
-			</div>
+			</template>
 		</Modal>
 	</div>
 </template>
@@ -226,31 +237,12 @@
 				}
 				, is_modal2: false
 				, modal_option2: {
-					top: true
-					, title: '대리점 QR 코드'
-					, bottom: true
-					, width: '360px'
-					, bg: 'bg-white'
+
 				}
 			}
 		}
 		,computed: {
-			admin_div_name: function(){
-				let name = ''
-				switch(this.user.admin_type){
-					case 'admin':
-						name = '관리자'
-						break;
-					case 'agency':
-						name = '대리점'
-						break;
-					case 'supply':
-						name = '공급사'
-						break;
-				}
 
-				return name
-			}
 		}
 		,methods: {
 			onSide: function(){
@@ -278,7 +270,7 @@
 
 			,copy: function (){
 
-				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.admin_id)));
+				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.uid)));
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,toSetting: function(){

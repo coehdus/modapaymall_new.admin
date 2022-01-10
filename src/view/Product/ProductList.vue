@@ -17,7 +17,7 @@
 				<select
 					v-model="search.pdt_category"
 					class="pa-5-10 mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">카테고리</option>
 					<option
@@ -29,14 +29,14 @@
 				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">공급사</option>
 					<option
 						v-for="supply in supply_list"
 						:key="'supply_' + supply.uid"
-						:value="supply.seller_id"
-					>{{ supply.shop_name }}</option>
+						:value="supply.supply_id"
+					>{{ supply.supply_name }}</option>
 				</select>
 			</template>
 		</Search>
@@ -56,9 +56,10 @@
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
-						<col width="150px" />
 						<col width="120px" />
+						<col width="150px" />
 
+						<col width="120px" />
 						<col width="80px" />
 					</colgroup>
 					<thead>
@@ -69,10 +70,9 @@
 							<th>공급가</th>
 							<th>판매가</th>
 							<th>재고</th>
-							<th>판매여부</th>
-							<th
-								v-if="!is_supply"
-							>사용여부</th>
+							<th>메인 진열여부</th>
+							<th>공급사 판매여부</th>
+							<th>사용여부</th>
 							<th>등록일</th>
 							<th>상세정보</th>
 						</tr>
@@ -82,9 +82,9 @@
 							v-for="item in item_list"
 							:key="item.uid"
 						>
-							<td>
+							<td class="text-center">
 								<div
-									class="pdt-img flex-column justify-center"
+									class="pdt-img  text-center"
 								>
 									<img
 										v-if="item.img"
@@ -107,6 +107,20 @@
 							<td
 								class="full-height"
 							>{{ item.is_sold_name }}</td>
+							<td>
+								<div
+									v-if="is_admin"
+									class=" flex-row justify-center"
+								>
+									<v-icon class="pa-5 mdi mdi-bookmark-outline cursor-pointer" :class="item.pdt_type ? 'bg-green color-white' : 'btn-default'" @click="item.pdt_type = 'main'; update(item)" ></v-icon>
+									<v-icon class="pa-5 mdi mdi-bookmark-remove cursor-pointer" :class="!item.pdt_type ? 'bg-red color-white' : 'btn-default'" @click="item.pdt_type = '';  update(item)" ></v-icon>
+								</div>
+								<div
+									v-else
+								>
+									<v-icon class="pa-5 mdi " :class="item.is_main ? 'mdi-bookmark-plus-outline bg-green ' : 'mdi-bookmark-remove bg-red color-white'"></v-icon>
+								</div>
+							</td>
 							<td
 								class="full-height"
 							>
@@ -206,6 +220,8 @@
 					:options="search"
 
 					class="mt-auto pa-10"
+
+					@click="getSearch"
 				></Pagination>
 			</div>
 
@@ -233,7 +249,7 @@ export default {
 	name: 'ManagerAdminList'
 	,
 	components: {Empty, Excel, Search, Pagination},
-	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules', 'supply_list', 'category_list']
+	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules']
 	,data: function (){
 		return {
 			program: {
@@ -278,6 +294,8 @@ export default {
 			,items: [
 
 			]
+			,supply_list: []
+			,category_list: []
 			,item: null
 			,item_new: {
 
@@ -307,12 +325,12 @@ export default {
 	}
 	,computed: {
 		item_list: function (){
-			const self = this
+
 			let index = 0
-			return this.items.filter(function(item){
-					item.ATOKEN = self.TOKEN
+			return this.items.filter((item) => {
+					item.ATOKEN = this.TOKEN
 					if(item.pdt_img1){
-						item.img = self.$language.img_url + item.pdt_img1
+						item.img = this.$pdt_img_url + item.pdt_img1
 					}else{
 						item.img = ''
 					}
@@ -329,7 +347,7 @@ export default {
 					item.is_supply_sale_name = '판매 불가'
 				}
 
-					item.is_sold_name = self.codes.is_sold[item.is_sold]
+					item.is_sold_name = this.codes.is_sold[item.is_sold]
 
 					if(item.is_sold == 2){
 						item.is_sold_name = item.pdt_stock
@@ -341,14 +359,21 @@ export default {
 			})
 		}
 		,is_supply: function(){
-			if(this.user.admin_type == 'supply'){
+			if(this.user.role_group == 'supply'){
+				return true
+			}else{
+				return false
+			}
+		}
+		,is_admin: function(){
+			if(this.user.role_group == 'admin'){
 				return true
 			}else{
 				return false
 			}
 		}
 		,is_agency: function(){
-			if(this.user.admin_type == 'agency'){
+			if(this.user.role_group == 'agency'){
 				return true
 			}else{
 				return false
@@ -394,8 +419,11 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
-		,getSearch: function(){
-			this.$storage.setQuery(this.search)
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
 			this.getData()
 		}
 		,update: async function(item){
@@ -416,7 +444,6 @@ export default {
 				console.log(e)
 				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getSearch()
 				this.$emit('offLoading')
 			}
 		}
@@ -447,8 +474,7 @@ export default {
 			this.is_excel = true
 		}
 		,toItem: function (){
-			this.$router.push({ name: 'ProductItem'})
-			//this.is_item_view = !this.is_item_view
+			this.$storage.push({ name: 'ProductItem', not_query: true})
 		}
 		,setProgram: function(program){
 			this.$emit('onLoad', program)
@@ -494,18 +520,61 @@ export default {
 				}
 			}
 		}
+		,getCategoryList: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getCategoryList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.category_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+		,getSupplyList: async function(){
+			try{
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/getSupplyList'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success){
+					this.supply_list = result.data.result
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+			}
+		}
+
+		,do: async function(){
+
+			await this.getCategoryList()
+
+			await this.getSupplyList()
+
+			await this.getData()
+		}
 
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		this.getData()
+		this.do()
 	}
 	,watch: {
-		'search.page': {
-			handler: function(){
-				this.getSearch()
-			}
-		}
+
 	}
 }
 </script>
