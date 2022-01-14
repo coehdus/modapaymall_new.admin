@@ -20,7 +20,7 @@
 
 				</span>
 				<button
-					v-show="user.role == 'agency'"
+					v-show="user.role == codes.type_code_agency"
 					@click="isCopy"
 					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
 				>
@@ -31,7 +31,7 @@
 			<div class="">
 
 				<span class="vertical-middle">
-					{{ user.admin_name }}
+					{{ user.shop_name }}
 					({{ user.account_id }}) 님 환영합니다
 				</span>
 				<button
@@ -193,7 +193,7 @@
 		>
 
 			<div slot="modal-content" class="bg-white text-center">
-				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.uid))"></qr-code>
+				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.account_id))"></qr-code>
 			</div>
 			<template
 				slot="modal-bottom"
@@ -270,7 +270,7 @@
 
 			,copy: function (){
 
-				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.uid)));
+				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.account_id)));
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,toSetting: function(){

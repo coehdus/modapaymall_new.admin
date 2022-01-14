@@ -49,16 +49,15 @@
 			>
 				<table class="table table-even">
 					<colgroup>
-						<col width="120px" />
+						<col width="130px" />
 						<col width="auto" />
 						<col width="120px" />
+						<col width="120px" />
+						<col width="120px" />
 
-						<col width="120px" />
-						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
 						<col width="150px" />
-
 						<col width="120px" />
 						<col width="80px" />
 					</colgroup>
@@ -70,6 +69,7 @@
 							<th>공급가</th>
 							<th>판매가</th>
 							<th>재고</th>
+
 							<th>메인 진열여부</th>
 							<th>공급사 판매여부</th>
 							<th>사용여부</th>
@@ -107,6 +107,7 @@
 							<td
 								class="full-height"
 							>{{ item.is_sold_name }}</td>
+
 							<td>
 								<div
 									v-if="is_admin"
@@ -118,7 +119,12 @@
 								<div
 									v-else
 								>
-									<v-icon class="pa-5 mdi " :class="item.is_main ? 'mdi-bookmark-plus-outline bg-green ' : 'mdi-bookmark-remove bg-red color-white'"></v-icon>
+									<v-icon
+										v-if="item.pdt_type == 'main'"
+										class="pa-5 bg-green color-white mdi mdi-bookmark-outline cursor-pointer"></v-icon>
+									<v-icon
+										v-else
+										class="pa-5 bg-red color-white mdi mdi-bookmark-remove cursor-pointer" ></v-icon>
 								</div>
 							</td>
 							<td
@@ -156,26 +162,10 @@
 								</div>
 							</td>
 							<td
-								v-if="!is_supply"
 								class="full-height"
 							>
 								<div
-									v-if="is_agency"
-									class=" flex-row justify-center"
-								>
-									<i
-										class="pa-5 mdi mdi-power-plug"
-										:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="item.is_use = 1; update(item)"
-									></i>
-									<i
-										class="pa-5  mdi mdi-power-plug-off"
-										:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="item.is_use = 0; update(item)"
-									></i>
-								</div>
-								<div
-									v-else
+									v-if="is_admin"
 									class=" flex-row justify-center"
 								>
 									<v-icon
@@ -193,7 +183,19 @@
 										class="pa-5 bg-red color-white ml-10"
 										@click="deleteItem(item)"
 									>mdi mdi-delete</v-icon>
-
+								</div>
+								<div
+									v-else
+									class=" flex-row justify-center"
+								>
+									<v-icon
+										v-if="item.is_use == 1"
+										class="pa-5 bg-green color-white"
+									>mdi mdi-power-plug</v-icon>
+									<v-icon
+										v-else
+										class="pa-5 bg-red color-white "
+									>mdi mdi-power-plug-off</v-icon>
 								</div>
 							</td>
 							<td>{{ item.wDate.substring(0, 10) }}</td>

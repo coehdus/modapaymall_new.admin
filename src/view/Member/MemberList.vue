@@ -125,7 +125,7 @@
 	export default {
 		name: 'MemberList'
 		, components: {Empty, Search, Excel, Pagination}
-		, props: ['Axios', 'rules', 'TOKEN', 'user', 'date']
+		, props: ['Axios', 'rules', 'TOKEN', 'user', 'date', 'codes']
 		,data: function (){
 			return {
 				program: {
@@ -150,14 +150,6 @@
 					,search_type: [
 						{ name: '아이디', column: 'member_id'}
 						,{ name: '이름', column: 'member_name'}
-					]
-					,select: [
-						{ name: '소속 대리점', column: 'admin_code', items: []}
-						, { name: '사용 여부', column: 'member_status', items: [
-								{ name: '사용', column: '1'}
-								,{ name: '미사용', column: '0'}
-							]
-						}
 					]
 				}
 				,items: [
@@ -236,6 +228,9 @@
 				}
 			}
 			,getAgencyList: async function() {
+				if(this.user.role != this.codes.type_code_admin && this.user.route != this.codes.type_code_distributor){
+					return false
+				}
 				try{
 					const result = await this.Axios({
 						method: 'post'

@@ -25,10 +25,10 @@
 								>
 									<option value="">선택하세요</option>
 									<template
-										v-for="(agency, index) in codes.B003.items"
+										v-for="(agency, index) in codes.A001.items"
 									>
 										<option
-											v-if="agency.code_index > 1"
+											v-if="agency.code_index > 1 && agency.code_index < 4"
 											:key="'agency_' + index"
 											:value="agency.total_code"
 										>{{ agency.code_name }}</option>
@@ -148,18 +148,36 @@
 							<col width="auto">
 							<tbody>
 							<tr>
-								<th>서비스 수수료 <span class="color-red">*</span></th>
+								<th>영업 수익률 <span class="color-red">*</span></th>
 								<td>
 									<div
-										class="justify-start">
-										<div class="flex-1 text-left">
-											카드 결제 수수료 {{ item.sales_fee }}
+										class="justify-start"
+									>
+										<div class="flex-1 text-left justify-space-between">
+											카드 결제 수익률
+											<span>
 											<input
 												v-model="item.sales_fee"
 												type="number"
 												:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
 												class="box pa-5-10 width-fee "
 											/> %
+												</span>
+										</div>
+									</div>
+									<div
+										class="justify-start mt-10"
+									>
+										<div class="flex-1 text-left justify-space-between">
+											무통장 입금 수익률
+											<span>
+											<input
+												v-model="item.sales_fee_bank"
+												type="number"
+												:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
+												class="box pa-5-10 width-fee "
+											/> %
+												</span>
 										</div>
 									</div>
 								</td>
@@ -391,11 +409,12 @@ export default {
 			}
 			,item: {
 				agency_type: ''
-				,business_type: 'B002001'
-				,bank_code: ''
-				,join_date: this.date.getToday('-')
-				,agency_upper: ''
-				,sales_fee: 0.5
+				, business_type: 'B002001'
+				, bank_code: ''
+				, join_date: this.date.getToday('-')
+				, agency_upper: ''
+				, sales_fee: 0.5
+				, sales_fee_bank: 0
 			}
 			,is_data_pick: false
 			,is_modal: false

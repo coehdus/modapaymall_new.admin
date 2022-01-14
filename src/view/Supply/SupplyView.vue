@@ -17,68 +17,21 @@
 						<tr>
 							<th>아이디</th>
 							<td>
-								{{ item.seller_id }}
+								{{ user.account_id }}
 							</td>
-							<th>비밀번호</th>
-							<td class="">
-								<button
-									class="bg-identify pa-5-10"
-								>비밀번호 초기화</button>
+							<th>가입일</th>
+							<td class="position-relative">
+								{{ item.join_date }}
 							</td>
 						</tr>
 						<tr>
 							<th>이름 <span class="color-red">*</span></th>
 							<td>
-								<input
-									type="text"
-									v-model="item.account_name"
-									maxlength="20"
-									class="input-box full-width"
-									placeholder="이름을 입력하세요"
-								/>
+								{{ user.supply_name }}
 							</td>
 							<th>휴대폰 번호</th>
 							<td>
-								<input
-									type="number"
-									v-model="item.account_phone_number"
-									:ruels="[rules.max(item, 'admin_phone', 12)]"
-									class="input-box full-width"
-									placeholder="휴대폰번호를 입력하세요"
-								/>
-							</td>
-						</tr>
-						<tr>
-							<th>가입일</th>
-							<td class="position-relative">
-								<input
-									v-model="item.join_date"
-									class="input-box full-width"
-									placeholder="가입일을 선택하세요"
-									readonly
-									@click="is_data_pick = !is_data_pick"
-								/>
-								<v-date-picker
-									v-if="is_data_pick"
-									v-model="item.join_date"
-									no-title
-									scrollable
-									class="position-absolute box"
-									style="top: 45px; left: -5px"
-									@change="is_data_pick = false"
-								></v-date-picker>
-							</td>
-
-							<th>계정 상태</th>
-							<td class="">
-								<button
-									v-for="(code, index) in codes.S003.items"
-									:key="code.total_code + index"
-
-									class="pa-5-10 mr-1"
-									:class="item.account_status == code.code_value ? 'bg-' + code.code_color: 'bg-default'"
-									@click="item.account_status = code.code_value "
-								>{{ code.code_name }}</button>
+								{{ item.account_phone_number }}
 							</td>
 						</tr>
 						</tbody>
@@ -94,15 +47,18 @@
 						<tr>
 							<th>사업자 구분 <span class="color-red">*</span></th>
 							<td colspan="3">
-								<button
+								<template
 									v-for="code in codes.B002.items"
+								>
+								<button
+									v-if="code.total_code == item.business_type"
 									:key="code.total_code"
 
 									class="pa-5-10"
 									:class="item.business_type == code.total_code ? 'bg-green' : 'bg-default'"
 
-									@click="item.business_type = code.total_code"
 								>{{ code.code_name }}</button>
+								</template>
 							</td>
 						</tr>
 						<tr
@@ -110,13 +66,7 @@
 						>
 							<th>사업자등록번호 <span class="color-red">*</span></th>
 							<td colspan="3">
-								<input
-									type="number"
-									v-model="item.front"
-									:ruels="[rules.max(item, 'front', 10)]"
-									class="input-box"
-									placeholder="사업자 등록 번호"
-								/>
+								{{ item.front }}
 							</td>
 						</tr>
 						<tr
@@ -124,23 +74,11 @@
 						>
 							<th>사업자등록번호 <span class="color-red">*</span></th>
 							<td>
-								<input
-									type="number"
-									v-model="item.front"
-									:ruels="[rules.max(item, 'front', 10)]"
-									class="input-box"
-									placeholder="사업자 등록 번호"
-								/>
+								{{ item.front }}
 							</td>
 							<th>법인등록번호 <span class="color-red">*</span></th>
 							<td>
-								<input
-									type="number"
-									v-model="item.back"
-									:ruels="[rules.max(item, 'back', 13)]"
-									class="input-box"
-									placeholder="법인 등록 번호"
-								/>
+								{{ item.back }}
 							</td>
 						</tr>
 						<tr
@@ -148,78 +86,26 @@
 						>
 							<th>주민등록 번호 <span class="color-red">*</span></th>
 							<td colspan="3">
-								<input
-									v-model="item.front"
-									type="number"
-									:ruels="[rules.max(item, 'front', 6)]"
-									class="input-box-inline mr-10"
-									placeholder="주민등록 앞번호"
-								/>
-								<input
-									v-model="item.back"
-									type="password"
-									maxlength="7"
-									class="input-box-inline"
-									placeholder="주민등록 뒷번호"
-								/>
+								{{ item.front }}
+								{{ item.back }}
 							</td>
 						</tr>
 
 						<tr>
 							<th>상점명 <span class="color-red">*</span></th>
 							<td>
-								<input
-									type="text"
-									v-model="item.shop_name"
-									maxlength="50"
-									class="input-box full-width"
-									placeholder="상점명을 입력하세요"
-								/>
+								{{ item.shop_name }}
 							</td>
 							<th>대표자명 <span class="color-red">*</span></th>
-							<td>
-								<input
-									type="text"
-									v-model="item.shop_ceo"
-									maxlength="10"
-									class="input-box full-width"
-									placeholder="대표자명을 입력하세요"
-								/>
-							</td>
+							<td>{{ item.shop_ceo }}</td>
 						</tr>
 						<tr>
 							<th>사업장 주소 <span class="color-red">*</span></th>
 							<td colspan="3">
 
-								<input
-									v-model="item.shop_zip_code"
-
-									class="input-box-inline mr-10"
-									type="text" placeholder="우편번호"
-									readonly
-
-									@click="daumPost('company')"
-								>
-
-								<button
-									class="pa-5-10 bg-identify"
-									@click="daumPost('company')"
-								>주소 검색</button>
-
-								<input
-									v-model="item.shop_address"
-
-									class="input-box full-width mt-10" type="text" placeholder="주소"
-									readonly
-
-									@click="daumPost('company')"
-								>
-								<input
-									v-model="item.shop_address_detail"
-
-									class="input-box full-width mt-10" type="text" placeholder="상세주소를 입력하세요."
-									maxlength="50"
-								>
+								{{ item.shop_zip_code }}
+								{{ item.shop_address }}
+								{{ item.shop_address_detail }}
 							</td>
 						</tr>
 						</tbody>
@@ -237,18 +123,7 @@
 						<tr>
 							<th>서비스 수수료 <span class="color-red">*</span></th>
 							<td>
-								<div
-									class="justify-start">
-									<div class="flex-1 text-left">
-										판매 수수료
-										<input
-											v-model="item.sales_fee"
-											type="number"
-											:rules="[rules.demical(item, 'sales_fee', { min:2, max: 2})]"
-											class="box pa-5-10 width-fee "
-										/> %
-									</div>
-								</div>
+								{{ item.sales_fee }}%
 							</td>
 							<th>정산주기</th>
 							<td class="text-left">영업일 기준 / 월 정산</td>
@@ -256,38 +131,17 @@
 						<tr>
 							<th>은행</th>
 							<td>
-								<select
-									v-model="item.bank_code"
-									class="input-box"
-								>
-									<option :value="''">은행을 선택하세요</option>
-									<option
-										v-for="code in codes.B001.items"
-										:key="code.total_code"
-										:value="code.total_code"
-									>{{ code.code_name}}</option>
-								</select>
+								{{ item.bank_name }}
 							</td>
 							<th>계좌번호</th>
 							<td>
-								<input
-									v-model="item.bank_account"
-									type="number"
-									class="input-box full-width"
-									:rules="[rules.max(item, 'bank_name', 25)]"
-									placeholder="정산 계좌 번호"
-								/>
+								{{ item.bank_account }}
 							</td>
 						</tr>
 						<tr>
 							<th>예금주</th>
 							<td>
-								<input
-									v-model="item.bank_holder"
-									class="input-box full-width"
-									placeholder="정산 계좌 예금주"
-									maxlength="15"
-								/>
+								{{ item.bank_holder }}
 							</td>
 							<th>이메일</th>
 							<td>
@@ -314,13 +168,11 @@
 						<tr>
 							<th>판매여부</th>
 							<td>
-								<button
-									v-for="(code, index) in codes.S004.items"
-									:key="code.total_code + '_' + index"
-									class="pa-5-10"
-									:class="item.shop_status == code.code_value ? 'bg-' + code.code_color : 'bg-default'"
-									@click="item.shop_status = code.code_value"
-								>{{ code.code_name }}</button>
+								<span class="pa-5-10" :class="'bg-' + item.shop_status_color ">{{ item.shop_status_name }}</span>
+								<div
+									class="mt-10 pa-10 box"
+									v-if="item.shop_status == '0'"
+								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
 						<tr>
@@ -406,10 +258,6 @@
 				class="bg-identify pa-10-20 mr-10"
 				@click="save"
 			>저장</button>
-			<button
-				class="box pa-10-20"
-				@click="toList"
-			>목록</button>
 		</div>
 		<DaumPost
 			:overlay="is_post"
@@ -428,11 +276,11 @@ import { Editor } from '@toast-ui/vue-editor';
 export default {
 	name: 'SupplyDetail'
 	, components: {DaumPost, Editor}
-	, props: ['Axios', 'user', 'codes', 'rules', 'date']
+	, props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
 	, data: function(){
 		return {
 			program: {
-				name: '공급사 상세정보'
+				name: '상점 설정'
 				, top: true
 				, title: true
 				, bottom: false
@@ -464,11 +312,13 @@ export default {
 					method: 'get'
 					,url: 'management/getSupply'
 					,data: {
-						supply_uid: this.$route.params.idx
+						supply_uid: this.user.uid
 					}
 				})
 				if(result.success){
 					this.item = result.data
+					this.item.ATOKEN = this.TOKEN
+					this.item.UTOKEN = this.TOKEN
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}

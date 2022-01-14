@@ -15,7 +15,7 @@
 			</div>
 		</div>
 
-		<table class="mt-20 full-width">
+		<table class="table table-even mt-20 full-width">
 			<colgroup>
 			</colgroup>
 			<thead>
@@ -63,11 +63,63 @@
 		</table>
 
 		<textarea
-			v-if="user.admin_type_code == codes.type_code_amdin"
+			v-if="user.admin_type_code == codes.type_code_admin"
 			v-model="item.reason"
 			placeholder="보류시 사유를 입력해주세요"
 			class="mt-30"
 		></textarea>
+
+		<div
+			v-if="user.role == codes.type_code_admin"
+			slot="modal-bottom"
+			class="bg-base full-width pa-10 justify-center"
+		>
+			<button
+				v-if="item.is_settlement != '1'"
+				class="bg-green pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'confirm')"
+			>정산 확인</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit != '1'"
+				class="bg-green pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'confirm')"
+			>지급 확인</button>
+
+			<button
+				v-if="item.is_settlement == '0'"
+				class="bg-orange pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'hold')"
+			>정산 보류</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+				class="bg-orange pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'hold')"
+			>지급 보류</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
+				class="bg-red pa-5-10 mr-10 color-eee"
+				@click="doUpdate('settlement', 'cancel')"
+			>정산 취소</button>
+
+			<button
+				v-if="item.is_settlement == '1' && item.is_deposit == '1'"
+				class="bg-red pa-5-10 mr-10 color-eee"
+				@click="doUpdate('deposit', 'cancel')"
+			>지급 취소</button>
+		</div>
+		<div
+			v-else
+			slot="modal-bottom"
+			class="bg-base full-width pa-10 justify-center"
+		>
+			<button
+				class="bg-identify pa-5-10"
+				@click="close"
+			>확인</button>
+		</div>
 	</div>
 </template>
 

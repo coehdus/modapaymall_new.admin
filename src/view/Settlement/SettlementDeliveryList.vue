@@ -6,7 +6,7 @@
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option
 						v-for="year in year_list"
@@ -18,7 +18,7 @@
 				<select
 					v-model="search.month"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option
 						v-for="month in 12"
@@ -28,9 +28,23 @@
 				</select>
 
 				<select
+					v-if="user.role == codes.type_code_admin"
+					v-model="search.day"
+					class="pa-5 box mr-10"
+					@change="getSearch(1)"
+				>
+					<option value="">전체</option>
+					<option
+						v-for="day in 31"
+						:key="'day_' + day"
+						:value="day"
+					>{{ day }}일</option>
+				</select>
+
+				<select
 					v-model="search.is_settlement"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">정산여부</option>
 					<template
@@ -47,7 +61,7 @@
 				<select
 					v-model="search.is_deposit"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">지급여부</option>
 					<template
@@ -86,6 +100,12 @@
 					class="pa-5-10 btn-blue mr-10 vertical-middle"
 					@click="getData"
 				>검색</button>
+
+				<button
+					v-if="user.role_group == codes.type_code_admin"
+					class="pa-5-10 btn-green vertical-middle"
+					@click="save"
+				>정산 실행 </button>
 			</div>
 
 			<div class="mt-10 pa-10 bg-white full-height">
@@ -101,7 +121,7 @@
 						<th>총판</th>
 						<th>대리점</th>
 						<th>공급사</th>
-						<th>판매 배송비</th>
+						<th>판매 건수</th>
 						<th>결제 수수료</th>
 						<th>대리점 지급 금액</th>
 						<th>공급사 배송비</th>
@@ -120,7 +140,7 @@
 							<td>{{ item.admin_id }}</td>
 							<td>{{ item.agency_name}}</td>
 							<td>{{ item.supply_name }}</td>
-							<td>{{ item.agency_total | makeComma }}</td>
+							<td>{{ item.total_count | makeComma }}</td>
 							<td>{{ item.fee * -1 | makeComma }}</td>
 							<td>{{ item.agency_total - item.fee | makeComma }}</td>
 							<td>{{ item.supply_total | makeComma }}</td>
@@ -167,7 +187,7 @@
 			></SettlementDeliveryDetail>
 
 			<div
-				v-if="user.admin_type_code == codes.type_code_amdin"
+				v-if="user.admin_type_code == codes.type_code_admin"
 				slot="modal-bottom"
 				class="pa-10 justify-center bg-base"
 			>
@@ -238,16 +258,18 @@ export default {
 				,title: true
 				,bottom: false
 			}
-			,search: {
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,year: this.$route.query.year ? this.$route.query.year : new Date().getFullYear()
-				,month:  this.$route.query.month ? this.$route.query.month : new Date().getMonth() + 1
-				,admin_type: this.$route.query.admin_type ? this.$route.query.admin_type : ''
-				,is_settlement: this.$route.query.is_settlement ? this.$route.query.is_settlement : ''
-				,is_deposit: this.$route.query.is_deposit ? this.$route.query.is_deposit : ''
-				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
-				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
-			}
+				, page: 1
+				, search_type:  ''
+				, search_value: ''
+				, year: new Date().getFullYear()
+				, month: new Date().getMonth() + 1
+				, day: this.user.role == this.codes.type_code_admin ? new Date().getDate() : ''
+				, admin_type: ''
+				, is_settlement: ''
+				, is_deposit: ''
+			})
 			,items: []
 			,item: {
 
@@ -300,6 +322,7 @@ export default {
 	,methods: {
 		getData: async function(){
 			try{
+				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'get'
 					,url: 'management/getSettlementDeliveryList'
@@ -313,6 +336,8 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
+			}finally {
+				this.$emit('offLoading')
 			}
 		}
 		,doUpdate: async function(type, status){
@@ -347,9 +372,35 @@ export default {
 		,close: function() {
 			this.is_modal = false
 		}
-		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search })
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
 			this.getData()
+		}
+		,save: async function(){
+
+			try{
+				this.$emit('onLoading')
+
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postSettlement'
+					,data: this.search
+				})
+
+				if(result.success){
+					await this.getData()
+					this.$emit('setNotify', { type: 'success', message: result.message})
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch (e) {
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
 		}
 	}
 	,created() {

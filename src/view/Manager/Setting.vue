@@ -7,63 +7,166 @@
 				class="justify-space-between "
 			>
 				<div class="flex-1 bg-white pa-10 mr-10">
-					<h6 class="under-line-identify">운영정보</h6>
+					<h6 class="under-line-identify">수익 및 수수료 설정</h6>
 					<table class="table th-left td-left">
-						<col width="120px">
+						<col width="130px">
 						<col width="auto">
-						<col width="120px">
 						<col width="auto">
+						<thead>
+							<tr>
+								<th>구분</th>
+								<th>카드</th>
+								<th>무통장</th>
+							</tr>
+						</thead>
 						<tbody>
 							<tr>
-								<th>운영 수수료 <span class="color-red">*</span></th>
+								<th>운영 수익률 <span class="color-red">*</span></th>
 								<td>
 									<input
-										v-model="item.admin_per"
+										v-model="item.company_fee"
 										class="input-box full-width pa-5-10 mr-10"
 										placeholder="수수료를 입력하세요"
-										:rules="[rules.demical(item, 'admin_per', { min: 2, max: 2})]"
+										:rules="[rules.demical(item, 'company_fee', { min: 2, max: 2})]"
+
+										@keyup.enter="save"
+									/>
+								</td>
+								<td>
+									<input
+										v-model="item.bank_company_fee"
+										class="input-box full-width pa-5-10 mr-10"
+										placeholder="수수료를 입력하세요"
+										:rules="[rules.demical(item, 'bank_company_fee', { min: 2, max: 2})]"
 
 										@keyup.enter="save"
 									/>
 								</td>
 							</tr>
-							<tr
-								v-for="(code, index) in agency_per"
-								:key="code.total_code + index"
-							>
-								<th>{{ code.code_name }} 수수료</th>
+							<tr>
+								<th>총판 수익률</th>
 								<td class="position-relative">
 									<input
+										v-model="item.distributor_fee"
 										class="input-box full-width"
-										placeholder="수수료를 입력하세요"
-										:rules="[rules.demical(agency_per, code.code_value, { min: 2, max: 2})]"
+										placeholder="수익률을 입력하세요"
+										:rules="[rules.demical(item, 'distributor_fee', { min: 2, max: 2})]"
 
 										@change="setAgencyPer"
 									/>
+								</td>
+								<td class="position-relative">
+									<input
+										v-model="item.bank_distributor_fee"
+										class="input-box full-width"
+										placeholder="수익률을 입력하세요"
+										:rules="[rules.demical(item, 'bank_distributor_fee', { min: 2, max: 2})]"
 
-									{{ agency_per }}
+										@change="setAgencyPer"
+									/>
 								</td>
 							</tr>
 							<tr>
-								<th>수수료 적용여부 <span class="color-red">*</span></th>
-								<td class="">
-									<button
-										class=" pa-5-10"
-										:class="item.is_per === '1'? 'bg-identify' : 'bg-default'"
-										@click="item.is_per = '1'"
-									>일괄 적용</button>
-									<button
-										class=" pa-5-10"
-										:class="item.is_per === '2'? 'bg-identify' : 'bg-default'"
-										@click="item.is_per = '2'"
-									>일괄 우선 적용</button>
-									<button
-										class=" pa-5-10"
-										:class="item.is_per === '3'? 'bg-identify' : 'bg-default'"
-										@click="item.is_per = '3'"
-									>개별 적용</button>
+								<th>대리점 수익률</th>
+								<td class="position-relative">
+									<input
+										v-model="item.agency_fee"
+										class="input-box full-width"
+										placeholder="수익률을 입력하세요"
+										:rules="[rules.demical(item, 'agency_fee', { min: 2, max: 2})]"
+
+										@change="setAgencyPer"
+									/>
+								</td>
+								<td class="position-relative">
+									<input
+										v-model="item.bank_agency_fee"
+										class="input-box full-width"
+										placeholder="수익률을 입력하세요"
+										:rules="[rules.demical(item, 'bank_agency_fee', { min: 2, max: 2})]"
+
+										@change="setAgencyPer"
+									/>
 								</td>
 							</tr>
+							<tr>
+								<th>공급사 판매 수수료</th>
+								<td class="position-relative">
+									<input
+										v-model="item.supply_fee"
+										class="input-box full-width"
+										placeholder="수수료를 입력하세요"
+										:rules="[rules.demical(item, 'supply_fee', { min: 2, max: 2})]"
+
+										@change="setAgencyPer"
+									/>
+								</td>
+								<td class="position-relative">
+									<input
+										v-model="item.bank_supply_fee"
+										class="input-box full-width"
+										placeholder="수수료를 입력하세요"
+										:rules="[rules.demical(item, 'bank_supply_fee', { min: 2, max: 2})]"
+
+										@change="setAgencyPer"
+									/>
+								</td>
+							</tr>
+							<tr>
+								<th>PG 수수료 <span class="color-red">*</span></th>
+								<td>
+									<input
+										v-model="item.pg_fee"
+										class="input-box full-width pa-5-10 mr-10"
+										placeholder="수수료를 입력하세요"
+										:rules="[rules.demical(item, 'company_fee', { min: 2, max: 2})]"
+
+										@keyup.enter="save"
+									/>
+								</td>
+								<td class="text-center">-</td>
+							</tr>
+							<tr>
+								<th>최종 결제 수수료</th>
+								<td>{{ fee_card }} %</td>
+								<td>{{ fee_bank }} %</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="flex-1 bg-white pa-10 mr-10">
+					<h6 class="under-line-identify">운영정보</h6>
+					<table class="table th-left td-left">
+						<col width="130px">
+						<col width="380px">
+						<col width="120px">
+						<col width="auto">
+						<tbody>
+						<tr>
+							<th>수수료 적용여부 <span class="color-red">*</span></th>
+							<td class="">
+								<button
+									class=" pa-5-10"
+									:class="item.is_per === '1'? 'bg-identify' : 'bg-default'"
+									@click="item.is_per = '1'"
+								>일괄 적용</button>
+								<button
+									class=" pa-5-10"
+									:class="item.is_per === '2'? 'bg-identify' : 'bg-default'"
+									@click="item.is_per = '2'"
+								>개별 우선 적용</button>
+								<button
+									class=" pa-5-10"
+									:class="item.is_per === '3'? 'bg-identify' : 'bg-default'"
+									@click="item.is_per = '3'"
+								>개별 적용</button>
+								<div  class="mt-10 pa-10 box">
+									<div v-if="item.is_per == '1'">관리설정에 등록된 수수료가 일괄 적용됩니다</div>
+									<div v-else-if="item.is_per == '2'">영업점 및 공급사에 적용된 개별 수수료가 우선 적용됩니다 <br/> 판매 수수료는 영업점 별로 달라질수 있습니다.</div>
+									<div v-else-if="item.is_per == '3'">영업점 및 공급사에 적용된 개별 수수료가 적용됩니다 <br/> 판매 수수료는 영업점 별로 달라질수 있습니다.</div>
+								</div>
+							</td>
+						</tr>
 							<tr>
 								<th>판매여부 <span class="color-red">*</span></th>
 								<td class="">
@@ -77,12 +180,84 @@
 										:class="item.is_sale === '0'? 'bg-danger' : 'bg-default'"
 										@click="item.is_sale = '0'"
 									>미판매</button>
+									<div  class="mt-10 pa-10 box">
+										<template v-if="item.is_sale == '1'">
+											상품 주문이 가능합니다
+										</template>
+										<template v-else>
+											상품 주문이 불가능합니다
+										</template>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>결제 방식</th>
+								<td>
+									<button
+										class="pa-5-10 mr-5"
+										:class="item.is_bank == '1' ? 'bg-identify' : ' btn-default'"
+										@click="item.is_bank = item.is_bank == '1' ? '0' : '1'"
+									>
+										<v-icon
+											v-if="item.is_bank == '1'"
+											small class="color-eee"
+										>mdi mdi-checkbox-marked-outline</v-icon>
+										<v-icon
+											v-else
+											small class="color-333"
+										>mdi mdi-checkbox-blank-outline</v-icon>
+										무통장 입금
+									</button>
+									<button
+										class="pa-5-10 "
+										:class="item.is_card == '1' ? 'bg-identify' : ' btn-default'"
+										@click="item.is_card = item.is_card == '1' ? '0' : '1'"
+									>
+										<v-icon
+											v-if="item.is_card == '1'"
+											small class="color-eee"
+										>mdi mdi-checkbox-marked-outline</v-icon>
+										<v-icon
+											v-else
+											small class="color-333"
+										>mdi mdi-checkbox-blank-outline</v-icon>
+										카드 결제
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<th>무통장 입금 정보</th>
+								<td>
+									<select
+										v-model="item.bank_code"
+										class="pa-5-10"
+									>
+										<option value="">은행을 선택하세요</option>
+										<option
+											v-for="(code, index) in codes.B001.items"
+											:key="code.total_code + '_' + index"
+											:value="code.total_code"
+										>{{ code.code_name }}</option>
+									</select>
+
+									<input
+										v-model="item.bank_account"
+										maxlength="50"
+										placeholder="계좌번호를 입력하세요"
+										class="mt-10 input-box"
+										/>
+
+									<input
+										v-model="item.bank_holder"
+										maxlength="10"
+										placeholder="예금주를 입력하세요"
+										class="mt-10 input-box"
+									/>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div class="flex-1"></div>
 			</div>
 		</div>
 
@@ -117,6 +292,7 @@ export default {
 				, admin_level: ''
 				, is_sale: '1'
 				, is_per: '1'
+				, bank_code: ''
 			}
 		}
 	}
@@ -128,12 +304,32 @@ export default {
 				per = JSON.parse(this.item.agency_per)
 			}else{
 				for(let code in this.codes.B003.items){
-					console.log(code)
 					per.push({ code: code.total_code, name: code.code_name, val: 0})
 				}
 			}
 
 			return per
+		}
+		, fee_card: function(){
+			let fee = 0
+			
+			fee += Number(this.item.pg_fee)
+			fee += Number(this.item.company_fee)
+			fee += Number(this.item.distributor_fee)
+			fee += Number(this.item.agency_fee)
+			fee += Number(this.item.supply_fee)
+			
+			return fee.toFixed(2)
+		}
+		, fee_bank: function(){
+			let fee = 0
+
+			fee += Number(this.item.bank_company_fee ?? 0)
+			fee += Number(this.item.bank_distributor_fee ?? 0)
+			fee += Number(this.item.bank_agency_fee ?? 0)
+			fee += Number(this.item.bank_supply_fee ?? 0)
+
+			return fee.toFixed(2)
 		}
 	}
 	, methods: {
@@ -146,6 +342,9 @@ export default {
 				})
 				if(result.success){
 					this.item = result.data
+					if(!this.item.bank_code){
+						this.item.bank_code = ''
+					}
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}

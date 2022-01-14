@@ -39,7 +39,7 @@ export const codes = {
 	,admin_level: [
 		{ name: '최고 관리자', code: ''}
 	]
-	,type_code_amdin: 'admin'
+	,type_code_admin: 'admin'
 	,type_code_agency: 'agency'
 	,type_code_supply: 'supply'
 	,type_code_distributor: 'distributor'

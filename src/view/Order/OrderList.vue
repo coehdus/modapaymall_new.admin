@@ -9,7 +9,7 @@
 				<li
 					class="flex-1 pa-10 text-center cursor-pointer mr-1"
 					:class="search.order_status == '' ? 'bg-green ': 'bg-default'"
-					@click="search.order_status = ''; getSearch()"
+					@click="search.order_status = ''; getSearch(1)"
 				>주문 전체</li>
 				<li
 					v-for="order_status in codes.O002.items"
@@ -17,7 +17,7 @@
 
 					class="flex-1 pa-10 text-center cursor-pointer mr-1"
 					:class="order_status.code_value == search.order_status ? 'bg-' + order_status.code_color : 'bg-default'"
-					@click="search.order_status = order_status.code_value; getSearch()"
+					@click="search.order_status = order_status.code_value; getSearch(1)"
 				>{{ order_status.code_name }}</li>
 			</ul>
 		</div>
@@ -36,7 +36,7 @@
 				slot="add"
 				v-model="search.o_status"
 				class="pa-5-10 mr-10"
-				@change="getSearch"
+				@change="getSearch(1)"
 			>
 				<option value="">{{ codes.O001.code_name }}</option>
 				<option
@@ -49,7 +49,7 @@
 				slot="add"
 				v-model="search.order_status"
 				class="pa-5-10 mr-10"
-				@change="getSearch"
+				@change="getSearch(1)"
 			>
 				<option value="">{{ codes.O002.code_name }}</option>
 				<option
@@ -68,7 +68,7 @@
 				class=" full-height  "
 			>
 				<li
-					v-for="(item) in item_list"
+					v-for="(item, index) in item_list"
 					:key="item.order_num_new"
 					class="mb-50 "
 				>
@@ -96,18 +96,22 @@
 					<div class=" pa-10 under-line ">
 
 						<template
-							v-for="o_status in codes.o_status"
+							v-if="user.role == 'admin'"
 						>
-							<button
-								v-if="o_status.code > 0"
-								:key="'o_status_' + o_status.code"
-								class=" prl-10 mr-10"
-								:class="o_status.code != item.o_status ? 'bg-default' : 'bg-light-' + o_status.color"
-								@click="update(item, o_status.code)"
+							<template
+								v-for="o_status in codes.o_status"
 							>
-								<span class="vertical-middle color-333 ">{{  o_status.name }}</span>
-								<v-icon class="color-333">mdi mdi-chevron-right</v-icon>
-							</button>
+								<button
+									v-if="o_status.code > 0"
+									:key="'o_status_' + o_status.code"
+									class=" prl-10 mr-10"
+									:class="o_status.code != item.o_status ? 'bg-default' : 'bg-light-' + o_status.color"
+									@click="isConfirm(index, item, o_status.code)"
+								>
+									<span class="vertical-middle color-333 ">{{  o_status.name }}</span>
+									<v-icon class="color-333">mdi mdi-chevron-right</v-icon>
+								</button>
+							</template>
 						</template>
 
 						<div v-if="false">
@@ -137,6 +141,10 @@
 								<tr>
 									<th>주문번호</th>
 									<td>{{ item.order_num_new}}</td>
+								</tr>
+								<tr>
+									<th>결제방식</th>
+									<td>{{ item.pay_div_name }}</td>
 								</tr>
 								<tr>
 									<th>결제 상태</th>
@@ -288,7 +296,9 @@
 										</td>
 										<td>
 											<div class=" inline position-relative text-right flex-column justify-center">
-												<div>
+												<div
+													v-if="user.role_group == 'admin' || user.role_group == 'supply'"
+												>
 													<button
 														v-if="odt.order_status == 'step1'"
 														class="pa-5 mr-10 bg-blue vertical-middle"
@@ -352,10 +362,18 @@
 														:disabled="odt.not_confirm"
 													/>
 													<button
+														v-if="false"
 														class="btn-success pa-5 vertical-middle"
 														:disabled="odt.not_confirm"
 														@click="setShipping(odt)"
 													>등록</button>
+												</div>
+												<div
+													v-else
+												>
+													<span class="pa-5-10" :class="'bg-' + odt.order_status_color">{{ odt.order_status_name }}</span>
+													{{ odt.shipping_num}}
+													{{ odt.shipping_name }}
 												</div>
 											</div>
 										</td>
@@ -390,6 +408,8 @@
 			:program="program"
 			:align="'center'"
 			:options="search"
+
+			@click="getSearch"
 		></Pagination>
 
 		<Excel
@@ -402,6 +422,8 @@
 			:is_modal="is_modal"
 			:option="modal_option"
 			@close="modalClear"
+			@click="doAction"
+			@cancel="modalClear"
 		>
 			<div
 				v-if="modal_option.is_reason"
@@ -409,20 +431,6 @@
 				v-html="modal_option.content"
 				class="text-left"
 			></div>
-			<div
-				slot="modal-bottom"
-				class="justify-space-between"
-			>
-				<button
-					class="flex-1 pa-10"
-					@click="doAction"
-					:class="'bg-' + modal_option.color"
-				>확인</button>
-				<button
-					class="flex-1 pa-10 bg-gray"
-					@click="modalClear"
-				>취소</button>
-			</div>
 		</Modal>
 
 	</div>
@@ -459,6 +467,8 @@ export default {
 				,list_cnt: 10
 				,o_status: ''
 				,order_status: ''
+				,sDate: this.date.getToday('-')
+				,eDate: this.date.getToday('-')
 			})
 			,search_option:{
 
@@ -499,29 +509,28 @@ export default {
 	,computed: {
 		item_list: function (){
 
-			let self = this
-			return this.items.filter(function(item){
-				let o_status = self.codes.o_status[Number(item.o_status)]
+			return this.items.filter((item) => {
+				let o_status = this.codes.o_status[Number(item.o_status)]
 
 				if(o_status) {
 					item.o_status_name = o_status.name
 					item.o_status_color = o_status.color
 				}
 
-				let pay_div = self.codes.pay_div[item.pay_div]
+				let pay_div = this.codes.pay_div[item.pay_div]
 				item.pay_div_name = pay_div.name
 
-				item.supply_list.filter(function(supply){
+				item.supply_list.filter((supply) => {
 
 					supply.total_count = 0
-					supply.odt_list.filter(function(odt){
+					supply.odt_list.filter((odt) => {
 						if(odt.pdt_img1){
-							odt.pdt_img = self.codes.img_url + odt.pdt_img1
+							odt.pdt_img = this.$pdt_img_url + odt.pdt_img1
 						}else{
 							odt.pdt_img = ''
 						}
 
-						let order_status = self.codes.odt_status[odt.order_status]
+						let order_status = this.codes.odt_status[odt.order_status]
 
 						if(order_status){
 							odt.order_status_color = order_status.color
@@ -530,8 +539,8 @@ export default {
 
 						odt.ATOKEN = self.TOKEN
 
-						if(item.o_status != 2){
-							odt.not_confirm = true
+						if(item.o_status != 2 || odt.order_status == 'step5'){
+							this.$set(odt, 'not_confirm', true)
 						}
 
 						supply.total_count += Number(odt.op_cnt)
@@ -699,11 +708,17 @@ export default {
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postOdtUpdate'
-					,data: odt
+					,data: {
+						ATOKEN: this.TOKEN
+						, uid: odt.uid
+						, next_step: odt.next_step
+						, shipping_name: odt.shipping_name
+						, shipping_num: odt.shipping_num
+					}
 				})
 
 				if(result.success){
-					odt.order_status = step
+					this.$set(odt, 'order_status', step)
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -721,7 +736,7 @@ export default {
 		,toItem: function (){
 			this.is_item = !this.is_item
 		}
-		,update: async function(item, o_status){
+		,update: async function(index, item, o_status){
 			this.$emit('onLoading')
 			item.next_status = o_status
 			try{
@@ -733,6 +748,7 @@ export default {
 
 				if(result.success){
 					item.o_status = o_status
+					this.$set(this.items[index], 'o_status', o_status)
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -886,6 +902,11 @@ export default {
 				console.log(e)
 			}finally {
 				this.modalClear()
+			}
+		}
+		,isConfirm: function(index, item, code){
+			if(confirm("해당 주문건의 결제상태를 변경하시겠습니까?")){
+				this.update(index, item, code)
 			}
 		}
 	}

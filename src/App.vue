@@ -48,7 +48,7 @@ export default {
 		,is_view: false
 	})
 	,methods: {
-		isAuth: function(){
+		isAuth: async function(){
 			console.log('isAuth start !!')
 			let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
 			let skip = false
@@ -61,11 +61,11 @@ export default {
 				}
 			})
 			if(skip){
-				this.is_view = true
+				await this.setView(true)
 				console.log('isAuth skip ! do next !!')
 			}else {
 				if (!TOKEN || TOKEN === 'false') {
-					this.is_view = true
+					await this.setView(true)
 					console.log('not auth ! to login !!')
 					this.toLogin()
 				}else{
@@ -98,8 +98,6 @@ export default {
 				}
 			}catch (e) {
 				console.log(e)
-			}finally {
-				this.is_view = true
 			}
 		}
 		,getBaseInfo: async function(){
@@ -117,7 +115,7 @@ export default {
 					if(result.data.account_info.account_status != '1'){
 						document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Auth/Notice'
 					}else {
-						this.user = result.data.account_info
+						await this.setUser(result.data.account_info)
 					}
 				}else{
 					this.toLogin()
@@ -126,6 +124,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}
+		}
+		,setUser: async function(account){
+			this.user = account
+			await this.setView(true)
+		}
+		,setView: async function(type){
+			this.is_view = type
 		}
 		,setCode: function(code_list){
 			let list = this.codes

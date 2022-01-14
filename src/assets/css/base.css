@@ -4,7 +4,7 @@
 .under-line { border-bottom: 1px solid #ddd}
 .under-line-not-last:not(:last-child) { border-bottom: 1px solid #ddd }
 .text-right { text-align: right !important; }
-.text-center { text-align: center; }
+.text-center { text-align: center !important; }
 .text-left { text-align: left !important; }
 .text-under-line { border-bottom: 1px solid #ddd}
 
@@ -411,7 +411,9 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 .table > tbody > tr > th
 ,.table > tbody > tr > td
 ,.table > thead > tr > th
-,.table > thead > tr > td {
+,.table > thead > tr > td
+,.table > tfoot > tr > th
+,.table > tfoot > tr > td {
     text-align: center;
     padding: 10px;
     border: 1px solid #ddd

@@ -6,7 +6,7 @@
 				<select
 					v-model="search.year"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option
 						v-for="year in year_list"
@@ -18,7 +18,7 @@
 				<select
 					v-model="search.month"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option
 						v-for="month in 12"
@@ -28,9 +28,10 @@
 				</select>
 
 				<select
+					v-if="user.role == codes.type_code_admin"
 					v-model="search.day"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option
 						v-for="day in 31"
@@ -40,9 +41,26 @@
 				</select>
 
 				<select
+					v-model="search.payment_type"
+					class="pa-5 box mr-10"
+					@change="getSearch(1)"
+				>
+					<option value="">결제 구분</option>
+					<template
+						v-for="code in codes.P003.items"
+					>
+						<option
+							v-if="code.sub_code > 0"
+							:key="'admin_type_' + code.total_code"
+							:value="code.code_value"
+						>{{ code.code_name }}</option>
+					</template>
+				</select>
+
+				<select
 					v-model="search.is_settlement"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">정산여부</option>
 					<template
@@ -59,7 +77,7 @@
 				<select
 					v-model="search.is_deposit"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">지급여부</option>
 					<template
@@ -74,16 +92,17 @@
 				</select>
 
 				<select
+					v-if="user.role != codes.type_code_supply"
 					v-model="search.admin_type"
 					class="pa-5 box mr-10"
-					@change="getSearch"
+					@change="getSearch(1)"
 				>
 					<option value="">구분</option>
 					<template
 						v-for="code in codes.A001.items"
 					>
 						<option
-							v-if="code.sub_code > 1"
+							v-if="code.sub_code > 1 && code.sub_code < 4"
 							:key="'admin_type_' + code.total_code"
 							:value="code.total_code"
 						>{{ code.code_name }}</option>
@@ -117,6 +136,7 @@
 				>검색</button>
 
 				<button
+					v-if="user.role_group == codes.type_code_admin"
 					class="pa-5-10 btn-green vertical-middle"
 					@click="save"
 				>정산 실행 </button>
@@ -124,10 +144,30 @@
 
 			<div class="mt-10 pa-10 bg-white full-height">
 				<table
-					v-if="items.lnegth > 0"
-					class="table"
+					v-if="items.length > 0"
+					class="table table-even"
 				>
 					<colgroup>
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+
+						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
+
+						<col width="120px" />
+
 					</colgroup>
 					<thead>
 					<tr>
@@ -135,17 +175,20 @@
 						<th>구분</th>
 						<th>상점명</th>
 						<th>아이디</th>
+						<th>결제 구분</th>
+						<th>판매건수</th>
 						<th>판매금액</th>
+
 						<th>판매원가</th>
 						<th>매출금액</th>
-						<th>판매 수수료</th>
 						<th>결제 수수료</th>
-						<th>정산 수수료</th>
-						<th>수수료율</th>
-						<th>배송비 차감 금액</th>
+						<th>영업 수익</th>
+
+						<th>배송비</th>
 						<th>정산금액</th>
 						<th>정산여부</th>
 						<th>지급여부</th>
+
 						<th>관리</th>
 					</tr>
 					</thead>
@@ -155,20 +198,23 @@
 							:key="'settlement_' + item.uid"
 						>
 							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-							<td>{{ item.admin_type_name }}</td>
+							<td>{{ item.account_type_name }}</td>
 							<td>{{ item.shop_name}}</td>
 							<td>{{ item.admin_id }}</td>
-							<td>{{ item.sale_amount | makeComma }}</td>
-							<td>{{ item.total_amount | makeComma }}</td>
-							<td>{{ item.income_amount | makeComma }}</td>
-							<td>{{ item.admin_type_code == 'supply' ? item.fee * -1 : '-' | makeComma }}</td>
-							<td>{{ item.admin_type_code == 'agency' ? item.fee * -1 : '-' | makeComma }}</td>
-							<td>{{ item.admin_type_code == 'distributor' ? item.fee * -1 : '-' | makeComma }}</td>
-							<td>{{ item.admin_per }} %</td>
-							<td>{{ item.minus_amount | makeComma }}</td>
-							<td>{{ item.amount | makeComma }}</td>
+							<td>{{ item.payment_type }}</td>
+							<td>{{ item.total_count | makeComma }} 건</td>
+							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
+
+							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
+							<td class="text-right">{{ item.income_amount | makeComma }} 원</td>
+							<td class="text-right">{{ item.is_supply || item.is_admin ? (item.fee * -1) + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.income_amount) + '원' : item.is_admin ? Math.ceil(Number(item.admin_per) * -1) + '원'  : '-' | makeComma }}</td>
+
+							<td class="text-right">{{ item.is_admin || item.is_supply ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.amount | makeComma }} 원</td>
 							<td>{{ item.is_settlement_name }}</td>
 							<td>{{ item.is_deposit_name }}</td>
+
 							<td>
 								<button
 									class="btn-blue pa-5-10 mr-10"
@@ -200,6 +246,8 @@
 			:is_modal="is_modal"
 			:option="modal_option"
 
+			height="450px"
+
 			@close="close"
 		>
 			<SettlementDetail
@@ -212,6 +260,7 @@
 				:item="item_detail"
 				:year="search.year"
 				:month="search.month"
+				:day="search.day"
 
 				@click="close"
 				@onLoading="$emit('onLoading')"
@@ -221,58 +270,6 @@
 
 				class="full-width"
 			></SettlementDetail>
-
-			<div
-				v-if="user.admin_type_code == codes.type_code_amdin"
-				slot="modal-bottom"
-				class="bg-base pa-10 justify-center"
-			>
-				<button
-					v-if="item_detail.is_settlement != '1'"
-					class="bg-green pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlement', 'confirm')"
-				>정산 확인</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit != '1'"
-					class="bg-green pa-5-10 mr-10 color-eee"
-					@click="doUpdate('deposit', 'confirm')"
-				>지급 확인</button>
-
-				<button
-					v-if="item_detail.is_settlement == '0'"
-					class="bg-orange pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlement', 'hold')"
-				>정산 보류</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
-					class="bg-orange pa-5-10 mr-10 color-eee"
-					@click="doUpdate('deposit', 'hold')"
-				>지급 보류</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
-					class="bg-red pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlement', 'cancel')"
-				>정산 취소</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '1'"
-					class="bg-red pa-5-10 mr-10 color-eee"
-					@click="doUpdate('deposit', 'cancel')"
-				>지급 취소</button>
-			</div>
-			<div
-				v-else
-				class="mt-20 justify-center"
-				slot="modal-bottom"
-			>
-				<button
-					class="pa-10 bg-green"
-					@click="close"
-				>확인</button>
-			</div>
 		</Modal>
 	</div>
 </template>
@@ -301,17 +298,19 @@ export default {
 				,year: new Date().getFullYear()
 				,month:  new Date().getMonth() + 1
 			}
-			,search: {
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,year: this.$route.query.year ? this.$route.query.year : new Date().getFullYear()
-				,month:  this.$route.query.month ? this.$route.query.month : new Date().getMonth() + 1
-				,day: this.$route.query.day ? this.$route.query.day : new Date().getDate()
-				,admin_type: this.$route.query.admin_type ? this.$route.query.admin_type : ''
-				,is_settlement: this.$route.query.is_settlement ? this.$route.query.is_settlement : ''
-				,is_deposit: this.$route.query.is_deposit ? this.$route.query.is_deposit : ''
-				,search_type: this.$route.query.search_type ? this.$route.query.search_type : ''
-				,search_value: this.$route.query.search_value ? this.$route.query.search_value : ''
-			}
+				, year: new Date().getFullYear()
+				, month:  new Date().getMonth() + 1
+				, day: this.user.role == this.codes.type_code_admin ? new Date().getDate() : ''
+				, admin_type: ''
+				, is_settlement: ''
+				, is_deposit: ''
+				, payment_type: ''
+				, search_type: ''
+				, search_value: ''
+				, page: 1
+			})
 			,item_detail: {
 
 			}
@@ -321,41 +320,46 @@ export default {
 			,modal_option: {
 				title: '정산 상세 내역'
 				,top: true
-				,bottom: true
+				,bottom: false
 			}
+			,reason: ''
 		}
 	}
 	,computed: {
 		item_list: function(){
 
-			let self = this
-			return this.items.filter(function(item){
+			return this.items.filter((item) => {
 
-				for(let i = 0; i < self.codes.S001.items.length; i ++){
-					if(item.is_settlement == self.codes.S001.items[i].code_value){
-						item.is_settlement_name = self.codes.S001.items[i].code_name
+				for(let i = 0; i < this.codes.S001.items.length; i ++){
+					if(item.is_settlement == this.codes.S001.items[i].code_value){
+						item.is_settlement_name = this.codes.S001.items[i].code_name
 					}
 				}
-				for(let i = 0; i < self.codes.S002.items.length; i ++){
-					if(item.is_deposit == self.codes.S002.items[i].code_value){
-						item.is_deposit_name = self.codes.S002.items[i].code_value == '0' ? '-' : self.codes.S002.items[i].code_name
+				for(let i = 0; i < this.codes.S002.items.length; i ++){
+					if(item.is_deposit == this.codes.S002.items[i].code_value){
+						item.is_deposit_name = this.codes.S002.items[i].code_value == '0' ? '-' : this.codes.S002.items[i].code_name
 					}
 				}
 
-				switch(item.admin_type_code){
-					default:
+				switch(item.account_type_code){
+					case this.codes.type_code_admin:
 						item.admin_type_name = '운영관리'
+						item.is_admin = true
 						break;
-					case "distributor":
+					case this.codes.type_code_distributor:
 						item.admin_type_name = '총판'
+						item.is_agency = true
 						break;
-
-					case "agency":
+					case this.codes.type_code_agency:
 						item.admin_type_name = '대리점'
+						item.is_agency = true
 						break;
 
-					case "supply":
+					case this.codes.type_code_supply:
 						item.admin_type_name = '공급사'
+						item.is_supply = true
+						break;
+					default:
 						break;
 				}
 
@@ -388,6 +392,7 @@ export default {
 
 				if(result.success){
 					this.items = result.data
+					this.$storage.setQuery(this.search)
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}
@@ -444,33 +449,12 @@ export default {
 		,setNotify: function({ type, message }){
 			this.$emit('setNotify', { type: type, message: message })
 		}
-		,getSearch: function(){
-			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})
-			this.getData()
-		}
-		,doUpdate: async function(type, status) {
-			let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
-
-			try{
-				const result = await this.Axios({
-					method: 'post'
-					,url: url
-					,data: {
-						ATOKEN: this.TOKEN
-						,s_uid: this.item_detail.uid
-						,reason: this.reason
-					}
-				})
-
-				if(result.success){
-					this.close()
-					this.getData()
-				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
-				}
-			}catch (e) {
-				console.log(e)
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
 			}
+
+			this.getData()
 		}
 	}
 	,created() {

@@ -268,6 +268,11 @@ const routes = [
 		,component: () => import('@/view/CustomerCenter/ReviewList')
 	}
 	,{
+		path: prefix + 'Mypage/Supply'
+		,name: 'MypageSupply'
+		,component: () => import('@/view/Supply/SupplyView')
+	}
+	,{
 		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')

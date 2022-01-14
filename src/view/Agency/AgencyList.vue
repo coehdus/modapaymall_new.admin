@@ -12,6 +12,7 @@
 			@toItem="toItem"
 		>
 			<select
+				v-if="user.role == codes.type_code_admin"
 				slot="add"
 				v-model="search.agency_type"
 				class="pa-5-10 mr-10"
@@ -19,11 +20,15 @@
 				@change="getSearch(1)"
 			>
 				<option value="">영업단 구분</option>
+				<template
+					v-for="(code, index) in codes.A001.items"
+				>
 				<option
-					v-for="(code, index) in codes.B003.items"
+					v-if="code.code_index > 1 && code.code_index <4"
 					:key="code.total_code + '_' + index"
-					:value="code.code_index"
+					:value="code.total_code"
 				>{{ code.code_name }}</option>
+				</template>
 			</select>
 		</Search>
 
@@ -41,6 +46,7 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
+						<col width="auto" />
 					</colgroup>
 					<thead>
 					<tr>
@@ -50,6 +56,7 @@
 							/>
 						</th>
 						<th>구분</th>
+						<th>소속</th>
 						<th>아이디</th>
 						<th>이름</th>
 						<th>연락처</th>
@@ -70,6 +77,7 @@
 							/>
 						</td>
 						<td>{{ item.agency_type_name }}</td>
+						<td>{{ item.agency_upper_name }}</td>
 						<td>{{ item.account_id }}</td>
 						<td>{{ item.account_name }}</td>
 						<td>{{ item.account_phone_number }}</td>
@@ -148,7 +156,7 @@ import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'AgencyList'
 	, components: {Empty, Excel, Search, Pagination}
-	, props: ['Axios', 'rules', 'TOKEN', 'date', 'codes']
+	, props: ['Axios', 'rules', 'TOKEN', 'date', 'codes', 'user']
 	, data: function (){
 		return {
 			program: {

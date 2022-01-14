@@ -13,7 +13,7 @@
 					v-for="item in items"
 				>
 					<li
-						v-if="item.type.indexOf(user.role_group) > -1"
+						v-if="item.type.indexOf(user.role) > -1"
 						:key="item.path"
 						class="li-side-content cursor-pointer"
 						:class="'li-side-depth-' + item.depth"
@@ -138,7 +138,7 @@
 								,type: ['admin', 'distributor', 'agency']
 							}
 							,{
-								path: 'ListSupply'
+								path: 'List'
 								,name: '주문 목록'
 								,type: ['supply']
 							}
@@ -152,12 +152,12 @@
 							{
 								path: 'Management'
 								,name: '정산 실행'
-								,type: ['admin', 'distributor']
+								,type: ['admin']
 							}
 							,{
 								path: 'List'
 								,name: '정산 내역'
-								,type: ['admin', 'distributor']
+								,type: ['admin', 'distributor', 'agency', 'supply']
 							}
 							,{
 								path: 'Agency'
@@ -167,7 +167,7 @@
 							,{
 								path: 'Agency'
 								,name: '정산내역'
-								,type: ['agency']
+								,type: ['']
 							}
 							,{
 								path: 'Supply'
@@ -177,12 +177,12 @@
 							,{
 								path: 'Supply'
 								,name: '정산내역'
-								,type: ['supply']
+								,type: ['']
 							}
 							,{
 								path: 'DeliveryList'
 								,name: '배송비 내역'
-								,type: ['admin', 'distributor', 'agency', 'supply']
+								,type: ['admin', 'supply']
 							}
 							,{
 								path: 'Minus'
@@ -194,12 +194,12 @@
 					,{
 						path: 'Banner'
 						,name: '배너 관리'
-						,type: ['admin', 'distributor']
+						,type: ['admin']
 						,sub: [
 							{
 								path: 'List'
 								,name: '배너 목록'
-								,type: ['admin', 'distributor']
+								,type: ['admin']
 							}
 						]
 					}
@@ -211,7 +211,7 @@
 							{
 								path: 'NoticeList'
 								,name: '공지사항'
-								,type: ['admin', 'distributor']
+								,type: ['admin']
 							}
 							,{
 								path: 'QnAList'
@@ -239,6 +239,18 @@
 								path: 'Setting'
 								, name: '관리설정'
 								, type: ['admin']
+							}
+						]
+					}
+					,{
+						path: 'Mypage'
+						, name: '설정'
+						, type: ['supply']
+						, sub: [
+							{
+								path: 'Supply'
+								, name: '상점 설정'
+								, type: ['supply']
 							}
 						]
 					}

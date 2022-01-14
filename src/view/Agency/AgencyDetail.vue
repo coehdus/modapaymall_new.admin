@@ -17,7 +17,6 @@
 						<tr>
 							<th>영업단 구분 <span class="color-red">*</span></th>
 							<td>
-
 								<select
 									v-model="item.agency_type"
 									class="pa-5-10 "
@@ -25,10 +24,10 @@
 								>
 									<option value="">선택하세요</option>
 									<template
-										v-for="(agency, index) in codes.B003.items"
+										v-for="(agency, index) in codes.A001.items"
 									>
 										<option
-											v-if="agency.code_index > 1"
+											v-if="agency.code_index > 1 && agency.code_index < 4"
 											:key="'agency_' + index"
 											:value="agency.total_code"
 										>{{ agency.code_name }}</option>
@@ -37,6 +36,9 @@
 							</td>
 							<th>소속 영업점</th>
 							<td>
+								<template
+									v-if="item.agency_type === codes.A001.items[2].total_code"
+								>
 								<select
 									v-if="items_upper.length > 0"
 									v-model="item.agency_upper"
@@ -53,6 +55,10 @@
 								<template
 									v-else
 								>영업단 구분을 선택하세요</template>
+								</template>
+								<template
+									v-else
+								>본사</template>
 							</td>
 						</tr>
 						<tr>
@@ -133,26 +139,37 @@
 							<col width="auto">
 							<tbody>
 							<tr>
-								<th>서비스 수수료 <span class="color-red">*</span></th>
+								<th>영업 수익률 <span class="color-red">*</span></th>
 								<td>
 									<div
-										v-if="$route.params.type != 'supply'"
-										class="justify-start">
-										<div class="flex-1 text-left">
-											카드 결제 수수료
+										class="justify-start"
+									>
+										<div class="flex-1 text-left justify-space-between">
+											카드 결제 수익률
+											<span>
 											<input
 												v-model="item.sales_fee"
 												type="number"
 												:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
 												class="box pa-5-10 width-fee "
 											/> %
+												</span>
 										</div>
 									</div>
 									<div
-										v-else
-										class="text-center"
+										class="justify-start mt-10"
 									>
-										-
+										<div class="flex-1 text-left justify-space-between">
+											무통장 입금 수익률
+											<span>
+											<input
+												v-model="item.sales_fee_bank"
+												type="number"
+												:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
+												class="box pa-5-10 width-fee "
+											/> %
+												</span>
+										</div>
 									</div>
 								</td>
 								<th>정산주기</th>
@@ -169,7 +186,7 @@
 										<option
 											v-for="code in codes.B001.items"
 											:key="code.total_code"
-											:value="code.bank_code"
+											:value="code.total_code"
 										>{{ code.code_name}}</option>
 									</select>
 								</td>
@@ -219,6 +236,19 @@
 						<col width="auto">
 						<tbody>
 
+						<tr>
+							<th>상점 상태</th>
+							<td colspan="3">
+								<button
+									v-for="(code, index) in codes.S004.items"
+									:key="code.total_code + '_' + index"
+
+									class="pa-5-10 mr-1"
+									:class="item.sales_status == code.code_value ? 'bg-' + code.code_color: 'bg-default'"
+									@click="item.sales_status = code.code_value "
+								>{{ code.code_name }}</button>
+							</td>
+						</tr>
 						<tr>
 							<th>상점명 <span class="color-red">*</span></th>
 							<td colspan="3">

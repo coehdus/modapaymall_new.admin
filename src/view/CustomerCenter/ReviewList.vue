@@ -46,7 +46,7 @@
 								<div class="pdt-img">
 								<img
 									v-if="item.pdt_img1"
-									:src="codes.img_url + item.pdt_img1"
+									:src="$pdt_img_url + item.pdt_img1"
 								/>
 								<v-icon
 									v-else
@@ -238,5 +238,6 @@ export default {
 </script>
 
 <style>
-.pdt-img img { width: 100%}
+.pdt-img { max-width: 120px; max-height: 60px; overflow: hidden;}
+.pdt-img img { width: 100%; }
 </style>

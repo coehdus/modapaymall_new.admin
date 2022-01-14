@@ -324,7 +324,7 @@ export default {
 			let item = this.item_ori
 
 			if(item.pdt_img1){
-				item.pdt_img = this.codes.img_url + item.pdt_img1
+				item.pdt_img = this.$pdt_img_url + item.pdt_img1
 			}
 
 			if(!item.pdt_info || item.pdt_info === undefined){
@@ -338,10 +338,10 @@ export default {
 			return item
 		}
 		,sub_images: function(){
-			let self = this
-			return this.item_files.sub.filter(function(item){
+
+			return this.item_files.sub.filter((item) => {
 				if(item.file_name){
-					item.pdt_img = self.codes.img_url + item.file_name
+					item.pdt_img = this.$pdt_img_url + item.file_name
 				}
 				return item
 			})

@@ -18,6 +18,12 @@
 						</td>
 						<th>소속</th>
 						<td class="position-relative">
+							<template
+								v-if="user.role == codes.type_code_agency"
+							>{{ item.agency_name }}</template>
+							<template
+								v-else
+							>
 							<select
 								v-model="item.admin_code"
 								class="input-box position-relative cursor-pointer"
@@ -27,13 +33,14 @@
 								<option
 									v-for="(agency, index) in agency_list"
 									:key="agency.uid + '_' + index"
-									:value="agency.uid"
+									:value="agency.agency_id"
 								>{{ agency.agency_name }}</option>
 							</select>
 							<v-icon
 								class="position-absolute color-icon"
 								style="right: 15px; top: 11px; z-index: 0"
 							>mdi mdi-menu-down</v-icon>
+							</template>
 						</td>
 					</tr>
 					<tr>
@@ -48,7 +55,7 @@
 							/>
 						</td>
 						<th>비밀번호</th>
-						<td class="text-right">
+						<td class="">
 							<button
 								class="bg-blue-light pa-5-10"
 								@click="isPassword"
@@ -67,7 +74,7 @@
 							/>
 						</td>
 						<th>계정상태</th>
-						<td class="text-right">
+						<td class="">
 							<button
 								v-for="(code, index) in codes.S003.items"
 								:key="code.total_code + '_' + index"
@@ -314,7 +321,7 @@ export default {
 				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getAgencyList'
+					,url: 'management/getAgencyList2'
 					,data: {
 						ATOKEN: this.TOKEN
 						,uid: this.$route.params.idx
@@ -322,8 +329,7 @@ export default {
 					}
 				})
 				if(result.success){
-					this.agency_list = result.data.result
-					await this.getData()
+					this.agency_list = result.data
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}

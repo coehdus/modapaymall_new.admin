@@ -10,12 +10,26 @@
 
 		<div class="flex-1 text-right">
 
+			<span class="position-relative" style="z-index: 1">
 			<input
 				v-if="option.sDate"
 				v-model="search.sDate"
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 시작일"
+
+				@click="clear(); search.sDate = ''; datePickerStart = !datePickerStart"
 			/>
+
+			<v-date-picker
+				v-if="datePickerStart"
+				v-model="search.sDate"
+				no-title
+				scrollable
+				class="position-absolute "
+				style="top: 30px; left: -95px; z-index: 2"
+				@change="clear"
+			></v-date-picker>
+			</span>
 
 			<span
 				v-if="option.sDate && option.eDate"
@@ -23,12 +37,26 @@
 				~
 			</span>
 
+			<span class="position-relative" style="z-index: 1">
 			<input
 				v-if="option.eDate"
 				v-model="search.eDate"
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 종료일"
+
+				@click="clear(); search.eDate = ''; datePickerEnd = !datePickerEnd"
 			/>
+
+			<v-date-picker
+				v-if="datePickerEnd"
+				v-model="search.eDate"
+				no-title
+				scrollable
+				class="position-absolute "
+				style="top: 30px; left: -95px;"
+				@change="clear"
+			></v-date-picker>
+			</span>
 
 			<slot
 				name="add"
@@ -115,10 +143,20 @@
 		,data: function(){
 			return {
 				list_cnt: [10, 20, 30, 50, 100, 200]
+				,datePickerStart: false
+				,datePickerEnd: false
 			}
 		}
 		,methods:{
-
+			clear: function(){
+				this.datePickerStart = false
+				this.datePickerEnd = false
+			}
 		}
 	}
 </script>
+
+<style>
+.v-picker__body {border: 1px solid #bbb;}
+.v-btn--active {background-color: #0f6ecd}
+</style>

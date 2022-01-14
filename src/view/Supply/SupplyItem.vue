@@ -277,7 +277,7 @@
 									<option
 										v-for="code in codes.B001.items"
 										:key="code.total_code"
-										:value="code.code_name"
+										:value="code.total_code"
 									>{{ code.code_name}}</option>
 								</select>
 							</td>
