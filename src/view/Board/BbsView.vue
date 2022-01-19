@@ -3,97 +3,39 @@
 		class="full-height"
 	>
 		<div
-			class="justify-space-between"
+			class=" justify-space-between"
 		>
-			<div class="flex-1 mr-10 pa-10 bg-white">
-				<div class="">
-					<h6>제목</h6>
-					<input
-						v-model="item.b_title"
-						class="input-box mt-10"
-						placeholder="제목을 입력하세요"
+			<div class="flex-1 mr-10 pa-10 bg-white flex-column">
+				<div class="justify-space-between">
+					<h6 class="font-weight-bold ">{{ item.b_title }}</h6>
+					<div class="mt-10">{{ item.wDate }}</div>
+				</div>
+				<div class="mt-10">
+					<Viewer
+						v-if="item.b_contents"
+						:initialValue="item.b_contents"
+						class="pa-10 bg-gray-light"
 					/>
 				</div>
 				<div class="mt-10">
 					<h6>첨부파일</h6>
-
-
-					<label class="mt-10 input-box">
-						<v-icon
-							class="color-icon"
-						>mdi mdi-image</v-icon>
+					<div>
 						{{ file_name }}
-						<input
-							v-show="false"
-							type="file"
-							placeholder="대표 이미지"
-							class="input-box"
-							maxlength="250"
-							@change="setFile"
-							accept="image/*"
-						/>
-					</label>
-
-
+					</div>
 				</div>
-				<div class="mt-10">
-					<button
-						v-for="file in files"
-						:key="'file_' + file.uid"
-						class="mr-10 box pa-10"
-						@click="isDelete(file)"
-					><v-icon
-						class="color-icon mr-10"
-					>mdi mdi-file</v-icon>{{ file.original_name }} <v-icon class="color-red" small>mdi mdi-close</v-icon></button>
-				</div>
-
 			</div>
-			<div class="flex-1 pa-10 bg-white">
-				<div class="">
+			<div class="flex-1 pa-10 ">
 
-					<h6>내용</h6>
-					<template
-						v-if="item_config.is_answer == 1"
-					>
-						<div
-							class="box-conents-for-answer"
-						>
-						<Viewer
-							v-if="item.b_contents"
-							:initialValue="item.b_contents"
-							class="pa-10 bg-gray-light"
-						/>
-						</div>
-					</template>
-					<template
-						v-else
-					>
-						<editor
-							v-if="item.b_contents"
-							:initialValue="item.b_contents"
-							height="550px"
-							initialEditType="wysiwyg"
-							ref="b_contents"
-							class="text-left mt-10"
-						/>
-
-					</template>
-
-				</div>
 			</div>
 		</div>
 
-		<div class="mt-30 text-center">
-			<button
-				v-if="user.role == codes.type_code_admin"
-				class="pa-10 box btn-blue mr-10"
-				@click="save"
-			>저장</button>
+		<div class="mt-auto text-center">
 			<button
 				class="pa-10 box btn-gray"
 				@click="toList"
 			>목록 </button>
 		</div>
+
 
 		<Modal
 			:is_modal="is_modal"
@@ -121,20 +63,19 @@
 
 <script>
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/vue-editor';
 
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import { Viewer } from "@toast-ui/vue-editor";
 
 import Modal from "@/components/Modal";
 export default {
-	name: 'BbsDetail'
+	name: 'BbsView'
 	,props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
-	,components: { Modal, editor: Editor ,Viewer }
+	,components: { Modal, Viewer }
 	,data: function(){
 		return {
 			program: {
-				name: '게시글 수정'
+				name: '게시글 상세'
 				,top: true
 				,title: true
 				,bottom: false
@@ -162,7 +103,7 @@ export default {
 	}
 	,computed: {
 		file_name: function(){
-			let name = '첨부파일'
+			let name = '-'
 			if(this.item.b_file){
 				name = this.item.b_file.name
 			}

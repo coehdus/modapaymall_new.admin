@@ -364,10 +364,12 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 
 /* animation */
 .rotate-180 {
-    transform: rotate(180deg);
+    -webkit-transform: rotate(-180deg); /* Webkit */
+    transform: rotate(-180deg);
 }
 
 .trans-x {
+    -webkit-transform: scaleX(-1); /* Webkit */
     transform: scaleX(-1);
 }
 

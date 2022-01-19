@@ -133,13 +133,10 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-				<div class="flex-1 bg-white pa-10 mr-10">
-					<h6 class="under-line-identify">운영정보</h6>
+
+					<h6 class="mt-10 under-line-identify">운영정보</h6>
 					<table class="table th-left td-left">
 						<col width="130px">
-						<col width="380px">
-						<col width="120px">
 						<col width="auto">
 						<tbody>
 						<tr>
@@ -167,32 +164,43 @@
 								</div>
 							</td>
 						</tr>
+						<tr>
+							<th>판매여부 <span class="color-red">*</span></th>
+							<td class="">
+								<button
+									class=" pa-5-10"
+									:class="item.is_sale === '1'? 'bg-identify' : 'bg-default'"
+									@click="item.is_sale = '1'"
+								>판매</button>
+								<button
+									class=" pa-5-10"
+									:class="item.is_sale === '0'? 'bg-danger' : 'bg-default'"
+									@click="item.is_sale = '0'"
+								>미판매</button>
+								<div  class="mt-10 pa-10 box">
+									<template v-if="item.is_sale == '1'">
+										상품 주문이 가능합니다
+									</template>
+									<template v-else>
+										상품 주문이 불가능합니다
+									</template>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="flex-1 bg-white pa-10 mr-10">
+					<h6 class="under-line-identify">결제 정보</h6>
+					<table class="table th-left td-left">
+						<col width="130px">
+						<col width="auto">
+						<tbody>
 							<tr>
-								<th>판매여부 <span class="color-red">*</span></th>
-								<td class="">
-									<button
-										class=" pa-5-10"
-										:class="item.is_sale === '1'? 'bg-identify' : 'bg-default'"
-										@click="item.is_sale = '1'"
-									>판매</button>
-									<button
-										class=" pa-5-10"
-										:class="item.is_sale === '0'? 'bg-danger' : 'bg-default'"
-										@click="item.is_sale = '0'"
-									>미판매</button>
-									<div  class="mt-10 pa-10 box">
-										<template v-if="item.is_sale == '1'">
-											상품 주문이 가능합니다
-										</template>
-										<template v-else>
-											상품 주문이 불가능합니다
-										</template>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<th>결제 방식</th>
+								<th>결제 방법</th>
 								<td>
+
 									<button
 										class="pa-5-10 mr-5"
 										:class="item.is_bank == '1' ? 'bg-identify' : ' btn-default'"
@@ -208,6 +216,7 @@
 										>mdi mdi-checkbox-blank-outline</v-icon>
 										무통장 입금
 									</button>
+
 									<button
 										class="pa-5-10 "
 										:class="item.is_card == '1' ? 'bg-identify' : ' btn-default'"
@@ -257,6 +266,70 @@
 							</tr>
 						</tbody>
 					</table>
+
+					<div class="justify-space-between mt-10">
+						<h6>PG사 정보</h6>
+						<button @click="is_modal_pg = true"><v-icon small class="box color-white bg-identify">mdi mdi-plus</v-icon></button>
+					</div>
+
+					<template
+						v-if="pg_list.length > 0"
+					>
+						<table class="table table-even">
+							<colgroup>
+
+							</colgroup>
+							<thead>
+								<tr>
+									<th>PG사</th>
+									<th>결제 수수료</th>
+									<th>사용여부</th>
+									<th>상세 정보</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									v-for="(pg, index) in pg_list"
+									:key="pg.pgMerchNo + '_' + index"
+								>
+									<td>{{ pg.pg_name }}</td>
+									<td>{{ pg.pg_fee }}%</td>
+									<td>
+										<div
+											class=" flex-row justify-center"
+										>
+											<v-icon
+												class="pa-5 "
+												:class="pg.pg_status == 1 ? 'bg-green color-white' : 'btn-default' "
+												@click="pg.pg_status = 1; update(pg)"
+											>mdi mdi-power-plug</v-icon>
+											<v-icon
+												class="pa-5  "
+												:class="pg.pg_status != 1 ? 'bg-red color-white' : 'btn-default' "
+												@click="pg.pg_status = 0; update(pg)"
+											>mdi mdi-power-plug-off</v-icon>
+
+											<v-icon
+												class="pa-5 bg-red color-white ml-10"
+												@click="isDeleteItem(pg)"
+											>mdi mdi-delete</v-icon>
+										</div>
+									</td>
+									<td>
+										<button
+											class="bg-identify pa-5-10"
+											@click="toDetail(pg)"
+										>상세정보</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</template>
+					<Empty
+						v-else
+
+						style="max-height: 340px"
+					></Empty>
 				</div>
 			</div>
 		</div>
@@ -269,17 +342,42 @@
 				@click="save"
 			>저장</button>
 		</div>
+
+		<Modal
+			:is_modal="is_modal_pg"
+			title="PG사 등록"
+			top="true"
+			width="520px"
+
+			@close="close"
+		>
+			<ManagerPgItem
+				slot="modal-content"
+				:Axios="Axios"
+				:user="user"
+				:codes="codes"
+				:rules="rules"
+				:TOKEN="TOKEN"
+				:uid="uid"
+
+				@success="success"
+				@setNotify="setNotify"
+				@cancel="close"
+			></ManagerPgItem>
+		</Modal>
 	</div>
 </template>
 
 <script>
 
+import Modal from "@/components/Modal";
+import ManagerPgItem from "@/view/Manager/ManagerPgItem";
+import Empty from "@/view/Layout/Empty";
 export default {
 	name: 'ManagerItem'
-	,
-	components: {},
-	props: ['Axios', 'user', 'codes', 'rules']
-	,data: function(){
+	, components: {Empty, ManagerPgItem, Modal}
+	, props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
+	, data: function(){
 		return {
 			program: {
 				name: '관리 설정'
@@ -287,6 +385,7 @@ export default {
 				, title: true
 				, bottom: false
 			}
+			, pg_list: []
 			,item: {
 				admin_type: 'A001001'
 				, admin_level: ''
@@ -294,6 +393,8 @@ export default {
 				, is_per: '1'
 				, bank_code: ''
 			}
+			, is_modal_pg: false
+			, uid: ''
 		}
 	}
 	,computed: {
@@ -364,7 +465,26 @@ export default {
 				})
 				if(result.success){
 					this.$emit('setNotify', { type: 'success', message: result.message})
-					this.getData()
+					await this.getData()
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		, getPgList: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getPgList'
+					,data: this.search
+				})
+				if(result.success){
+					this.pg_list = result.data
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}
@@ -377,10 +497,86 @@ export default {
 		,setAgencyPer: function(){
 
 		}
+		,do: async function(){
+			await this.getPgList()
+			await this.getData()
+		}
+		, success: function(){
+			this.$emit('setNotify', { type: 'success', message: '정상적으로 처리되었습니다'})
+			this.close()
+			this.getPgList()
+		}
+		, setNotify: function({ type, message}){
+			this.$emit('setNotify', { type: type, message: message})
+		}
+		, close: function(){
+			this.is_modal_pg = false
+			this.uid = ''
+		}
+
+		,update: async function(item){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postPgItemUpdate'
+					,data: {
+						ATOKEN: this.TOKEN
+						, uid: item.uid
+						, pg_status: item.pg_status
+					}
+				})
+
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message })
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		, deleteItem: async function(item){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postDeletePgItem'
+					,data: {
+						ATOKEN: this.TOKEN
+						, uid: item.uid
+					}
+				})
+
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message })
+					await this.getData()
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message })
+				}
+			}catch (e) {
+				console.log(e)
+				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		, toDetail: function(item){
+			this.is_modal_pg = true
+			this.uid = item.uid
+		}
+		, isDeleteItem: function(item){
+			if(confirm("해당 PG사 정보를 삭제하시겠습니까?")){
+				this.deleteItem(item)
+			}
+		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
-		this.getData()
+		this.do()
 	}
 }
 </script>

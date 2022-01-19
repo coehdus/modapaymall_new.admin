@@ -106,7 +106,7 @@ import { GChart } from 'vue-google-charts'
 
 	export default{
 		name: 'Main'
-		,props: ['Axios', 'TOKEN', 'date']
+		,props: ['Axios', 'TOKEN', 'date', 'user', 'codes']
 		,components: { GChart }
 		,data: function(){
 			return {
@@ -297,7 +297,11 @@ import { GChart } from 'vue-google-charts'
 				this.$router.push({ name: 'BbsAnswer', params: { b_code: item.b_code, bbs_uid: item.uid}})
 			}
 			,toNoticeDetail: function(item){
-				this.$router.push({ name: 'BbsDetail', params: { b_code: item.b_code, bbs_uid: item.uid}})
+				if(this.user.role == this.codes.type_code_admin){
+					this.$router.push({ name: 'BbsDetail', params: { b_code: item.b_code, bbs_uid: item.uid}})
+				}else{
+					this.$router.push({ name: 'BbsView', params: { b_code: item.b_code, bbs_uid: item.uid}})
+				}
 			}
 		}
 		,created: function(){

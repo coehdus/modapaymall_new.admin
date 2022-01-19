@@ -248,6 +248,11 @@ const routes = [
 		,component: () => import('@/view/Board/BbsDetail')
 	}
 	,{
+		path: prefix + 'Board/Bbs/:b_code/View/:bbs_uid'
+		,name: 'BbsView'
+		,component: () => import('@/view/Board/BbsView')
+	}
+	,{
 		path: prefix + 'Board/Bbs/:b_code/Answer/:bbs_uid'
 		,name: 'BbsAnswer'
 		,component: () => import('@/view/Board/BbsAnswer')

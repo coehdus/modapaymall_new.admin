@@ -1,83 +1,91 @@
 <template>
 	<div
-		class="full-height flex-column "
+		class="full-height flex-column"
 	>
 		<Search
 			:search="search"
 			:option="search_option"
 
-			@change="getData"
-			@click="getData"
+			@change="getSearch(1)"
+			@click="getSearch(1)"
 			@toItem="toItem"
 		></Search>
 
 		<div
-			class="mt-10 pa-10 bg-white full-height flex-column overflow-y-auto"
+			class="mt-10 full-height overflow-y-auto "
 		>
 			<div
 				v-if="items.length > 0"
+				class="full-height flex-column "
 			>
-				<table class="table table-even" >
-					<colgroup>
-						<col width="120px" />
-						<col width="180px" />
-						<col width="auto" />
-						<col width="180px" />
-						<col width="180px" />
-						<col width="180px" />
-					</colgroup>
-					<thead>
-					<tr>
-						<th colspan="2">상품명</th>
-						<th>리뷰</th>
-						<th>평점</th>
-						<th>작성자</th>
-						<th>등록일시</th>
-					</tr>
-					</thead>
-					<tbody>
-					<template
-						v-for="(item) in items"
-					>
-						<tr
-							:key="'bbs_' + item.uid"
-						>
-							<td>
-								<div class="pdt-img">
-								<img
-									v-if="item.pdt_img1"
-									:src="$pdt_img_url + item.pdt_img1"
-								/>
-								<v-icon
-									v-else
-								>mdi mid-image</v-icon>
-								</div>
-							</td>
-							<td class="text-left">{{ item.pdt_name }}</td>
-							<td class="text-left">{{ item.b_contents }}</td>
-							<td>{{ item.b_point }}</td>
-							<td>{{ item.m_name }}</td>
-							<td>{{ item.wDate }}</td>
+				<div
+					class="pa-10 bg-white full-height overflow-y-auto "
+				>
+					<table class="table table-even" >
+						<colgroup>
+							<col width="120px" />
+							<col width="180px" />
+							<col width="auto" />
+							<col width="180px" />
+							<col width="180px" />
+							<col width="180px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th colspan="2">상품명</th>
+							<th>리뷰</th>
+							<th>평점</th>
+							<th>작성자</th>
+							<th>등록일시</th>
 						</tr>
-						<tr
-							v-if="is_view == item.uid"
-							:key="'bbs_contents_' + item.uid"
+						</thead>
+						<tbody>
+						<template
+							v-for="(item) in items"
 						>
-							<td colspan="5" class="text-left bg-bbb ">
-								<Viewer
-									v-if="item.b_contents"
-									:initialValue="item.b_contents"
-								/>
-							</td>
-						</tr>
-					</template>
-					</tbody>
-				</table>
+							<tr
+								:key="'bbs_' + item.uid"
+							>
+								<td>
+									<div class="pdt-img">
+									<img
+										v-if="item.pdt_img1"
+										:src="$pdt_img_url + item.pdt_img1"
+									/>
+									<v-icon
+										v-else
+									>mdi mid-image</v-icon>
+									</div>
+								</td>
+								<td class="text-left">{{ item.pdt_name }}</td>
+								<td class="text-left">{{ item.b_contents }}</td>
+								<td>{{ item.b_point }}</td>
+								<td>{{ item.m_name }}</td>
+								<td>{{ item.wDate }}</td>
+							</tr>
+							<tr
+								v-if="is_view == item.uid"
+								:key="'bbs_contents_' + item.uid"
+							>
+								<td colspan="5" class="text-left bg-bbb ">
+									<Viewer
+										v-if="item.b_contents"
+										:initialValue="item.b_contents"
+									/>
+								</td>
+							</tr>
+						</template>
+						</tbody>
+					</table>
+				</div>
 
 				<Pagination
 					:program="program"
 					:align="'center'"
 					:options="search"
+
+					@click="getSearch"
+					class="mt-auto"
 				></Pagination>
 			</div>
 
@@ -131,12 +139,14 @@ export default {
 				,title: true
 				,bottom: false
 			}
-			,search:{
+			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,b_code: 'b_notice'
-				,list_cnt: 10
-				,search_type: ''
-			}
+				, b_code: 'b_notice'
+				, list_cnt: 10
+				, search_type: ''
+				, search_value: ''
+				, page: 1
+			})
 			,search_option: {
 				is_excel: false
 				,is_item: false
@@ -180,6 +190,7 @@ export default {
 					this.$set(this.search, 'total_count', result.data.tCnt)
 					this.$set(this.search_option, 'tCnt', result.data.tCnt)
 					this.$set(this.search_option, 'cnt', result.data.cnt)
+					this.$storage.setQuery(this.search)
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -228,6 +239,13 @@ export default {
 		,isDelete: function(item){
 			this.is_modal = true
 			this.item_delete = item
+		}
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
+			this.getData()
 		}
 	}
 	,created() {

@@ -42,10 +42,12 @@
 		</Search>
 
 		<div
-			class="mt-10 pa-10 bg-white full-height flex-column overflow-y-auto position-relative"
+			class="mt-10 pa-10 bg-white full-height overflow-y-auto position-relative"
 		>
 			<div
 				v-if="items.length > 0"
+
+				class="full-height flex-column"
 			>
 				<table class="table table-even">
 					<colgroup>

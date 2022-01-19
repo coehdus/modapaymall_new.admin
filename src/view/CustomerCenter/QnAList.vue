@@ -85,6 +85,7 @@
 									@click="toDetail(item)"
 								>답변하기</button>
 								<button
+									v-if="user.role == codes.type_code_admin"
 									class="btn-danger pa-5-10 ml-10"
 									@click="isDelete(item)"
 								>삭제</button>
@@ -94,7 +95,7 @@
 							v-if="is_view == item.uid"
 							:key="'bbs_contents_' + item.uid"
 						>
-							<td><i class="mdi mdi-keyboard-return size-px-20 color-icon 180"></i></td>
+							<td class="text-right"><v-icon class="size-px-20 color-icon ">mdi-subdirectory-arrow-right</v-icon></td>
 							<td colspan="6" class="text-left  ">
 								<Viewer
 									v-if="item.b_contents"
@@ -155,7 +156,7 @@ export default {
 	name: 'CustomerCenterQnAList'
 	,
 	components: {Empty, Modal, Pagination, Search,Viewer},
-	props: ['Axios', 'TOKEN', 'codes', 'rules']
+	props: ['Axios', 'TOKEN', 'codes', 'rules', 'user']
 	,data: function(){
 		return {
 			program: {

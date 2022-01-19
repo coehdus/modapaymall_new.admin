@@ -122,9 +122,8 @@
 						<th>대리점</th>
 						<th>공급사</th>
 						<th>판매 건수</th>
+						<th>배송비</th>
 						<th>결제 수수료</th>
-						<th>대리점 지급 금액</th>
-						<th>공급사 배송비</th>
 						<th>정산 금액</th>
 						<th>정산여부</th>
 						<th>지급여부</th>
@@ -137,14 +136,13 @@
 							:key="'settlement_' + item.uid"
 						>
 							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-							<td>{{ item.admin_id }}</td>
+							<td>{{ item.distributor_name }}</td>
 							<td>{{ item.agency_name}}</td>
 							<td>{{ item.supply_name }}</td>
 							<td>{{ item.total_count | makeComma }}</td>
-							<td>{{ item.fee * -1 | makeComma }}</td>
-							<td>{{ item.agency_total - item.fee | makeComma }}</td>
 							<td>{{ item.supply_total | makeComma }}</td>
-							<td>{{ item.agency_total - item.fee - item.supply_total | makeComma }}</td>
+							<td>{{ item.fee * -1 | makeComma }}</td>
+							<td>{{ item.supply_total | makeComma }}</td>
 							<td>{{ item.is_settlement_name }}</td>
 							<td>{{ item.is_deposit_name }}</td>
 							<td>
@@ -166,7 +164,11 @@
 			:is_modal="is_modal"
 			:option="modal_option"
 
+			height="450px"
+
 			@close="close"
+			@cancel="close"
+			@click="close"
 		>
 			<SettlementDeliveryDetail
 				slot="modal-content"
@@ -185,58 +187,6 @@
 
 				class="full-width"
 			></SettlementDeliveryDetail>
-
-			<div
-				v-if="user.admin_type_code == codes.type_code_admin"
-				slot="modal-bottom"
-				class="pa-10 justify-center bg-base"
-			>
-				<button
-					v-if="item_detail.is_settlement != '1'"
-					class="bg-green pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlementDelivery', 'confirm')"
-				>정산 확인</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit != '1'"
-					class="bg-green pa-5-10 mr-10 color-eee"
-					@click="doUpdate('depositDelivery', 'confirm')"
-				>지급 확인</button>
-
-				<button
-					v-if="item_detail.is_settlement == '0'"
-					class="bg-orange pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlementDelivery', 'hold')"
-				>정산 보류</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
-					class="bg-orange pa-5-10 mr-10 color-eee"
-					@click="doUpdate('depositDelivery', 'hold')"
-				>지급 보류</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '0'"
-					class="bg-red pa-5-10 mr-10 color-eee"
-					@click="doUpdate('settlementDelivery', 'cancel')"
-				>정산 취소</button>
-
-				<button
-					v-if="item_detail.is_settlement == '1' && item_detail.is_deposit == '1'"
-					class="bg-red pa-5-10 mr-10 color-eee"
-					@click="doUpdate('depositDelivery', 'cancel')"
-				>지급 취소</button>
-			</div>
-			<div
-				v-else
-				slot="modal-bottom"
-				class="pa-10 justify-center bg-base"
-			>
-				<button
-					class="pa-10 bg-green"
-					@click="close"
-				>확인</button>
-			</div>
 		</Modal>
 	</div>
 </template>
@@ -281,7 +231,7 @@ export default {
 			,modal_option: {
 				title: '배송비 정산 내역'
 				,top: true
-				,bottom: true
+				,bottom: false
 			}
 		}
 	}
@@ -331,6 +281,7 @@ export default {
 
 				if(result.success){
 					this.items = result.data.result
+					this.$storage.setQuery(this.search)
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}

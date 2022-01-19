@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="full-height full-width overflow-y-auto"
+		class="full-height flex-column full-width overflow-y-auto"
 	>
 		<div
 			v-if="step.reason"
@@ -69,55 +69,57 @@
 			class="mt-30"
 		></textarea>
 
+
+
 		<div
 			v-if="user.role == codes.type_code_admin"
 			slot="modal-bottom"
-			class="bg-base full-width pa-10 justify-center"
+			class="pa-10 justify-center mt-auto"
 		>
 			<button
 				v-if="item.is_settlement != '1'"
 				class="bg-green pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'confirm')"
+				@click="doUpdate('settlementDelivery', 'confirm')"
 			>정산 확인</button>
 
 			<button
 				v-if="item.is_settlement == '1' && item.is_deposit != '1'"
 				class="bg-green pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'confirm')"
+				@click="doUpdate('depositDelivery', 'confirm')"
 			>지급 확인</button>
 
 			<button
 				v-if="item.is_settlement == '0'"
 				class="bg-orange pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'hold')"
+				@click="doUpdate('settlementDelivery', 'hold')"
 			>정산 보류</button>
 
 			<button
 				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
 				class="bg-orange pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'hold')"
+				@click="doUpdate('depositDelivery', 'hold')"
 			>지급 보류</button>
 
 			<button
 				v-if="item.is_settlement == '1' && item.is_deposit == '0'"
 				class="bg-red pa-5-10 mr-10 color-eee"
-				@click="doUpdate('settlement', 'cancel')"
+				@click="doUpdate('settlementDelivery', 'cancel')"
 			>정산 취소</button>
 
 			<button
 				v-if="item.is_settlement == '1' && item.is_deposit == '1'"
 				class="bg-red pa-5-10 mr-10 color-eee"
-				@click="doUpdate('deposit', 'cancel')"
+				@click="doUpdate('depositDelivery', 'cancel')"
 			>지급 취소</button>
 		</div>
 		<div
 			v-else
 			slot="modal-bottom"
-			class="bg-base full-width pa-10 justify-center"
+			class="pa-10 justify-center mt-auto"
 		>
 			<button
-				class="bg-identify pa-5-10"
-				@click="close"
+				class="pa-10 bg-green"
+				@click="$emit('click')"
 			>확인</button>
 		</div>
 	</div>
