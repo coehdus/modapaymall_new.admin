@@ -7,7 +7,47 @@
 				class="justify-space-between "
 			>
 				<div class="flex-1 bg-white pa-10 mr-10">
-					<h6 class="under-line-identify">수익 및 수수료 설정</h6>
+					<h6>기본 정보</h6>
+					<table class="table th-left td-right">
+						<col width="130px">
+						<col width="auto">
+						<col width="130px">
+						<col width="auto">
+						<tbody>
+							<tr>
+								<th>사이트명</th>
+								<td><input v-model="item.site_name" class="input-box" placeholder="사이트명을 입력하세요" maxlength="50"></td>
+								<th>사이트 URL</th>
+								<td><input v-model="item.site_url" class="input-box" placeholder="사이트 URL을 입력하세요" maxlength="150"></td>
+							</tr>
+							<tr>
+								<th>대표자</th>
+								<td><input v-model="item.site_ceo" class="input-box" placeholder="대표자명을 입력하세요" maxlength="10"></td>
+								<th>개인정보관리자</th>
+								<td><input v-model="item.site_personal_manager" class="input-box" placeholder="개인정보관리자를 입력하세요" maxlength="10"></td>
+							</tr>
+							<tr>
+								<th>사업자등록번호</th>
+								<td><input v-model="item.site_biz_number" type="number" class="input-box" placeholder="사업자등록번호를 입력하세요" :rules="[rules.max(item, 'site_biz_number', 10)]"></td>
+								<th>통신판매업 번호</th>
+								<td><input v-model="item.site_report_number" class="input-box" placeholder="통신판매신고 번호를 입력하세요" maxlength="25" ></td>
+							</tr>
+							<tr>
+								<th>대표 번호</th>
+								<td><input v-model="item.site_tell" type="number" class="input-box" placeholder="대표번호를 입력하세요" :rules="[rules.max(item, 'site_tell', 12)]"></td>
+								<th>이메일</th>
+								<td><input v-model="item.site_email" class="input-box" placeholder="이메일을 입력하세요" maxlength="50"></td>
+							</tr>
+							<tr>
+								<th>이용 약관</th>
+								<td><button class="bg-identify pa-5-10" @click="is_modal_terms = true">열기</button></td>
+								<th>개인정보 취급방침</th>
+								<td><button class="bg-identify pa-5-10" @click="is_modal_personal = true">열기</button></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<h6 class="under-line-identify mt-10">수익 및 수수료 설정</h6>
 					<table class="table th-left td-left">
 						<col width="130px">
 						<col width="auto">
@@ -133,8 +173,11 @@
 							</tr>
 						</tbody>
 					</table>
+				</div>
 
-					<h6 class="mt-10 under-line-identify">운영정보</h6>
+				<div class="flex-1 bg-white pa-10 mr-10">
+
+					<h6 class="under-line-identify">운영정보</h6>
 					<table class="table th-left td-left">
 						<col width="130px">
 						<col width="auto">
@@ -189,10 +232,8 @@
 						</tr>
 						</tbody>
 					</table>
-				</div>
 
-				<div class="flex-1 bg-white pa-10 mr-10">
-					<h6 class="under-line-identify">결제 정보</h6>
+					<h6 class="under-line-identify mt-10">결제 정보</h6>
 					<table class="table th-left td-left">
 						<col width="130px">
 						<col width="auto">
@@ -344,6 +385,68 @@
 		</div>
 
 		<Modal
+			v-show="is_modal_terms"
+			:is_modal="true"
+			:top="true"
+			:bottom="true"
+			title="이용약관"
+			content_class="full-height"
+
+			@close="close"
+			@click="close"
+			@cancel="close"
+		>
+			<template slot="modal-content">
+				<editor
+					v-if="item.site_terms"
+					:initialValue="item.site_terms"
+					height="650px"
+					initialEditType="wysiwyg"
+					ref="site_terms"
+					class="text-left"
+				/>
+				<editor
+					v-else
+					height="650px"
+					initialEditType="wysiwyg"
+					ref="site_terms"
+					class="text-left"
+				/>
+			</template>
+		</Modal>
+
+		<Modal
+			v-show="is_modal_personal"
+			:is_modal="true"
+			:top="true"
+			:bottom="true"
+			title="개인정보 취급방침"
+			content_class="full-height"
+
+			@close="close"
+			@click="close"
+			@cancel="close"
+		>
+			<template slot="modal-content">
+				<editor
+					v-if="item.site_personal"
+					:initialValue="item.site_personal"
+					height="650px"
+					initialEditType="wysiwyg"
+					ref="site_personal"
+					class="text-left"
+				/>
+				<editor
+					v-else
+					height="650px"
+					initialEditType="wysiwyg"
+					ref="site_personal"
+					class="text-left"
+				/>
+			</template>
+		</Modal>
+
+		<Modal
 			:is_modal="is_modal_pg"
 			title="PG사 등록"
 			top="true"
@@ -373,9 +476,13 @@
 import Modal from "@/components/Modal";
 import ManagerPgItem from "@/view/Manager/ManagerPgItem";
 import Empty from "@/view/Layout/Empty";
+
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { Editor } from '@toast-ui/vue-editor';
+
 export default {
 	name: 'ManagerItem'
-	, components: {Empty, ManagerPgItem, Modal}
+	, components: {Empty, ManagerPgItem, Modal, Editor}
 	, props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 	, data: function(){
 		return {
@@ -392,8 +499,12 @@ export default {
 				, is_sale: '1'
 				, is_per: '1'
 				, bank_code: ''
+				, site_terms: ''
+				, site_personal: ''
 			}
 			, is_modal_pg: false
+			, is_modal_terms: false
+			, is_modal_personal: false
 			, uid: ''
 		}
 	}
@@ -457,7 +568,26 @@ export default {
 		}
 		,save: async function(){
 			try{
+
 				this.$emit('onLoading')
+
+				let site_terms = this.$refs.site_terms.invoke("getMarkdown")
+
+				if(!site_terms){
+					this.$refs.site_terms.invoke("setMarkdown", this.item.site_terms)
+				}
+
+				this.item.site_terms = site_terms
+
+
+				let site_personal = this.$refs.site_personal.invoke("getMarkdown")
+
+				if(!site_personal){
+					this.$refs.site_personal.invoke("setMarkdown", this.item.site_personal)
+				}
+
+				this.item.site_personal = site_personal
+
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postSetting'
@@ -511,6 +641,8 @@ export default {
 		}
 		, close: function(){
 			this.is_modal_pg = false
+			this.is_modal_terms = false
+			this.is_modal_personal = false
 			this.uid = ''
 		}
 

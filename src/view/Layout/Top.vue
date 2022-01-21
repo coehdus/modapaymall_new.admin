@@ -274,7 +274,7 @@
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,toSetting: function(){
-				this.is_modal = true
+				this.$emit('push', {name: 'ManagerSetting'})
 			}
 			,getData: async function(){
 				try{
