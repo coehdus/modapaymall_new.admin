@@ -416,7 +416,7 @@ export default {
 				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postPasswordReset'
+					,url: 'management/postMemberPasswordReset'
 					,data: {
 						uid: this.$route.params.idx
 					}
