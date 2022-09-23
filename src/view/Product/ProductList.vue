@@ -86,7 +86,7 @@
 						>
 							<td class="text-center">
 								<div
-									class="pdt-img  text-center"
+									class="pdt-thumb flex-column justify-center text-center"
 								>
 									<img
 										v-if="item.img"
@@ -333,8 +333,8 @@ export default {
 			let index = 0
 			return this.items.filter((item) => {
 					item.ATOKEN = this.TOKEN
-					if(item.pdt_img1){
-						item.img = this.$pdt_img_url + item.pdt_img1
+					if(item.pdt_img2){
+						item.img = item.pdt_img2
 					}else{
 						item.img = ''
 					}
@@ -585,10 +585,11 @@ export default {
 
 <style>
 
-	.pdt-img {
-		width: 80px;
+	.pdt-thumb {
+		width: 100%;
 		height: 80px;
 		overflow: hidden;
 	}
+
 	.pdt-img img { width: 100%}
 </style>

@@ -44,7 +44,7 @@
 							class="banner-img mr-10 "
 						>
 							<img
-								:src="codes.banner_url + file.file_name"
+								:src="file.file_path"
 							/>
 								</span>
 						<label

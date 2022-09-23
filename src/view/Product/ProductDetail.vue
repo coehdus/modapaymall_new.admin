@@ -115,8 +115,8 @@
 									class="pdt-img mr-10 flex-column justify-center"
 								>
 									<img
-										v-if="item.pdt_img"
-										:src="item.pdt_img"
+										v-if="item.pdt_img2"
+										:src="item.pdt_img2"
 									/>
 									<v-icon
 										v-else
@@ -220,9 +220,63 @@
 					<col width="auto" />
 					<tbody>
 					<tr>
-						<th colspan="2">상품 정보</th>
+						<th>상품 정보</th>
+						<td>
+							<div>
+								<label
+									class="box pa-10 justify-space-between"
+								>
+									{{ product_img_name }}
+									<v-icon
+										class="color-icon"
+									>mdi mdi-image</v-icon>
+
+									<input_file
+										v-show="false"
+										accept="image/*" multiple @change="setFile"
+									/>
+								</label>
+							</div>
+
+							<div class="mt-10" style="max-height: 500px; overflow: auto">
+								<draggable
+									v-model="files"
+									handle=".handle"
+								>
+									<div
+										v-for="(file, index) in files"
+										:key="'files_' + index"
+										class="flex-row mb-10"
+									>
+										<div
+											class="flex-1" style="position: relative"
+										>
+											<img
+												:src="file.file_path"
+												style="max-width: 180px"
+											/>
+											<button class="item_close" style="background-color: black">
+												<v-icon
+													@click="removeFile(file, index)"
+												>mdi mdi-close</v-icon>
+											</button>
+										</div>
+										<div class="flex-3 flex-column justify-center ml-10">
+											<p>{{  file.file_name }}</p>
+										</div>
+										<div class="handle flex-1 flex-column justify-center text-center mr-20">
+											<div class="drag_bar box">
+												<v-icon class="mdi-list">mdi-drag-horizontal-variant</v-icon>
+											</div>
+										</div>
+									</div>
+								</draggable>
+							</div>
+						</td>
 					</tr>
-					<tr>
+					<tr
+						v-if="false"
+					>
 						<td colspan="2">
 							<editor
 								v-if="item.pdt_info"
@@ -236,9 +290,50 @@
 						</td>
 					</tr>
 					<tr>
-						<th colspan="2">배송 / 반품 정보</th>
+						<th>배송 / 반품 정보</th>
+						<td>
+							<div>
+								<label
+									class="box pa-10 justify-space-between"
+								>
+									{{ delivery_img_name }}
+									<v-icon
+										class="color-icon"
+									>mdi mdi-image</v-icon>
+
+									<input_file
+										v-show="false"
+										accept="image/*" @change="setFile2"
+									/>
+								</label>
+							</div>
+
+							<div
+								v-if="item_upload_delivery_img.src"
+								class="flex-row mt-10"
+							>
+								<div
+									class="flex-1" style="position: relative"
+								>
+									<img
+										:src="item_upload_delivery_img.src"
+										style="max-width: 180px"
+									/>
+									<button class="item_close" style="background-color: black">
+										<v-icon
+											@click="removeDelivery"
+										>mdi-close</v-icon>
+									</button>
+								</div>
+								<div class="flex-3 flex-column justify-center ml-10">
+									<p>{{  item_upload_delivery_img.name }}</p>
+								</div>
+							</div>
+						</td>
 					</tr>
-					<tr>
+					<tr
+						v-if="false"
+					>
 						<td colspan="2">
 							<editor
 								v-if="item.pdt_notice"
@@ -270,8 +365,10 @@
 
 <script>
 import '@toast-ui/editor/dist/toastui-editor.css';
+import draggable from 'vuedraggable'
 
 import { Editor } from '@toast-ui/vue-editor';
+import input_file from '@/components/InputFile'
 
 
 export default {
@@ -279,6 +376,8 @@ export default {
 	,props: ['Axios', 'user', 'cart_cnt', 'TOKEN', 'rules', 'codes']
 	,components: {
 		editor: Editor
+		, input_file
+		, draggable
 	}
 	,data: function(){
 		return {
@@ -313,6 +412,11 @@ export default {
 			,pdt_code: this.$route.params.pdt_code
 			,category_list: []
 			,supply_list: []
+			, files: []
+			, upload_files: []
+			, file_max: 10
+			, item_delivery_img: ''
+			, item_upload_delivery_img: {}
 		}
 	}
 	,computed: {
@@ -341,7 +445,7 @@ export default {
 
 			return this.item_files.sub.filter((item) => {
 				if(item.file_name){
-					item.pdt_img = this.$pdt_img_url + item.file_name
+					item.pdt_img = item.file_path
 				}
 				return item
 			})
@@ -352,6 +456,22 @@ export default {
 			}else{
 				return false
 			}
+		}
+		,product_img_name: function(){
+			let name = '상품 정보 이미지'
+
+			for(const [key, value] of Object.entries(this.upload_files)){
+
+				name = value.name
+				if(key > 0){
+					name = value.name + ' 외 ' + key + '개'
+				}
+			}
+			return name
+		}
+		, delivery_img_name: function(){
+			let name = '배송 / 반품 정보 이미지'
+			return name
 		}
 	}
 	,methods: {
@@ -371,6 +491,13 @@ export default {
 					this.$set(this, 'item_ori', result.data.result)
 					this.item_options = result.data.pdt_option
 					this.item_files = result.data.pdt_files
+					this.files = result.data.pdt_files.file
+					this.item_upload_delivery_img_uid = result.data.pdt_files.delivery.uid
+					this.item_upload_delivery_img = {
+						src: result.data.pdt_files.delivery.file_path
+						, name: result.data.pdt_files.delivery.file_name
+						, type: 'image'
+					}
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
@@ -382,22 +509,10 @@ export default {
 		}
 		, save: async function(){
 			console.log('save start !!')
-			let pdt_info = this.$refs.pdt_info.invoke("getMarkdown")
-			let pdt_notice = this.$refs.pdt_notice.invoke("getMarkdown")
-
-			if(!pdt_info){
-				this.$refs.pdt_info.invoke("setMarkdown", this.item.pdt_info)
-			}
-			if(!pdt_notice){
-				this.$refs.pdt_notice.invoke("setMarkdown", this.item.pdt_notice)
-			}
-
 
 			this.new_item.ATOKEN = this.TOKEN
 			this.new_item.pdt_uid = this.item.uid
 			this.new_item.pdt_name = this.item.pdt_name
-			this.new_item.pdt_info =  pdt_info
-			this.new_item.pdt_notice = pdt_notice
 			this.new_item.pdt_purchase = this.item.pdt_purchase
 			this.new_item.pdt_price = this.item.pdt_price
 			this.new_item.pdt_delivery = this.item.pdt_delivery
@@ -408,10 +523,12 @@ export default {
 			for(let [key, val] of Object.entries(this.item_options.option)){
 				this.$set(this.new_item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)
 			}
-
-			this.$set(this.new_item, 'opt_cnt', Object.keys(this.item_options.option).length)
+			if(this.item_delivery_img){
+				this.$set(this.new_item, 'item_delivery_img', this.item_delivery_img)
+			}
 
 			try{
+				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postSupplyProduct'
@@ -422,12 +539,14 @@ export default {
 					this.$emit('setNotify', { type: 'success', message: result.message })
 					await this.getData()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					throw result.message
 				}
 			}catch (e) {
 				console.log(e)
+				this.$emit('setNotify', { type: 'error', message: e })
 			}finally {
 				console.log('save finished !!')
+				this.$emit('offLoading')
 			}
 		}
 		,addOption: function(){
@@ -482,11 +601,15 @@ export default {
 		,removeImg: async function(sub, index){
 			if(confirm("삭제하시겠습니까?")){
 				try{
-					sub.ATOKEN = this.TOKEN
 					const result = await this.Axios({
 						method: 'post'
 						,url: 'management/postProductImageDelete'
-						,data: sub
+						,data: {
+							ATKOEN: this.TOKEN
+							, uid: sub.uid
+							, pdt_uid: sub.pdt_uid
+							, img_type: sub.img_type
+						}
 					})
 
 					if(result.success){
@@ -552,6 +675,127 @@ export default {
 			await this.getSupplyList()
 
 			await this.getData()
+		}
+		, setFile: async function(e){
+			console.log('setFile', e)
+			console.log(e[0].size / 1024)
+
+			try {
+				this.$emit('onLoading')
+				let file_count = this.files.length + e.length
+				if (file_count > this.file_max) {
+					this.$emit('setNotify', {type: 'error', message: this.$language.common.error_file_limit})
+					return false
+				}
+
+				let data = {
+					ATOKEN: this.TOKEN
+					, pdt_uid: this.item.uid
+					, file_cnt: e.length
+				}
+				for (let i = 0; i < e.length; i++) {
+					data['upload_files' + i] = e[i]
+				}
+
+				const result = await this.Axios({
+					method: 'post'
+					, url: 'management/postProductFileUpdate'
+					, data: data
+				})
+
+				if (result.success) {
+					await this.getData()
+				} else {
+					throw result.message
+
+				}
+			}catch (e){
+				console.log(e)
+				this.$emit('setNotify', {type: 'error', message: e})
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+
+		, setFile2: function(e){
+			console.log('setFile2', e)
+
+			let self = this
+			for(let file of e){
+				console.log(`file` , file)
+				this.item_delivery_img = file
+				this.item_delivery_img.uid = this.item_upload_delivery_img_uid
+				const reader = new FileReader()
+				let data = {
+					name: file.name
+					, size: file.size
+					, type: file.type
+				}
+
+				reader.onload = function(e){
+					console.log('reader.onload')
+					data.src = e.target.result
+					self.item_upload_delivery_img = data
+				}
+
+				reader.readAsDataURL(file)
+			}
+		}
+		, removeDelivery: async function(){
+			if(this.item_delivery_img){
+				this.item_upload_delivery_img = {}
+				this.item_delivery_img = {}
+			}else{
+				if(confirm("삭제하시겠습니까?")){
+
+					try{
+						const result = await this.Axios({
+							method: 'post'
+							,url: 'management/postProductImageDelete'
+							,data: {
+								ATKOEN: this.TOKEN
+								, uid: this.item_upload_delivery_img_uid
+								, pdt_uid: this.item.uid
+								, img_type: 'delivery'
+							}
+						})
+
+						if(result.success){
+							this.item_upload_delivery_img = {}
+							this.item_delivery_img = {}
+						}else{
+							this.$emit('setNotify', { type: 'error', message: result.message })
+						}
+					}catch (e) {
+						console.log(e)
+					}
+				}
+			}
+		}
+		, removeFile: async function(file, index){
+			if(confirm("삭제하시겠습니까?")){
+
+				try{
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postProductImageDelete'
+						,data: {
+							ATKOEN: this.TOKEN
+							, uid: file.uid
+							, pdt_uid: file.pdt_uid
+							, img_type: file.img_type
+						}
+					})
+
+					if(result.success){
+						this.files.splice(index, 1)
+					}else{
+						this.$emit('setNotify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
 		}
 	}
 	,created() {
@@ -680,4 +924,18 @@ export default {
 }
 
 .pdt-img img { width: 100%}
+
+
+.v-file-input__text--placeholder {
+	color: #bbb !important;
+	font-size: 14px;
+}
+
+.theme--light.v-icon {
+	color: #bbb;
+}
+
+.item_close {
+	position: absolute; right: 10px; top: 10px
+}
 </style>
