@@ -315,6 +315,11 @@
 														@click="setOdtStatus(odt, 'step4')"
 													><span class="vertical-middle">배송완료 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													<button
+														v-else-if="odt.order_status == 'step4'"
+														class="pa-5 mr-10 bg-green vertical-middle"
+														@click="setOdtStatus(odt, 'step5')"
+													><span class="vertical-middle">구매확정 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+													<button
 														v-else-if="odt.order_status == 'step21'"
 														class="pa-5 mr-10 bg-red vertical-middle"
 														@click="setOdtStatus(odt, 'step22')"

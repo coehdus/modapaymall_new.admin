@@ -47,7 +47,7 @@
 						</tbody>
 					</table>
 
-					<h6 class="under-line-identify mt-10">수익 및 수수료 설정</h6>
+					<h6 class="under-line-identify mt-10">기본 수익 및 수수료 설정</h6>
 					<table class="table th-left td-left">
 						<col width="130px">
 						<col width="auto">
@@ -163,6 +163,11 @@
 
 										@keyup.enter="save"
 									/>
+
+									<div class="mt-10">
+									우측의 PG사 등록 정보 사용시 해당 PG 결제 수수료가 적용됩니다
+									</div>
+
 								</td>
 								<td class="text-center">-</td>
 							</tr>
@@ -280,7 +285,7 @@
 								<td>
 									<select
 										v-model="item.bank_code"
-										class="pa-5-10"
+										class="input-box width-20 mr-10"
 									>
 										<option value="">은행을 선택하세요</option>
 										<option
@@ -294,14 +299,14 @@
 										v-model="item.bank_account"
 										maxlength="50"
 										placeholder="계좌번호를 입력하세요"
-										class="mt-10 input-box"
+										class=" input-box width-20 mr-10"
 										/>
 
 									<input
 										v-model="item.bank_holder"
 										maxlength="10"
 										placeholder="예금주를 입력하세요"
-										class="mt-10 input-box"
+										class=" input-box width-20"
 									/>
 								</td>
 							</tr>

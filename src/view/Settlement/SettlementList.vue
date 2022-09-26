@@ -208,7 +208,7 @@
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.income_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.is_supply || item.is_admin ? (item.fee * -1) + '원' : '-' | makeComma }}</td>
-							<td class="text-right">{{ item.is_agency ? (item.income_amount) + '원' : item.is_admin ? Math.ceil(Number(item.admin_per) * -1) + '원'  : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.amount) + '원' :  '-' | makeComma }}</td>
 
 							<td class="text-right">{{ item.is_admin || item.is_supply ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.amount | makeComma }} 원</td>
