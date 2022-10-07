@@ -108,7 +108,7 @@
 						<td><input class="input-box" v-model="item.pdt_summary" /></td>
 					</tr>
 					<tr>
-						<th>대표 이미지</th>
+						<th>목록 이미지</th>
 						<td
 						>
 								<span
@@ -220,7 +220,16 @@
 					<col width="auto" />
 					<tbody>
 					<tr>
-						<th>상품 정보</th>
+						<th>상품 설명</th>
+						<td><textarea
+							v-model="item.pdt_info"
+							class="box"
+							maxlength="2500"
+							style="min-height: 150px"
+						></textarea></td>
+					</tr>
+					<tr>
+						<th>상세 정보 이미지</th>
 						<td>
 							<div>
 								<label
@@ -519,6 +528,7 @@ export default {
 			this.new_item.pdt_summary = this.item.pdt_summary
 			this.new_item.pdt_category = this.item.pdt_category
 			this.new_item.pdt_company = this.item.pdt_company
+			this.new_item.pdt_info = this.item.pdt_info
 
 			for(let [key, val] of Object.entries(this.item_options.option)){
 				this.$set(this.new_item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)

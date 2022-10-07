@@ -122,7 +122,7 @@
 							</td>
 						</tr>
 						<tr>
-							<th>대표 이미지</th>
+							<th>목록 이미지</th>
 							<td>
 								<label
 									class="box pa-10 justify-space-between "
@@ -217,7 +217,16 @@
 					<col width="auto" />
 					<tbody>
 					<tr>
-						<th>상품 정보</th>
+						<th>상품 설명</th>
+						<td><textarea
+							v-model="item.pdt_info"
+							class="box"
+							maxlength="2500"
+							style="min-height: 150px"
+						></textarea></td>
+					</tr>
+					<tr>
+						<th>상세 정보 이미지</th>
 
 						<td>
 							<div>
@@ -446,7 +455,7 @@ export default {
 			}
 		}
 		,main_img_name: function(){
-			let name = '대표 이미지'
+			let name = '목록 이미지'
 			if(this.item.pdt_img1){
 				name = this.item.pdt_img1.name
 			}
