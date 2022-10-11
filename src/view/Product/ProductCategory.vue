@@ -94,9 +94,8 @@
 
 			@close="close"
 		>
-			<div
+			<template
 				slot="modal-bottom"
-				class="justify-space-between"
 			>
 				<button
 					class="btn bg-red"
@@ -106,7 +105,7 @@
 					class="btn bg-gray-light color-333"
 					@click="close"
 				>취소</button>
-			</div>
+			</template>
 		</Modal>
 	</div>
 </template>
@@ -150,6 +149,7 @@
 					,content: '해당 카테고리를 삭제하시겠습니까?'
 					,bottom: true
 					,width: '360px'
+					,slot_bottom: true
 				}
 			}
 		}

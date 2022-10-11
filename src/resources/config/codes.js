@@ -5,7 +5,7 @@ export const codes = {
 		title: 'delimall'
 		,copyright: 'delimall'
 	}
-	,live_url: 'https://delimall.co.kr/Auth/Join/'
+	,live_url: 'https://' + process.env.VUE_APP_DOMAINdelimall + '/Auth/Join/'
 	,dev_url: 'https://localhost:8080/Auth/Join/'
 	,img_url: 'https://delimall.co.kr/API/data/product/'
 	,banner_url: 'https://delimall.co.kr/API/data/banner/'

@@ -110,7 +110,7 @@
 								class="banner-img mr-10 vertical-middle"
 							>
 								<img
-									:src="codes.banner_url + file.file_name"
+									:src="file.file_path"
 								/>
 							</span>
 						</td>
@@ -136,6 +136,9 @@
 				:program="program"
 				:align="'center'"
 				:options="search"
+
+				@click="getSearch"
+				class="mt-auto"
 			></Pagination>
 		</div>
 
@@ -166,19 +169,18 @@
 
 			@close="doClear"
 		>
-			<div
+			<template
 				slot="modal-bottom"
-				class="justify-space-between"
 			>
 				<button
-					class="btn bg-red color-eee"
+					class="btn bg-blue color-eee"
 					@click="doUpdate(item_update)"
 				>수정</button>
 				<button
 					class="btn bg-gray-light color-333"
 					@click="doClear"
 				>취소</button>
-			</div>
+			</template>
 		</Modal>
 	</div>
 </template>
@@ -206,6 +208,7 @@ export default {
 				ATOKEN: this.TOKEN
 				,list_cnt: 10
 				,search_type: ''
+				, page: 1
 			}
 			,search_option: {
 				is_excel: false
@@ -231,6 +234,7 @@ export default {
 				,content: '해당 배너를 삭제하시겠습니까?'
 				,bottom: true
 				,width: '380px'
+				, slot_bottom: true
 			}
 			,modal_option_update: {
 				top: true
@@ -238,6 +242,7 @@ export default {
 				,content: '해당 배너를 메인 배너로 변경하시겠습니까?'
 				,bottom: true
 				,width: '380px'
+				, slot_bottom: true
 			}
 			,item_update: null
 			,item_delete: null
@@ -284,6 +289,13 @@ export default {
 			}finally {
 				this.$emit('offLoading')
 			}
+		}
+		,getSearch: function(page){
+			if(page){
+				this.search.page = page
+			}
+
+			this.getData()
 		}
 		,toItem: function(){
 			this.$router.push({ name: 'BannerItem' })

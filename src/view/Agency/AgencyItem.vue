@@ -1,5 +1,7 @@
 <template>
-	<div class="full-height">
+	<div
+		class="full-height"
+	>
 		<div
 			class="full-height"
 		>
@@ -16,43 +18,61 @@
 						<tbody>
 						<tr>
 							<th>영업단 구분 <span class="color-red">*</span></th>
-							<td>
-
+							<td
+								v-if="codes.A001"
+							>
+								<template
+									v-if="user.role_group == 'admin'"
+								>
 								<select
 									v-model="item.agency_type"
 									class="pa-5-10 "
 									@change="getAgencyUpper"
 								>
 									<option value="">선택하세요</option>
-									<template
-										v-for="(agency, index) in codes.A001.items"
-									>
-										<option
-											v-if="agency.code_index > 1 && agency.code_index < 4"
-											:key="'agency_' + index"
-											:value="agency.total_code"
-										>{{ agency.code_name }}</option>
-									</template>
+										<template
+											v-for="(agency, index) in codes.A001.items"
+										>
+											<option
+												v-if="agency.code_index > 1 && agency.code_index < 4"
+												:key="'agency_' + index"
+												:value="agency.total_code"
+											>{{ agency.code_name }}</option>
+										</template>
 								</select>
+								</template>
+								<template
+									v-else
+								>
+									{{ codes.A001.items[2].code_name }}
+
+								</template>
 							</td>
 							<th>소속 영업점</th>
 							<td>
-								<select
-									v-if="items_upper.length > 0"
-									v-model="item.agency_upper"
-
-									class="input-box"
+								<template
+									v-if="user.role_group == 'admin'"
 								>
-									<option value="">선택하세요</option>
-									<option
-										v-for="(upper, index) in items_upper"
-										:key="upper.uid + '_' + index"
-										:value="upper.uid"
-									>{{ upper.agency_name }}</option>
-								</select>
+									<select
+										v-if="items_upper.length > 0"
+										v-model="item.agency_upper"
+
+										class="input-box"
+									>
+										<option value="">선택하세요</option>
+										<option
+											v-for="(upper, index) in items_upper"
+											:key="upper.uid + '_' + index"
+											:value="upper.uid"
+										>{{ upper.agency_name }}</option>
+									</select>
+									<template
+										v-else
+									>영업단 구분을 선택하세요</template>
+								</template>
 								<template
 									v-else
-								>영업단 구분을 선택하세요</template>
+								>{{ user.shop_name }}</template>
 							</td>
 						</tr>
 						<tr>
@@ -412,7 +432,7 @@ export default {
 				, business_type: 'B002001'
 				, bank_code: ''
 				, join_date: this.date.getToday('-')
-				, agency_upper: ''
+				, agency_upper: this.user.role_group == 'agency' ? this.user.account_uid : ''
 				, sales_fee: 0.5
 				, sales_fee_bank: 0
 			}
@@ -471,10 +491,12 @@ export default {
 					,url: 'management/getAgencyUpper'
 					,data: {
 						agency_type: this.item.agency_type
+						, account_uid: this.user.account_uid
 					}
 				})
 				if(result.success){
 					this.items_upper = result.data
+					this.item.agency_upper = ''
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}
@@ -487,6 +509,9 @@ export default {
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
+		if(this.user.role_group == 'agency'){
+			this.item.agency_type = this.codes.A001.items[2].total_code
+		}
 	}
 }
 </script>

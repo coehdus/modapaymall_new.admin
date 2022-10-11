@@ -17,48 +17,65 @@
 						<tr>
 							<th>영업단 구분 <span class="color-red">*</span></th>
 							<td>
-								<select
-									v-model="item.agency_type"
-									class="pa-5-10 "
-									@change="getAgencyUpper"
+
+								<template
+									v-if="user.role_group == 'admin'"
 								>
-									<option value="">선택하세요</option>
-									<template
-										v-for="(agency, index) in codes.A001.items"
+									<select
+										v-model="item.agency_type"
+										class="pa-5-10 "
+										@change="getAgencyUpper"
 									>
-										<option
-											v-if="agency.code_index > 1 && agency.code_index < 4"
-											:key="'agency_' + index"
-											:value="agency.total_code"
-										>{{ agency.code_name }}</option>
-									</template>
-								</select>
+										<option value="">선택하세요</option>
+										<template
+											v-for="(agency, index) in codes.A001.items"
+										>
+											<option
+												v-if="agency.code_index > 1 && agency.code_index < 4"
+												:key="'agency_' + index"
+												:value="agency.total_code"
+											>{{ agency.code_name }}</option>
+										</template>
+									</select>
+								</template>
+								<template
+									v-else
+								>
+									{{ codes.A001.items[2].code_name }}
+								</template>
 							</td>
 							<th>소속 영업점</th>
 							<td>
 								<template
-									v-if="item.agency_type === codes.A001.items[2].total_code"
+									v-if="user.role_group == 'admin'"
 								>
-								<select
-									v-if="items_upper.length > 0"
-									v-model="item.agency_upper"
+									<template
+										v-if="item.agency_type === codes.A001.items[2].total_code"
+									>
+									<select
+										v-if="items_upper.length > 0"
+										v-model="item.agency_upper"
 
-									class="input-box"
-								>
-									<option value="">선택하세요</option>
-									<option
-										v-for="(upper, index) in items_upper"
-										:key="upper.uid + '_' + index"
-										:value="upper.uid"
-									>{{ upper.agency_name }}</option>
-								</select>
-								<template
-									v-else
-								>영업단 구분을 선택하세요</template>
+										class="input-box"
+									>
+										<option value="">선택하세요</option>
+										<option
+											v-for="(upper, index) in items_upper"
+											:key="upper.uid + '_' + index"
+											:value="upper.uid"
+										>{{ upper.agency_name }}</option>
+									</select>
+									<template
+										v-else
+									>영업단 구분을 선택하세요</template>
+									</template>
+									<template
+										v-else
+									>본사</template>
 								</template>
 								<template
 									v-else
-								>본사</template>
+								>{{ user.shop_name }}</template>
 							</td>
 						</tr>
 						<tr>
@@ -68,6 +85,7 @@
 							<td class="text-right">
 								<button
 									class="bg-identify pa-5-10"
+									@click="isPassword"
 								>비밀번호 초기화</button>
 							</td>
 						</tr>
@@ -387,21 +405,40 @@
 				@click="toList"
 			>목록</button>
 		</div>
+
 		<DaumPost
 			:overlay="is_post"
 			:config="daum_config"
 			@callBack="addPost"
 		></DaumPost>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="{}"
+			:top="true"
+			:bottom="true"
+
+			title="비밀번호 초기화"
+			content="비밀번호를 초기화 하시겠습니까?"
+			width="360px"
+
+			content_class="ptb-50"
+
+			@click="doPassword"
+			@close="clear"
+			@cancel="clear"
+		></Modal>
 	</div>
 </template>
 
 <script>
 
 import DaumPost from "@/components/Daum/DaumPost";
+import Modal from "@/components/Modal";
 export default {
 	name: 'AgencyDetail'
 	,
-	components: {DaumPost},
+	components: {DaumPost, Modal},
 	props: ['Axios', 'user', 'codes', 'rules', 'date']
 	,data: function(){
 		return {
@@ -498,6 +535,35 @@ export default {
 				})
 				if(result.success){
 					this.items_upper = result.data
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
+		,clear: function(){
+			this.is_modal = false
+		}
+		,isPassword: function(){
+			this.clear()
+			this.is_modal = true
+		}
+		,doPassword: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postAgencyPasswordReset'
+					,data: {
+						uid: this.$route.params.idx
+					}
+				})
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.clear()
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message})
 				}

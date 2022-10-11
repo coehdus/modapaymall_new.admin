@@ -124,9 +124,8 @@
 
 			@close="doClear"
 		>
-			<div
+			<template
 				slot="modal-bottom"
-				class="justify-space-between"
 			>
 				<button
 					class="btn bg-red color-eee"
@@ -136,7 +135,7 @@
 					class="btn bg-gray-light color-333"
 					@click="doClear"
 				>취소</button>
-			</div>
+			</template>
 		</Modal>
 	</div>
 </template>
@@ -192,6 +191,7 @@
 					,content: '해당 게시글을 삭제하시겠습니까?'
 					,bottom: true
 					,width: '380px'
+					, slot_bottom: true
 				}
 			}
 		}

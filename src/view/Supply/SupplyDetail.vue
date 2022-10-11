@@ -23,6 +23,7 @@
 							<td class="">
 								<button
 									class="bg-identify pa-5-10"
+									@click="isPassword"
 								>비밀번호 초기화</button>
 							</td>
 						</tr>
@@ -416,6 +417,23 @@
 			:config="daum_config"
 			@callBack="addPost"
 		></DaumPost>
+
+		<Modal
+			:is_modal="is_modal"
+			:option="{}"
+			:top="true"
+			:bottom="true"
+
+			title="비밀번호 초기화"
+			content="비밀번호를 초기화 하시겠습니까?"
+			width="360px"
+
+			content_class="ptb-50"
+
+			@click="doPassword"
+			@close="clear"
+			@cancel="clear"
+		></Modal>
 	</div>
 </template>
 
@@ -424,10 +442,11 @@
 import DaumPost from "@/components/Daum/DaumPost";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
+import Modal from "@/components/Modal";
 
 export default {
 	name: 'SupplyDetail'
-	, components: {DaumPost, Editor}
+	, components: {DaumPost, Editor, Modal}
 	, props: ['Axios', 'user', 'codes', 'rules', 'date']
 	, data: function(){
 		return {
@@ -521,6 +540,35 @@ export default {
 			this.$set(this.item, 'shop_address', call.address)
 
 			this.is_post = false
+		}
+		,clear: function(){
+			this.is_modal = false
+		}
+		,isPassword: function(){
+			this.clear()
+			this.is_modal = true
+		}
+		,doPassword: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postSupplyPasswordReset'
+					,data: {
+						uid: this.$route.params.idx
+					}
+				})
+				if(result.success){
+					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.clear()
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
 		}
 	}
 	, created() {
