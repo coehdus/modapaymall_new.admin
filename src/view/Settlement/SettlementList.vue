@@ -3,42 +3,11 @@
 
 		<div class="full-height flex-column">
 			<div class="pa-10 box text-right">
-				<select
-					v-model="search.year"
-					class="pa-5 box mr-10"
-					@change="getSearch(1)"
-				>
-					<option
-						v-for="year in year_list"
-						:key="'year_' + year"
-						:value="year"
-					>{{ year }}년</option>
-				</select>
 
-				<select
-					v-model="search.month"
-					class="pa-5 box mr-10"
-					@change="getSearch(1)"
-				>
-					<option
-						v-for="month in 12"
-						:key="'month_' + month"
-						:value="month"
-					>{{ month }}월</option>
-				</select>
-
-				<select
-					v-if="user.role == codes.type_code_admin"
-					v-model="search.day"
-					class="pa-5 box mr-10"
-					@change="getSearch(1)"
-				>
-					<option
-						v-for="day in 31"
-						:key="'day_' + day"
-						:value="day"
-					>{{ day }}일</option>
-				</select>
+				<date_picker
+					@click="setDate"
+					class="mr-10"
+				></date_picker>
 
 				<select
 					v-model="search.payment_type"
@@ -137,9 +106,15 @@
 
 				<button
 					v-if="user.role_group == codes.type_code_admin"
-					class="pa-5-10 btn-green vertical-middle"
+					class="pa-5-10 btn-green vertical-middle mr-10"
 					@click="save"
 				>정산 실행 </button>
+
+				<button
+					class="pa-5-10 btn-green vertical-middle"
+					@click="getExcel"
+					:disabled="items.length <= 0"
+				>엑셀 다운로드</button>
 			</div>
 
 			<div class="mt-10 pa-10 bg-white full-height">
@@ -153,8 +128,6 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
-						<col width="auto" />
-						<col width="auto" />
 
 						<col width="auto" />
 						<col width="auto" />
@@ -165,7 +138,10 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
+						<col width="auto" />
+						<col width="auto" />
 
+						<col width="auto" />
 						<col width="120px" />
 
 					</colgroup>
@@ -183,6 +159,7 @@
 						<th>매출금액</th>
 						<th>결제 수수료</th>
 						<th>영업 수익</th>
+						<th>PG 수수료</th>
 
 						<th>배송비</th>
 						<th>정산금액</th>
@@ -197,24 +174,25 @@
 							v-for="item in item_list"
 							:key="'settlement_' + item.uid"
 						>
-							<td>{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
+							<td>{{ item.date }}</td>
 							<td>{{ item.account_type_name }}</td>
 							<td>{{ item.shop_name}}</td>
 							<td>{{ item.admin_id }}</td>
 							<td>{{ item.payment_type }}</td>
+
 							<td>{{ item.total_count | makeComma }} 건</td>
 							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
-
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
-							<td class="text-right">{{ item.income_amount | makeComma }} 원</td>
-							<td class="text-right">{{ item.is_supply || item.is_admin ? (item.fee * -1) + '원' : '-' | makeComma }}</td>
-							<td class="text-right">{{ item.is_agency ? (item.amount) + '원' :  '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_supply ? (item.fee) + '원' : '-' | makeComma }}</td>
 
+							<td class="text-right">{{ !item.is_supply ? (item.income_amount) + '원' :  '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_admin ? (item.fee) + '원' : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.is_admin || item.is_supply ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.amount | makeComma }} 원</td>
 							<td>{{ item.is_settlement_name }}</td>
-							<td>{{ item.is_deposit_name }}</td>
 
+							<td>{{ item.is_deposit_name }}</td>
 							<td>
 								<button
 									class="btn-blue pa-5-10 mr-10"
@@ -239,6 +217,12 @@
 				<Empty
 					v-else
 				></Empty>
+
+				<Pagination
+					:options="search"
+
+					@click="getSearch"
+				></Pagination>
 			</div>
 		</div>
 
@@ -271,6 +255,11 @@
 				class="full-width"
 			></SettlementDetail>
 		</Modal>
+
+		<Excel
+			v-if="is_excel"
+			:excel_data="excel_data"
+		></Excel>
 	</div>
 </template>
 
@@ -278,10 +267,14 @@
 import SettlementDetail from "@/view/Settlement/SettlementDetail";
 import Modal from "@/components/Modal";
 import Empty from "@/view/Layout/Empty";
+import date_picker from "@/components/DatePicker"
+import Pagination from "@/components/Pagination";
+import Excel from "../../components/Excel";
+
 export default {
 	name: 'SettlementList'
 	,
-	components: {Empty, Modal, SettlementDetail},
+	components: {Empty, Modal, SettlementDetail, date_picker, Pagination, Excel},
 	props: ['Axios', 'TOKEN', 'codes', 'user']
 	,data: function(){
 		return {
@@ -290,6 +283,25 @@ export default {
 				,top: true
 				,title: true
 				,bottom: false
+			}
+			,is_excel: false
+			,excel_data: {
+				name: '정산 내역'
+				,header: [
+					{ key: 0, name: '정산일', column: 'date'}
+					,{ key: 0, name: '구분', column: 'account_type_name'}
+					,{ key: 0, name: '상점명', column: 'shop_name'}
+					,{ key: 0, name: '아이디', column: 'admin_id'}
+					,{ key: 0, name: '결제 구분', column: 'payment_type'}
+					,{ key: 0, name: '판매건수', column: 'total_count'}
+					,{ key: 0, name: '판매금액', column: 'sale_amount'}
+					,{ key: 0, name: '정산금액', column: 'amount'}
+					,{ key: 0, name: '정산은행', column: 'bank_name'}
+					,{ key: 0, name: '정산계좌', column: 'bank_account'}
+					,{ key: 0, name: '예금주', column: 'bank_holder'}
+					,{ key: 0, name: '정산여부', column: 'is_settlement'}
+				]
+				,content: null
 			}
 			,items: []
 			,year_start: 2021
@@ -455,6 +467,50 @@ export default {
 			}
 
 			this.getData()
+		}
+		, setDate: function(date){
+			let t = date.split('-')
+			console.log('setDate', date)
+			this.search.year = t[0]
+			this.search.month = t[1]
+			this.search.day = t[2]
+
+			this.getData()
+		}
+		,getExcel: async function(){
+			try{
+				this.$emit('onLoading')
+
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getSettlementList'
+					,data: {
+						ATOKEN: this.search.ATOKEN
+						, year: this.search.year
+						, month:  this.search.month
+						, day: this.search.day
+						, admin_type: this.search.admin_type
+						, is_settlement: this.search.is_settlement
+						, is_deposit: this.search.is_deposit
+						, payment_type: this.search.payment_type
+						, search_type: this.search.search_type
+						, search_value: this.search.search_value
+						, page: 1
+						, list_cnt: 2000
+					}
+				})
+
+				if(result.success){
+					this.excel_data.content = result.data
+					this.is_excel = true
+				}else{
+					this.$emit('setNotify', { type: 'error', message: result.message})
+				}
+			}catch (e) {
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
 		}
 	}
 	,created() {

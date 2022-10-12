@@ -15,64 +15,69 @@
 			</div>
 		</div>
 
-		<table class="table table-even mt-20 full-width">
-			<colgroup>
-			</colgroup>
-			<thead>
-			<tr>
-				<th>매출일</th>
-				<th>판매금액</th>
-				<th>판매원가</th>
-				<th>매출금액</th>
-				<th>결제 수수료</th>
-
-				<th>영업 수익</th>
-				<th>정산금액</th>
-			</tr>
-			</thead>
-			<tbody>
-			<template
-				v-if="items.length > 0"
-			>
-				<tr
-					v-for="art in item_list"
-					:key="'settlement_' + art.date"
-				>
-					<td>{{ art.date }}</td>
-					<td>{{ art.sale_amount | makeComma }} 원</td>
-					<td>{{ art.total_amount | makeComma }} 원</td>
-					<td>{{ art.income_amount | makeComma }} 원</td>
-					<td>{{ item.is_agency ? '-' : (art.fee * -1) + '원' | makeComma}}</td>
-
-					<td>{{ item.is_supply ? '-' : (art.admin_per) + '원' | makeComma }}</td>
-					<td>{{ art.amount | makeComma }} 원</td>
-				</tr>
-			</template>
-			<tr
-				v-else
-			>
-				<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
-			</tr>
-			</tbody>
-			<tfoot>
+		<div>
+			<table class="table table-even mt-10 mb-10 full-width">
+				<colgroup>
+				</colgroup>
+				<thead>
 				<tr>
-					<th>합계</th>
-					<th>{{ item.sale_amount | makeComma}} 원</th>
-					<th>{{ item.total_amount | makeComma }} 원</th>
-					<th>{{ item.income_amount | makeComma }} 원</th>
-					<th>{{ item.is_agency ? '-' : (item.fee * -1) + '원' | makeComma}} </th>
-					<th>{{ item.is_agency ? (item.income_amount) + '원' : item.is_admin ? Math.ceil(Number(item.admin_per) * -1) + '원'  : '-' | makeComma }}</th>
-					<th>{{ item.amount | makeComma}} 원</th>
-				</tr>
-			</tfoot>
-		</table>
+					<th>매출일</th>
+					<th>판매금액</th>
+					<th>판매원가</th>
+					<th>매출금액</th>
+					<th>결제 수수료</th>
 
-		<textarea
-			v-if="user.role == codes.type_code_admin"
-			v-model="reason"
-			placeholder="보류시 사유를 입력해주세요"
-			class="mt-auto"
-		></textarea>
+					<th>영업 수익</th>
+					<th>PG 수수료</th>
+					<th>정산금액</th>
+				</tr>
+				</thead>
+				<tbody>
+				<template
+					v-if="items.length > 0"
+				>
+					<tr
+						v-for="(art, index) in item_list"
+						:key="'settlement_' + index"
+					>
+						<td>{{ art.date }}</td>
+						<td>{{ art.sale_amount | makeComma }} 원</td>
+						<td>{{ art.total_amount | makeComma }} 원</td>
+						<td>{{ item.is_supply ? art.income_amount + '원' : '-' | makeComma }}</td>
+
+						<td>{{ art.total_fee | makeComma }} 원 ({{ art.total_fee_rate }}%)</td>
+						<td>{{ item.is_supply ? '-' : art.income_amount + '원' | makeComma }} ({{ art.admin_per }}%)</td>
+						<td>{{ item.is_admin ? (art.fee) + '원' : '-' | makeComma}}  ({{ art.pg_fee_rate }}%)</td>
+						<td>{{ art.amount | makeComma }} 원</td>
+					</tr>
+				</template>
+				<tr
+					v-else
+				>
+					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
+				</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>합계</th>
+						<th>{{ item.sale_amount | makeComma}} 원</th>
+						<th>{{ item.total_amount | makeComma }} 원</th>
+						<th>{{ item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</th>
+						<th>{{ item.total_fee * -1 | makeComma }} 원</th>
+						<th>{{ !item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</th>
+						<th>{{ item.is_admin ? item.fee + '원' : '-' | makeComma }} </th>
+						<th>{{ item.amount | makeComma}} 원</th>
+					</tr>
+				</tfoot>
+			</table>
+
+			<textarea
+				v-if="user.role == codes.type_code_admin"
+				v-model="reason"
+				placeholder="보류시 사유를 입력해주세요"
+				class="mt-auto"
+			></textarea>
+		</div>
 
 		<div
 			v-if="user.role == codes.type_code_admin"

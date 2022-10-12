@@ -6,9 +6,11 @@ import VueDaumPostcode from "vue-daum-postcode"
 import { language } from '@/resources/lang/kr/common'
 import VueGoogleCharts from 'vue-google-charts'
 import { storage } from "./resources/storage/storage"
+import { date } from '@/resources/date/date'
 
 Vue.config.productionTip = false
 Vue.prototype.$language = language
+Vue.prototype.$date = date
 
 Vue.use(VueDaumPostcode)
 Vue.use(VueGoogleCharts)

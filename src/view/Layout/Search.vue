@@ -11,6 +11,12 @@
 		<div class="flex-1 text-right">
 
 			<span class="position-relative" style="z-index: 1">
+
+			<date_picker
+				v-if="false"
+				@click="setDate($event, search, 'sDate')"
+				class="mr-10"
+			></date_picker>
 			<input
 				v-if="option.sDate"
 				v-model="search.sDate"
@@ -136,10 +142,11 @@
 </template>
 
 <script>
+import date_picker from "@/components/DatePicker"
 	export default {
 		name: 'Search'
 		,props: ['search', 'option']
-		,components: {}
+		,components: {date_picker}
 		,data: function(){
 			return {
 				list_cnt: [10, 20, 30, 50, 100, 200]
@@ -152,6 +159,12 @@
 				this.datePickerStart = false
 				this.datePickerEnd = false
 			}
+			, setDate: function(date) {
+				let t = date.split('-')
+				this.$emit('click', t)
+			}
+		}
+		, created() {
 		}
 	}
 </script>

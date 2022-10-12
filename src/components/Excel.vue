@@ -17,8 +17,8 @@
 					:key="'tr_' + key"
 				>
 					<td
-						v-for="td in excel_data.header"
-						:key="'tr_' + key + '_td_' + td.column"
+						v-for="(td, d_index) in excel_data.header"
+						:key="'tr_' + key + '_td_' + d_index + '_' + td.column"
 					>
 						{{ tr[td.column] }}
 					</td>
@@ -54,7 +54,7 @@
 				//let data_type = 'data:application/vnd.ms-excel';
 				let ua = window.navigator.userAgent;
 				let msie = ua.indexOf("MSIE ");
-				let fileName = this.excel_data.name + this.date.getToday() + '.xls'
+				let fileName = this.excel_data.name + this.$date.getToday() + '.xls'
 				//Explorer 환경에서 다운로드
 				if (msie > 0 ) {
 					if (window.navigator.msSaveBlob) {

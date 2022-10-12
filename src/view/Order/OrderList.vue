@@ -723,7 +723,7 @@ export default {
 				})
 
 				if(result.success){
-					this.$set(odt, 'order_status', step)
+					await this.getData()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
@@ -752,8 +752,7 @@ export default {
 				})
 
 				if(result.success){
-					item.o_status = o_status
-					this.$set(this.items[index], 'o_status', o_status)
+					await this.getData()
 					this.$emit('setNotify', { type: 'success', message: result.message })
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })

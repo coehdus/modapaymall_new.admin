@@ -259,7 +259,7 @@
 
 input { font-size: 12px; letter-spacing: -0.5px; color: #333}
 input:disabled,
-input:read-only { background-color: #eee; color: #bbb;}
+input:read-only { background-color: #eee !important;}
 
 .input-disabled { background-color: #eee}
 .input-secret { -webkit-text-security: disc }
