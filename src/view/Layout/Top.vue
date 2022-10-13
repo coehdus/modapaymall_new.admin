@@ -15,11 +15,12 @@
 					<v-icon
 						class="color-icon-dark vertical-middle"
 					>mdi mdi-store</v-icon>
+					{{ user.role_name }}
 					<span
 						v-if="user.role_group == 'admin'"
 						class="vertical-middle mr-10"
 						@click="toSetting"
-					> [{{ user.role_name }}] 상점 설정</span>
+					> 상점 설정</span>
 
 				</span>
 				<button

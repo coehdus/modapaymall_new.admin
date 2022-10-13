@@ -273,7 +273,7 @@ export default {
 			})
 			,search_option:{
 				is_excel: true
-				, is_item: true
+				, is_item: this.user.role_group == 'agency' ? false : true
 				, is_cnt: true
 				, cnt: 0
 				, tCnt: 0
@@ -453,14 +453,14 @@ export default {
 		}
 		,toDetail: function (item){
 			let name = 'ProductDetail'
-			switch(this.user.admin_type_code){
+			switch(this.user.role_group){
 				case 'admin':
 					break;
 				case 'supply':
-					name += 'supply'
+					name += 'Supply'
 					break;
 				case 'agency':
-					name += 'agency'
+					name += 'Agency'
 					break;
 			}
 			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})

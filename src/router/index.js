@@ -153,6 +153,11 @@ const routes = [
 		,component: () => import('@/view/Product/ProductDetailSupply.vue')
 	}
 	,{
+		path: prefix + 'Product/DetailAgency/:pdt_code'
+		,name: 'ProductDetailAgency'
+		,component: () => import('@/view/Product/ProductDetailAgency.vue')
+	}
+	,{
 		path: prefix + 'Product/Category'
 		,name: 'ProductCategory'
 		,component: () => import('@/view/Product/ProductCategory.vue')

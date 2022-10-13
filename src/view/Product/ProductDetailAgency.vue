@@ -5,8 +5,8 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10">
-				<table class="table-td-left">
+			<div class="flex-1 mr-10 pa-10 bg-white">
+				<table class="table td-left">
 					<col width="120px" />
 					<col width="auto" />
 					<tbody>
@@ -26,11 +26,15 @@
 						<th>상품명</th>
 						<td>{{ item.pdt_name }} </td>
 					</tr>
-					<tr>
+					<tr
+						v-if="false"
+					>
 						<th>공급가</th>
 						<td>{{ item.pdt_purchase | makeComma }} 원</td>
 					</tr>
-					<tr>
+					<tr
+						v-if="false"
+					>
 						<th>마진가</th>
 						<td>
 							<input
@@ -43,15 +47,7 @@
 					</tr>
 					<tr>
 						<th>판매가</th>
-						<td>
-							<input
-								v-model="item.agency_sale_price"
-								type="number"
-								class="box flex-1 pa-5"
-								:rules="[rules.max(item, 'agency_sale_price', 10)]"
-								readonly
-							/> 원
-						</td>
+						<td>{{ item.pdt_price | makeComma }} 원</td>
 					</tr>
 					<tr>
 						<th>상품 배송비</th>
@@ -72,8 +68,8 @@
 							<span class="pdt-img">
 
 								<img
-									v-if="item.pdt_img"
-									:src="item.pdt_img"
+									v-if="item.pdt_img2"
+									:src="item.pdt_img2"
 								/>
 								<v-icon
 									v-else
@@ -105,12 +101,47 @@
 				</table>
 			</div>
 			<div class="flex-1">
-				<table>
+				<table class="table td-left">
 					<col width="120px" />
 					<col width="auto" />
 					<tbody>
 					<tr>
-						<th colspan="2">상품 정보</th>
+						<th>상품 설명</th>
+						<td>{{ item.pdt_info }}</td>
+					</tr>
+					<tr>
+						<th>상세 정보 이미지</th>
+						<td>
+							<div class="mt-10" style="max-height: 500px; overflow: auto">
+								<div
+									v-for="(file, index) in item_files"
+									:key="'files_' + index"
+									class="flex-row mb-10"
+								>
+									<div
+										class="flex-1" style="position: relative"
+									>
+										<img
+											:src="file.file_path"
+											style="max-width: 180px"
+										/>
+										<button class="item_close" style="background-color: black">
+											<v-icon
+												@click="removeFile(file, index)"
+											>mdi mdi-close</v-icon>
+										</button>
+									</div>
+									<div class="flex-3 flex-column justify-center ml-10">
+										<p>{{  file.file_name }}</p>
+									</div>
+									<div class="handle flex-1 flex-column justify-center text-center mr-20">
+										<div class="drag_bar box">
+											<v-icon class="mdi-list">mdi-drag-horizontal-variant</v-icon>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
@@ -156,7 +187,7 @@ import { Viewer } from "@toast-ui/vue-editor";
 
 export default {
 	name: 'ProductDetail'
-	,props: ['Axios', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list', 'pdt_code']
+	,props: ['Axios', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list']
 	,components: {
 		Viewer
 	}
@@ -168,7 +199,9 @@ export default {
 				,title: true
 				,bottom: false
 			}
-			,item_ori: null
+			,item_ori: {
+
+			}
 			,item_options: {
 
 			}
@@ -215,10 +248,10 @@ export default {
 			return item
 		}
 		,sub_images: function(){
-			let self = this
+
 			return this.item_files.sub.filter(function(item){
 				if(item.file_name){
-					item.pdt_img = self.codes.img_url + item.file_name
+					item.pdt_img = item.file_path
 				}
 				return item
 			})
@@ -233,14 +266,14 @@ export default {
 					,url: 'management/getProduct'
 					,data: {
 						ATOKEN: this.TOKEN
-						,pdt_code: this.pdt_code
+						,pdt_code: this.$route.params.pdt_code
 					}
 				})
 
 				if(result.success){
-					this.$set(this, 'item_ori', result.data.result)
-					this.item_options = result.data.pdt_option
-					this.item_files = result.data.pdt_files
+					this.item_ori = result.data.result
+					this.item_options = result.data.result.pdt_option
+					this.item_files = result.data.result.pdt_files
 				}else{
 					this.$emit('setNotify', { type: 'error', message: result.message })
 				}
