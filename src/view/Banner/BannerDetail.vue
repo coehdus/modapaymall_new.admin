@@ -197,9 +197,9 @@ export default {
 					this.item = result.data
 					this.item.ATOKEN = this.TOKEN
 					this.files = result.data.files
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -220,9 +220,9 @@ export default {
 
 				if(result.success){
 					await this.getData()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -277,9 +277,9 @@ export default {
 				if(result.success){
 					this.removeFile(this.item_delete.index)
 					this.close()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)

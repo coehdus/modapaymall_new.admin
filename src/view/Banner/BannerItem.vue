@@ -149,9 +149,9 @@ export default {
 
 				if(result.success){
 					this.toBack()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)

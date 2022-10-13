@@ -212,7 +212,7 @@ export default {
 						this.item.holder_name = this.item.bank_info.split(' ')[2]
 					}
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 					this.$router.back();
 				}
 			}catch(e){
@@ -230,10 +230,10 @@ export default {
 					,data: this.item
 				})
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					await this.getData()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -279,10 +279,10 @@ export default {
 					}
 				})
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					this.clear()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)

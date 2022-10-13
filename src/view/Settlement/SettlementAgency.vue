@@ -259,7 +259,7 @@ export default {
 				if(result.success){
 					this.items = result.data
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)
@@ -280,9 +280,9 @@ export default {
 
 				if(result.success){
 					await this.getSearch()
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)
@@ -302,7 +302,7 @@ export default {
 			this.modal_option.title = '정산 상세 내역 - ' + item.shop_name
 		}
 		,setNotify: function({ type, message }){
-			this.$emit('setNotify', { type: type, message: message })
+			this.$bus.$emit('notify', { type: type, message: message })
 		}
 		,getSearch: function(){
 			this.$emit('push', { name: this.$route.name, params: this.$route.params, query: this.search})

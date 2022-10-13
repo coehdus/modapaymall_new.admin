@@ -247,7 +247,7 @@
 						this.search_option.cnt = result.data.cnt
 						this.$storage.setQuery(this.search)
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 					this.is_excel = false
 				}catch (e) {
@@ -269,7 +269,7 @@
 						this.agency_list = result.data.result
 						//this.search_option.select[0].items = this.select_option_agency
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -302,13 +302,13 @@
 					if(result.success){
 						await this.getData()
 						this.clear_item()
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
-					this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+					this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 				}
 			}
 			,update: async function(item){
@@ -322,13 +322,13 @@
 
 					if(result.success){
 						this.clear_item()
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
-					this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+					this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 				}finally {
 					await this.getData()
 				}

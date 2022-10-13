@@ -501,7 +501,7 @@ export default {
 					this.search_option.tCnt = result.data.tCnt
 					this.search_option.cnt = result.data.cnt
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -539,9 +539,9 @@ export default {
 
 				if(result.success){
 					odt.order_status = next_step
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -572,9 +572,9 @@ export default {
 
 				if(result.success){
 					item.o_status = next_status
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -602,9 +602,9 @@ export default {
 
 				if(result.success){
 					await this.getSearch()
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)
@@ -649,7 +649,7 @@ export default {
 				if(result.success){
 					odt.history = result.data
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 					return
 				}
 			}catch(e){
@@ -671,7 +671,7 @@ export default {
 				this.modal_option.content += '<br/><br/>상세사유: ' + odt.history.reason_text
 				this.modal_option.is_reason = true
 			}else{
-				this.$emit('setNotify', { type: 'error', message: '교환 또는 반품처리 할 수 없는 주문상품입니다'})
+				this.$bus.$emit('notify', { type: 'error', message: '교환 또는 반품처리 할 수 없는 주문상품입니다'})
 				return
 			}
 

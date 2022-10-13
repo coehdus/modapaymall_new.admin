@@ -281,7 +281,7 @@
 					if(result.success){
 						this.item = result.data
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)

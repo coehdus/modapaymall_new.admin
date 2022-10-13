@@ -118,7 +118,7 @@
 							{
 								path: 'Category'
 								,name: '카테고리'
-								,type: ['admin', 'distributor']
+								,type: ['admin']
 							}
 							,{
 								path: 'List'

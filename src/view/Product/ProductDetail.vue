@@ -508,7 +508,7 @@ export default {
 						, type: 'image'
 					}
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -546,14 +546,14 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 					await this.getData()
 				}else{
 					throw result.message
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: e })
+				this.$bus.$emit('notify', { type: 'error', message: e })
 			}finally {
 				console.log('save finished !!')
 				this.$emit('offLoading')
@@ -583,7 +583,7 @@ export default {
 						if(result.success){
 							this.item_options.option.splice(index, 1)
 						}else{
-							this.$emit('setNotify', { type: 'error', message: result.message })
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
 						}
 					}catch (e) {
 						console.log(e)
@@ -625,7 +625,7 @@ export default {
 					if(result.success){
 						this.item_files.sub.splice(index, 1)
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -652,7 +652,7 @@ export default {
 				if(result.success){
 					this.category_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -672,7 +672,7 @@ export default {
 				if(result.success){
 					this.supply_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -694,7 +694,7 @@ export default {
 				this.$emit('onLoading')
 				let file_count = this.files.length + e.length
 				if (file_count > this.file_max) {
-					this.$emit('setNotify', {type: 'error', message: this.$language.common.error_file_limit})
+					this.$bus.$emit('notify', {type: 'error', message: this.$language.common.error_file_limit})
 					return false
 				}
 
@@ -721,7 +721,7 @@ export default {
 				}
 			}catch (e){
 				console.log(e)
-				this.$emit('setNotify', {type: 'error', message: e})
+				this.$bus.$emit('notify', {type: 'error', message: e})
 			}finally {
 				this.$emit('offLoading')
 			}
@@ -774,7 +774,7 @@ export default {
 							this.item_upload_delivery_img = {}
 							this.item_delivery_img = {}
 						}else{
-							this.$emit('setNotify', { type: 'error', message: result.message })
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
 						}
 					}catch (e) {
 						console.log(e)
@@ -800,7 +800,7 @@ export default {
 					if(result.success){
 						this.files.splice(index, 1)
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)

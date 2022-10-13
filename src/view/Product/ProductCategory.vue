@@ -213,7 +213,7 @@
 					if(result.success){
 						this.items = result.data.result
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -233,9 +233,9 @@
 
 					if(result.success){
 						await this.getData()
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -259,9 +259,9 @@
 					if(result.success){
 						this.close()
 						await this.getData()
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -275,7 +275,7 @@
 				let depth = key.slice(-1)
 
 				if(depth > 1 && !this['category' + (Number(depth) - 1)]){
-					this.$emit('setNotify', { type: 'error', message: '상위 카테고리를 선택하세요'})
+					this.$bus.$emit('notify', { type: 'error', message: '상위 카테고리를 선택하세요'})
 					return false
 				}
 

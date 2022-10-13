@@ -16,20 +16,20 @@
 						class="color-icon-dark vertical-middle"
 					>mdi mdi-store</v-icon>
 					{{ user.role_name }}
-					<span
-						v-if="user.role_group == 'admin'"
-						class="vertical-middle mr-10"
-						@click="toSetting"
-					> 상점 설정</span>
 
 				</span>
+
+				<button
+					v-if="user.role_group == 'admin'"
+					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
+					@click="toSetting"
+				>상점 설정</button>
+
 				<button
 					v-show="user.role == codes.type_code_agency"
 					@click="isCopy"
 					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
-				>
-					대리점 코드 발급
-				</button>
+				>대리점 코드 발급</button>
 			</div>
 
 			<div class="">
@@ -292,10 +292,10 @@
 
 					if(result.success){
 						this.item = result.data
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
 						this.is_modal = true
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -323,9 +323,9 @@
 
 					if(result.success){
 						this.is_modal = false
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)

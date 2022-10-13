@@ -313,7 +313,7 @@ import { Editor } from '@toast-ui/vue-editor';
 						this.item_options = result.data.pdt_option
 						this.item_files = result.data.pdt_files
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -357,9 +357,9 @@ import { Editor } from '@toast-ui/vue-editor';
 
 					if(result.success){
 						await this.getData()
-						this.$emit('setNotify', { type: 'success', message: result.message })
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -384,7 +384,7 @@ import { Editor } from '@toast-ui/vue-editor';
 					if(result.success){
 						this.supply_list = result.data.result
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
@@ -414,7 +414,7 @@ import { Editor } from '@toast-ui/vue-editor';
 							if(result.success){
 								this.item_options.option.splice(index, 1)
 							}else{
-								this.$emit('setNotify', { type: 'error', message: result.message })
+								this.$bus.$emit('notify', { type: 'error', message: result.message })
 							}
 						}catch (e) {
 							console.log(e)
@@ -452,7 +452,7 @@ import { Editor } from '@toast-ui/vue-editor';
 						if(result.success){
 							this.item_files.sub.splice(index, 1)
 						}else{
-							this.$emit('setNotify', { type: 'error', message: result.message })
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
 						}
 					}catch (e) {
 						console.log(e)

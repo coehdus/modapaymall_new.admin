@@ -331,7 +331,7 @@ export default {
 				if(result.success){
 					this.agency_list = result.data
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -355,7 +355,7 @@ export default {
 					this.shipping_list = result.data.shipping_list
 					this.history_list = result.data.history
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -373,10 +373,10 @@ export default {
 					,data: this.item
 				})
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					await this.getData()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -422,10 +422,10 @@ export default {
 					}
 				})
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					this.clear()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)

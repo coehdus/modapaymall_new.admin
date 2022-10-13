@@ -530,10 +530,10 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 					this.$emit('goBack')
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -565,7 +565,7 @@ export default {
 						if(result.success){
 							this.item_options.option.splice(index, 1)
 						}else{
-							this.$emit('setNotify', { type: 'error', message: result.message })
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
 						}
 					}catch (e) {
 						console.log(e)
@@ -589,7 +589,7 @@ export default {
 				if(result.success){
 					this.category_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -608,7 +608,7 @@ export default {
 				if(result.success){
 					this.supply_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)

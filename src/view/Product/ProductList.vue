@@ -415,7 +415,7 @@ export default {
 					this.$set(this.search_option, 'cnt', result.data.cnt)
 					this.$storage.setQuery(this.search)
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -440,13 +440,13 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
 			}
@@ -457,7 +457,6 @@ export default {
 				case 'admin':
 					break;
 				case 'supply':
-					name += 'Supply'
 					break;
 				case 'agency':
 					name += 'Agency'
@@ -495,7 +494,7 @@ export default {
 			this.getData()
 		}
 		,setNotify: function({ type, message}){
-			this.$emit('setNotify', { type: type, message: message })
+			this.$bus.$emit('notify', { type: type, message: message })
 		}
 		,deleteItem: async  function(item){
 			if(confirm("삭제하시겠습니까?")){
@@ -513,9 +512,9 @@ export default {
 
 					if(result.success){
 						await this.getData()
-						this.$emit('setNotify', { type: 'success', message: result.message})
+						this.$bus.$emit('notify', { type: 'success', message: result.message})
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message})
+						this.$bus.$emit('notify', { type: 'error', message: result.message})
 					}
 				}catch (e) {
 					console.log(e)
@@ -537,7 +536,7 @@ export default {
 				if(result.success){
 					this.category_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -556,7 +555,7 @@ export default {
 				if(result.success){
 					this.supply_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)

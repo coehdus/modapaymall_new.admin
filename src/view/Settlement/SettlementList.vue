@@ -406,7 +406,7 @@ export default {
 					this.items = result.data
 					this.$storage.setQuery(this.search)
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)
@@ -427,9 +427,9 @@ export default {
 
 				if(result.success){
 					await this.getData()
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)
@@ -459,7 +459,7 @@ export default {
 			this.item_deposit = item
 		}
 		,setNotify: function({ type, message }){
-			this.$emit('setNotify', { type: type, message: message })
+			this.$bus.$emit('notify', { type: type, message: message })
 		}
 		,getSearch: function(page){
 			if(page){
@@ -504,7 +504,7 @@ export default {
 					this.excel_data.content = result.data
 					this.is_excel = true
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch (e) {
 				console.log(e)

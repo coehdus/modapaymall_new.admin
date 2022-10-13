@@ -53,7 +53,10 @@
 						<th>상품 배송비</th>
 						<td>
 							{{ item.pdt_delivery | makeComma }} 원
-							<div class="color-red mt-10 text-left">
+							<div
+								v-if="false"
+								class="color-red mt-10 text-left"
+							>
 								상품 배송비 책정시 일반 배송비 정책에 포함되지 않으며 추가 배송비로 적용됩니다
 							</div>
 						</td>
@@ -114,7 +117,7 @@
 						<td>
 							<div class="mt-10" style="max-height: 500px; overflow: auto">
 								<div
-									v-for="(file, index) in item_files"
+									v-for="(file, index) in files"
 									:key="'files_' + index"
 									class="flex-row mb-10"
 								>
@@ -123,43 +126,35 @@
 									>
 										<img
 											:src="file.file_path"
-											style="max-width: 180px"
+											style="max-width: 100%"
 										/>
-										<button class="item_close" style="background-color: black">
-											<v-icon
-												@click="removeFile(file, index)"
-											>mdi mdi-close</v-icon>
-										</button>
-									</div>
-									<div class="flex-3 flex-column justify-center ml-10">
-										<p>{{  file.file_name }}</p>
-									</div>
-									<div class="handle flex-1 flex-column justify-center text-center mr-20">
-										<div class="drag_bar box">
-											<v-icon class="mdi-list">mdi-drag-horizontal-variant</v-icon>
-										</div>
 									</div>
 								</div>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
-							<Viewer
-								v-if="item.pdt_info"
-								:initialValue="item.pdt_info"
-							/>
-						</td>
-					</tr>
-					<tr>
-						<th colspan="2">배송 / 반품 정보</th>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<Viewer
-								v-if="item.pdt_notice"
-								:initialValue="item.pdt_notice"
-							/>
+						<th>배송 / 반품 정보</th>
+						<td>
+							<div>
+								<v-icon
+									class="color-icon"
+								>mdi mdi-image</v-icon>
+							</div>
+
+							<div
+								v-if="item_upload_delivery_img.src"
+								class="flex-row mt-10"
+							>
+								<div
+									class="flex-1" style="position: relative"
+								>
+									<img
+										:src="item_upload_delivery_img.src"
+										style="max-width: 100%"
+									/>
+								</div>
+							</div>
 						</td>
 					</tr>
 					</tbody>
@@ -168,12 +163,8 @@
 		</div>
 		<div class="text-center mt-10">
 			<button
-				class="pa-10 box bg-green mr-10"
-				@click="$emit('update', item)"
-			>저장</button>
-			<button
-				class="pa-10 box bg-gray"
-				@click="$emit('goBack')"
+				class="pa-10 box"
+				@click="$storage.push({ name: 'ProductList', not_query: true})"
 			>목록</button>
 		</div>
 	</div>
@@ -183,14 +174,12 @@
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
 import "@toast-ui/editor/dist/toastui-editor.css";
-import { Viewer } from "@toast-ui/vue-editor";
+
 
 export default {
 	name: 'ProductDetail'
 	,props: ['Axios', 'cart_cnt', 'TOKEN', 'rules', 'codes', 'supply_list', 'category_list']
-	,components: {
-		Viewer
-	}
+	,components: {}
 	,data: function(){
 		return {
 			program: {
@@ -223,6 +212,7 @@ export default {
 			}
 			,new_main_img: '이미지 선택'
 			,new_sub_img: '이미지 선택'
+			, item_upload_delivery_img: ''
 		}
 	}
 	,computed: {
@@ -272,10 +262,18 @@ export default {
 
 				if(result.success){
 					this.item_ori = result.data.result
-					this.item_options = result.data.result.pdt_option
-					this.item_files = result.data.result.pdt_files
+					this.item_options = result.data.pdt_option
+					this.item_files = result.data.pdt_files
+
+					this.files = result.data.pdt_files.file
+
+					this.item_upload_delivery_img = {
+						src: result.data.pdt_files.delivery.file_path
+						, name: result.data.pdt_files.delivery.file_name
+						, type: 'image'
+					}
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -321,9 +319,9 @@ export default {
 
 				if(result.success){
 					this.$emit('goSuccess')
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -348,7 +346,7 @@ export default {
 				if(result.success){
 					this.supply_list = result.data.result
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -399,7 +397,7 @@ export default {
 					if(result.success){
 						this.item_files.sub.splice(index, 1)
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)

@@ -563,7 +563,7 @@ export default {
 						this.item.bank_code = ''
 					}
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -599,10 +599,10 @@ export default {
 					,data: this.item
 				})
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message})
+					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					await this.getData()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -621,7 +621,7 @@ export default {
 				if(result.success){
 					this.pg_list = result.data
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
@@ -637,12 +637,12 @@ export default {
 			await this.getData()
 		}
 		, success: function(){
-			this.$emit('setNotify', { type: 'success', message: '정상적으로 처리되었습니다'})
+			this.$bus.$emit('notify', { type: 'success', message: '정상적으로 처리되었습니다'})
 			this.close()
 			this.getPgList()
 		}
 		, setNotify: function({ type, message}){
-			this.$emit('setNotify', { type: type, message: message})
+			this.$bus.$emit('notify', { type: type, message: message})
 		}
 		, close: function(){
 			this.is_modal_pg = false
@@ -665,13 +665,13 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
 			}
@@ -689,14 +689,14 @@ export default {
 				})
 
 				if(result.success){
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 					await this.getData()
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
 			}

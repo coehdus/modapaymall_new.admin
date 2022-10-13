@@ -310,7 +310,7 @@ export default {
 					this.search_option.tCnt = result.data.tCnt
 					this.search_option.cnt = result.data.cnt
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -330,13 +330,13 @@ export default {
 				if(result.success){
 					await this.getData()
 					this.clear_item()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
 			}
@@ -352,13 +352,13 @@ export default {
 
 				if(result.success){
 					this.clear_item()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getData()
 				this.$emit('offLoading')
@@ -397,13 +397,13 @@ export default {
 				if(result.success){
 					await this.getData()
 					this.clear_item()
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
 			}

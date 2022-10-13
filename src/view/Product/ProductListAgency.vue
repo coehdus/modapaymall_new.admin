@@ -335,7 +335,7 @@ export default {
 					this.search_option.tCnt = result.data.tCnt
 					this.search_option.cnt = result.data.cnt
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
@@ -362,13 +362,13 @@ export default {
 
 				if(result.success){
 					this.is_detail_view = false
-					this.$emit('setNotify', { type: 'success', message: result.message })
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message })
+					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
 			}catch (e) {
 				console.log(e)
-				this.$emit('setNotify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getSearch()
 				this.$emit('offnLoading')
@@ -419,7 +419,7 @@ export default {
 			this.getSearch()
 		}
 		,setNotify: function({ type, message}){
-			this.$emit('setNotify', { type: type, message: message })
+			this.$bus.$emit('notify', { type: type, message: message })
 		}
 
 	}

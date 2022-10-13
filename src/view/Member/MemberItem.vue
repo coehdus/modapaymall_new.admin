@@ -191,7 +191,7 @@
 						this.agency_list = result.data.result
 						//this.search_option.select[0].items = this.select_option_agency
 					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)

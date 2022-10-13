@@ -276,7 +276,7 @@ import { GChart } from 'vue-google-charts'
 					this.qna_items = result.data.qna_list
 					this.notice_items = result.data.notice_list
 				}else{
-					this.$emit('setNotify', { type: 'error', message: result.message})
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}
 			,goDetail(item){
@@ -291,7 +291,7 @@ import { GChart } from 'vue-google-charts'
 				this.$emit('onLoad', program)
 			}
 			,setNotify({ type, message}){
-				this.$emit('setNotify', { type: type, message: message })
+				this.$bus.$emit('notify', { type: type, message: message })
 			}
 			,toQnaDetail: function(item){
 				this.$router.push({ name: 'BbsAnswer', params: { b_code: item.b_code, bbs_uid: item.uid}})
