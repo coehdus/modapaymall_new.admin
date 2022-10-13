@@ -257,7 +257,7 @@ import DaumPost from "@/components/Daum/DaumPost";
 import Modal from "@/components/Modal";
 import Empty from "@/view/Layout/Empty";
 export default {
-	name: 'MemberItem'
+	name: 'MemberDetail'
 	,
 	components: {Empty, Modal, DaumPost},
 	props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']

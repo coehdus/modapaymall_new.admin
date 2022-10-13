@@ -112,6 +112,30 @@
 			:excel_data="excel_data"
 			:date="date"
 		></Excel>
+
+		<BackgroundModal
+			v-if="is_item"
+		>
+			<template
+				v-slot:contents
+			>
+				<MemberItem
+					:Axios="Axios"
+					:item_new="item_new"
+					:admin_list="agency_list"
+					:is_agency="is_agency"
+					:rules="rules"
+					:user="user"
+					:codes="codes"
+					:TOKEN="TOKEN"
+
+					style="width: 320px; background-color: white"
+
+					@click="getData"
+					@cancel="onCancel"
+				></MemberItem>
+			</template>
+		</BackgroundModal>
 	</div>
 </template>
 
@@ -121,10 +145,12 @@
 	import Excel from "@/components/Excel";
 	import Search from "@/view/Layout/Search";
 	import Empty from "@/view/Layout/Empty";
+	import MemberItem from "@/view/Member/MemberItem";
+	import BackgroundModal from "@/components/BackgroundModal";
 
 	export default {
 		name: 'MemberList'
-		, components: {Empty, Search, Excel, Pagination}
+		, components: {MemberItem, Empty, Search, Excel, Pagination, BackgroundModal}
 		, props: ['Axios', 'rules', 'TOKEN', 'user', 'date', 'codes']
 		,data: function (){
 			return {
@@ -206,6 +232,7 @@
 		,methods: {
 			getData: async function(){
 
+				this.is_item = false
 				try{
 					const result = await this.Axios({
 						method: 'get'
@@ -240,35 +267,12 @@
 
 					if(result.success){
 						this.agency_list = result.data.result
-						this.search_option.select[0].items = this.select_option_agency
+						//this.search_option.select[0].items = this.select_option_agency
 					}else{
 						this.$emit('setNotify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
-				}
-			}
-			,save: async function(){
-				try{
-					this.$emit('onLoading')
-					const result = await this.Axios({
-						method: 'post'
-						,url: 'management/postMember'
-						,data: this.item_new
-					})
-
-					if(result.success){
-						await this.getData()
-						this.clear_item()
-						this.$emit('setNotify', { type: 'success', message: result.message })
-					}else{
-						this.$emit('setNotify', { type: 'error', message: result.message })
-					}
-				}catch (e) {
-					console.log(e)
-					this.$emit('setNotify', { type: 'error', message: '통신 오류' })
-				}finally {
-					this.$emit('offLoading')
 				}
 			}
 			,toDetail: function (item){
@@ -347,6 +351,11 @@
 				await this.getAgencyList()
 
 				await this.getData()
+			}
+			, onCancel: function(){
+				if(confirm("회원가입을 취소하시겠습니까? 작성중인 정보는 저장되지 않습니다.")){
+					this.is_item = false
+				}
 			}
 		}
 		,created() {

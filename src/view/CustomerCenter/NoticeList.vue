@@ -90,7 +90,7 @@
 									v-if="is_view == item.uid"
 									:key="'bbs_contents_' + item.uid"
 								>
-									<td colspan="5" class="text-left bg-bbb ">
+									<td colspan="5" class="text-left ">
 										<Viewer
 											v-if="item.b_contents"
 											:initialValue="item.b_contents"

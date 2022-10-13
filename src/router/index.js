@@ -53,6 +53,11 @@ const routes = [
 		,component: () => import('@/view/Member/MemberList.vue')
 	}
 	,{
+		path: prefix + 'Member/Item'
+		,name: 'MemberItem'
+		,component: () => import('@/view/Member/MemberItem.vue')
+	}
+	,{
 		path: prefix + 'Member/Detail/:idx'
 		,name: 'MemberDetail'
 		,component: () => import('@/view/Member/MemberDetail.vue')
