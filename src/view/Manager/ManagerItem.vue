@@ -187,10 +187,11 @@ export default {
 					this.$bus.$emit('notify', { type: 'success', message: result.message})
 					this.toList()
 				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message})
+					throw result.message
 				}
 			}catch(e){
 				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message: e})
 			}finally {
 				this.$emit('offLoading')
 			}
