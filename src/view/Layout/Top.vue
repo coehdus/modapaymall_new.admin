@@ -294,7 +294,7 @@
 						this.item = result.data
 						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
-						this.is_modal = true
+						//this.is_modal = true
 						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
@@ -340,7 +340,7 @@
 			}
 		}
 		,created() {
-			this.getData()
+			// this.getData()
 		}
 	}
 </script>

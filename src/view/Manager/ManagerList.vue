@@ -367,15 +367,15 @@ export default {
 
 				if(result.success){
 					this.clear_item()
+					await this.getSearch()
 					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message })
+					throw result.message
 				}
 			}catch (e) {
 				console.log(e)
-				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+				this.$bus.$emit('notify', { type: 'error', message: e})
 			}finally {
-				await this.getSearch()
 				this.$emit('offLoading')
 			}
 		}

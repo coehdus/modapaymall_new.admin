@@ -499,7 +499,8 @@ export default {
 			}
 			, pg_list: []
 			,item: {
-				admin_type: 'A001001'
+				ATOKEN: this.TOKEN
+				, admin_type: 'A001001'
 				, admin_level: ''
 				, is_sale: '1'
 				, is_per: '1'
@@ -562,6 +563,7 @@ export default {
 					if(!this.item.bank_code){
 						this.item.bank_code = ''
 					}
+					this.$set(this.item, 'ATOKEN', this.TOKEN)
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
