@@ -288,6 +288,11 @@ const routes = [
 		,component: () => import('@/view/Supply/SupplyView')
 	}
 	,{
+		path: prefix + 'Mypage/Agency'
+		,name: 'MypageAgency'
+		,component: () => import('@/view/Agency/AgencyView')
+	}
+	,{
 		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')

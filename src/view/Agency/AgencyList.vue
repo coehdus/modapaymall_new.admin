@@ -43,10 +43,12 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
+
 						<col width="auto" />
 						<col width="auto" />
-						<col width="auto" />
-						<col width="auto" />
+						<col width="150px" />
+						<col width="120px" />
+						<col width="100px" />
 					</colgroup>
 					<thead>
 					<tr>
@@ -61,7 +63,8 @@
 						<th>이름</th>
 						<th>연락처</th>
 						<th>가입일</th>
-						<th>사용여부</th>
+						<th>계정 사용 여부</th>
+						<th>상품 판매 여부</th>
 						<th>상세정보</th>
 					</tr>
 					</thead>
@@ -106,6 +109,26 @@
 									class="pa-5 bg-red color-white ml-10"
 									@click="confirmDelete(item)"
 								>mdi mdi-delete-forever</v-icon>
+							</div>
+						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+
+									class="pa-5"
+									:class="item.sales_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.sales_status = 1; update(item)"
+								>mdi mdi-cart</v-icon>
+								<v-icon
+
+									class="pa-5 "
+									:class="item.sales_status != 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.sales_status = 0; update(item)"
+								>mdi mdi-cart-off</v-icon>
 							</div>
 						</td>
 						<td>

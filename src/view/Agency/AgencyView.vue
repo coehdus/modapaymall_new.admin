@@ -27,7 +27,7 @@
 						<tr>
 							<th>이름 <span class="color-red">*</span></th>
 							<td>
-								{{ user.supply_name }}
+								{{ user.agency_name }}
 							</td>
 							<th>휴대폰 번호</th>
 							<td>
@@ -60,14 +60,14 @@
 								<template
 									v-for="code in codes.B002.items"
 								>
-								<button
-									v-if="code.total_code == item.business_type"
-									:key="code.total_code"
+									<span
+										v-if="code.total_code == item.business_type"
+										:key="code.total_code"
 
-									class="pa-5-10"
-									:class="item.business_type == code.total_code ? 'bg-green' : 'bg-default'"
+										class="pa-5-10"
+										:class="item.business_type == code.total_code ? 'bg-green' : 'bg-default'"
 
-								>{{ code.code_name }}</button>
+									>{{ code.code_name }}</span>
 								</template>
 							</td>
 						</tr>
@@ -185,7 +185,9 @@
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>배송비 구분</th>
 							<td>
 								<button
@@ -197,7 +199,9 @@
 								>{{ code.code_name }}</button>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>배송비</th>
 							<td class="form-inline">
 								<input
@@ -217,7 +221,9 @@
 								/> 원 이상 구매시 배송비 무료
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>추가 배송비</th>
 							<td>
 
@@ -235,7 +241,9 @@
 
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>교환 / 반품 안내</th>
 							<td>
 								<editor
@@ -294,25 +302,25 @@
 				slot="modal-content"
 			>
 				<div>
-					<input
-						v-model="item_password.account_password_old"
-						type="password"
-						class="box pa-10 width-100" placeholder="기존 비밀번호"
-					/>
+				<input
+					v-model="item_password.account_password_old"
+					type="password"
+					class="box pa-10 width-100" placeholder="기존 비밀번호"
+				/>
 				</div>
 				<div class="mt-10">
-					<input
-						v-model="item_password.account_password"
-						type="password"
-						class="box pa-10 width-100" placeholder="신규 비밀번호"
-					/>
+				<input
+					v-model="item_password.account_password"
+					type="password"
+					class="box pa-10 width-100" placeholder="신규 비밀번호"
+				/>
 				</div>
 				<div class="mt-10">
-					<input
-						v-model="item_password.account_password_confirm"
-						type="password"
-						class="box pa-10 width-100" placeholder="비밀번호 확인"
-					/>
+				<input
+					v-model="item_password.account_password_confirm"
+					type="password"
+					class="box pa-10 width-100" placeholder="비밀번호 확인"
+				/>
 				</div>
 			</div>
 		</Modal>
@@ -327,7 +335,7 @@ import { Editor } from '@toast-ui/vue-editor';
 import Modal from "@/components/Modal";
 
 export default {
-	name: 'MyageSupply'
+	name: 'MypageAgency'
 	, components: {DaumPost, Editor, Modal}
 	, props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
 	, data: function(){
@@ -339,7 +347,7 @@ export default {
 				, bottom: false
 			}
 			,item: {
-				supply_type: ''
+				agency_type: ''
 				,business_type: 'B002001'
 				,bank_code: ''
 				,join_date: this.date.getToday('-')
@@ -374,9 +382,9 @@ export default {
 				this.$emit('onLoading')
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getSupply'
+					,url: 'management/getAgency'
 					,data: {
-						supply_uid: this.user.uid
+						agency_uid: this.user.uid
 					}
 				})
 				if(result.success){
@@ -407,7 +415,7 @@ export default {
 
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/putSupply'
+					,url: 'management/putAgency'
 					,data: this.item
 				})
 				if(result.success){

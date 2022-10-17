@@ -254,6 +254,18 @@
 							}
 						]
 					}
+					,{
+						path: 'Mypage'
+						, name: '설정'
+						, type: ['distributor', 'agency', ]
+						, sub: [
+							{
+								path: 'Agency'
+								, name: '상점 설정'
+								, type: ['distributor', 'agency', ]
+							}
+						]
+					}
 				]
 				,item_new: {
 

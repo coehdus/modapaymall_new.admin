@@ -26,10 +26,11 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
-						<col width="auto" />
-						<col width="auto" />
+
 						<col width="auto" />
 						<col width="150px" />
+						<col width="120px" />
+						<col width="100px" />
 					</colgroup>
 					<thead>
 						<tr>
@@ -42,9 +43,9 @@
 							<th>아이디</th>
 							<th>이름</th>
 							<th>연락처</th>
+							<th>가입일</th>
 							<th>계정 사용여부</th>
 							<th>상품 판매여부</th>
-							<th>등록일시</th>
 							<th>상세정보</th>
 						</tr>
 					</thead>
@@ -63,6 +64,7 @@
 							<td>{{ item.account_id }}</td>
 							<td>{{ item.account_name }}</td>
 							<td>{{ item.account_phone_number }}</td>
+							<td>{{ item.wDate }}</td>
 							<td
 								class="full-height"
 							>
@@ -104,7 +106,6 @@
 									>mdi mdi-cart-off</v-icon>
 								</div>
 							</td>
-							<td>{{ item.wDate }}</td>
 							<td>
 								<v-icon
 									@click="toDetail(item)"
