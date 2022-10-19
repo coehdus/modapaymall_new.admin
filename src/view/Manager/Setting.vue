@@ -668,8 +668,9 @@ export default {
 
 				if(result.success){
 					this.$bus.$emit('notify', { type: 'success', message: result.message })
+					await this.getPgList()
 				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message })
+					throw result.message
 				}
 			}catch (e) {
 				console.log(e)
@@ -692,7 +693,7 @@ export default {
 
 				if(result.success){
 					this.$bus.$emit('notify', { type: 'success', message: result.message })
-					await this.getData()
+					await this.getPgList()
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
