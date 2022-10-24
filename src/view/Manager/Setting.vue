@@ -347,12 +347,12 @@
 											<v-icon
 												class="pa-5 "
 												:class="pg.pg_status == 1 ? 'bg-green color-white' : 'btn-default' "
-												@click="pg.pg_status = 1; update(pg)"
+												@click="checkPG(pg, true)"
 											>mdi mdi-power-plug</v-icon>
 											<v-icon
 												class="pa-5  "
 												:class="pg.pg_status != 1 ? 'bg-red color-white' : 'btn-default' "
-												@click="pg.pg_status = 0; update(pg)"
+												@click="checkPG(pg, false)"
 											>mdi mdi-power-plug-off</v-icon>
 
 											<v-icon
@@ -473,6 +473,43 @@
 				@cancel="close"
 			></ManagerPgItem>
 		</Modal>
+
+		<Popup_confirm
+			v-if="is_confirm"
+
+			@cancel="is_confirm = false"
+			@click="update"
+		>
+			<template
+				v-slot:title
+			>결제용 PG 변경</template>
+			<template
+				v-slot:main-txt
+			>해당 PG사로 변경 하시겠습니까?</template>
+			<template
+				v-slot:sub-txt
+				class="mt-10"
+			>변경 후 결제요청은 변경된 PG사로만 가능합니다</template>
+		</Popup_confirm>
+
+		<Popup_confirm
+			v-if="is_confirm2"
+
+			@cancel="is_confirm2 = false"
+			@click="update"
+		>
+			<template
+				v-slot:title
+			>결제용 PG 변경</template>
+			<template
+				v-slot:main-txt
+			>현재 사용중인 결제용 PG사입니다</template>
+			<template
+				v-slot:sub-txt
+				class="mt-10"
+			>미사용으로 변경시 결제가능한 PG사가 없습니다.</template>
+		</Popup_confirm>
+
 	</div>
 </template>
 
@@ -484,10 +521,11 @@ import Empty from "@/view/Layout/Empty";
 
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
+import Popup_confirm from "@/view/Layout/PopupConfirm";
 
 export default {
 	name: 'ManagerItem'
-	, components: {Empty, ManagerPgItem, Modal, Editor}
+	, components: {Popup_confirm, Empty, ManagerPgItem, Modal, Editor}
 	, props: ['Axios', 'user', 'codes', 'rules', 'TOKEN']
 	, data: function(){
 		return {
@@ -512,6 +550,9 @@ export default {
 			, is_modal_terms: false
 			, is_modal_personal: false
 			, uid: ''
+			, is_confirm: false
+			, is_confirm2: false
+			, item_pg: {}
 		}
 	}
 	,computed: {
@@ -653,7 +694,7 @@ export default {
 			this.uid = ''
 		}
 
-		,update: async function(item){
+		, update: async function(){
 			try{
 				this.$emit('onLoading')
 				const result = await this.Axios({
@@ -661,8 +702,8 @@ export default {
 					,url: 'management/postPgItemUpdate'
 					,data: {
 						ATOKEN: this.TOKEN
-						, uid: item.uid
-						, pg_status: item.pg_status
+						, uid: this.item_pg.uid
+						, pg_status: this.item_pg.pg_status == '1' ? '0' : '1'
 					}
 				})
 
@@ -677,6 +718,8 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				this.$emit('offLoading')
+				this.is_confirm = false
+				this.is_confirm2 = false
 			}
 		}
 		, deleteItem: async function(item){
@@ -711,6 +754,17 @@ export default {
 		, isDeleteItem: function(item){
 			if(confirm("해당 PG사 정보를 삭제하시겠습니까?")){
 				this.deleteItem(item)
+			}
+		}
+		, checkPG: function(pg, type){
+			if((type && pg.pg_status == '1') || (!type && pg.pg_status == '0')) {
+				return false
+			}else if(!type && pg.pg_status == '1'){
+				this.is_confirm2 = true
+				this.item_pg = pg
+			}else{
+				this.is_confirm = true
+				this.item_pg = pg
 			}
 		}
 	}

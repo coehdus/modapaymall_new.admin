@@ -319,6 +319,10 @@ select:disabled { cursor: no-drop}
 
 button:disabled { cursor: no-drop; opacity: 0.3}
 
+
+.btn-gray { background-color: #ddd; color: #333}
+.btn-confirm { background-color: #69be94; color: #333}
+
 /* box */
 
 .width-10 { width: 10% }
@@ -441,3 +445,5 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 }
 
 .th-white th { background-color: white}
+
+.hide { display: none}
