@@ -17,7 +17,7 @@
 				v-model="search.agency_type"
 				class="pa-5-10 mr-10"
 
-				@change="getSearch(1)"
+				@change="search.agency_upper = ''; getSearch(1)"
 			>
 				<option value="">영업단 구분</option>
 				<template
@@ -28,6 +28,26 @@
 					:key="code.total_code + '_' + index"
 					:value="code.total_code"
 				>{{ code.code_name }}</option>
+				</template>
+			</select>
+			<select
+
+				v-if="search.agency_type == ''"
+				slot="add"
+				v-model="search.agency_upper"
+				class="pa-5-10 mr-10"
+
+				@change="getSearch(1)"
+			>
+				<option value="">총판 구분</option>
+				<template
+					v-for="(upper, index) in items_upper"
+				>
+					<option
+						v-if="upper.agency_type == 'A001002'"
+						:key="upper.uid + '_' + index"
+						:value="upper.uid"
+					>{{ upper.agency_name }}</option>
 				</template>
 			</select>
 		</Search>
@@ -153,6 +173,7 @@
 					:options="search"
 
 					class="mt-auto"
+					@click="getSearch"
 				></Pagination>
 			</div>
 
@@ -192,12 +213,13 @@ export default {
 			}
 			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,page: 1
-				,search_type: ''
-				,search_value: ''
-				,list_cnt: 10
-				,account_status: ''
-				,agency_type: ''
+				, page: 1
+				, search_type: ''
+				, search_value: ''
+				, list_cnt: 10
+				, account_status: ''
+				, agency_type: ''
+				, agency_upper: ''
 			})
 			,search_option:{
 
@@ -238,6 +260,7 @@ export default {
 				]
 				,content: null
 			}
+			, items_upper: []
 		}
 	}
 	,computed: {
@@ -380,11 +403,33 @@ export default {
 
 			this.getData()
 		}
+		, getDistributorList: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getAgencyUpper'
+					,data: {
+						agency_type: 'A001003'
+					}
+				})
+				if(result.success){
+					this.items_upper = result.data
+				}else{
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
 		this.clear_item()
 		this.getData()
+		this.getDistributorList()
 	}
 	,watch: {
 		'search.page': {

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {Base64} from "js-base64";
 
 let domain = process.env.VUE_APP_DOMAIN
 let dev = process.env.VUE_APP_DEV
@@ -28,6 +29,10 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 
 	const getParams = function(){
 		if(method == 'get'){
+			if(!data.ATOKEN){
+				let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
+				data.ATOKEN = TOKEN
+			}
 			return data
 		}
 	}
@@ -36,9 +41,14 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 		if(method != 'get'){
 			const formData = new FormData();
 			for(let key in data){
-				console.log(key)
-				console.log(data[key])
+
 				formData.append(key, data[key])
+			}
+			if(!formData.get('ATOKEN') && !formData.get('UTOKEN')){
+				let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
+				if(TOKEN){
+					formData.append("ATOKEN", TOKEN)
+				}
 			}
 			if(multipart){
 				return formData
@@ -52,9 +62,14 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 		
 		let default_header = {
 		}
-		
+
 		if(authorize){
-			default_header.Authorization = 'Bearer ' + (TOKEN ? TOKEN : sessionStorage.getItem('delimallAT'))
+			default_header.Authorization = 'Bearer ' + TOKEN
+		}else{
+
+			//let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
+
+			// default_header.Authorization = 'Bearer ' + TOKEN
 		}
 		
 		if(multipart){

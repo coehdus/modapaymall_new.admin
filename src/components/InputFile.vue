@@ -73,7 +73,7 @@ export default {
 			}
 		}catch(e){
 			this.is_permission = true
-			console.log(e)
+			console.log('input_file error: not application')
 		}
 	}
 }

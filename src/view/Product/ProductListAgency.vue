@@ -44,6 +44,7 @@
 						<col width="auto" />
 						<col width="120px" />
 						<col width="120px" />
+
 						<col width="120px" />
 						<col width="120px" />
 						<col width="120px" />
@@ -51,13 +52,12 @@
 					</colgroup>
 					<thead>
 					<tr>
-						<th
-							colspan="2"
-						>상품명</th>
+						<th colspan="2">상품명</th>
 						<th>판매가</th>
-						<th>배송비</th>
 						<th>재고</th>
 						<th>판매여부</th>
+
+						<th>진열여부</th>
 						<th>등록일</th>
 						<th>상세정보</th>
 					</tr>
@@ -103,8 +103,8 @@
 							</div>
 						</td>
 						<td>{{ item.pdt_price | makeComma }} 원</td>
-						<td>{{ item.shop_delivery_price | makeComma }}</td>
 						<td>{{ item.is_sold_name }}</td>
+
 						<td>
 							<v-icon
 								v-if="item.is_use == 1"
@@ -117,9 +117,27 @@
 								:class="item.is_use != 1 ? 'bg-red color-white' : 'btn-default' "
 							>mdi mdi-cart-off</v-icon>
 						</td>
+						<td
+							class="full-height"
+						>
+							<div
+								class=" flex-row justify-center"
+							>
+								<v-icon
+									class="pa-5 "
+									:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
+									@click="item.agency_use = 1; update(item)"
+								>mdi mdi-power-plug</v-icon>
+								<v-icon
+									class="pa-5  "
+									:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
+									@click="item.agency_use = 0; update(item)"
+								>mdi mdi-power-plug-off</v-icon>
+							</div>
+						</td>
 						<td>{{ item.wDate.substring(0, 10) }}</td>
 						<td
-							@click="toView(item)"
+							@click="toDetail(item)"
 						>
 							<v-icon
 								class="color-icon"
@@ -151,27 +169,6 @@
 			:excel_data="excel_data"
 			:date="date"
 		></Excel>
-
-		<ProductDetail
-			v-if="is_detail_view"
-			:Axios="Axios"
-			:rules="rules"
-			:member_info="member_info"
-			:supply_list="supply_list"
-			:category_list="category_list"
-			:codes="codes"
-			:pdt_code="item.pdt_code"
-			:TOKEN="TOKEN"
-
-			@onLoad="setProgram"
-			@goBack="goBack"
-			@goSuccess="goSuccess"
-			@setNotify="setNotify"
-			@update="update"
-
-			class="pa-10 position-absolute bg-base full-width full-height"
-			style="top: 0; right: 0"
-		></ProductDetail>
 	</div>
 </template>
 
@@ -180,13 +177,12 @@
 import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
-import ProductDetail from "@/view/Product/ProductDetailAgency";
 import Empty from "@/view/Layout/Empty";
 
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Empty, ProductDetail, Excel, Search, Pagination,},
+	components: {Empty, Excel, Search, Pagination,},
 	props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date', 'category_list', 'supply_list']
 	,data: function (){
 		return {
@@ -252,7 +248,7 @@ export default {
 			return this.items.filter(function(item){
 				item.ATOKEN = self.TOKEN
 				if(item.pdt_img1){
-					item.img = self.$language.img_url + item.pdt_img1
+					item.img = item.pdt_img1
 				}else{
 					item.img = ''
 				}
@@ -286,6 +282,7 @@ export default {
 						item.is_reccom = true
 					}
 				}
+				console.log('item.agency_pdt_type', item.agency_pdt_type)
 
 				item.index = index
 				index++
@@ -325,7 +322,7 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getProductList'
+					,url: 'management/getProductListAgency'
 					,data: this.search
 				})
 
@@ -348,30 +345,27 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postProductUpdate'
+					,url: 'management/postProductUpdateAgency'
 					,data: {
 						ATOKEN: this.TOKEN
 						,uid: item.uid
 						,pdt_code: item.pdt_code
-						,agency_price: item.agency_price ? item.agency_price : ''
-						,agency_sale_price: item.agency_sale_price ? item.agency_sale_price : ''
 						,agency_use: item.agency_use
 						,pdt_type: item.pdt_type
 					}
 				})
 
-				if(result.success){
-					this.is_detail_view = false
-					this.$bus.$emit('notify', { type: 'success', message: result.message })
+				if(result.success) {
+					//this.item.agency_pdt_type = item.pdt_type
 				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message })
+					throw result.message
 				}
 			}catch (e) {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				await this.getSearch()
-				this.$emit('offnLoading')
+				//await this.getData()
+				this.$emit('offLoading')
 			}
 		}
 		,setItem: function (item){
@@ -394,16 +388,18 @@ export default {
 		}
 		,setPdtType: function(item, type){
 
-			let pdt_type = item.agency_pdt_type.split(',')
-
-			if(pdt_type.indexOf(type) > -1){
-				pdt_type.pop(pdt_type.indexOf(type))
-			}else {
-				pdt_type.push(type)
+			let t = item.agency_pdt_type.split(',')
+			let pdt_type = []
+			for(let i = 0; i < t.length; i++){
+				let tt = t[i].replaceAll(' ', '')
+				if(!tt){
+					continue
+				}
+				if(tt != type){
+					pdt_type.push(tt)
+				}
 			}
-
 			item.pdt_type = pdt_type
-
 			this.update(item)
 		}
 		,setProgram: function(program){
@@ -420,6 +416,19 @@ export default {
 		}
 		,setNotify: function({ type, message}){
 			this.$bus.$emit('notify', { type: type, message: message })
+		}
+		,toDetail: function (item){
+			let name = 'ProductDetail'
+			switch(this.user.role_group){
+				case 'admin':
+					break;
+				case 'supply':
+					break;
+				case 'agency':
+					name += 'Agency'
+					break;
+			}
+			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})
 		}
 
 	}

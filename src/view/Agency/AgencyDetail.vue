@@ -279,6 +279,50 @@
 								/>
 							</td>
 						</tr>
+						<tr
+							v-if="item.agency_type == 'A001003'"
+						>
+							<th>상점 로고</th>
+							<td colspan="3">
+								<div>
+									<label
+										class="box pa-10 justify-space-between"
+									>
+										{{ logo_img_name }}
+										<v-icon
+											class="color-icon"
+										>mdi mdi-image</v-icon>
+
+										<input_file
+											v-show="false"
+											accept="image/*" @change="setFile2"
+										/>
+									</label>
+								</div>
+
+								<div
+									v-if="item_upload_logo_img.src"
+									class="flex-row mt-10"
+								>
+									<div
+										class="flex-1" style="position: relative"
+									>
+										<img
+											:src="item_upload_logo_img.src"
+											style="max-width: 180px"
+										/>
+										<button class="item_close" style="background-color: black">
+											<v-icon
+												@click="removeDelivery"
+											>mdi-close</v-icon>
+										</button>
+									</div>
+									<div class="flex-3 flex-column justify-center ml-10">
+										<p>{{  item_upload_logo_img.name }}</p>
+									</div>
+								</div>
+							</td>
+						</tr>
 						<tr>
 							<th>사업자 구분 <span class="color-red">*</span></th>
 							<td colspan="3">
@@ -435,11 +479,12 @@
 
 import DaumPost from "@/components/Daum/DaumPost";
 import Modal from "@/components/Modal";
+import input_file from '@/components/InputFile'
 export default {
 	name: 'AgencyDetail'
 	,
-	components: {DaumPost, Modal},
-	props: ['Axios', 'user', 'codes', 'rules', 'date']
+	components: {DaumPost, Modal, input_file},
+	props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
 	,data: function(){
 		return {
 			program: {
@@ -461,10 +506,16 @@ export default {
 				width: '360px'
 			}
 			,items_upper: []
+			, item_logo_img: ''
+			, item_upload_logo_img: {}
 		}
 	}
 	,computed: {
 
+		logo_img_name: function(){
+			let name = '로고 이미지'
+			return name
+		}
 	}
 	, methods: {
 		getData: async function(){
@@ -479,6 +530,11 @@ export default {
 				})
 				if(result.success){
 					this.item = result.data
+					this.item_upload_logo_img = {
+						src: this.item.shop_logo
+						, name: this.item.shop_logo
+						, type: 'image'
+					}
 					await this.getAgencyUpper()
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
@@ -492,6 +548,11 @@ export default {
 		, save: async function(){
 			try{
 				this.$emit('onLoading')
+
+				if(this.item_logo_img){
+					this.$set(this.item, 'item_logo_img', this.item_logo_img)
+				}
+
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/putAgency'
@@ -573,6 +634,70 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+
+		, setFile2: function(e){
+			console.log('setFile2', e)
+
+			let self = this
+			for(let file of e){
+				console.log(`file` , file)
+				this.item_logo_img = file
+
+				const reader = new FileReader()
+				let data = {
+					name: file.name
+					, size: file.size
+					, type: file.type
+				}
+
+				reader.onload = function(e){
+					console.log('reader.onload')
+					data.src = e.target.result
+					self.item_upload_logo_img = data
+				}
+
+				reader.readAsDataURL(file)
+			}
+		}
+		, removeDelivery: async function(){
+			if(this.item_logo_img){
+
+				if(this.item.shop_logo){
+					this.item_upload_logo_img = {
+						src: this.item.shop_logo
+						, name: this.item.shop_logo
+						, type: 'image'
+					}
+					this.item_logo_img = {}
+				}else{
+					this.item_upload_logo_img = {}
+					this.item_logo_img = {}
+				}
+			}else{
+				if(confirm("삭제하시겠습니까?")){
+
+					try{
+						const result = await this.Axios({
+							method: 'post'
+							,url: 'management/postShopLogoDelete'
+							,data: {
+								ATOKEN: this.TOKEN
+								, uid: this.item.uid
+							}
+						})
+
+						if(result.success){
+							this.item_upload_logo_img = {}
+							this.item_logo_img = {}
+						}else{
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
+						}
+					}catch (e) {
+						console.log(e)
+					}
+				}
+			}
+		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
@@ -584,4 +709,17 @@ export default {
 <style>
 .width-fee { width: 60px !important; text-align: right;}
 .v-btn__content { color: #333 !important;}
+
+.v-file-input__text--placeholder {
+	color: #bbb !important;
+	font-size: 14px;
+}
+
+.theme--light.v-icon {
+	color: #bbb;
+}
+
+.item_close {
+	position: absolute; right: 10px; top: 10px
+}
 </style>

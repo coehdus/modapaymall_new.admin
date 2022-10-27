@@ -574,7 +574,11 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		this.do()
+		if(this.user.role == 'agency') {
+			this.$emit('push', {name: 'ProductListAgency'})
+		}else{
+			this.do()
+		}
 	}
 	,watch: {
 

@@ -277,6 +277,52 @@
 								/>
 							</td>
 						</tr>
+						<tr
+							v-if="item.agency_type == 'A001003'"
+						>
+							<th>상점 로고</th>
+							<td colspan="3">
+
+								<div>
+									<label
+										class="box pa-10 justify-space-between"
+									>
+										{{ logo_img_name }}
+										<v-icon
+											class="color-icon"
+										>mdi mdi-image</v-icon>
+
+										<input_file
+											v-show="false"
+											accept="image/*" @change="setFile2"
+										/>
+									</label>
+								</div>
+
+								<div
+									v-if="item_upload_logo_img.src"
+									class="flex-row mt-10"
+								>
+									<div
+										v-if="item_logo_img.type.indexOf('image') > -1"
+										class="flex-1" style="position: relative"
+									>
+										<img
+											:src="item_upload_logo_img.src"
+											style="max-width: 180px"
+										/>
+										<button class="item_close" style="background-color: black">
+											<v-icon
+												@click="item_upload_logo_img = {}"
+											>mdi-close</v-icon>
+										</button>
+									</div>
+									<div class="flex-3 flex-column justify-center ml-10">
+										<p>{{  item_upload_logo_img.name }}</p>
+									</div>
+								</div>
+							</td>
+						</tr>
 						<tr>
 							<th>사업자 구분 <span class="color-red">*</span></th>
 							<td colspan="3">
@@ -414,10 +460,11 @@
 <script>
 
 import DaumPost from "@/components/Daum/DaumPost";
+import input_file from '@/components/InputFile'
 export default {
 	name: 'AgencyItem'
 	,
-	components: {DaumPost},
+	components: {DaumPost, input_file},
 	props: ['Axios', 'user', 'codes', 'rules', 'date']
 	,data: function(){
 		return {
@@ -443,15 +490,25 @@ export default {
 				width: '360px'
 			}
 			,items_upper: []
+			, upload_files: []
+			, item_logo_img: {}
+			, item_upload_logo_img: {}
 		}
 	}
 	,computed: {
 
+		logo_img_name: function(){
+			let name = '로고 이미지'
+			return name
+		}
 	}
 	, methods: {
 		save: async function(){
 			try{
 				this.$emit('onLoading')
+
+				this.$set(this.item, 'item_logo_img', this.item_logo_img)
+
 				const result = await this.Axios({
 					method: 'post'
 					,url: 'management/postAgency'
@@ -506,6 +563,69 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		, setFile: function(e){
+			console.log('setFile', e)
+			console.log(e[0].size / 1024)
+
+			let file_count = this.files.length + e.length
+			if(file_count > this.file_max){
+				this.$emit('notify', { type: 'error', message: this.$language.common.error_file_limit})
+				return false
+			}
+
+			console.log('for files')
+			let self = this
+			for(let file of e){
+				console.log(`file` , file)
+				this.upload_files.unshift(file)
+				const reader = new FileReader()
+				let data = {
+					name: file.name
+					, size: file.size
+					, type: file.type
+				}
+
+				reader.onload = function(e){
+					console.log('reader.onload')
+					data.src = e.target.result
+					self.files.unshift(data)
+				}
+
+				reader.readAsDataURL(file)
+			}
+		}
+
+		, setFile2: function(e){
+			console.log('setFile2', e)
+
+			let self = this
+			for(let file of e){
+				console.log(`file` , file)
+				this.item_logo_img = file
+				const reader = new FileReader()
+				let data = {
+					name: file.name
+					, size: file.size
+					, type: file.type
+				}
+
+				reader.onload = function(e){
+					console.log('reader.onload')
+					data.src = e.target.result
+					self.item_upload_logo_img = data
+				}
+
+				reader.readAsDataURL(file)
+			}
+		}
+		, removeFile: function(index){
+			this.files.splice(index, 1)
+
+			for(const [key] of Object.entries(this.upload_files)) {
+				delete this.item['upload_files' + key]
+			}
+			this.upload_files.splice(index, 1)
+		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
@@ -519,4 +639,17 @@ export default {
 <style>
 .width-fee { width: 60px !important; text-align: right;}
 .v-btn__content { color: #333 !important;}
+
+.v-file-input__text--placeholder {
+	color: #bbb !important;
+	font-size: 14px;
+}
+
+.theme--light.v-icon {
+	color: #bbb;
+}
+
+.item_close {
+	position: absolute; right: 10px; top: 10px
+}
 </style>
