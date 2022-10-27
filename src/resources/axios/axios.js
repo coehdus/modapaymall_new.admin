@@ -29,6 +29,11 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 
 	const getParams = function(){
 		if(method == 'get'){
+			if(!data){
+				data = {
+
+				}
+			}
 			if(!data.ATOKEN){
 				let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
 				data.ATOKEN = TOKEN

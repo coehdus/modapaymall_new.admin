@@ -371,13 +371,12 @@ export default {
 			try{
 				const result = await this.Axios({
 					method: 'post'
-					,url: 'management/postAdminDelete'
+					,url: 'management/postAgencyDelete'
 					,data: item
 				})
 
 				if(result.success){
-					await this.getSearch()
-					this.clear_item()
+					await this.getData()
 					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
