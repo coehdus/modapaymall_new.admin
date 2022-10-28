@@ -203,11 +203,17 @@
 							<col width="auto" />
 							<tbody>
 								<tr>
-									<th colspan="2" class="text-center">배송지 정보</th>
+									<th colspan="2" class="text-center">배송 정보</th>
 								</tr>
 								<tr>
-									<th>배송지</th>
-									<td>{{ item.d_name}}</td>
+									<th>배송 구분</th>
+									<td
+										v-if="item.delivery_type == 'D002002'"
+										class="text-center"
+									>방문 수령</td>
+									<td
+										v-else
+									>택배 배송</td>
 								</tr>
 								<tr>
 									<th>이름</th>
@@ -295,52 +301,73 @@
 											>{{ odt.order_status_name }}</span>
 										</td>
 										<td>
-											<div class=" inline position-relative text-right flex-column justify-center">
+											<div
+												v-if="!item.o_status || item.o_status == 0"
+											>
+												-
+											</div>
+											<div
+												v-else
+												class=" inline position-relative text-right flex-column justify-center"
+											>
 												<div
 													v-if="user.role_group == 'admin' || user.role_group == 'supply'"
 												>
+													<template
+														v-if="item.delivery_type == 'D002002'"
+													>
+														<button
+															v-if="odt.order_status == 'step1'"
+															class="pa-5 mr-10 bg-green vertical-middle"
+															@click="setOdtStatus(odt, 'step4')"
+														><span class="vertical-middle">판매 완료</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+													</template>
+													<template
+														v-else
+													>
+														<button
+															v-if="odt.order_status == 'step1'"
+															class="pa-5 mr-10 bg-blue vertical-middle"
+															@click="setOdtStatus(odt, 'step2')"
+														><span class="vertical-middle">배송 준비중</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+														<button
+															v-if="odt.order_status == 'step2'"
+															class="pa-5 mr-10 bg-blue vertical-middle"
+															@click="setOdtStatus(odt, 'step3')"
+														><span class="vertical-middle">배송중 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+														<button
+															v-if="odt.order_status == 'step3'"
+															class="pa-5 mr-10 bg-blue vertical-middle"
+															@click="setOdtStatus(odt, 'step4')"
+														><span class="vertical-middle">배송완료 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+														<button
+															v-if="odt.order_status == 'step4'"
+															class="pa-5 mr-10 bg-green vertical-middle"
+															@click="setOdtStatus(odt, 'step5')"
+														><span class="vertical-middle">구매확정 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+													</template>
 													<button
-														v-if="odt.order_status == 'step1'"
-														class="pa-5 mr-10 bg-blue vertical-middle"
-														@click="setOdtStatus(odt, 'step2')"
-													><span class="vertical-middle">배송 중비중</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
-													<button
-														v-else-if="odt.order_status == 'step2'"
-														class="pa-5 mr-10 bg-blue vertical-middle"
-														@click="setOdtStatus(odt, 'step3')"
-													><span class="vertical-middle">배송중 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
-													<button
-														v-else-if="odt.order_status == 'step3'"
-														class="pa-5 mr-10 bg-blue vertical-middle"
-														@click="setOdtStatus(odt, 'step4')"
-													><span class="vertical-middle">배송완료 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
-													<button
-														v-else-if="odt.order_status == 'step4'"
-														class="pa-5 mr-10 bg-green vertical-middle"
-														@click="setOdtStatus(odt, 'step5')"
-													><span class="vertical-middle">구매확정 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
-													<button
-														v-else-if="odt.order_status == 'step21'"
+														v-if="odt.order_status == 'step21'"
 														class="pa-5 mr-10 bg-red vertical-middle"
 														@click="setOdtStatus(odt, 'step22')"
 													><span class="vertical-middle">주문 취소 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													<button
-														v-else-if="odt.order_status == 'step31'"
+														v-if="odt.order_status == 'step31'"
 														class="pa-5 mr-10 bg-gray  vertical-middle"
 														@click="isReturn(odt)"
 													><span class="vertical-middle">내용 확인 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													<button
-														v-else-if="odt.order_status == 'step32'"
+														v-if="odt.order_status == 'step32'"
 														class="pa-5 mr-10 bg-gray vertical-middle"
 														@click="setOdtStatus(odt, 'step33')"
 													><span class="vertical-middle">교환 완료 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													<button
-														v-else-if="odt.order_status == 'step41'"
+														v-if="odt.order_status == 'step41'"
 														class="pa-5 mr-10 bg-gray vertical-middle"
 														@click="isReturn(odt)"
 													><span class="vertical-middle">내용 확인 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													<button
-														v-else-if="odt.order_status == 'step42'"
+														v-if="odt.order_status == 'step42'"
 														class="pa-5 mr-5 bg-red vertical-middle"
 														@click="setOdtStatus(odt, 'step33')"
 													><span class="vertical-middle">반품 완료 </span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
@@ -544,7 +571,7 @@ export default {
 
 						odt.ATOKEN = self.TOKEN
 
-						if(item.o_status != 2 || odt.order_status == 'step5'){
+						if(item.o_status != 2 || odt.order_status == 'step5' || item.delivery_type == 'D002002'){
 							this.$set(odt, 'not_confirm', true)
 						}
 

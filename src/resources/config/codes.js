@@ -49,7 +49,7 @@ export const codes = {
 		,point: { code: 'point', name: '포인트 결제', color: 'red'}
 	}
 	,o_status: [
-		{ code: 0, name: '', color: ''}
+		{ code: 0, name: '결제실패', color: 'red'}
 		,{ code: 1, name: '결제대기', color: 'gray'}
 		,{ code: 2, name: '결제완료', color: 'green'}
 		,{ code: 3, name: '결제취소요청', color: 'orange'}
