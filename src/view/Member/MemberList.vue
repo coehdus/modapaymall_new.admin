@@ -10,7 +10,21 @@
 			@click="getData"
 			@toExcel="toExcel"
 			@toItem="toItem"
-		></Search>
+		>
+			<select
+				v-model="search.admin_code"
+				slot="add"
+				class="pa-5-10 mr-10"
+				@change="getData"
+			>
+				<option value="">소속 대리점</option>
+				<option
+					v-for="(agency, index) in agency_list"
+					:key="'agency_' + index"
+					:value="agency.account_id"
+				>{{ agency.agency_name }}</option>
+			</select>
+		</Search>
 
 		<div
 			class="mt-10 pa-10 bg-white full-height"
@@ -161,10 +175,10 @@
 				}
 				,search: this.$storage.init({
 					ATOKEN: this.TOKEN
-					,search_type: ''
-					,admin_code: ''
-					,member_status: ''
-					,list_cnt: 10
+					, search_type: ''
+					, admin_code: ''
+					, member_status: ''
+					, list_cnt: 10
 					, page: 1
 				})
 				,search_option:{
@@ -178,9 +192,7 @@
 						,{ name: '이름', column: 'member_name'}
 					]
 				}
-				,items: [
-
-				]
+				,items: []
 				,item_new: {
 					ATOKEN: this.TOKEN
 				}
@@ -200,6 +212,7 @@
 					,content: null
 				}
 				,is_item : false
+				, items_agency: []
 			}
 		}
 		,computed: {
@@ -234,6 +247,7 @@
 
 				this.is_item = false
 				try{
+					this.$emit('onLoading')
 					const result = await this.Axios({
 						method: 'get'
 						,url: 'management/getMemberList'
@@ -252,6 +266,8 @@
 					this.is_excel = false
 				}catch (e) {
 					console.log(e)
+				}finally {
+					this.$emit('offLoading')
 				}
 			}
 			,getAgencyList: async function() {
@@ -260,9 +276,12 @@
 				}
 				try{
 					const result = await this.Axios({
-						method: 'post'
+						method: 'get'
 						,url: 'management/getAgencyList'
-						,data: this.search
+						,data: {
+							agency_type: 'A001003'
+							, list_cnt: 100
+						}
 					})
 
 					if(result.success){

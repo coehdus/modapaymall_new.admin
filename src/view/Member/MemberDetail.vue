@@ -149,9 +149,27 @@
 						class="full-height"
 					>
 						<div
-							v-if="order_list.length > 0"
+							v-if="items_order.length > 0"
 						>
-							<table class="table table-even"></table>
+							<table class="table table-even">
+								<thead>
+									<tr>
+										<th>주문번호</th>
+										<th>결제금액</th>
+										<th>주문상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr
+										v-for="(order, o_index) in items_order"
+										:key="'order_' + o_index"
+									>
+										<td class="text-left">{{ order.order_number }}</td>
+										<td>{{ order.order_price | makeComma }} 원</td>
+										<td>{{ codes.o_status[order.o_status].name }}</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 						<Empty
 							v-else
@@ -164,7 +182,33 @@
 						<div
 							v-if="shipping_list.length > 0"
 						>
-							<table class="table table-even"></table>
+							<table class="table table-even">
+								<colgroup>
+									<col width="150px"/>
+									<col width="150px"/>
+									<col width="150px"/>
+									<col width="auto"/>
+								</colgroup>
+								<thead>
+								<tr>
+									<th>배송지명</th>
+									<th>이름</th>
+									<th>연락처</th>
+									<th>주소</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr
+									v-for="(item, s_index) in shipping_list"
+									:key="'shipping_' + s_index"
+								>
+									<td>{{ item.shipping_name }}</td>
+									<td>{{ item.name }}</td>
+									<td>{{ item.tell }}</td>
+									<td class="text-left">{{ item.addr1 }} {{ item.addr2 }}</td>
+								</tr>
+								</tbody>
+							</table>
 						</div>
 
 						<Empty
@@ -208,6 +252,9 @@
 								</tbody>
 							</table>
 						</div>
+						<Empty
+							v-else
+						></Empty>
 					</div>
 				</div>
 			</div>
@@ -275,7 +322,7 @@ export default {
 			, tab: 1
 			, agency_list: []
 			, shipping_list: []
-			, order_list: []
+			, items_order: []
 			, history_list: []
 			,is_modal: false
 			,modal_option: {
@@ -433,10 +480,34 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
+		, getOrderList: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getOrderList'
+					,data: {
+						member_id: this.item.member_id
+					}
+				})
+				if(result.success){
+					this.items_order = result.data.result
+				}else{
+					throw result.message
+				}
+			}catch(e){
+				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message:e })
+			}finally {
+				this.$emit('offLoading')
+			}
+		}
 		, do: async function(){
 			await this.getAgencyList();
 
 			await this.getData();
+
+			await this.getOrderList();
 		}
 	}
 	, created() {
