@@ -311,7 +311,7 @@
 												class=" inline position-relative text-right flex-column justify-center"
 											>
 												<div
-													v-if="user.role_group == 'admin' || user.role_group == 'supply'"
+													v-if="user.role_group == 'admin' || user.role_group == 'supply' || user.role == 'agency'"
 												>
 													<template
 														v-if="item.delivery_type == 'D002002'"
@@ -319,7 +319,7 @@
 														<button
 															v-if="odt.order_status == 'step1'"
 															class="pa-5 mr-10 bg-green vertical-middle"
-															@click="setOdtStatus(odt, 'step4')"
+															@click="onComplete(odt, 'step4')"
 														><span class="vertical-middle">판매 완료</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													</template>
 													<template
@@ -938,6 +938,11 @@ export default {
 		,isConfirm: function(index, item, code){
 			if(confirm("해당 주문건의 결제상태를 변경하시겠습니까?")){
 				this.update(index, item, code)
+			}
+		}
+		, onComplete: function(odt, step){
+			if(confirm("방문수령 판매 완료처리하시겠습니까?")){
+				this.setOdtStatus(odt, step)
 			}
 		}
 	}
