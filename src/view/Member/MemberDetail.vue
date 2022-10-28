@@ -86,6 +86,12 @@
 						</td>
 					</tr>
 					<tr>
+						<th>가입일</th>
+						<td>{{ item.join_date }}</td>
+						<th>승인일</th>
+						<td>{{ item.confirm_date }}</td>
+					</tr>
+					<tr>
 						<th>주소 <span class="color-red">*</span></th>
 						<td colspan="3">
 

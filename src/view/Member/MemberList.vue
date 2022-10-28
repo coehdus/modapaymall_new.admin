@@ -41,6 +41,7 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
+						<col width="auto" />
 						<col width="150px" />
 					</colgroup>
 					<thead>
@@ -56,6 +57,7 @@
 							<th>연락처</th>
 							<th>사용여부</th>
 							<th>가입일</th>
+							<th>승인일</th>
 							<th>상세정보</th>
 						</tr>
 					</thead>
@@ -98,6 +100,7 @@
 								</div>
 							</td>
 							<td>{{ item.join_date }}</td>
+							<td>{{ item.confirm_date }}</td>
 							<td>
 								<v-icon
 									@click="toDetail(item)"
