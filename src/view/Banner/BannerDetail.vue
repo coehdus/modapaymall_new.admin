@@ -5,90 +5,106 @@
 		<div
 			class="justify-space-between"
 		>
-			<div class="flex-1 mr-10 ">
-				<div class=" bg-white pa-10">
-					<h6>배너 타입</h6>
-					<select
-						v-model="item.type"
-						class="input-box"
-					>
-						<option value="">배너 타입</option>
-						<option value="main">메인</option>
-						<option value="normal">일반</option>
-					</select>
-				</div>
-				<div class="mt-10 bg-white pa-10">
-					<h6>제목</h6>
-					<input
-						v-model="item.banner_name"
-						class="input-box mt-10"
-						placeholder="제목을 입력하세요"
-					/>
-				</div>
-				<div class="mt-10 bg-white pa-10">
-					<h6>
-						<span class="vertical-middle">배너 이미지</span>
-						<v-icon
-							class="color-blue ml-10 vertical-middle cursor-pointer"
-							@click="addFiles"
-						>mdi mdi-plus-box-outline</v-icon>
-					</h6>
+			<div class="flex-1 mr-10 pa-10 bg-white">
+				<table
+					class="table"
+				>
 
-					<div
-						v-for="(file, index) in file_items"
-						:key="'file_' + index"
-						class="justify-space-between mb-10"
-					>
-						<span
-							v-if="file.uid"
-							class="banner-img mr-10 "
-						>
-							<img
-								:src="file.file_path"
-							/>
-								</span>
-						<label
-							class="flex-1 box pa-5 mr-10"
-						>
+					<col width="120px" />
+					<col width="auto" />
 
-							<v-icon
-								class="color-icon"
-							>mdi mdi-image</v-icon>
-							{{ file.file_name }}
+					<tbody>
+						<tr>
+							<th>배너 타입</th>
+							<td>
+								<select
+									v-model="item.type"
+									class="input-box pa-10"
+								>
+									<option value="">배너 타입</option>
+									<option value="main">메인</option>
+									<option value="normal">일반</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>제목</th>
+							<td>
+								<input
+									v-model="item.banner_name"
+									class="input-box pa-10"
+									placeholder="제목을 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>
+
+								<span class="vertical-middle">배너 이미지</span>
+								<v-icon
+									class="color-blue ml-10 vertical-middle cursor-pointer"
+									@click="addFiles"
+								>mdi mdi-plus-box-outline</v-icon>
+							</th>
+							<td>
+								<div
+									v-for="(file, index) in file_items"
+									:key="'file_' + index"
+									class="justify-space-between mb-10"
+								>
+							<span
+								v-if="file.uid"
+								class="banner-img mr-10 "
+							>
+								<img
+									:src="file.file_path"
+								/>
+									</span>
+									<label
+										class="flex-1 box pa-5 mr-10 text-left"
+									>
+
+										<v-icon
+											class="color-icon"
+										>mdi mdi-image</v-icon>
+										{{ file.file_name }}
+										<input
+											v-show="false"
+											type="file"
+											placeholder="배너 이미지"
+											class="input-box"
+											maxlength="250"
+											@change="setFile($event, index)"
+											accept="image/*"
+										/>
+									</label>
+									<span
+										class="flex-1 mr-10"
+									>
 							<input
-								v-show="false"
-								type="file"
-								placeholder="배너 이미지"
-								class="input-box"
-								maxlength="250"
-								@change="setFile($event, index)"
-								accept="image/*"
-							/>
-						</label>
-						<span
-							class="flex-1 mr-10"
-						>
-						<input
-							v-model="file.banner_link"
-							class=" box pa-5 full-width"
-							placeholder="배너 링크"
-						/></span>
+								v-model="file.banner_link"
+								class=" box pa-5 full-width"
+								placeholder="배너 링크"
+							/></span>
 
-						<span>
-						<select
-							v-model="file.is_out"
-							class="box pa-5 mr-10"
-						>
-							<option value="0">내부 링크</option>
-							<option value="1">외부 링크</option>
-						</select>
-						</span>
-						<v-icon
-							class="color-red"
-							@click="is_delete(index)"
-						>mdi mdi-close-box-outline</v-icon>
-					</div>
-				</div>
+									<span>
+							<select
+								v-model="file.is_out"
+								class="box pa-5 mr-10"
+							>
+								<option value="0">내부 링크</option>
+								<option value="1">외부 링크</option>
+							</select>
+							</span>
+									<v-icon
+										class="color-red"
+										@click="is_delete(index)"
+									>mdi mdi-close-box-outline</v-icon>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			<div class="flex-1">
 				<div class="">
@@ -112,20 +128,9 @@
 			:option="modal_option"
 
 			@close="close"
+			@click="deleteItem"
+			@cancel="close"
 		>
-			<div
-				slot="modal-bottom"
-				class="justify-space-between"
-			>
-				<button
-					class="flex-1 pa-10 bg-red"
-					@click="deleteItem"
-				>삭제</button>
-				<button
-					class="flex-1 btn-default"
-					@click="close"
-				>취소</button>
-			</div>
 		</Modal>
 	</div>
 </template>

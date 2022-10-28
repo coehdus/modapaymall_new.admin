@@ -14,132 +14,127 @@
 		<div
 			class="mt-10 pa-10 bg-white full-height overflow-y-auto"
 		>
-			<table
+			<template
 				v-if="items.length > 0"
-				class="table"
 			>
-				<colgroup>
-					<col width="80px" />
-					<col width="120px" />
-					<col width="auto" />
-					<col width="180px" />
-					<col width="120px" />
-					<col width="180px" />
-					<col width="180px" />
-				</colgroup>
-				<thead>
-				<tr>
-					<th><input type="checkbox" /></th>
-					<th>타입</th>
-					<th>제목</th>
-					<th>내용</th>
-					<th>사용여부</th>
-					<th>등록일시</th>
-					<th>관리</th>
-				</tr>
-				</thead>
-				<tbody>
-				<template
-					v-for="(item) in items"
+				<table
+					class="table"
 				>
-					<tr
-						:key="'banner_' + item.uid"
-					>
-						<td><input type="checkbox" /></td>
-						<td>
-							<select
-								v-model="item.type"
-								class="input-box"
-								@change="isUpdate(item)"
-							>
-								<option value="">타입</option>
-								<option value="main">메인</option>
-								<option value="normal">일반</option>
-							</select>
-						</td>
-						<td class="text-left">{{ item.banner_name }}</td>
-						<td>
-							<button
-								class="box pa-5-10"
-								@click="is_view == item.uid ? is_view = null : is_view = item.uid"
-							>내용보기
-								<v-icon
-									v-if="is_view == item.uid "
-									small
-									class=" color-icon cursor-pointer"
-								>mdi mdi-menu-up</v-icon>
-								<v-icon
-									v-else
-									small
-									class=" color-icon cursor-pointer"
-								>mdi mdi-menu-down</v-icon>
-							</button>
-						</td>
-						<td>
-							<select
-								v-model="item.is_use"
-								class="input-box"
-								@change="doUpdate(item)"
-							>
-								<option value="0">미사용</option>
-								<option value="1">사용</option>
-							</select>
-						</td>
-						<td>{{ item.wDate }}</td>
-						<td>
-							<button
-								class="btn-success pa-5-10 ml-10"
-
-								@click="toDetail(item)"
-							>수정</button>
-							<button
-								class="btn-danger pa-5-10 ml-10"
-								@click="isDelete(item)"
-							>삭제</button>
-						</td>
+					<colgroup>
+						<col width="80px" />
+						<col width="120px" />
+						<col width="auto" />
+						<col width="180px" />
+						<col width="120px" />
+						<col width="180px" />
+						<col width="180px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th><input type="checkbox" /></th>
+						<th>타입</th>
+						<th>제목</th>
+						<th>내용</th>
+						<th>사용여부</th>
+						<th>등록일시</th>
+						<th>관리</th>
 					</tr>
-
-					<tr
-						v-if="is_view == item.uid"
-						:key="'banner_file_' + item.uid"
+					</thead>
+					<tbody>
+					<template
+						v-for="(item) in items"
 					>
-						<td colspan="7" class="text-left bg-eee">
-							<span
-								v-for="file in item.files"
-								:key="'file_' + file.uid"
-								class="banner-img mr-10 vertical-middle"
-							>
-								<img
-									:src="file.file_path"
-								/>
-							</span>
-						</td>
-					</tr>
-				</template>
-				</tbody>
-			</table>
-			<div
+						<tr
+							:key="'banner_' + item.uid"
+						>
+							<td><input type="checkbox" /></td>
+							<td>
+								<select
+									v-model="item.type"
+									class="input-box"
+									@change="isUpdate(item)"
+								>
+									<option value="">타입</option>
+									<option value="main">메인</option>
+									<option value="normal">일반</option>
+								</select>
+							</td>
+							<td class="text-left">{{ item.banner_name }}</td>
+							<td>
+								<button
+									class="box pa-5-10"
+									@click="is_view == item.uid ? is_view = null : is_view = item.uid"
+								>내용보기
+									<v-icon
+										v-if="is_view == item.uid "
+										small
+										class=" color-icon cursor-pointer"
+									>mdi mdi-menu-up</v-icon>
+									<v-icon
+										v-else
+										small
+										class=" color-icon cursor-pointer"
+									>mdi mdi-menu-down</v-icon>
+								</button>
+							</td>
+							<td>
+								<select
+									v-model="item.is_use"
+									class="input-box"
+									@change="doUpdate(item)"
+								>
+									<option value="0">미사용</option>
+									<option value="1">사용</option>
+								</select>
+							</td>
+							<td>{{ item.wDate }}</td>
+							<td>
+								<button
+									class="btn-success pa-5-10 ml-10"
+
+									@click="toDetail(item)"
+								>수정</button>
+								<button
+									class="btn-danger pa-5-10 ml-10"
+									@click="isDelete(item)"
+								>삭제</button>
+							</td>
+						</tr>
+
+						<tr
+							v-if="is_view == item.uid"
+							:key="'banner_file_' + item.uid"
+						>
+							<td colspan="7" class="text-left bg-eee">
+								<span
+									v-for="file in item.files"
+									:key="'file_' + file.uid"
+									class="banner-img mr-10 vertical-middle"
+								>
+									<img
+										:src="file.file_path"
+									/>
+								</span>
+							</td>
+						</tr>
+					</template>
+					</tbody>
+				</table>
+
+				<Pagination
+					:program="program"
+					:align="'center'"
+					:options="search"
+
+					@click="getSearch"
+					class="mt-auto"
+				></Pagination>
+
+			</template>
+			<Empty
 				v-else
-				class="full-height flex-column justify-center"
 			>
-				<div class="text-center">
-					<v-icon
-						class="size-px-48 color-icon"
-					>mdi mdi-cloud-off-outline</v-icon>
-					<br/>
-					<br/>
-					<div class="font-weight-bold size-px-24">No Data</div>
-				</div>
-			</div>
-
-			<Pagination
-				:program="program"
-				:align="'center'"
-				:options="search"
-
-				@click="getSearch"
-				class="mt-auto"
-			></Pagination>
+			</Empty>
 		</div>
 
 		<Modal
@@ -190,11 +185,12 @@ import Search from "@/view/Layout/Search";
 import Pagination from "@/components/Pagination";
 
 import Modal from "@/components/Modal";
+import Empty from "../Layout/Empty";
 
 export default {
 	name: 'BannerList'
 	,
-	components: {Modal, Pagination, Search },
+	components: {Empty, Modal, Pagination, Search },
 	props: ['Axios', 'TOKEN', 'codes', 'rules']
 	,data: function(){
 		return {

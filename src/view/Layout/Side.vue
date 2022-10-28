@@ -7,7 +7,7 @@
 			class="side-container flex-column"
 		>
 			<ul
-				class="side-content overflow-y-auto pb-50"
+				class="side-content overflow-y pb-50"
 			>
 				<template
 					v-for="item in items"
@@ -194,12 +194,12 @@
 					,{
 						path: 'Banner'
 						,name: '배너 관리'
-						,type: ['admin']
+						,type: ['admin', 'agency']
 						,sub: [
 							{
 								path: 'List'
 								,name: '배너 목록'
-								,type: ['admin']
+								,type: ['admin', 'agency']
 							}
 						]
 					}

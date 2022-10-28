@@ -201,6 +201,7 @@
 .display-none{display:none;}
 .display-block{display:block;}
 
+.overflow-y { overflow-y: scroll}
 .overflow-y-auto { overflow-y: auto}
 .overflow-hidden { overflow: hidden}
 
