@@ -28,6 +28,12 @@
 				</select>
 			</template>
 
+			<button
+				slot="last"
+				class="btn-green pa-5-10 vertical-middle mr-10"
+				@click="getSort"
+			>상품 정렬</button>
+
 		</Search>
 
 		<div
@@ -126,12 +132,12 @@
 								<v-icon
 									class="pa-5 "
 									:class="item.agency_use == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.agency_use = 1; update(item)"
+									@click="item.agency_use = 1; postUpdate(item)"
 								>mdi mdi-power-plug</v-icon>
 								<v-icon
 									class="pa-5  "
 									:class="item.agency_use != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.agency_use = 0; update(item)"
+									@click="item.agency_use = 0; postUpdate(item)"
 								>mdi mdi-power-plug-off</v-icon>
 							</div>
 						</td>
@@ -169,6 +175,62 @@
 			:excel_data="excel_data"
 			:date="date"
 		></Excel>
+
+		<Modal
+			:is_modal="is_sort"
+			:option="modal_option_sort"
+			width="420px"
+			height="480px"
+
+			@close="is_sort = false"
+			@cancel="is_sort = false"
+			@click="postSortUpdate"
+		>
+			<template
+				v-slot:modal-content
+			>
+			<ul
+				class="bg-white"
+			>
+				<draggable v-model="items_sort" group="people" @start="drag=true" @end="drag=false" handle=".handle">
+				<li
+					v-for="(item, s_index) in items_sort"
+					:key="'item_' + s_index"
+					class="pa-10 under-line"
+				>
+					<div
+						class="flex-row  "
+					>
+						<div
+							class=" mr-10"
+						>
+							<img
+								v-if="item.pdt_img1"
+								:src="item.pdt_img1"
+								style="width: 80px"
+							/>
+							<v-icon
+								v-else
+								class="color-icon"
+								style="width: 80px"
+							>mdi mdi-image</v-icon>
+						</div>
+						<div
+							class="flex-1 flex-column justify-center text-left"
+						>
+							{{ item.pdt_name }}
+						</div>
+						<div
+							class=" flex-column justify-center align-center handle cursor-pointer"
+						>
+							<v-icon>mdi mdi-menu</v-icon>
+						</div>
+					</div>
+				</li>
+				</draggable>
+			</ul>
+			</template>
+		</Modal>
 	</div>
 </template>
 
@@ -178,13 +240,14 @@ import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import Empty from "@/view/Layout/Empty";
+import Modal from "../../components/Modal";
+import draggable from "vuedraggable";
 
 export default {
 	name: 'ManagerAdminList'
-	,
-	components: {Empty, Excel, Search, Pagination,},
-	props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date', 'category_list', 'supply_list']
-	,data: function (){
+	, components: {Modal, Empty, Excel, Search, Pagination, draggable}
+	, props: ['Axios', 'TOKEN', 'user', 'codes', 'rules', 'date', 'category_list', 'supply_list']
+	, data: function (){
 		return {
 			program: {
 				name: '상품 목록'
@@ -239,6 +302,13 @@ export default {
 				,content: null
 			}
 			,is_detail_view: false
+			, items_sort: []
+			, is_sort: false
+			, modal_option_sort: {
+				top: true
+				, bottom: true
+				, title: '상품 정렬'
+			}
 		}
 	}
 	,computed: {
@@ -315,6 +385,13 @@ export default {
 
 			return list
 		}
+		, items_sort_do: function(){
+			let t = []
+			this.items_sort.filter((item)=>{
+				t.push(item.uid)
+			})
+			return t
+		}
 	}
 	,methods: {
 		getData: async function(){
@@ -340,7 +417,7 @@ export default {
 				this.$emit('offLoading')
 			}
 		}
-		,update: async function(item){
+		, postUpdate: async function(item){
 			this.$emit('onLoading')
 			try{
 				const result = await this.Axios({
@@ -356,7 +433,7 @@ export default {
 				})
 
 				if(result.success) {
-					//this.item.agency_pdt_type = item.pdt_type
+					await this.getData()
 				}else{
 					throw result.message
 				}
@@ -400,7 +477,7 @@ export default {
 				}
 			}
 			item.pdt_type = pdt_type
-			this.update(item)
+			this.postUpdate(item)
 		}
 		,setProgram: function(program){
 			this.$emit('onLoad', program)
@@ -429,6 +506,60 @@ export default {
 					break;
 			}
 			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})
+		}
+		, postSortUpdate: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postProductSortAgency'
+					,data: {
+						ATOKEN: this.TOKEN
+						, items: this.items_sort_do
+					}
+				})
+
+				if(result.success) {
+					this.is_sort = false
+					await this.getData();
+
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
+				}else{
+					throw result.message
+				}
+			}catch (e) {
+				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+			}finally {
+				//await this.getData()
+				this.$emit('offLoading')
+			}
+		}
+		, getSort: async function(){
+
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getProductSortAgency'
+					,data: {
+						ATOKEN: this.TOKEN
+					}
+				})
+
+				if(result.success) {
+					this.items_sort = result.data
+					this.is_sort = true
+				}else{
+					throw result.message
+				}
+			}catch (e) {
+				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+			}finally {
+				//await this.getData()
+				this.$emit('offLoading')
+			}
 		}
 
 	}

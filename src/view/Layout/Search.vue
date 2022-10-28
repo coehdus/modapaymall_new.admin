@@ -137,6 +137,10 @@
 				class="btn-green pa-5-10 vertical-middle mr-10"
 				@click="$emit('toItem')"
 			>등록</button>
+
+			<slot
+				name="last"
+			></slot>
 		</div>
 	</div>
 </template>
