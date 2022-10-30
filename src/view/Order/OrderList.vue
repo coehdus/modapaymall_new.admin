@@ -32,6 +32,16 @@
 			@toItem="toItem"
 			class="mt-10"
 		>
+
+			<label
+				slot="first"
+			>
+				<input
+					v-model="search.is_fail"
+					type="checkbox"
+					@change="getData"
+				/> 결제 실패건 포함
+			</label>
 			<select
 				slot="add"
 				v-model="search.o_status"
@@ -297,7 +307,7 @@
 										<td class=" ">
 											<span
 												class="pa-5-10"
-												:class="'color-' + odt.order_status_color"
+												:class="'bg-' + odt.order_status_color"
 											>{{ odt.order_status_name }}</span>
 										</td>
 										<td>
@@ -493,14 +503,15 @@ export default {
 			}
 			,search: this.$storage.init({
 				ATOKEN: this.TOKEN
-				,page: 1
-				,search_type: ''
-				,search_value: ''
-				,list_cnt: 10
-				,o_status: ''
-				,order_status: ''
-				,sDate: this.date.getToday('-')
-				,eDate: this.date.getToday('-')
+				, page: 1
+				, search_type: ''
+				, search_value: ''
+				, list_cnt: 10
+				, o_status: ''
+				, order_status: ''
+				, sDate: this.date.getLastDate(7, '-')
+				, eDate: this.date.getToday('-')
+				, is_fail: false
 			})
 			,search_option:{
 
@@ -569,7 +580,7 @@ export default {
 						}
 						odt.step_group = odt.order_status.slice(-2, -1)
 
-						odt.ATOKEN = self.TOKEN
+						odt.ATOKEN = this.TOKEN
 
 						if(item.o_status != 2 || odt.order_status == 'step5' || item.delivery_type == 'D002002'){
 							this.$set(odt, 'not_confirm', true)
@@ -582,7 +593,7 @@ export default {
 
 				})
 
-				item.ATOKEN = self.TOKEN
+				item.ATOKEN = this.TOKEN
 
 				return item
 			})
@@ -936,8 +947,12 @@ export default {
 			}
 		}
 		,isConfirm: function(index, item, code){
-			if(confirm("해당 주문건의 결제상태를 변경하시겠습니까?")){
-				this.update(index, item, code)
+			if(item.delivery_type == 'D002002'){
+				this.$bus.$emit('notify', {type: 'error', message: '카드결제 주문은 처리할수 없습니다. 상품별 주문상태를 변경하세요'})
+			}else{
+				if(confirm("해당 주문건의 결제상태를 변경하시겠습니까?")){
+					this.update(index, item, code)
+				}
 			}
 		}
 		, onComplete: function(odt, step){

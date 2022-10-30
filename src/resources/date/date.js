@@ -17,6 +17,25 @@ export const date = {
 
 		return fullDate
 	}
+	, getLastDate: function(prev, point){
+		let date = new Date()
+		let year = date.getFullYear()
+		let month = date.getMonth() + 1
+		let day = date.getDate()
+
+		let cPoint = ''
+		if(point){
+			cPoint = point
+		}
+
+		let new_date = new Date(year, month - 1, day - prev)
+		year = new_date.getFullYear()
+		month = new_date.getMonth() + 1
+		day = new_date.getDate()
+
+		let fullDate = year + cPoint + ('0' + month).slice('-2') + cPoint + ('0' + day).slice('-2')
+		return fullDate
+	}
 	,init: function(date, point){
 		if(!date) {
 			date = new Date()

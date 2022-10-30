@@ -10,6 +10,10 @@
 
 		<div class="flex-1 text-right">
 
+			<slot
+				name="first"
+			></slot>
+
 			<span class="position-relative" style="z-index: 1">
 
 			<date_picker
