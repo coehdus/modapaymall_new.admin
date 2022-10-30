@@ -608,7 +608,7 @@ export default {
 
 				return item.supply_list.filter(function(supply){
 
-					return supply.item_list.filter(function(odt){
+					return supply.odt_list.filter(function(odt){
 
 						return odt
 					})
