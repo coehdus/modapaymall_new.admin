@@ -194,7 +194,7 @@
 					,{
 						path: 'Banner'
 						,name: '배너 관리'
-						,type: ['admin', 'agency']
+						,type: ['agency']
 						,sub: [
 							{
 								path: 'List'

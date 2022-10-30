@@ -606,29 +606,50 @@ export default {
 
 			this.items.filter(function(item){
 
-				return item.supply_list.filter(function(supply){
+				item.supply_list.filter(function(supply){
 
-					return supply.odt_list.filter(function(odt){
+					supply.odt_list.filter(function(odt){
 
-						return odt
+						list.push({
+							order_num_new: item.order_number + ' '
+							, agency_name: item.agency_name
+							, member_id: item.member_id
+							, member_name: item.member_name
+							, order_status_name: odt.order_status_name
+							, odt_price: odt.pdt_price
+							, odt_name: odt.pdt_name
+							, op_name: odt.op_name
+							, odt_cnt: odt.op_cnt
+							, delivery_type: item.delivery_type == 'D002002' ? '방문수령' : '택배배송'
+							, d_name: item.d_name
+							, d_post: item.d_post
+							, d_addr1: item.d_addr1
+							, d_addr2: item.d_addr2
+						})
 					})
 				})
 			})
 
+			console.log('excel_data', list)
+
 			return {
 				name: '주문 목록'
 				, header: [
-					{key: 0, name: '주문번호', column: 'order_num_new'}
-					, {key: 0, name: '주문 상태', column: 'order_status_name'}
+					{key: 0, name: '대리점', column: 'agency_name'}
+					, {key: 0, name: '주문번호', column: 'order_num_new'}
 					, {key: 0, name: '아이디', column: 'member_id'}
 					, {key: 0, name: '이름', column: 'member_name'}
-					, {key: 0, name: '결제금액', column: 'order_price'}
-					, {key: 0, name: '총 상품금액', column: 'total_price'}
-					, {key: 0, name: '배송비', column: 'delivery_price'}
+					, {key: 0, name: '주문 상품', column: 'odt_name'}
+					, {key: 0, name: '상품 옵션', column: 'op_name'}
+					, {key: 0, name: '상품 금액', column: 'odt_price'}
+					, {key: 0, name: '주문 상태', column: 'order_status_name'}
+					, {key: 0, name: '배송구분', column: 'delivery_type'}
 					, {key: 0, name: '받는분', column: 'd_name'}
 					, {key: 0, name: '우편번호', column: 'd_post'}
 					, {key: 0, name: '주소', column: 'd_addr1'}
 					, {key: 0, name: '상세주소', column: 'd_addr2'}
+					, {key: 0, name: '택배사', column: 'shipping_name'}
+					, {key: 0, name: '운송장번호', column: 'shipping_num'}
 				]
 				, content: list
 			}
@@ -773,7 +794,7 @@ export default {
 			}
 		}
 		,toExcel: function(){
-			this.excel_data.content = this.items
+			//this.excel_data.content = this.items
 			this.is_excel = true
 		}
 		,toItem: function (){
