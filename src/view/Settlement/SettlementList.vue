@@ -133,7 +133,6 @@
 						<col width="auto" />
 						<col width="auto" />
 						<col width="auto" />
-						<col width="auto" />
 
 						<col width="auto" />
 						<col width="auto" />
@@ -152,20 +151,19 @@
 						<th>상점명</th>
 						<th>아이디</th>
 						<th>결제 구분</th>
+
 						<th>판매건수</th>
 						<th>판매금액</th>
-
 						<th>판매원가</th>
-						<th>매출금액</th>
-						<th>결제 수수료</th>
-						<th>영업 수익</th>
-						<th>PG 수수료</th>
+						<th>판매 수수료</th>
 
+						<th>영업 수수료</th>
+						<th>PG 원가</th>
 						<th>배송비</th>
 						<th>정산금액</th>
 						<th>정산여부</th>
-						<th>지급여부</th>
 
+						<th>지급여부</th>
 						<th>관리</th>
 					</tr>
 					</thead>
@@ -183,7 +181,6 @@
 							<td>{{ item.total_count | makeComma }} 건</td>
 							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
-							<td class="text-right">{{ item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.is_supply ? (item.fee) + '원' : '-' | makeComma }}</td>
 
 							<td class="text-right">{{ !item.is_supply ? (item.income_amount) + '원' :  '-' | makeComma }}</td>

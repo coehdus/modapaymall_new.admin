@@ -24,11 +24,10 @@
 					<th>매출일</th>
 					<th>판매금액</th>
 					<th>판매원가</th>
-					<th>매출금액</th>
-					<th>결제 수수료</th>
+					<th>판매 수수료</th>
 
-					<th>영업 수익</th>
-					<th>PG 수수료</th>
+					<th>영업 수수료</th>
+					<th>PG 원가</th>
 					<th>정산금액</th>
 				</tr>
 				</thead>
@@ -43,9 +42,8 @@
 						<td>{{ art.date }}</td>
 						<td>{{ art.sale_amount | makeComma }} 원</td>
 						<td>{{ art.total_amount | makeComma }} 원</td>
-						<td>{{ item.is_supply ? art.income_amount + '원' : '-' | makeComma }}</td>
-
 						<td>{{ art.total_fee | makeComma }} 원 ({{ art.total_fee_rate }}%)</td>
+
 						<td>{{ item.is_supply ? '-' : art.income_amount + '원' | makeComma }} ({{ art.admin_per }}%)</td>
 						<td>{{ item.is_admin ? (art.fee) + '원' : '-' | makeComma}}  ({{ art.pg_fee_rate }}%)</td>
 						<td>{{ art.amount | makeComma }} 원</td>
@@ -62,8 +60,8 @@
 						<th>합계</th>
 						<th>{{ item.sale_amount | makeComma}} 원</th>
 						<th>{{ item.total_amount | makeComma }} 원</th>
-						<th>{{ item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</th>
 						<th>{{ item.total_fee * -1 | makeComma }} 원</th>
+
 						<th>{{ !item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</th>
 						<th>{{ item.is_admin ? item.fee + '원' : '-' | makeComma }} </th>
 						<th>{{ item.amount | makeComma}} 원</th>
