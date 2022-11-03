@@ -147,7 +147,6 @@ export default {
 	}
 	,created() {
 		this.isAuth()
-		console.log(this.$route)
 	}
 };
 </script>

@@ -11,22 +11,22 @@
 					<col width="auto" />
 					<tbody>
 					<tr>
-						<th>공급사</th>
+						<th>대리점</th>
 						<td>
 							<div class="">
 								<select
 									v-model="item.pdt_company"
 									class="input-box"
-									:disabled="is_supply"
+									:disabled="is_agency"
 								>
 									<option
 										:value="''"
-									>공급사</option>
+									>대리점</option>
 									<option
-										v-for="supply in supply_list"
-										:key="supply.supply_id"
-										:value="supply.supply_id"
-									>{{ supply.supply_name }}</option>
+										v-for="agency in agency_list"
+										:key="agency.account_id"
+										:value="agency.account_id"
+									>{{ agency.account_name }}</option>
 								</select>
 								<v-icon
 									class="position-absolute color-icon"
@@ -420,7 +420,7 @@ export default {
 			,new_sub_img: '이미지 선택'
 			,pdt_code: this.$route.params.pdt_code
 			,category_list: []
-			,supply_list: []
+			,agency_list: []
 			, files: []
 			, upload_files: []
 			, file_max: 10
@@ -459,12 +459,12 @@ export default {
 				return item
 			})
 		}
-		,is_supply: function(){
-			if(this.user.admin_type == 'supply'){
-				return true
-			}else{
-				return false
+		,is_agency: function(){
+			let t = false
+			if(this.user.role == 'agency'){
+				t = true
 			}
+			return t
 		}
 		,product_img_name: function(){
 			let name = '상품 정보 이미지'
@@ -642,10 +642,10 @@ export default {
 		,getCategoryList: async function(){
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_id: this.item.pdt_company
 					}
 				})
 
@@ -659,18 +659,18 @@ export default {
 			}
 		}
 
-		,getSupplyList: async  function(){
+		,getAgencyList: async  function(){
 			try{
 				const result = await this.Axios({
 					method: 'get'
-					,url: 'management/getSupplyList'
+					,url: 'management/getAgencyList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_type: 'A001003'
 					}
 				})
 
 				if(result.success){
-					this.supply_list = result.data.result
+					this.agency_list = result.data.result
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
@@ -680,11 +680,12 @@ export default {
 		}
 
 		, do: async function(){
-			await this.getCategoryList()
-
-			await this.getSupplyList()
 
 			await this.getData()
+
+			await this.getAgencyList()
+			
+			await this.getCategoryList()
 		}
 		, setFile: async function(e){
 			console.log('setFile', e)

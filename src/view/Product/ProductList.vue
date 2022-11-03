@@ -15,9 +15,22 @@
 				slot="add"
 			>
 				<select
+					v-model="search.pdt_company"
+					class="pa-5-10 mr-10"
+					@change="getCategoryList"
+					:disabled="is_agency"
+				>
+					<option value="">대리점</option>
+					<option
+						v-for="agency in agency_list"
+						:key="'agency_' + agency.uid"
+						:value="agency.account_id"
+					>{{ agency.account_name }}</option>
+				</select>
+				<select
 					v-model="search.pdt_category"
 					class="pa-5-10 mr-10"
-					@change="getSearch(1)"
+					@change="getData"
 				>
 					<option value="">카테고리</option>
 					<option
@@ -25,18 +38,6 @@
 						:key="'category_' + category.uid"
 						:value="category.category_code"
 					>{{ category.category_name }}</option>
-				</select>
-				<select
-					v-model="search.pdt_company"
-					class="pa-5-10 mr-10"
-					@change="getSearch(1)"
-				>
-					<option value="">공급사</option>
-					<option
-						v-for="supply in supply_list"
-						:key="'supply_' + supply.uid"
-						:value="supply.supply_id"
-					>{{ supply.supply_name }}</option>
 				</select>
 			</template>
 		</Search>
@@ -58,7 +59,6 @@
 						<col width="120px" />
 
 						<col width="120px" />
-						<col width="120px" />
 						<col width="150px" />
 						<col width="120px" />
 						<col width="80px" />
@@ -73,7 +73,6 @@
 							<th>재고</th>
 
 							<th>메인 진열여부</th>
-							<th>공급사 판매여부</th>
 							<th>사용여부</th>
 							<th>등록일</th>
 							<th>상세정보</th>
@@ -127,40 +126,6 @@
 									<v-icon
 										v-else
 										class="pa-5 bg-red color-white mdi mdi-bookmark-remove cursor-pointer" ></v-icon>
-								</div>
-							</td>
-							<td
-								class="full-height"
-							>
-								<div
-									v-if="is_supply"
-									class=" flex-row justify-center"
-								>
-									<v-icon
-										class="pa-5 "
-										:class="item.is_supply_sale == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="item.is_supply_sale = 1; update(item)"
-									>mdi mdi-cart</v-icon>
-									<v-icon
-										class="pa-5  "
-										:class="item.is_supply_sale != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="item.is_supply_sale = 0; update(item)"
-									>mdi mdi-cart-off</v-icon>
-								</div>
-								<div
-									v-else
-								>
-									<v-icon
-										v-if="item.is_supply_sale == 1"
-										class="pa-5 "
-										:class="item.is_supply_sale == 1 ? 'bg-green color-white' : 'btn-default' "
-
-									>mdi mdi-cart</v-icon>
-									<v-icon
-										v-else
-										class="pa-5  "
-										:class="item.is_supply_sale != 1 ? 'bg-red color-white' : 'btn-default' "
-									>mdi mdi-cart-off</v-icon>
 								</div>
 							</td>
 							<td
@@ -262,18 +227,18 @@ export default {
 				,title: true
 			}
 			,search: this.$storage.init({
-				ATOKEN: this.TOKEN
-				,pdt_company: ''
-				,search_type: 'pdt_name'
-				,is_use: ''
-				,is_supply_delete: ''
-				,list_cnt: 10
-				,page: 1
-				,pdt_category: ''
+				page: 1
+				, list_cnt: 10
+				, search_type: 'pdt_name'
+				, search_value: ''
+				, pdt_company: this.user.role == 'agency' ? this.user.account_id : ''
+				, is_use: ''
+				, is_supply_delete: ''
+				, pdt_category: ''
 			})
 			,search_option:{
 				is_excel: true
-				, is_item: this.user.role_group == 'agency' ? false : true
+				, is_item: this.user.role == 'distributor' ? false : true
 				, is_cnt: true
 				, cnt: 0
 				, tCnt: 0
@@ -298,7 +263,7 @@ export default {
 			,items: [
 
 			]
-			,supply_list: []
+			,agency_list: []
 			,category_list: []
 			,item: null
 			,item_new: {
@@ -312,7 +277,7 @@ export default {
 				name: '상품 목록'
 				,header: [
 					{ key: 0, name: '카테고리', column: 'pdt_category_name'}
-					,{ key: 0, name: '공급사', column: 'shop_name'}
+					,{ key: 0, name: '대리점', column: 'shop_name'}
 					,{ key: 0, name: '상품명', column: 'pdt_name'}
 					,{ key: 0, name: '공급가', column: 'pdt_purchase'}
 					,{ key: 0, name: '재고', column: 'is_sold_name'}
@@ -370,24 +335,24 @@ export default {
 			}
 		}
 		,is_admin: function(){
-			if(this.user.role_group == 'admin'){
+			if(this.user.role_group == 'admin' || this.user.role == 'agency'){
 				return true
 			}else{
 				return false
 			}
 		}
 		,is_agency: function(){
-			if(this.user.role_group == 'agency'){
+			if(this.user.role == 'agency'){
 				return true
 			}else{
 				return false
 			}
 		}
 
-		,supply_list_as: function(){
+		,agency_list_as: function(){
 
 			let list = []
-			this.supply_list.filter(function(item){
+			this.agency_list.filter(function(item){
 
 				list.push({
 					name: item.shop_name, column: item.seller_id
@@ -453,12 +418,12 @@ export default {
 		}
 		,toDetail: function (item){
 			let name = 'ProductDetail'
-			switch(this.user.role_group){
+			switch(this.user.role){
 				case 'admin':
 					break;
 				case 'supply':
 					break;
-				case 'agency':
+				case 'distributor':
 					name += 'Agency'
 					break;
 			}
@@ -525,11 +490,12 @@ export default {
 		}
 		,getCategoryList: async function(){
 			try{
+				this.search.pdt_category = ''
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_id: this.search.pdt_company
 					}
 				})
 
@@ -542,18 +508,18 @@ export default {
 				console.log(e)
 			}
 		}
-		,getSupplyList: async function(){
+		,getAgencyList: async function(){
 			try{
 				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/getSupplyList'
+					method: 'get'
+					,url: 'management/getAgencyList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_type: 'A001003'
 					}
 				})
 
 				if(result.success){
-					this.supply_list = result.data.result
+					this.agency_list = result.data.result
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
@@ -564,9 +530,9 @@ export default {
 
 		,do: async function(){
 
-			await this.getCategoryList()
+			await this.getAgencyList()
 
-			await this.getSupplyList()
+			await this.getCategoryList()
 
 			await this.getData()
 		}
@@ -574,11 +540,7 @@ export default {
 	}
 	,created() {
 		this.$emit('onLoad', this.program)
-		if(this.user.role == 'agency') {
-			this.$emit('push', {name: 'ProductListAgency'})
-		}else{
-			this.do()
-		}
+		this.do()
 	}
 	,watch: {
 

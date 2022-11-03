@@ -2,9 +2,34 @@
 	<div
 		class="full-height flex-column pa-10"
 	>
+		<div class="bg-white pa-10">
+
+			<div class="position-relative width-10">
+
+				<select
+					v-model="item.agency_id"
+					class="input-box "
+					:disabled="is_agency"
+
+					@change="getData"
+				>
+					<option
+						:value="''"
+					>대리점 선택</option>
+					<template
+						v-for="agency in agency_list"
+					>
+						<option
+							:key="agency.account_id"
+							:value="agency.account_id"
+						>{{ agency.agency_name }}</option>
+					</template>
+				</select>
+			</div>
+		</div>
+
 		<div
-			class="justify-space-between  "
-			v-if="items.length > 0"
+			class="justify-space-between  mt-10"
 		>
 			<div
 				v-for="(item, key) in item_list"
@@ -64,15 +89,18 @@
 					</li>
 					</template>
 					<template
-
-						v-if="key.slice(-1) > 1"
-						>
-					<li
-						v-if="(key.slice(-1) == 2 && !category1) || (key.slice(-1) == 3 && !category2) || (key.slice(-1) == 4 && !category3)"
-						class="pa-10"
+						v-if="key.slice(-1) > 0"
 					>
-						상위 카테고리를 선택하세요
-					</li>
+						<li
+							v-if="(key.slice(-1) == 2 && !category1) || (key.slice(-1) == 3 && !category2) || (key.slice(-1) == 4 && !category3)"
+							class="pa-10"
+						>
+							상위 카테고리를 선택하세요
+						</li>
+						<li
+							v-else
+							class="pa-10"
+						>카테고리를 등록하세요</li>
 					</template>
 				</ul>
 
@@ -151,6 +179,10 @@
 					,width: '360px'
 					,slot_bottom: true
 				}
+				, agency_list: []
+				, item: {
+					agency_id: this.user.role == 'agency' ? this.user.account_id: ''
+				}
 			}
 		}
 		,computed: {
@@ -200,26 +232,36 @@
 
 				return list
 			}
+			, is_agency: function(){
+				let t = false
+				if(this.user.role == 'agency'){
+					t = true
+				}
+				return t
+			}
 		}
 		,methods: {
 			getData: async function(){
 				try{
 					const result = await this.Axios({
-						method: 'post'
+						method: 'get'
 						,url: 'management/getCategoryList'
-						,data: this.search
+						,data: {
+							agency_id: this.item.agency_id
+						}
 					})
 
 					if(result.success){
 						this.items = result.data.result
 					}else{
-						this.$bus.$emit('notify', { type: 'error', message: result.message })
+						throw result.message
 					}
 				}catch (e) {
 					console.log(e)
+					this.$bus.$emit('notify', { type: 'error', message: e })
 				}
 			}
-			,save: async function(){
+			, save: async function(){
 				this.$emit('onLoading')
 				try{
 					const result = await this.Axios({
@@ -227,7 +269,8 @@
 						,url: 'management/postCategory'
 						,data: {
 							ATOKEN: this.TOKEN
-							,category: JSON.stringify(this.items)
+							, agency_id: this.item.agency_id
+							, category: JSON.stringify(this.items)
 						}
 					})
 
@@ -355,12 +398,12 @@
 							}
 							break;
 						case '3':
-							if(item_now.category_code2 == item.category_code2){
+							if(item_now.category_code1 == item.category_code1 && item_now.category_code2 == item.category_code2){
 								is_view = true
 							}
 							break;
 						case '4':
-							if(item_now.category_code3 == item.category_code3){
+							if(item_now.category_code1 == item.category_code1 && item_now.category_code2 == item.category_code2 && item_now.category_code3 == item.category_code3 && item.category_code3){
 								is_view = true
 							}
 							break;
@@ -376,10 +419,31 @@
 				this.item_delete = null
 				this.is_modal = false
 			}
+
+			,getAgencyList: async function(){
+				try{
+					const result = await this.Axios({
+						method: 'get'
+						,url: 'management/getAgencyList'
+						,data: {
+							agency_type: 'A001003'
+						}
+					})
+
+					if(result.success){
+						this.agency_list = result.data.result
+					}else{
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}
+			}
 		}
-		,created() {
+		, async created() {
 			this.$emit('onLoad', this.program)
-			this.getData()
+			await this.getAgencyList()
+			await this.getData()
 		}
 	}
 </script>

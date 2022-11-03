@@ -13,7 +13,7 @@
 					v-for="item in items"
 				>
 					<li
-						v-if="item.type.indexOf(user.role) > -1"
+						v-if="!item.not_view &&item.type.indexOf(user.role) > -1"
 						:key="item.path"
 						class="li-side-content cursor-pointer"
 						:class="'li-side-depth-' + item.depth"
@@ -76,8 +76,9 @@
 					}
 					,{
 						path: 'Supply'
-						,name: '공급사 '
+						, name: '공급사 '
 						, type: ['admin']
+						, not_view: true
 						, sub: [
 							{
 								path: 'List'
@@ -118,7 +119,7 @@
 							{
 								path: 'Category'
 								,name: '카테고리'
-								,type: ['admin']
+								,type: ['admin', 'agency']
 							}
 							,{
 								path: 'List'

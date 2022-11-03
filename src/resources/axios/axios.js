@@ -8,8 +8,6 @@ let location = window.location.href
 
 let baseUrl = ''
 
-console.log(process.env)
-
 if(location.indexOf(domain) > -1){
 	baseUrl = server
 }else{

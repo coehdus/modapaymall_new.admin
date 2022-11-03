@@ -12,24 +12,24 @@
 					<col width="auto" />
 					<tbody>
 						<tr>
-							<th>공급사</th>
+							<th>대리점</th>
 							<td>
 								<div class="position-relative">
 									<select
 										v-model="item.pdt_company"
 										class="input-box "
-										:disabled="is_supply"
+										:disabled="is_agency"
 									>
 										<option
 											:value="''"
-										>공급사</option>
+										>대리점</option>
 										<template
-											v-for="supply in supply_list"
+											v-for="agency in agency_list"
 										>
 											<option
-												:key="supply.supply_id"
-												:value="supply.supply_id"
-											>{{ supply.supply_name }}</option>
+												:key="agency.account_id"
+												:value="agency.account_id"
+											>{{ agency.agency_name }}</option>
 										</template>
 									</select>
 									<v-icon
@@ -418,7 +418,7 @@ export default {
 			}
 			,item: {
 				ATOKEN: this.TOKEN
-				,pdt_company: this.user.admin_type_code == 'supply' ? this.user.admin_id : ''
+				,pdt_company: this.user.role == 'agency' ? this.user.account_id : ''
 				,pdt_category: ''
 			}
 			,sub_img: [
@@ -430,7 +430,7 @@ export default {
 			,item_options: {
 				option: []
 			}
-			,supply_list: []
+			,agency_list: []
 			,category_list: []
 			, files: []
 			, upload_files: []
@@ -447,8 +447,8 @@ export default {
 				return '신규 등록'
 			}
 		}
-		,is_supply: function(){
-			if(this.user.admin_type == 'suppy'){
+		,is_agency: function(){
+			if(this.user.role == 'agency'){
 				return true
 			}else{
 				return false
@@ -579,10 +579,10 @@ export default {
 		,getCategoryList: async function(){
 			try{
 				const result = await this.Axios({
-					method: 'post'
+					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_id: this.item.pdt_company
 					}
 				})
 
@@ -595,18 +595,18 @@ export default {
 				console.log(e)
 			}
 		}
-		,getSupplyList: async function(){
+		,getAgencyList: async function(){
 			try{
 				const result = await this.Axios({
-					method: 'post'
-					,url: 'management/getSupplyList'
+					method: 'get'
+					,url: 'management/getAgencyList'
 					,data: {
-						ATOKEN: this.TOKEN
+						agency_type: 'A001003'
 					}
 				})
 
 				if(result.success){
-					this.supply_list = result.data.result
+					this.agency_list = result.data.result
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
 				}
@@ -616,9 +616,9 @@ export default {
 		}
 
 		, do: async function(){
+			await this.getAgencyList()
 			await this.getCategoryList()
 
-			await this.getSupplyList()
 		}
 		, setFile: function(e){
 			console.log('setFile', e)
