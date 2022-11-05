@@ -42,17 +42,17 @@
 						<td>{{ art.date }}</td>
 						<td>{{ art.sale_amount | makeComma }} 원</td>
 						<td>{{ art.total_amount | makeComma }} 원</td>
-						<td>{{ art.total_fee | makeComma }} 원 ({{ art.total_fee_rate }}%)</td>
+						<td>{{ item.is_admin ? (art.income_amount) + '원' : item.is_agency ? (art.total_fee) + '원' : '-' | makeComma }} <template v-if="item.is_admin || item.is_agency">({{ art.total_fee_rate }}%)</template></td>
 
-						<td>{{ item.is_supply ? '-' : art.income_amount + '원' | makeComma }} ({{ art.admin_per }}%)</td>
-						<td>{{ item.is_admin ? (art.fee) + '원' : '-' | makeComma}}  ({{ art.pg_fee_rate }}%)</td>
+						<td>{{ item.is_admin ? (art.fee) + '원' : item.is_distributor ? (art.income_amount) + '원' :  '-' | makeComma }} <template v-if="item.is_admin || item.is_distributor">({{ art.fee_rate}}%)</template></td>
+						<td>{{ item.is_admin ? (art.total_fee) + '원' : '-' | makeComma }}  <template v-if="item.is_admin">({{ art.pg_fee_rate }}%)</template></td>
 						<td>{{ art.amount | makeComma }} 원</td>
 					</tr>
 				</template>
 				<tr
 					v-else
 				>
-					<td colspan="10" class="pa-50">정산 내역이 없습니다</td>
+					<td colspan="7" class="pa-50">정산 내역이 없습니다</td>
 				</tr>
 				</tbody>
 				<tfoot>
@@ -60,10 +60,10 @@
 						<th>합계</th>
 						<th>{{ item.sale_amount | makeComma}} 원</th>
 						<th>{{ item.total_amount | makeComma }} 원</th>
-						<th>{{ item.total_fee * -1 | makeComma }} 원</th>
+						<th>{{ item.is_admin ? (item.income_amount) + '원' : item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</th>
 
-						<th>{{ !item.is_supply ? item.income_amount + '원' : '-' | makeComma }}</th>
-						<th>{{ item.is_admin ? item.fee + '원' : '-' | makeComma }} </th>
+						<th>{{ item.is_admin ? (item.fee) + '원' : item.is_distributor ? (item.income_amount) + '원' :  '-' | makeComma }}</th>
+						<th>{{ item.is_admin ? (item.total_fee) + '원' : '-' | makeComma }} </th>
 						<th>{{ item.amount | makeComma}} 원</th>
 					</tr>
 				</tfoot>

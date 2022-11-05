@@ -27,7 +27,7 @@
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 시작일"
 
-				@click="clear(); search.sDate = ''; datePickerStart = !datePickerStart"
+				@click="clear(); datePickerStart = !datePickerStart"
 			/>
 
 			<v-date-picker
@@ -54,7 +54,7 @@
 				class="pa-5-10 box vertical-middle mr-10 "
 				placeholder="검색 종료일"
 
-				@click="clear(); search.eDate = ''; datePickerEnd = !datePickerEnd"
+				@click="clear(); datePickerEnd = !datePickerEnd"
 			/>
 
 			<v-date-picker

@@ -5,6 +5,7 @@
 			<div class="pa-10 box text-right">
 
 				<date_picker
+					:date="date"
 					@click="setDate"
 					class="mr-10"
 				></date_picker>
@@ -181,11 +182,11 @@
 							<td>{{ item.total_count | makeComma }} 건</td>
 							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
-							<td class="text-right">{{ item.is_supply ? (item.fee) + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_admin ? (item.income_amount) + '원' : item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</td>
 
-							<td class="text-right">{{ !item.is_supply ? (item.income_amount) + '원' :  '-' | makeComma }}</td>
-							<td class="text-right">{{ item.is_admin ? (item.fee) + '원' : '-' | makeComma }}</td>
-							<td class="text-right">{{ item.is_admin || item.is_supply ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_admin ? (item.fee) + '원' : item.is_distributor ? (item.income_amount) + '원' :  '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_admin ? (item.total_fee) + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.amount | makeComma }} 원</td>
 							<td>{{ item.is_settlement_name }}</td>
 
@@ -308,8 +309,7 @@ export default {
 				,month:  new Date().getMonth() + 1
 			}
 			,search: this.$storage.init({
-				ATOKEN: this.TOKEN
-				, year: new Date().getFullYear()
+				year: new Date().getFullYear()
 				, month:  new Date().getMonth() + 1
 				, day: this.user.role == this.codes.type_code_admin ? new Date().getDate() : ''
 				, admin_type: ''
@@ -357,7 +357,7 @@ export default {
 						break;
 					case this.codes.type_code_distributor:
 						item.admin_type_name = '총판'
-						item.is_agency = true
+						item.is_distributor = true
 						break;
 					case this.codes.type_code_agency:
 						item.admin_type_name = '대리점'
@@ -385,6 +385,11 @@ export default {
 			}
 
 			return years
+		}
+		, date: function(){
+			let t = ''
+			t = this.search.year + '-' + this.search.month + '-' + this.search.day
+			return t
 		}
 
 	}

@@ -84,7 +84,7 @@
 				>
 
 					<div
-						class="pa-10 justify-space-between color-black"
+						class="pa-10 justify-space-between "
 						:class="'bg-light-' + item.o_status_color"
 					>
 						<div class=" ">
