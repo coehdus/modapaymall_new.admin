@@ -107,7 +107,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th>대리점 수익률</th>
+								<th>대리점 판매 수수료</th>
 								<td class="position-relative">
 									<input
 										v-model="item.agency_fee"
@@ -129,7 +129,7 @@
 									/>
 								</td>
 							</tr>
-							<tr>
+							<tr v-if="false">
 								<th>공급사 판매 수수료</th>
 								<td class="position-relative">
 									<input
@@ -576,7 +576,6 @@ export default {
 			fee += Number(this.item.company_fee)
 			fee += Number(this.item.distributor_fee)
 			fee += Number(this.item.agency_fee)
-			fee += Number(this.item.supply_fee)
 			
 			return fee.toFixed(2)
 		}
@@ -586,7 +585,6 @@ export default {
 			fee += Number(this.item.bank_company_fee ?? 0)
 			fee += Number(this.item.bank_distributor_fee ?? 0)
 			fee += Number(this.item.bank_agency_fee ?? 0)
-			fee += Number(this.item.bank_supply_fee ?? 0)
 
 			return fee.toFixed(2)
 		}

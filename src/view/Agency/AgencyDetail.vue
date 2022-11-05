@@ -157,13 +157,13 @@
 							<col width="auto">
 							<tbody>
 							<tr>
-								<th>영업 수익률 <span class="color-red">*</span></th>
+								<th>{{ text_fee_rate }} <span class="color-red">*</span></th>
 								<td>
 									<div
 										class="justify-start"
 									>
 										<div class="flex-1 text-left justify-space-between">
-											카드 결제 수익률
+											카드 결제
 											<span>
 											<input
 												v-model="item.sales_fee"
@@ -178,7 +178,7 @@
 										class="justify-start mt-10"
 									>
 										<div class="flex-1 text-left justify-space-between">
-											무통장 입금 수익률
+											무통장 입금
 											<span>
 											<input
 												v-model="item.sales_fee_bank"
@@ -515,6 +515,13 @@ export default {
 		logo_img_name: function(){
 			let name = '로고 이미지'
 			return name
+		}
+		, text_fee_rate: function(){
+			let t = '영업 수익률'
+			if(this.item.agency_type == 'A001003'){
+				t = '판매 수수료'
+			}
+			return t
 		}
 	}
 	, methods: {
