@@ -17,7 +17,7 @@
 				<select
 					v-model="search.pdt_company"
 					class="pa-5-10 mr-10"
-					@change="getCategoryList"
+					@change="getCategoryList(); getData();"
 					:disabled="is_agency"
 				>
 					<option value="">대리점</option>
@@ -40,6 +40,12 @@
 					>{{ category.category_name }}</option>
 				</select>
 			</template>
+
+			<button
+				slot="last"
+				class="btn-green pa-5-10 vertical-middle mr-10"
+				@click="getSort"
+			>상품 정렬</button>
 		</Search>
 
 		<div
@@ -205,6 +211,62 @@
 			:date="date"
 		></Excel>
 
+		<Modal
+			:is_modal="is_sort"
+			:option="modal_option_sort"
+			width="420px"
+			height="480px"
+
+			@close="is_sort = false"
+			@cancel="is_sort = false"
+			@click="postSortUpdate"
+		>
+			<template
+				v-slot:modal-content
+			>
+				<ul
+					class="bg-white"
+				>
+					<draggable v-model="items_sort" group="people" @start="drag=true" @end="drag=false" handle=".handle">
+						<li
+							v-for="(item, s_index) in items_sort"
+							:key="'item_' + s_index"
+							class="pa-10 under-line"
+						>
+							<div
+								class="flex-row  "
+							>
+								<div
+									class=" mr-10"
+								>
+									<img
+										v-if="item.pdt_img1"
+										:src="item.pdt_img1"
+										style="width: 80px"
+									/>
+									<v-icon
+										v-else
+										class="color-icon"
+										style="width: 80px"
+									>mdi mdi-image</v-icon>
+								</div>
+								<div
+									class="flex-1 flex-column justify-center text-left"
+								>
+									{{ item.pdt_name }}
+								</div>
+								<div
+									class=" flex-column justify-center align-center handle cursor-pointer"
+								>
+									<v-icon>mdi mdi-menu</v-icon>
+								</div>
+							</div>
+						</li>
+					</draggable>
+				</ul>
+			</template>
+		</Modal>
+
 	</div>
 </template>
 
@@ -214,10 +276,12 @@ import Pagination from "@/components/Pagination";
 import Search from "../Layout/Search";
 import Excel from "../../components/Excel";
 import Empty from "@/view/Layout/Empty";
+import Modal from "../../components/Modal";
+import draggable from "vuedraggable";
 export default {
 	name: 'ManagerAdminList'
 	,
-	components: {Empty, Excel, Search, Pagination},
+	components: {Empty, Excel, Search, Pagination, Modal, draggable},
 	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules']
 	,data: function (){
 		return {
@@ -290,6 +354,13 @@ export default {
 			,is_item : true
 			,is_item_view: false
 			,is_detail_view: false
+			, items_sort: []
+			, is_sort: false
+			, modal_option_sort: {
+				top: true
+				, bottom: true
+				, title: '상품 정렬'
+			}
 		}
 	}
 	,computed: {
@@ -360,6 +431,13 @@ export default {
 			})
 
 			return list
+		}
+		, items_sort_do: function(){
+			let t = []
+			this.items_sort.filter((item)=>{
+				t.push(item.uid)
+			})
+			return t
 		}
 	}
 	,methods: {
@@ -535,6 +613,59 @@ export default {
 			await this.getCategoryList()
 
 			await this.getData()
+		}
+		, getSort: async function(){
+
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getProductSortAgency'
+					,data: {
+						pdt_company: this.search.pdt_company
+					}
+				})
+
+				if(result.success) {
+					this.items_sort = result.data
+					this.is_sort = true
+				}else{
+					throw result.message
+				}
+			}catch (e) {
+				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message: e })
+			}finally {
+				//await this.getData()
+				this.$emit('offLoading')
+			}
+		}
+		, postSortUpdate: async function(){
+			try{
+				this.$emit('onLoading')
+				const result = await this.Axios({
+					method: 'post'
+					,url: 'management/postProductSortAgency'
+					,data: {
+						items: this.items_sort_do
+					}
+				})
+
+				if(result.success) {
+					this.is_sort = false
+					await this.getData();
+
+					this.$bus.$emit('notify', { type: 'success', message: result.message })
+				}else{
+					throw result.message
+				}
+			}catch (e) {
+				console.log(e)
+				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+			}finally {
+				//await this.getData()
+				this.$emit('offLoading')
+			}
 		}
 
 	}
