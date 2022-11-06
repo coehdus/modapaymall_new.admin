@@ -502,9 +502,9 @@ export default {
 			return name
 		}
 		, text_fee_rate: function(){
-			let t = '영업 수익률'
+			let t = '공급가 마진'
 			if(this.item.agency_type == 'A001003'){
-				t = '판매 수수료'
+				t = '공급가 마진'
 			}
 			return t
 		}
