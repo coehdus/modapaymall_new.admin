@@ -5,6 +5,22 @@
 			<col width="auto" />
 			<tbody>
 				<tr>
+					<th>PG사 </th>
+					<td>
+						<select
+							v-model="item.pg_code"
+							class="input-box width-100"
+						>
+							<option value="">PG사를 선택하세요</option>
+							<option
+								v-for="(code, index) in codes.P004.items"
+								:key="code.total_code + '_' + index"
+								:value="code.total_code"
+							>{{ code.code_name }}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<th>PG 명</th>
 					<td>
 						<input v-model="item.pg_name" class="input-box " placeholder="PG명" maxlength="25" />
@@ -84,7 +100,7 @@
 
 				}
 				, item: {
-					ATOKEN: this.TOKEN
+					pg_code: ''
 					, pg_name: ''
 					, pgMerchNo: ''
 					, pgMerchName: ''

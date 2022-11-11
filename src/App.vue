@@ -70,8 +70,8 @@ export default {
 					this.toLogin()
 				}else{
 					this.TOKEN = encodeURI(TOKEN)
-					this.getBaseInfo()
-					this.getBaseCode()
+					await this.getBaseInfo()
+					await this.getBaseCode()
 				}
 			}
 
