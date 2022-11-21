@@ -42,7 +42,7 @@
 
 				<button
 					v-show="user.role == codes.type_code_agency"
-					@click="onShop"
+					@click="postShopLogin"
 					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
 				>내 상점 바로가기</button>
 				<button
@@ -345,8 +345,31 @@
 			,isCopy: function(){
 				this.is_modal2 = true
 			}
+			, postShopLogin: async function(){
+
+				try{
+					this.$bus.$emit('on', true)
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postShopLogin'
+						,data: {
+
+						}
+					})
+
+					if(result.success){
+						this.onShop()
+					}else{
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}finally {
+					this.$bus.$emit('on', false)
+				}
+			}
 			, onShop: function(){
-				window.open('/auth/shop/login/' + this.user.account_id, 'shop')
+				window.open('/Auth/Login/Shop/' + this.user.account_id, 'shop')
 			}
 		}
 

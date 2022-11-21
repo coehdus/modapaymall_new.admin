@@ -3,7 +3,6 @@
 		class="full-height flex-column bg-base"
 	>
 		<Loading
-			v-if="is_loading"
 		></Loading>
 		<Top
 			v-if="program.top"

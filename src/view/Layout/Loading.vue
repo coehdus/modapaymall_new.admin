@@ -1,5 +1,6 @@
 <template>
 	<div
+		v-if="is_loading"
 		style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999"
 	>
 		<div
@@ -14,18 +15,38 @@
 </template>
 
 <script>
-export default {
-	name: 'Loading'
-	,props: ['is_loading']
-	,data: function(){
-		return {
+	export default {
+		name: 'Loading'
+		,props: []
+		,data: function(){
+			return {
+				is_loading: false
+			}
+		}
+		, methods: {
+			on: function(){
+				this.is_loading = true
+			}
+			, off: function(){
+				setTimeout(() => {
+					console.log('off')
+					this.is_loading = false
+				}, 300)
+			}
+		}
+		,created() {
+			console.log('Loading created !!')
+			let self = this
+			this.$bus.$on('on', function (type){
 
+				if(type){
+					self.on()
+				}else{
+					self.off()
+				}
+			})
 		}
 	}
-	,mounted() {
-
-	}
-}
 </script>
 
 <style>
