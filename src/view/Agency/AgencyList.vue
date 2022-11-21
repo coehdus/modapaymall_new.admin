@@ -229,8 +229,8 @@ export default {
 				,cnt: 0
 				,tCnt: 0
 				,search_type: [
-					{ name: '아이디', column: 'admin_id'}
-					,{ name: '이름', column: 'admin_name'}
+					{ name: '아이디', column: 'account_id'}
+					,{ name: '이름', column: 'account_name'}
 				]
 				,select: [
 					{ name: '사용 여부', column: 'account_status', items: [

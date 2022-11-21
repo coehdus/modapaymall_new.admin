@@ -38,6 +38,13 @@
 					{{ user.shop_name }}
 					({{ user.account_id }}) 님 환영합니다
 				</span>
+
+
+				<button
+					v-show="user.role == codes.type_code_agency"
+					@click="onShop"
+					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
+				>내 상점 바로가기</button>
 				<button
 					class="btn-blue pa-5-10 size-px-12 ml-10 radius-5"
 					@click="confirmLogout"
@@ -338,7 +345,11 @@
 			,isCopy: function(){
 				this.is_modal2 = true
 			}
+			, onShop: function(){
+				window.open('/auth/shop/login/' + this.user.account_id, 'shop')
+			}
 		}
+
 		,created() {
 			// this.getData()
 		}
