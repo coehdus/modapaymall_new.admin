@@ -219,6 +219,43 @@
 				>닫기</button>
 			</template>
 		</Modal>
+
+		<Modal
+			:is_modal="is_member"
+			:option="modal_option2"
+
+			:top="true"
+			:bottom="true"
+			:slot_bottom="true"
+			title="내 상점 접속 정보 생성"
+
+			width="360px"
+			content_class="bg-white text-center"
+
+			@close="close"
+			@click="postShopMember"
+			@cancel="close"
+		>
+
+			<div slot="modal-content" class="bg-white text-center ">
+				<br/>
+				내 상점에서 사용 가능한 정보를 생성합니다
+				<br/>
+				<br/>
+			</div>
+			<template
+				slot="modal-bottom"
+			>
+				<button
+					class="flex-1 bg-blue pa-10"
+					@click="postShopMember"
+				>확인</button>
+				<button
+					class="flex-1 bg-default pa-10"
+					@click="close"
+				>취소</button>
+			</template>
+		</Modal>
 	</div>
 </template>
 
@@ -250,6 +287,7 @@
 				, modal_option2: {
 
 				}
+				, is_member: false
 			}
 		}
 		,computed: {
@@ -341,6 +379,7 @@
 			,close: function(){
 				this.is_modal = false
 				this.is_modal2 = false
+				this.is_member = false
 			}
 			,isCopy: function(){
 				this.is_modal2 = true
@@ -361,6 +400,11 @@
 						this.onShop()
 					}else{
 						this.$bus.$emit('notify', { type: 'error', message: result.message })
+						if(result.data){
+							if(result.data.type == 'member'){
+								this.is_member = true
+							}
+						}
 					}
 				}catch (e) {
 					console.log(e)
@@ -370,6 +414,29 @@
 			}
 			, onShop: function(){
 				window.open('/Auth/Login/Shop/' + this.user.account_id, 'shop')
+			}
+			, postShopMember: async function(){
+				try{
+					this.$bus.$emit('on', true)
+					const result = await this.Axios({
+						method: 'post'
+						,url: 'management/postShopMember'
+						,data: {
+
+						}
+					})
+
+					if(result.success){
+						this.onShop()
+					}else{
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+				}finally {
+					this.is_member = false
+					this.$bus.$emit('on', false)
+				}
 			}
 		}
 
