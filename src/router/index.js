@@ -293,6 +293,11 @@ const routes = [
 		,component: () => import('@/view/Agency/AgencyView')
 	}
 	,{
+		path: prefix + 'Error/403',
+		name:'403',
+		component: () => import('@/view/Error/Forbidden.vue')
+	}
+	,{
 		path: prefix + '*',
 		name:'404', 
 		component: () => import('@/view/Error/NotFound.vue')

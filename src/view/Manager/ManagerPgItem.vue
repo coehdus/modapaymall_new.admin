@@ -15,7 +15,7 @@
 							<option
 								v-for="(code, index) in codes.P004.items"
 								:key="code.total_code + '_' + index"
-								:value="code.total_code"
+								:value="code.code_value"
 							>{{ code.code_name }}</option>
 						</select>
 					</td>

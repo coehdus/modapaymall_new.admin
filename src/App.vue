@@ -52,7 +52,7 @@ export default {
 			console.log('isAuth start !!')
 			let TOKEN = sessionStorage.getItem(Base64.encode(process.env.VUE_APP_NAME) + 'AT')
 			let skip = false
-			let except = ['auth']
+			let except = ['auth', 'error']
 			let path = document.location.href
 			except.forEach(function (val) {
 				if (path.toLowerCase().indexOf(val) > -1) {
@@ -78,7 +78,7 @@ export default {
 			console.log('isAuth finished !!')
 		}
 		,toLogin: function(){
-			this.$router.push({ name: 'Login' })
+			document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Auth/Login'
 		}
 		,getBaseCode: async function(){
 			try{

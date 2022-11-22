@@ -431,6 +431,59 @@
 								>
 							</td>
 						</tr>
+						<tr>
+							<th>결제 PG</th>
+							<td colspan="3">
+								<div class="under-line pb-10 size-px-14">
+									<label>
+										<input
+											v-model="item.pg_type"
+											type="radio"
+											value="company"
+											@change="getPgList"
+										/> 본사
+									</label>
+									<label class="ml-10 mr-10">
+										<input
+											v-model="item.pg_type"
+											type="radio"
+											value="distributor"
+											@change="getPgList"
+										/> 총판
+									</label>
+									<label>
+										<input
+											v-model="item.pg_type"
+											type="radio"
+											value="agency"
+											@change="getPgList"
+										/> 대리점
+									</label>
+								</div>
+
+								<div
+									class="mt-10"
+								>
+									<ul>
+										<li
+											v-for="(pg, index) in items_pg_list"
+											:key="'pg_' + index"
+											class="pa-10 mb-10 display-inline box radius-10 mr-10"
+											:class="{'bg-green': item.pg_uid == pg.uid }"
+										>
+
+											<label>
+											<input
+												v-model="item.pg_uid"
+												type="radio"
+												:value="pg.uid"
+											/> {{ pg.pg_name }} {{ pg.pg_fee }}% {{ pg.uid}}
+											</label>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
 						</tbody>
 					</table>
 				</div>
@@ -482,6 +535,8 @@ export default {
 				, agency_upper: this.user.role_group == 'agency' ? this.user.account_uid : ''
 				, sales_fee: 0.5
 				, sales_fee_bank: 0
+				, pg_type: 'company'
+				, pg_uid: ''
 			}
 			,is_data_pick: false
 			,is_modal: false
@@ -493,6 +548,7 @@ export default {
 			, upload_files: []
 			, item_logo_img: {}
 			, item_upload_logo_img: {}
+			, items_pg_list: []
 		}
 	}
 	,computed: {
@@ -633,12 +689,34 @@ export default {
 			}
 			this.upload_files.splice(index, 1)
 		}
+		, getPgList: async function(){
+			try{
+				this.$bus.$emit('on', true)
+				const result = await this.Axios({
+					method: 'get'
+					,url: 'management/getAvailablePgList'
+					,data: {
+						pg_type: this.item.pg_type
+					}
+				})
+				if(result.success){
+					this.items_pg_list = result.data
+				}else{
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$bus.$emit('on', false)
+			}
+		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
 		if(this.user.role_group == 'agency'){
 			this.item.agency_type = this.codes.A001.items[2].total_code
 		}
+		this.getPgList()
 	}
 }
 </script>
