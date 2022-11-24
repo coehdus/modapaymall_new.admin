@@ -238,7 +238,12 @@
 							}
 							,{
 								path: 'Setting'
-								, name: '관리설정'
+								, name: '관리 설정'
+								, type: ['admin']
+							}
+							,{
+								path: 'PgList'
+								, name: 'PG 설정'
 								, type: ['admin']
 							}
 						]

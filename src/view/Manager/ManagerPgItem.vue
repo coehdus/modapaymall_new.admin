@@ -35,7 +35,7 @@
 				<tr>
 					<th>PG 결제 수수료</th>
 					<td>
-						<input v-model="item.pg_fee" class="input-box " placeholder="PG 결제 수수료" :rules="[rules.demical(item, 'pg_fee', {min: 2, max:2})]"/>
+						<input v-model="item.pg_fee" class="input-box " placeholder="PG 결제 수수료" :rules="[$rules.demical(item, 'pg_fee', {min: 2, max:2})]"/>
 					</td>
 				</tr>
 				<tr>
@@ -119,7 +119,7 @@
 			save: async function(){
 				try{
 					this.$emit('onLoading')
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postPgItem'
 						,data: this.item

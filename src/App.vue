@@ -127,7 +127,6 @@ export default {
 		}
 		,setUser: async function(account){
 			this.user = account
-			await this.setView(true)
 		}
 		,setView: async function(type){
 			this.is_view = type
@@ -143,6 +142,7 @@ export default {
 					list[code.main_code].items.push(code)
 				}
 			})
+			this.setView(true)
 		}
 	}
 	,created() {

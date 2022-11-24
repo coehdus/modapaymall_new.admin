@@ -83,6 +83,11 @@ const routes = [
 		,component: () => import('@/view/Manager/Setting.vue')
 	}
 	,{
+		path: prefix + 'Manager/Pg'
+		,name: 'ManagerPgList'
+		,component: () => import('@/view/Manager/ManagerPgList.vue')
+	}
+	,{
 		path: prefix + 'Agency/List'
 		,name: 'AgencyList'
 		,component: () => import('@/view/Agency/AgencyList.vue')

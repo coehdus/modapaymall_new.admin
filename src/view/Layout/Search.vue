@@ -137,7 +137,7 @@
 			>EXCEL</button>
 
 			<button
-				v-if="option.is_item"
+				v-if="is_item || option.is_item"
 				class="btn-green pa-5-10 vertical-middle mr-10"
 				@click="$emit('toItem')"
 			>등록</button>
@@ -153,7 +153,7 @@
 import date_picker from "@/components/DatePicker"
 	export default {
 		name: 'Search'
-		,props: ['search', 'option']
+		,props: ['search', 'option', 'is_item']
 		,components: {date_picker}
 		,data: function(){
 			return {
