@@ -227,6 +227,18 @@
 						]
 					}
 					,{
+						path: 'Pg'
+						, name: 'PG 관리'
+						, type: ['admin']
+						, sub: [
+							{
+								path: 'List'
+								, name: 'PG 목록'
+								, type: ['admin']
+							}
+						]
+					}
+					,{
 						path: 'Manager'
 						, name: '설정'
 						, type: ['admin']
@@ -239,11 +251,6 @@
 							,{
 								path: 'Setting'
 								, name: '관리 설정'
-								, type: ['admin']
-							}
-							,{
-								path: 'PgList'
-								, name: 'PG 설정'
 								, type: ['admin']
 							}
 						]

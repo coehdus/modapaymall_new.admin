@@ -109,13 +109,18 @@
 									<v-icon
 										class="pa-5"
 										:class="item.pg_status == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="item.pg_status = 1; update(item)"
+										@click="item.pg_status = 1; postUpdate(item)"
 									>mdi mdi-power-plug</v-icon>
 									<v-icon
 										class="pa-5 "
 										:class="item.pg_status != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="item.pg_status = 0; update(item)"
+										@click="item.pg_status = 0; postUpdate(item)"
 									>mdi mdi-power-plug-off</v-icon>
+
+									<v-icon
+										class="pa-5 bg-red color-white ml-10"
+										@click="onItemDelete(item)"
+									>mdi mdi-delete</v-icon>
 								</div>
 							</td>
 							<td
@@ -127,17 +132,19 @@
 									<v-icon
 										class="pa-5 "
 										:class="item.pg_able == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="item.pg_able = 1; update(item)"
 									>mdi mdi-pin</v-icon>
 									<v-icon
 										class="pa-5  "
 										:class="item.pg_able != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="item.pg_able = 0; update(item)"
 									>mdi mdi-pin-off-outline</v-icon>
 								</div>
 							</td>
 							<td>{{ item.wDate }}</td>
 							<td>
+								<button
+									class="bg-identify pa-5-10"
+									@click="toDetail(item)"
+								>상세정보</button>
 							</td>
 						</tr>
 					</tbody>
@@ -170,7 +177,9 @@
 				slot="modal-content"
 				:user="user"
 				:codes="codes"
+				:uid="item_info.uid"
 
+				@success="is_modal_item = false; getData()"
 				@click="is_modal_item = false; getData()"
 				@cancel="is_modal_item = false;"
 			></ManagerPgItem>
@@ -231,6 +240,8 @@ import ManagerPgItem from "@/view/Manager/ManagerPgItem";
 				, items: []
 				, items_upper: []
 				, is_modal_item: false
+				, item_delete: { }
+				, item_info: { }
 			}
 		}
 		, computed: {
@@ -272,7 +283,70 @@ import ManagerPgItem from "@/view/Manager/ManagerPgItem";
 				this.getData()
 			}
 			, onItem: function(){
+				this.item_info = { }
 				this.is_modal_item = true
+			}
+			, onItemDelete: function(item){
+				if(confirm("해당 PG사 정보를 삭제하시겠습니까?")){
+					this.postDelete(item)
+				}
+			}
+
+			, postUpdate: async function(){
+				try{
+					this.$bus.$emit('on', true)
+					const result = await this.$request.init({
+						method: 'post'
+						,url: 'management/postPgItemUpdate'
+						,data: {
+							ATOKEN: this.TOKEN
+							, uid: this.item_pg.uid
+							, pg_status: this.item_pg.pg_status == '1' ? '0' : '1'
+						}
+					})
+
+					if(result.success){
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
+						await this.getPgList()
+					}else{
+						throw result.message
+					}
+				}catch (e) {
+					console.log(e)
+					this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+				}finally {
+					this.$bus.$emit('on', false)
+					this.is_confirm = false
+					this.is_confirm2 = false
+				}
+			}
+			, postDelete: async function(item){
+				try{
+					this.$bus.$emit('on', true)
+					const result = await this.$request.init({
+						method: 'post'
+						,url: 'management/postDeletePgItem'
+						,data: {
+							uid: item.uid
+						}
+					})
+
+					if(result.success){
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
+						await this.getData()
+					}else{
+						this.$bus.$emit('notify', { type: 'error', message: result.message })
+					}
+				}catch (e) {
+					console.log(e)
+					this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
+				}finally {
+					this.$bus.$emit('on', false)
+				}
+			}
+			, toDetail: function(item){
+				this.is_modal_item = true
+				this.item_info = item
 			}
 		}
 		, created() {

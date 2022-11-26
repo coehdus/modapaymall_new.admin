@@ -152,11 +152,11 @@ export default {
 
 		}
 		,save: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 
 			this.item.files = JSON.stringify(this.files)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postBanner'
 					,data: this.item
@@ -171,7 +171,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,setFile: function(e, index){

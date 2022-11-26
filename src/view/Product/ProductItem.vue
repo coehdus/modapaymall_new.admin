@@ -522,8 +522,8 @@ export default {
 			this.$set(this.item, 'item_delivery_img', this.item_delivery_img)
 
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProduct'
 					,data: this.item
@@ -538,7 +538,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally{
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,addOption: function(){
@@ -556,7 +556,7 @@ export default {
 
 					try{
 						option.ATOKEN = this.TOKEN
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'management/postProductOptionDelete'
 							,data: option
@@ -578,7 +578,7 @@ export default {
 
 		,getCategoryList: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
@@ -597,7 +597,7 @@ export default {
 		}
 		,getAgencyList: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyList'
 					,data: {

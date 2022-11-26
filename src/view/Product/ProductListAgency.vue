@@ -395,9 +395,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProductListAgency'
 					,data: this.search
@@ -414,13 +414,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, postUpdate: async function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProductUpdateAgency'
 					,data: {
@@ -442,7 +442,7 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				//await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,setItem: function (item){
@@ -509,8 +509,8 @@ export default {
 		}
 		, postSortUpdate: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProductSortAgency'
 					,data: {
@@ -532,14 +532,14 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				//await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, getSort: async function(){
 
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProductSortAgency'
 					,data: {
@@ -558,7 +558,7 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				//await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 

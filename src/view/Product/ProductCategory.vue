@@ -243,7 +243,7 @@
 		,methods: {
 			getData: async function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getCategoryList'
 						,data: {
@@ -262,9 +262,9 @@
 				}
 			}
 			, save: async function(){
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postCategory'
 						,data: {
@@ -283,14 +283,14 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 
 			,deleteItem: async function(){
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postCategoryDelete'
 						,data: {
@@ -309,7 +309,7 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 			,addCategory: function(key){
@@ -422,7 +422,7 @@
 
 			,getAgencyList: async function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getAgencyList'
 						,data: {

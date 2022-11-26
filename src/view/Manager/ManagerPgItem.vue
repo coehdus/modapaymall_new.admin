@@ -118,7 +118,7 @@
 		, methods: {
 			save: async function(){
 				try{
-					this.$emit('onLoading')
+					this.$bus.$emit('on', true)
 					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postPgItem'
@@ -127,24 +127,24 @@
 
 					if(result.success){
 						this.$emit('success')
+						this.$bus.$emit('notify', { type: 'success', message: result.message })
 					}else{
 						this.$bus.$emit('notify', { type: 'error', message: result.message })
 					}
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 			,getData: async function(){
 				try{
-					this.$emit('onLoading')
-					const result = await this.Axios({
+					this.$bus.$emit('on', true)
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/getPgItem'
 						,data: {
-							ATOKEN: this.TOKEN
-							, uid: this.uid
+							uid: this.uid
 						}
 					})
 
@@ -156,7 +156,7 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 		}

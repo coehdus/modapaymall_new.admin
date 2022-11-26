@@ -299,7 +299,7 @@ import { Editor } from '@toast-ui/vue-editor';
 			getData: async function(){
 				console.log('getData start !!')
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getProduct'
 						,data: {
@@ -349,7 +349,7 @@ import { Editor } from '@toast-ui/vue-editor';
 				this.$set(this.new_item, 'opt_cnt', Object.keys(this.item_options.option).length)
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postSupplyProduct'
 						,data: this.new_item
@@ -373,7 +373,7 @@ import { Editor } from '@toast-ui/vue-editor';
 
 			,getSupplyList: async  function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getSupplyList'
 						,data: {
@@ -405,7 +405,7 @@ import { Editor } from '@toast-ui/vue-editor';
 
 						try{
 							option.ATOKEN = this.TOKEN
-							const result = await this.Axios({
+							const result = await this.$request.init({
 								method: 'post'
 								,url: 'management/postProductOptionDelete'
 								,data: option
@@ -443,7 +443,7 @@ import { Editor } from '@toast-ui/vue-editor';
 				if(confirm("삭제하시겠습니까?")){
 					try{
 						sub.ATOKEN = this.TOKEN
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'management/postProductImageDelete'
 							,data: sub

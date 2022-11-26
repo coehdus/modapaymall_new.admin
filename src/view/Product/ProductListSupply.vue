@@ -311,9 +311,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProductList'
 					,data: this.search
@@ -330,7 +330,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,getSearch: function(){
@@ -338,9 +338,9 @@ export default {
 			this.getData()
 		}
 		,update: async function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProductUpdate'
 					,data: item
@@ -356,16 +356,16 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getSearch()
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 			}
 		}
 		,toDetail: function (item){
 			this.$router.push({ name: 'ProductDetailSupply', params: { pdt_code: item.pdt_code }})
 		}
 		,getSupplyList: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getSupplyList'
 					,data: {
@@ -381,7 +381,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toExcel: function(){

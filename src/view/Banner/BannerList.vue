@@ -264,9 +264,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getBannerList'
 					,data: this.search
@@ -283,7 +283,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,getSearch: function(page){
@@ -306,9 +306,9 @@ export default {
 			this.item_update = null
 		}
 		,doDelete: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postBannerDelete'
 					,data: {
@@ -327,7 +327,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,isDelete: function(item){
@@ -335,9 +335,9 @@ export default {
 			this.item_delete = item
 		}
 		,doUpdate: async function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postBannerUpdate'
 					,data: {
@@ -358,7 +358,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,isUpdate: function(item){

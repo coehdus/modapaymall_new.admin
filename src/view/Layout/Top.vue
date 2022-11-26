@@ -327,7 +327,7 @@
 			}
 			,getData: async function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getShop'
 						,data: {
@@ -360,7 +360,7 @@
 				}
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postShop'
 						,data: this.item
@@ -388,7 +388,7 @@
 
 				try{
 					this.$bus.$emit('on', true)
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postShopLogin'
 						,data: {
@@ -418,7 +418,7 @@
 			, postShopMember: async function(){
 				try{
 					this.$bus.$emit('on', true)
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postShopMember'
 						,data: {

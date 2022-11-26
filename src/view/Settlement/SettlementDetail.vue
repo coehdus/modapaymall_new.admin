@@ -167,7 +167,7 @@
 		,methods: {
 			getData: async function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getSettlementDetail'
 						,data: this.search
@@ -187,7 +187,7 @@
 				let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: url
 						,data: {

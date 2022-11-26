@@ -27,11 +27,11 @@ export const rules = {
 			if(!num){
 				return { result: false, type: 'num'}
 			}
-
 			if(obj[part].length < min){
 				return { result: false, type: 'min'}
 			}
 			if(obj[part].length > max){
+				obj[part] = obj[part].substring(0, max)
 				return { result: false, type: 'max'}
 			}
 		}
@@ -41,6 +41,9 @@ export const rules = {
 		if(obj[part]){
 			obj[part] += ''
 			const temp = obj[part].split('.')
+			if(temp.length > 2){
+				obj[part] =  temp[0] + '.' + temp[1]
+			}
 			const num = Array.isArray(temp) ? temp[0] : temp
 			const dem = temp[1]
 			
@@ -51,10 +54,20 @@ export const rules = {
 					obj[part] = num.substring(0, min)
 				}
 			}
+
+			if(!num.search(/[^0-9]/g)){
+				obj[part] = ''
+				return false
+			}
 			
 			if(dem){
 				if(dem.length > max){
 					obj[part] = num + '.' + dem.substring(0, max)
+				}
+
+				if(!dem.search(/[^0-9]/g)){
+					obj[part] = num + '.'
+					return false
 				}
 			}
 			
@@ -115,6 +128,11 @@ export const rules = {
 			}else{
 				return true
 			}
+		}
+	}
+	, trim: (obj, part) => {
+		if(obj[part]){
+			obj[part] = obj[part].replaceAll(' ', '');
 		}
 	}
 }

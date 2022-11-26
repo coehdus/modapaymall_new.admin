@@ -83,9 +83,19 @@ const routes = [
 		,component: () => import('@/view/Manager/Setting.vue')
 	}
 	,{
-		path: prefix + 'Manager/Pg'
-		,name: 'ManagerPgList'
-		,component: () => import('@/view/Manager/ManagerPgList.vue')
+		path: prefix + 'Pg/List'
+		,name: 'PgList'
+		,component: () => import('@/view/Pg/PgList.vue')
+	}
+	,{
+		path: prefix + 'Pg/Item'
+		,name: 'PgItem'
+		,component: () => import('@/view/Pg/PgItem.vue')
+	}
+	,{
+		path: prefix + 'Pg/Detail/:id'
+		,name: 'PgDetail'
+		,component: () => import('@/view/Pg/PgDetail.vue')
 	}
 	,{
 		path: prefix + 'Agency/List'

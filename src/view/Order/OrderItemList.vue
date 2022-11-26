@@ -115,7 +115,7 @@
 		,methods: {
 			getData: async function(){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'order/getOrderList'
 						,data: this.search

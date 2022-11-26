@@ -58,6 +58,7 @@
 										v-model="item.agency_upper"
 
 										class="input-box"
+										@change="getPgList"
 									>
 										<option value="">선택하세요</option>
 										<option
@@ -82,6 +83,7 @@
 									v-model="item.account_id"
 									class="input-box full-width"
 									placeholder="아이디를 입력하세요"
+									:rules="[$rules.id(item, 'account_id', { min: 4, max: 20})]"
 								/>
 
 								<button
@@ -432,55 +434,56 @@
 							</td>
 						</tr>
 						<tr>
+							<th>보유 PG 정보</th>
+							<td colspan="3">
+								<select
+									v-model="item.pg_code"
+									class="pa-5-10 mr-10"
+								>
+									<option value="">PG사</option>
+									<option
+										v-for="(code, index) in codes.P004.items"
+										:key="code.total_code + '_' + index"
+										:value="code.code_value"
+									>{{ code.code_name }}</option>
+								</select>
+
+								<input v-model="item.pgMerchNo" class="pa-5-10 mr-10 box" placeholder="가맹점 ID" maxlength="20" />
+
+								<input v-model="item.pgMerchName" class="pa-5-10 mr-10 box" placeholder="터미널 ID" maxlength="15" />
+
+								<input v-model="item.pg_fee" class="pa-5-10 mr-10 box" placeholder="PG 결제 수수료" :rules="[$rules.demical(item, 'pg_fee', {min: 2, max:2})]"/>
+
+							</td>
+						</tr>
+						<tr
+							v-if="item.agency_type == 'A001003'"
+						>
 							<th>결제 PG</th>
 							<td colspan="3">
-								<div class="under-line pb-10 size-px-14">
-									<label>
+								<div>
+									<label
+										class="pa-10 display-inline box radius-10 mr-10"
+										:class="{'bg-success': item.sales_pg_uid === ''}"
+									>
 										<input
-											v-model="item.pg_type"
+											v-model="item.sales_pg_uid"
 											type="radio"
-											value="company"
-											@change="getPgList"
-										/> 본사
+											value=""
+										/> 보유 PG
 									</label>
-									<label class="ml-10 mr-10">
+									<label
+										v-for="(pg, index) in items_pg_list"
+										:key="'pg_' + index"
+										class="pa-10 display-inline box radius-10 mr-10"
+										:class="{'bg-success': item.sales_pg_uid == pg.uid }"
+									>
 										<input
-											v-model="item.pg_type"
+											v-model="item.sales_pg_uid"
 											type="radio"
-											value="distributor"
-											@change="getPgList"
-										/> 총판
+											:value="pg.uid"
+										/> {{ pg.pg_name }} {{ pg.pg_fee }}%
 									</label>
-									<label>
-										<input
-											v-model="item.pg_type"
-											type="radio"
-											value="agency"
-											@change="getPgList"
-										/> 대리점
-									</label>
-								</div>
-
-								<div
-									class="mt-10"
-								>
-									<ul>
-										<li
-											v-for="(pg, index) in items_pg_list"
-											:key="'pg_' + index"
-											class="pa-10 mb-10 display-inline box radius-10 mr-10"
-											:class="{'bg-green': item.pg_uid == pg.uid }"
-										>
-
-											<label>
-											<input
-												v-model="item.pg_uid"
-												type="radio"
-												:value="pg.uid"
-											/> {{ pg.pg_name }} {{ pg.pg_fee }}% {{ pg.uid}}
-											</label>
-										</li>
-									</ul>
 								</div>
 							</td>
 						</tr>
@@ -535,8 +538,9 @@ export default {
 				, agency_upper: this.user.role_group == 'agency' ? this.user.account_uid : ''
 				, sales_fee: 0.5
 				, sales_fee_bank: 0
-				, pg_type: 'company'
-				, pg_uid: ''
+				, pg_type: 'A001001'
+				, sales_pg_uid: null
+				, pg_code: ''
 			}
 			,is_data_pick: false
 			,is_modal: false
@@ -568,11 +572,11 @@ export default {
 	, methods: {
 		save: async function(){
 			try{
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 
 				this.$set(this.item, 'item_logo_img', this.item_logo_img)
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postAgency'
 					,data: this.item
@@ -586,7 +590,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 
@@ -605,8 +609,8 @@ export default {
 		}
 		, getAgencyUpper: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyUpper'
 					,data: {
@@ -623,7 +627,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, setFile: function(e){
@@ -692,16 +696,19 @@ export default {
 		, getPgList: async function(){
 			try{
 				this.$bus.$emit('on', true)
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAvailablePgList'
 					,data: {
-						pg_type: this.item.pg_type
+						agency_type: this.item.agency_type
+						, agency_upper: this.item.agency_upper
 					}
 				})
 				if(result.success){
 					this.items_pg_list = result.data
+					this.item.sales_pg_uid = null
 				}else{
+					this.items_pg_list = []
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
@@ -716,7 +723,6 @@ export default {
 		if(this.user.role_group == 'agency'){
 			this.item.agency_type = this.codes.A001.items[2].total_code
 		}
-		this.getPgList()
 	}
 }
 </script>

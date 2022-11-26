@@ -261,7 +261,7 @@ import { GChart } from 'vue-google-charts'
 		}
 		,methods: {
 			getData: async function(){
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/getDashboard'
 					,data: {

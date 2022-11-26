@@ -112,9 +112,9 @@ export default {
 	}
 	,methods: {
 		getConfigData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getBoardConfig'
 					,data: {
@@ -131,13 +131,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getbbs'
 					,data: {
@@ -156,11 +156,11 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,save: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 
 			console.log(this.member_info)
 			let b_contents = this.$refs.b_contents.invoke("getMarkdown")
@@ -172,7 +172,7 @@ export default {
 			this.item.b_contents = b_contents
 
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postBbs'
 					,data: {
@@ -195,7 +195,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,setFile: function(e){
@@ -215,9 +215,9 @@ export default {
 			this.file_delete = null
 		}
 		,doDelete: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postBbsFileDelete'
 					,data: {
@@ -238,7 +238,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, do: async function(){

@@ -82,7 +82,7 @@ export default {
 		}
 		,getBaseCode: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/getCodeList'
 					,data: {
@@ -102,7 +102,7 @@ export default {
 		}
 		,getBaseInfo: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/getBaseInfo'
 					,data: {

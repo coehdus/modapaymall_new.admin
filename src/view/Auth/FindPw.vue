@@ -106,7 +106,7 @@ export default{
 		}
 		,findId: async function(){
 			try {
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					, url: 'member/getMemberPw'
 					, data: this.item

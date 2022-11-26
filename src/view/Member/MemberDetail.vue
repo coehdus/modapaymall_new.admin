@@ -371,8 +371,8 @@ export default {
 	, methods: {
 		getAgencyList: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyList2'
 					,data: {
@@ -389,13 +389,13 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, getData: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getMember'
 					,data: {
@@ -413,14 +413,14 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,save: async function(){
 			try{
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				this.item.ATOKEN = this.TOKEN
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/putMember'
 					,data: this.item
@@ -434,7 +434,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,isPassword: function(){
@@ -466,8 +466,8 @@ export default {
 		}
 		,doPassword: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postMemberPasswordReset'
 					,data: {
@@ -483,13 +483,13 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, getOrderList: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getOrderList'
 					,data: {
@@ -505,7 +505,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message:e })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, do: async function(){

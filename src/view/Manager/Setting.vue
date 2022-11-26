@@ -313,6 +313,9 @@
 						</tbody>
 					</table>
 
+					<template
+						v-if="false"
+					>
 					<div class="justify-space-between mt-10">
 						<h6>PG사 정보</h6>
 						<button @click="is_modal_pg = true"><v-icon small class="box color-white bg-identify">mdi mdi-plus</v-icon></button>
@@ -376,6 +379,7 @@
 
 						style="max-height: 340px"
 					></Empty>
+					</template>
 				</div>
 			</div>
 		</div>
@@ -592,8 +596,8 @@ export default {
 	, methods: {
 		getData: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/getSetting'
 				})
@@ -609,13 +613,13 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,save: async function(){
 			try{
 
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 
 				let site_terms = this.$refs.site_terms.invoke("getMarkdown")
 
@@ -634,7 +638,7 @@ export default {
 
 				this.item.site_personal = site_personal
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postSetting'
 					,data: this.item
@@ -648,13 +652,13 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, getPgList: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getPgList'
 					,data: this.search
@@ -667,14 +671,14 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,setAgencyPer: function(){
 
 		}
 		,do: async function(){
-			await this.getPgList()
+			//await this.getPgList()
 			await this.getData()
 		}
 		, success: function(){
@@ -694,8 +698,8 @@ export default {
 
 		, update: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postPgItemUpdate'
 					,data: {
@@ -715,15 +719,15 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 				this.is_confirm = false
 				this.is_confirm2 = false
 			}
 		}
 		, deleteItem: async function(item){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postDeletePgItem'
 					,data: {
@@ -742,7 +746,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, toDetail: function(item){

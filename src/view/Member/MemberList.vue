@@ -250,8 +250,8 @@
 
 				this.is_item = false
 				try{
-					this.$emit('onLoading')
-					const result = await this.Axios({
+					this.$bus.$emit('on', true)
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getMemberList'
 						,data: this.search
@@ -270,7 +270,7 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 			,getAgencyList: async function() {
@@ -278,7 +278,7 @@
 					return false
 				}
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getAgencyList'
 						,data: {
@@ -315,7 +315,7 @@
 			,deleteItem: async  function(item){
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postMemberDelete'
 						,data: item
@@ -336,7 +336,7 @@
 			,update: async function(item){
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postMemberUpdate'
 						,data: item

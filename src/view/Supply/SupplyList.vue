@@ -230,9 +230,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getSupplyList'
 					,data: this.search
@@ -250,13 +250,13 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,save: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postSeller'
 					,data: this.item_new
@@ -273,13 +273,13 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,update: async function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/putSupplyUpdate'
 					,data: item
@@ -296,7 +296,7 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toDetail: function (item){
@@ -316,9 +316,9 @@ export default {
 			}
 		}
 		,deleteItem: async  function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postAdminDelete'
 					,data: item
@@ -335,7 +335,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toExcel: function(){

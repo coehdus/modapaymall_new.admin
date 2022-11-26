@@ -295,7 +295,7 @@ export default{
 
 			try{
 
-				let result = await this.Axios({
+				let result = await this.$request.init({
 					method: 'post'
 					,url: '/auth/postJoin'
 					,data: this.item

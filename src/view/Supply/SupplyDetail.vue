@@ -478,8 +478,8 @@ export default {
 	, methods: {
 		getData: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getSupply'
 					,data: {
@@ -494,13 +494,13 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, save: async function(){
 			try{
 
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 
 				let shop_return = this.$refs.shop_return.invoke("getMarkdown")
 
@@ -510,7 +510,7 @@ export default {
 
 				this.item.shop_return = shop_return
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/putSupply'
 					,data: this.item
@@ -524,7 +524,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toList: function(){
@@ -550,8 +550,8 @@ export default {
 		}
 		,doPassword: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postSupplyPasswordReset'
 					,data: {
@@ -567,7 +567,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 	}

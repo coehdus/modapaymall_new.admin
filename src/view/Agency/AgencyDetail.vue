@@ -57,6 +57,7 @@
 										v-model="item.agency_upper"
 
 										class="input-box"
+										@change="getPgList"
 									>
 										<option value="">선택하세요</option>
 										<option
@@ -431,6 +432,81 @@
 								>
 							</td>
 						</tr>
+						<tr>
+							<th>보유 PG 정보</th>
+							<td colspan="3">
+								<select
+									v-model="item.pg_code"
+									class="pa-5-10 mr-10"
+									:disabled="item_pg.pg_status == '1'"
+								>
+									<option value="">PG사</option>
+									<option
+										v-for="(code, index) in codes.P004.items"
+										:key="code.total_code + '_' + index"
+										:value="code.code_value"
+									>{{ code.code_name }}</option>
+								</select>
+
+								<input
+									v-model="item.pgMerchNo"
+									class="pa-5-10 mr-10 box"
+									placeholder="가맹점 ID"
+									maxlength="20"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<input
+									v-model="item.pgMerchName"
+									class="pa-5-10 mr-10 box"
+									placeholder="터미널 ID"
+									maxlength="15"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<input
+									v-model="item.pg_fee"
+									class="pa-5-10 mr-10 box"
+									placeholder="PG 결제 수수료"
+									:rules="[$rules.demical(item, 'pg_fee', {min: 2, max:2})]"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<div
+									v-if="item_pg.uid && item_pg.pg_status != '1'"
+									class="color-red mt-10"
+								>보유 PG 정보 확인 중입니다</div>
+							</td>
+						</tr>
+						<tr
+							v-if="item.agency_type == 'A001003'"
+						>
+							<th>결제 PG</th>
+							<td colspan="3">
+								<label
+									class="pa-10 display-inline box radius-10 mr-10"
+									:class="text_bg_pg"
+								>
+									<input
+										v-model="item.sales_pg_uid"
+										type="radio"
+										:value='item_pg.uid'
+									/> 보유 PG
+								</label>
+								<label
+									v-for="(pg, index) in items_pg_list"
+									:key="'pg_' + index"
+									class="pa-10 display-inline box radius-10 mr-10"
+									:class="{'bg-success': item.sales_pg_uid == pg.uid }"
+								>
+									<input
+										v-model="item.sales_pg_uid"
+										type="radio"
+										:value="pg.uid"
+									/> {{ pg.pg_name }} {{ pg.pg_fee }}%
+								</label>
+							</td>
+						</tr>
 						</tbody>
 					</table>
 				</div>
@@ -495,10 +571,16 @@ export default {
 			}
 			,item: {
 				agency_type: ''
-				,bank_code: ''
-				,agency_upper: ''
-				,business_type: ''
+				, bank_code: ''
+				, agency_upper: ''
+				, business_type: ''
+				, pg_code: ''
+				, sales_pg_uid: ''
 			}
+			, item_pg: {
+				uid: ''
+			}
+			, sales_pg_uid: ''
 			,is_data_pick: false
 			,is_modal: false
 			,is_post: false
@@ -508,6 +590,7 @@ export default {
 			,items_upper: []
 			, item_logo_img: ''
 			, item_upload_logo_img: {}
+			, items_pg_list: []
 		}
 	}
 	,computed: {
@@ -523,12 +606,27 @@ export default {
 			}
 			return t
 		}
+		, text_bg_pg: function(){
+			let t = ''
+
+			if(this.item.sales_pg_uid && this.item.sales_pg_uid == this.item_pg.uid){
+				if(this.item_pg.pg_status == '1'){
+					t = 'bg-success'
+				}else{
+					t = 'bg-error'
+				}
+			}else if(!this.item_pg.uid && this.item.sales_pg_uid === this.item_pg.uid){
+				t = 'bg-success'
+			}
+
+			return t
+		}
 	}
 	, methods: {
 		getData: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgency'
 					,data: {
@@ -536,7 +634,10 @@ export default {
 					}
 				})
 				if(result.success){
-					this.item = result.data
+					this.item = result.data.info
+					if(result.data.pg_info){
+						this.item_pg = result.data.pg_info
+					}
 					this.item_upload_logo_img = {
 						src: this.item.shop_logo
 						, name: this.item.shop_logo
@@ -549,18 +650,18 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, save: async function(){
 			try{
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 
 				if(this.item_logo_img){
 					this.$set(this.item, 'item_logo_img', this.item_logo_img)
 				}
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/putAgency'
 					,data: this.item
@@ -574,7 +675,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 
@@ -593,8 +694,8 @@ export default {
 		}
 		, getAgencyUpper: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyUpper'
 					,data: {
@@ -603,13 +704,14 @@ export default {
 				})
 				if(result.success){
 					this.items_upper = result.data
+					await this.getPgList()
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,clear: function(){
@@ -621,8 +723,8 @@ export default {
 		}
 		,doPassword: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postAgencyPasswordReset'
 					,data: {
@@ -638,7 +740,7 @@ export default {
 			}catch(e){
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 
@@ -684,7 +786,7 @@ export default {
 				if(confirm("삭제하시겠습니까?")){
 
 					try{
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'management/postShopLogoDelete'
 							,data: {
@@ -703,6 +805,29 @@ export default {
 						console.log(e)
 					}
 				}
+			}
+		}
+		, getPgList: async function(){
+			try{
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
+					method: 'get'
+					,url: 'management/getAvailablePgList'
+					,data: {
+						agency_type: this.item.agency_type
+						, agency_upper: this.item.agency_upper
+					}
+				})
+				if(result.success){
+					this.items_pg_list = result.data
+				}else{
+					this.items_pg_list = []
+					this.$bus.$emit('notify', { type: 'error', message: result.message})
+				}
+			}catch(e){
+				console.log(e)
+			}finally {
+				this.$bus.$emit('on', false)
 			}
 		}
 	}

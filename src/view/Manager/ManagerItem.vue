@@ -177,8 +177,8 @@ export default {
 	, methods: {
 		save: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postAdmin'
 					,data: this.item
@@ -193,7 +193,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: e})
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toList: function(){

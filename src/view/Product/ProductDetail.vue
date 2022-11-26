@@ -487,7 +487,7 @@ export default {
 		getData: async function(){
 			console.log('getData start !!')
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProduct'
 					,data: {
@@ -538,8 +538,8 @@ export default {
 			}
 
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postSupplyProduct'
 					,data: this.new_item
@@ -556,7 +556,7 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: e })
 			}finally {
 				console.log('save finished !!')
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,addOption: function(){
@@ -574,7 +574,7 @@ export default {
 
 					try{
 						option.ATOKEN = this.TOKEN
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'management/postProductOptionDelete'
 							,data: option
@@ -611,7 +611,7 @@ export default {
 		,removeImg: async function(sub, index){
 			if(confirm("삭제하시겠습니까?")){
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postProductImageDelete'
 						,data: {
@@ -641,7 +641,7 @@ export default {
 		}
 		,getCategoryList: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
@@ -661,7 +661,7 @@ export default {
 
 		,getAgencyList: async  function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyList'
 					,data: {
@@ -692,7 +692,7 @@ export default {
 			console.log(e[0].size / 1024)
 
 			try {
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				let file_count = this.files.length + e.length
 				if (file_count > this.file_max) {
 					this.$bus.$emit('notify', {type: 'error', message: this.$language.common.error_file_limit})
@@ -708,7 +708,7 @@ export default {
 					data['upload_files' + i] = e[i]
 				}
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					, url: 'management/postProductFileUpdate'
 					, data: data
@@ -724,7 +724,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', {type: 'error', message: e})
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 
@@ -760,7 +760,7 @@ export default {
 				if(confirm("삭제하시겠습니까?")){
 
 					try{
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'management/postProductImageDelete'
 							,data: {
@@ -787,7 +787,7 @@ export default {
 			if(confirm("삭제하시겠습니까?")){
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postProductImageDelete'
 						,data: {

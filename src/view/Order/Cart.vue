@@ -291,7 +291,7 @@
 			removeCart: async function(cart_index, odt_uid){
 				if(confirm('해당 상품을 삭제하시겠습니까?')){
 					try{
-						const result = await this.Axios({
+						const result = await this.$request.init({
 							method: 'post'
 							,url: 'order/postDeleteCartItem'
 							,data: {
@@ -332,7 +332,7 @@
 				}
 
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'order/postOdtCnt'
 						,data: {

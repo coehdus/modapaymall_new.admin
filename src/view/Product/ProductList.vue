@@ -442,9 +442,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProductList'
 					,data: this.search
@@ -463,7 +463,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,getSearch: function(page){
@@ -474,9 +474,9 @@ export default {
 			this.getData()
 		}
 		,update: async function(item){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProductUpdate'
 					,data: item
@@ -491,7 +491,7 @@ export default {
 				console.log(e)
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toDetail: function (item){
@@ -541,9 +541,9 @@ export default {
 		}
 		,deleteItem: async  function(item){
 			if(confirm("삭제하시겠습니까?")){
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postProductDelete'
 						,data: {
@@ -562,14 +562,14 @@ export default {
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 		}
 		,getCategoryList: async function(){
 			try{
 				this.search.pdt_category = ''
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getCategoryList'
 					,data: {
@@ -588,7 +588,7 @@ export default {
 		}
 		,getAgencyList: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyList'
 					,data: {
@@ -617,8 +617,8 @@ export default {
 		, getSort: async function(){
 
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getProductSortAgency'
 					,data: {
@@ -637,13 +637,13 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: e })
 			}finally {
 				//await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		, postSortUpdate: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postProductSortAgency'
 					,data: {
@@ -664,7 +664,7 @@ export default {
 				this.$bus.$emit('notify', { type: 'error', message: '통신 오류' })
 			}finally {
 				//await this.getData()
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 

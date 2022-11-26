@@ -135,7 +135,7 @@ export default{
 		login: async function(){
 			let item = this.item
 			try {
-				let result = await this.Axios({
+				let result = await this.$request.init({
 					method: 'post'
 					, url: 'management/postLogin'
 					, data: item

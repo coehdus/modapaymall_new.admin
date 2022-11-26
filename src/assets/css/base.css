@@ -221,7 +221,7 @@
 .bg-gray-dark { background-color: darkgray}
 .bg-dark { background-color: #828282}
 .bg-white { background-color: white !important;}
-.bg-green { border: 1px solid #0f9d58 !important; background-color: #0f9d58; color: #333;}
+.bg-green { border: 1px solid #0f9d58 !important; background-color: #0f9d58; color: #eee;}
 .bg-red { border: 1px solid #bf360c; background-color: #bf360c; color: #eee;}
 .bg-orange { border: 1px solid darkorange; background-color: darkorange; color: #eee;}
 .bg-f5 { background-color: #f5f5f5}
@@ -231,7 +231,8 @@
 .bg-select { background-color: black}
 .bg-blue { background-color: #0D47A1; color: #eee}
 .bg-333 { background-color: #333;}
-.bg-success { background-color: #0f9d58 !important; color: #333}
+.bg-success { background-color: #0f9d58 !important; color: #eee}
+.bg-error { background-color: #bf360c !important; color: #eee}
 
 .bg-blue-light { background-color: #0e6dcd; color:  #eee}
 .bg-light-gray { background-color: darkgray;}

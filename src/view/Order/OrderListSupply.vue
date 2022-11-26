@@ -528,9 +528,9 @@ export default {
 	}
 	,methods: {
 		getData: async function(){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getOrderList'
 					,data: this.search
@@ -547,7 +547,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,getSearch: function(){
@@ -564,9 +564,9 @@ export default {
 			}
 		}
 		,setShipping: async function(odt){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postOdtShipping'
 					,data: {
@@ -585,14 +585,14 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,setOdtStatus: async function(odt, step){
-			this.$emit('onLoading')
+			this.$bus.$emit('on', true)
 			odt.next_step = step
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postOdtUpdate'
 					,data: {
@@ -614,7 +614,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,toExcel: function(){
@@ -638,7 +638,7 @@ export default {
 			this.is_modal = true
 
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getOdtStep'
 					,data: {
@@ -705,7 +705,7 @@ export default {
 		}
 		,toCancel: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postOdtCancel'
 					,data: {
@@ -728,7 +728,7 @@ export default {
 		}
 		,toReturn: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postOdtReturn'
 					,data: {
@@ -751,7 +751,7 @@ export default {
 		}
 		,toChange: async function(){
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postOdtChange'
 					,data: {

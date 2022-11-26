@@ -272,8 +272,8 @@ export default {
 	,methods: {
 		getData: async function(){
 			try{
-				this.$emit('onLoading')
-				const result = await this.Axios({
+				this.$bus.$emit('on', true)
+				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getSettlementDeliveryList'
 					,data: this.search
@@ -288,14 +288,14 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 		,doUpdate: async function(type, status){
 			let url = 'management/post' + type.replace(/^./, type[0].toUpperCase()) + status.replace(/^./, status[0].toUpperCase())
 
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: url
 					,data: {
@@ -333,9 +333,9 @@ export default {
 		,save: async function(){
 
 			try{
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					,url: 'management/postSettlement'
 					,data: this.search
@@ -350,7 +350,7 @@ export default {
 			}catch (e) {
 				console.log(e)
 			}finally {
-				this.$emit('offLoading')
+				this.$bus.$emit('on', false)
 			}
 		}
 	}

@@ -106,7 +106,7 @@ export default{
 			}
 
 			try{
-				const result = await this.Axios({
+				const result = await this.$request.init({
 					method: 'post'
 					, url: 'member/postMemberPassword'
 					, data: this.item

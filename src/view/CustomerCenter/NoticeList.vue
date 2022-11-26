@@ -197,9 +197,9 @@
 		}
 		, methods: {
 			getData: async function(){
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'get'
 						,url: 'management/getBbsList'
 						,data: this.search
@@ -217,7 +217,7 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 			, toItem: function(){
@@ -236,9 +236,9 @@
 				this.item_delete = null
 			}
 			, doDelete: async function(){
-				this.$emit('onLoading')
+				this.$bus.$emit('on', true)
 				try{
-					const result = await this.Axios({
+					const result = await this.$request.init({
 						method: 'post'
 						,url: 'management/postBbsDelete'
 						,data: {
@@ -258,7 +258,7 @@
 				}catch (e) {
 					console.log(e)
 				}finally {
-					this.$emit('offLoading')
+					this.$bus.$emit('on', false)
 				}
 			}
 			, isDelete: function(item){
