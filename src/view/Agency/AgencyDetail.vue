@@ -790,8 +790,7 @@ export default {
 							method: 'post'
 							,url: 'management/postShopLogoDelete'
 							,data: {
-								ATOKEN: this.TOKEN
-								, uid: this.item.uid
+								uid: this.item.uid
 							}
 						})
 

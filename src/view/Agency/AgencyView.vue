@@ -131,9 +131,10 @@
 						<col width="auto">
 						<tbody>
 						<tr>
-							<th>서비스 수수료 <span class="color-red">*</span></th>
+							<th>공급가 마진<span class="color-red">*</span></th>
 							<td>
-								{{ item.sales_fee }}%
+								<div class="flex justify-space-between"> <span>카드 결제</span> <span>{{ item.sales_fee }}% </span></div>
+								<div  class="flex justify-space-between mt-10"> <span>무통장 입금</span> <span>{{ item.sales_fee_bank }}%</span></div>
 							</td>
 							<th>정산주기</th>
 							<td class="text-left">영업일 기준 / 월 정산</td>
@@ -183,6 +184,48 @@
 									class="mt-10 pa-10 box"
 									v-if="item.shop_status == '0'"
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
+							</td>
+						</tr>
+						<tr>
+							<th>상점 로고</th>
+							<td>
+								<div>
+									<label
+										class="box pa-10 justify-space-between"
+									>
+										{{ logo_img_name }}
+										<v-icon
+											class="color-icon"
+										>mdi mdi-image</v-icon>
+
+										<input_file
+											v-show="false"
+											accept="image/*" @change="setFile2"
+										/>
+									</label>
+								</div>
+
+								<div
+									v-if="item_upload_logo_img.src"
+									class="flex-row mt-10"
+								>
+									<div
+										class="flex-1" style="position: relative"
+									>
+										<img
+											:src="item_upload_logo_img.src"
+											style="max-width: 180px"
+										/>
+										<button class="item_close" style="background-color: black">
+											<v-icon
+												@click="removeDelivery"
+											>mdi-close</v-icon>
+										</button>
+									</div>
+									<div class="flex-3 flex-column justify-center ml-10">
+										<p>{{  item_upload_logo_img.name }}</p>
+									</div>
+								</div>
 							</td>
 						</tr>
 						<tr
@@ -333,10 +376,11 @@ import DaumPost from "@/components/Daum/DaumPost";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/vue-editor';
 import Modal from "@/components/Modal";
+import input_file from '@/components/InputFile'
 
 export default {
 	name: 'MypageAgency'
-	, components: {DaumPost, Editor, Modal}
+	, components: {DaumPost, Editor, Modal, input_file}
 	, props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
 	, data: function(){
 		return {
@@ -371,10 +415,16 @@ export default {
 				, account_password_confirm: ''
 				, account_password_old: ''
 			}
+			, upload_files: []
+			, item_logo_img: {}
+			, item_upload_logo_img: {}
 		}
 	}
 	,computed: {
-
+		logo_img_name: function(){
+			let name = '로고 이미지'
+			return name
+		}
 	}
 	, methods: {
 		getData: async function(){
@@ -388,9 +438,15 @@ export default {
 					}
 				})
 				if(result.success){
-					this.item = result.data
-					this.item.ATOKEN = this.TOKEN
-					this.item.UTOKEN = this.TOKEN
+					this.item = result.data.info
+					if(result.data.pg_info){
+						this.item_pg = result.data.pg_info
+					}
+					this.item_upload_logo_img = {
+						src: this.item.shop_logo
+						, name: this.item.shop_logo
+						, type: 'image'
+					}
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
@@ -477,6 +533,68 @@ export default {
 				, account_password_old: ''
 			}
 		}
+		, setFile2: function(e){
+			console.log('setFile2', e)
+
+			let self = this
+			for(let file of e){
+				console.log(`file` , file)
+				this.item_logo_img = file
+
+				const reader = new FileReader()
+				let data = {
+					name: file.name
+					, size: file.size
+					, type: file.type
+				}
+
+				reader.onload = function(e){
+					console.log('reader.onload')
+					data.src = e.target.result
+					self.item_upload_logo_img = data
+				}
+
+				reader.readAsDataURL(file)
+			}
+		}
+		, removeDelivery: async function(){
+			if(this.item_logo_img){
+
+				if(this.item.shop_logo){
+					this.item_upload_logo_img = {
+						src: this.item.shop_logo
+						, name: this.item.shop_logo
+						, type: 'image'
+					}
+					this.item_logo_img = {}
+				}else{
+					this.item_upload_logo_img = {}
+					this.item_logo_img = {}
+				}
+			}else{
+				if(confirm("삭제하시겠습니까?")){
+
+					try{
+						const result = await this.$request.init({
+							method: 'post'
+							,url: 'management/postShopLogoDelete'
+							,data: {
+								uid: this.item.uid
+							}
+						})
+
+						if(result.success){
+							this.item_upload_logo_img = {}
+							this.item_logo_img = {}
+						}else{
+							this.$bus.$emit('notify', { type: 'error', message: result.message })
+						}
+					}catch (e) {
+						console.log(e)
+					}
+				}
+			}
+		}
 	}
 	, created() {
 		this.$emit('onLoad', this.program)
@@ -488,4 +606,11 @@ export default {
 <style>
 .width-fee { width: 60px !important; text-align: right;}
 .v-btn__content { color: #333 !important;}
+.theme--light.v-icon {
+	color: #bbb;
+}
+
+.item_close {
+	position: absolute; right: 10px; top: 10px
+}
 </style>
