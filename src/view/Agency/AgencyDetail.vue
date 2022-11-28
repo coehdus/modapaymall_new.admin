@@ -643,6 +643,7 @@ export default {
 						, name: this.item.shop_logo
 						, type: 'image'
 					}
+					this.item_logo_img = ''
 					await this.getAgencyUpper()
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})

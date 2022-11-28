@@ -186,7 +186,56 @@
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="user.account_type_code == 'A001002'"
+						>
+							<th>보유 PG 정보</th>
+							<td><select
+								v-model="item.pg_code"
+								class="pa-5-10 mr-10"
+								:disabled="item_pg.pg_status == '1'"
+							>
+								<option value="">PG사</option>
+								<option
+									v-for="(code, index) in codes.P004.items"
+									:key="code.total_code + '_' + index"
+									:value="code.code_value"
+								>{{ code.code_name }}</option>
+							</select>
+
+								<input
+									v-model="item.pgMerchNo"
+									class="pa-5-10 mr-10 box"
+									placeholder="가맹점 ID"
+									maxlength="20"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<input
+									v-model="item.pgMerchName"
+									class="pa-5-10 mr-10 box"
+									placeholder="터미널 ID"
+									maxlength="15"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<input
+									v-model="item.pg_fee"
+									class="pa-5-10 mr-10 box"
+									placeholder="PG 결제 수수료"
+									:rules="[$rules.demical(item, 'pg_fee', {min: 2, max:2})]"
+									:disabled="item_pg.pg_status == '1'"
+								/>
+
+								<div
+									v-if="item_pg.uid && item_pg.pg_status != '1'"
+									class="color-red mt-10"
+								>보유 PG 정보 확인 중입니다</div>
+							</td>
+						</tr>
+						<tr
+							v-if="user.account_type_code == 'A001003'"
+						>
 							<th>상점 로고</th>
 							<td>
 								<div>
@@ -218,7 +267,7 @@
 										/>
 										<button class="item_close" style="background-color: black">
 											<v-icon
-												@click="removeDelivery"
+												@click="removeFile"
 											>mdi-close</v-icon>
 										</button>
 									</div>
@@ -398,6 +447,9 @@ export default {
 				,delivery_type: '0'
 				,shop_return: ''
 			}
+			, item_pg: {
+
+			}
 			,is_data_pick: false
 			,is_modal: false
 			,is_post: false
@@ -416,7 +468,7 @@ export default {
 				, account_password_old: ''
 			}
 			, upload_files: []
-			, item_logo_img: {}
+			, item_logo_img: null
 			, item_upload_logo_img: {}
 		}
 	}
@@ -447,6 +499,7 @@ export default {
 						, name: this.item.shop_logo
 						, type: 'image'
 					}
+					this.item_logo_img = ''
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
@@ -461,18 +514,21 @@ export default {
 
 				this.$bus.$emit('on', true)
 
-				let shop_return = this.$refs.shop_return.invoke("getMarkdown")
-
-				if(!shop_return){
-					this.$refs.shop_return.invoke("setMarkdown", this.item.shop_return)
+				if(this.item_logo_img){
+					this.$set(this.item, 'item_logo_img', this.item_logo_img)
 				}
-
-				this.item.shop_return = shop_return
 
 				const result = await this.$request.init({
 					method: 'post'
-					,url: 'management/putAgency'
-					,data: this.item
+					,url: 'management/putAgencyMyInfo'
+					,data: {
+						bank_email: this.item.bank_email
+						, pg_code: this.item.pg_code
+						, pgMerchNo: this.item.pgMerchNo
+						, pgMerchName: this.item.pgMerchName
+						, pg_fee: this.item.pg_fee
+						, item_logo_img: this.item.item_logo_img
+					}
 				})
 				if(result.success){
 					this.$bus.$emit('notify', { type: 'success', message: result.message})
@@ -536,7 +592,6 @@ export default {
 		, setFile2: function(e){
 			console.log('setFile2', e)
 
-			let self = this
 			for(let file of e){
 				console.log(`file` , file)
 				this.item_logo_img = file
@@ -548,16 +603,16 @@ export default {
 					, type: file.type
 				}
 
-				reader.onload = function(e){
+				reader.onload = (e) => {
 					console.log('reader.onload')
 					data.src = e.target.result
-					self.item_upload_logo_img = data
+					this.item_upload_logo_img = data
 				}
 
 				reader.readAsDataURL(file)
 			}
 		}
-		, removeDelivery: async function(){
+		, removeFile: async function(){
 			if(this.item_logo_img){
 
 				if(this.item.shop_logo){
@@ -566,10 +621,10 @@ export default {
 						, name: this.item.shop_logo
 						, type: 'image'
 					}
-					this.item_logo_img = {}
+					this.item_logo_img = null
 				}else{
 					this.item_upload_logo_img = {}
-					this.item_logo_img = {}
+					this.item_logo_img = null
 				}
 			}else{
 				if(confirm("삭제하시겠습니까?")){
@@ -579,13 +634,13 @@ export default {
 							method: 'post'
 							,url: 'management/postShopLogoDelete'
 							,data: {
-								uid: this.item.uid
+								shop_uid: this.item.uid
 							}
 						})
 
 						if(result.success){
 							this.item_upload_logo_img = {}
-							this.item_logo_img = {}
+							this.item_logo_img = null
 						}else{
 							this.$bus.$emit('notify', { type: 'error', message: result.message })
 						}
