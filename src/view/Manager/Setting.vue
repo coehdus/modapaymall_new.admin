@@ -602,11 +602,12 @@ export default {
 					,url: 'management/getSetting'
 				})
 				if(result.success){
-					this.item = result.data
-					if(!this.item.bank_code){
-						this.item.bank_code = ''
+					if(result.data){
+						this.item = result.data
+						if(!this.item.bank_code){
+							this.item.bank_code = ''
+						}
 					}
-					this.$set(this.item, 'ATOKEN', this.TOKEN)
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}

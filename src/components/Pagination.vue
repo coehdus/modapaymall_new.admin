@@ -76,6 +76,7 @@
 		}
 		,methods: {
 			click: function(page){
+				this.page_config.page = page
 				this.$emit('click', page)
 			}
 		}

@@ -83,7 +83,7 @@
 									v-model="item.account_id"
 									class="input-box full-width"
 									placeholder="아이디를 입력하세요"
-									:rules="[$rules.id(item, 'account_id', { min: 4, max: 20})]"
+									:rules="[$rules.id(item, 'account_id', { min: 4, max: 25})]"
 								/>
 
 								<button
@@ -113,6 +113,12 @@
 						</tr>
 						<tr>
 							<th>비밀번호</th>
+							<td colspan="3">00000000 / 각 계정 로그인 후 변경</td>
+						</tr>
+						<tr
+							v-if="false"
+						>
+							<th>비밀번호</th>
 							<td class="">
 								<input
 									v-model="item.account_password"
@@ -140,7 +146,7 @@
 								<input
 									type="text"
 									v-model="item.account_name"
-									maxlength="20"
+									maxlength="25"
 									class="input-box full-width"
 									placeholder="이름을 입력하세요"
 								/>
@@ -273,7 +279,7 @@
 								<input
 									type="text"
 									v-model="item.shop_name"
-									maxlength="50"
+									maxlength="25"
 									class="input-box-inline"
 									placeholder="상점명을 입력하세요"
 								/>
@@ -282,7 +288,7 @@
 						<tr
 							v-if="item.agency_type == 'A001003'"
 						>
-							<th>상점 로고</th>
+							<th>상점 로고 <br/> 300 x 200</th>
 							<td colspan="3">
 
 								<div>
@@ -482,7 +488,7 @@
 											v-model="item.sales_pg_uid"
 											type="radio"
 											:value="pg.uid"
-										/> {{ pg.pg_name }} {{ pg.pg_fee }}%
+										/> {{ pg.pg_name }} <template v-if="user.role == 'admin'">{{ pg.pg_fee }}%</template>
 									</label>
 								</div>
 							</td>
@@ -535,7 +541,7 @@ export default {
 				, business_type: 'B002001'
 				, bank_code: ''
 				, join_date: this.date.getToday('-')
-				, agency_upper: this.user.role_group == 'agency' ? this.user.account_uid : ''
+				, agency_upper: this.user.role_group == 'agency' ? this.user.uid : ''
 				, sales_fee: 0.5
 				, sales_fee_bank: 0
 				, pg_type: 'A001001'
@@ -723,6 +729,7 @@ export default {
 		if(this.user.role_group == 'agency'){
 			this.item.agency_type = this.codes.A001.items[2].total_code
 		}
+		this.getPgList()
 	}
 }
 </script>

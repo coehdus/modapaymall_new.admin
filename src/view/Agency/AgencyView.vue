@@ -131,7 +131,12 @@
 						<col width="auto">
 						<tbody>
 						<tr>
-							<th>공급가 마진<span class="color-red">*</span></th>
+							<th
+								v-if="user.role == 'agency'"
+							>판매 수수료<span class="color-red">*</span></th>
+							<th
+								v-else
+							>공급가 마진<span class="color-red">*</span></th>
 							<td>
 								<div class="flex justify-space-between"> <span>카드 결제</span> <span>{{ item.sales_fee }}% </span></div>
 								<div  class="flex justify-space-between mt-10"> <span>무통장 입금</span> <span>{{ item.sales_fee_bank }}%</span></div>
@@ -186,9 +191,7 @@
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
-						<tr
-							v-if="user.account_type_code == 'A001002'"
-						>
+						<tr>
 							<th>보유 PG 정보</th>
 							<td><select
 								v-model="item.pg_code"
@@ -236,7 +239,7 @@
 						<tr
 							v-if="user.account_type_code == 'A001003'"
 						>
-							<th>상점 로고</th>
+							<th>상점 로고 <br/> 300 x 200 </th>
 							<td>
 								<div>
 									<label
@@ -495,8 +498,8 @@ export default {
 						this.item_pg = result.data.pg_info
 					}
 					this.item_upload_logo_img = {
-						src: this.item.shop_logo
-						, name: this.item.shop_logo
+						src: this.item.shop_logo_view
+						, name: this.item.shop_logo_view
 						, type: 'image'
 					}
 					this.item_logo_img = ''

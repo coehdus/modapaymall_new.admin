@@ -311,7 +311,7 @@ export default {
 			,search: this.$storage.init({
 				year: new Date().getFullYear()
 				, month:  new Date().getMonth() + 1
-				, day: this.user.role == this.codes.type_code_admin ? new Date().getDate() : ''
+				, day: new Date().getDate()
 				, admin_type: ''
 				, is_settlement: ''
 				, is_deposit: ''

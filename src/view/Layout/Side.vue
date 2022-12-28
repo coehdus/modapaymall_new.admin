@@ -229,7 +229,7 @@
 					,{
 						path: 'Pg'
 						, name: 'PG 관리'
-						, type: ['admin']
+						, type: ['manager']
 						, sub: [
 							{
 								path: 'List'
@@ -241,15 +241,27 @@
 					,{
 						path: 'Manager'
 						, name: '설정'
-						, type: ['admin']
+						, type: ['manager']
 						, sub: [
 							{
 								path: 'List'
 								, name: '관리자 목록'
-								, type: ['admin']
+								, type: ['manager']
 							}
 							,{
 								path: 'Setting'
+								, name: '관리 설정'
+								, type: ['admin']
+							}
+						]
+					}
+					,{
+						path: 'Mypage'
+						, name: '설정'
+						, type: ['admin']
+						, sub: [
+							{
+								path: 'Agency'
 								, name: '관리 설정'
 								, type: ['admin']
 							}

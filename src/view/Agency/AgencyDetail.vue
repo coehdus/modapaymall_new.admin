@@ -96,7 +96,7 @@
 								<input
 									type="text"
 									v-model="item.account_name"
-									maxlength="20"
+									maxlength="25"
 									class="input-box full-width"
 									placeholder="이름을 입력하세요"
 								/>
@@ -274,7 +274,7 @@
 								<input
 									type="text"
 									v-model="item.shop_name"
-									maxlength="50"
+									maxlength="25"
 									class="input-box-inline"
 									placeholder="상점명을 입력하세요"
 								/>
@@ -283,7 +283,7 @@
 						<tr
 							v-if="item.agency_type == 'A001003'"
 						>
-							<th>상점 로고</th>
+							<th>상점 로고 <br/> 300 x 200</th>
 							<td colspan="3">
 								<div>
 									<label
@@ -639,8 +639,8 @@ export default {
 						this.item_pg = result.data.pg_info
 					}
 					this.item_upload_logo_img = {
-						src: this.item.shop_logo
-						, name: this.item.shop_logo
+						src: this.item.shop_logo_view
+						, name: this.item.shop_logo_view
 						, type: 'image'
 					}
 					this.item_logo_img = ''

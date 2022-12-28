@@ -20,7 +20,7 @@
 				</span>
 
 				<button
-					v-if="user.role_group == 'admin'"
+					v-if="user.role_group == 'manager'"
 					class=" pa-5-10 radius-10 cursor-pointer bg-eee color-333"
 					@click="toSetting"
 				>상점 설정</button>
