@@ -16,34 +16,7 @@
 						<tbody>
 						<tr>
 							<th>영업단 구분 <span class="color-red">*</span></th>
-							<td>
-
-								<template
-									v-if="user.role_group == 'admin'"
-								>
-									<select
-										v-model="item.agency_type"
-										class="pa-5-10 "
-										@change="getAgencyUpper"
-									>
-										<option value="">선택하세요</option>
-										<template
-											v-for="(agency, index) in codes.A001.items"
-										>
-											<option
-												v-if="agency.code_index > 1 && agency.code_index < 4"
-												:key="'agency_' + index"
-												:value="agency.total_code"
-											>{{ agency.code_name }}</option>
-										</template>
-									</select>
-								</template>
-								<template
-									v-else
-								>
-									{{ codes.A001.items[2].code_name }}
-								</template>
-							</td>
+							<td>{{ item.agency_type_name }}</td>
 							<th>소속 영업점</th>
 							<td>
 								<template
@@ -72,7 +45,7 @@
 									</template>
 									<template
 										v-else
-									>본사</template>
+									>{{ item.agency_upper_name }}</template>
 								</template>
 								<template
 									v-else
@@ -166,13 +139,20 @@
 										<div class="flex-1 text-left justify-space-between">
 											카드 결제
 											<span>
-											<input
-												v-model="item.sales_fee"
-												type="number"
-												:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
-												class="box pa-5-10 width-fee "
-											/> %
-												</span>
+												<input
+													v-model="item.sales_fee"
+													type="number"
+													:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
+													class="box pa-5-10 width-fee "
+												/> %
+												공급가
+												<input
+													class="box pa-5-10 width-fee "
+													type="number"
+													:value="text_upper_sales_fee | toFixed(2)"
+													disabled
+												/> %
+											</span>
 										</div>
 									</div>
 									<div
@@ -181,13 +161,20 @@
 										<div class="flex-1 text-left justify-space-between">
 											무통장 입금
 											<span>
-											<input
-												v-model="item.sales_fee_bank"
-												type="number"
-												:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
-												class="box pa-5-10 width-fee "
-											/> %
-												</span>
+												<input
+													v-model="item.sales_fee_bank"
+													type="number"
+													:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
+													class="box pa-5-10 width-fee "
+												/> %
+												공급가
+												<input
+													class="box pa-5-10 width-fee "
+													type="number"
+													:value="text_upper_sales_fee_bank | toFixed(2)"
+													disabled
+												/> %
+											</span>
 										</div>
 									</div>
 								</td>
@@ -503,7 +490,7 @@
 										v-model="item.sales_pg_uid"
 										type="radio"
 										:value="pg.uid"
-									/> {{ pg.pg_name }} {{ pg.pg_fee }}%
+									/> {{ pg.pg_name }} <template v-if="user.role == 'admin'">{{ pg.pg_fee }}%</template>
 								</label>
 							</td>
 						</tr>
@@ -619,6 +606,24 @@ export default {
 				t = 'bg-success'
 			}
 
+			return t
+		}
+		, text_upper_sales_fee: function(){
+			let t = 0
+			this.items_upper.filter( (item) =>{
+				if(this.item.agency_upper == item.uid){
+					t += Number(Number(this.item.sales_fee) + Number(item.sales_fee) + Number(item.upper_sales_fee ? item.upper_sales_fee : 0))
+				}
+			})
+			return t
+		}
+		, text_upper_sales_fee_bank: function(){
+			let t = 0
+			this.items_upper.filter( (item) =>{
+				if(this.item.agency_upper == item.uid){
+					t += Number(Number(this.item.sales_fee_bank) + Number(item.sales_fee_bank)+ Number(item.upper_sales_fee_bank ? item.upper_sales_fee_bank : 0))
+				}
+			})
 			return t
 		}
 	}

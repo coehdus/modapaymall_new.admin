@@ -182,10 +182,10 @@
 							<td>{{ item.total_count | makeComma }} 건</td>
 							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
-							<td class="text-right">{{ item.is_admin ? (item.income_amount) + '원' : item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</td>
 
-							<td class="text-right">{{ item.is_admin ? (item.fee) + '원' : item.is_distributor ? (item.income_amount) + '원' :  '-' | makeComma }}</td>
-							<td class="text-right">{{ item.is_admin ? (item.total_fee) + '원' : '-' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.total_fee - item.fee) + '원' : (item.income_amount) + '원' | makeComma }}</td>
+							<td class="text-right">{{ item.is_agency ? (item.fee) + '원' : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.is_agency ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.amount | makeComma }} 원</td>
 							<td>{{ item.is_settlement_name }}</td>

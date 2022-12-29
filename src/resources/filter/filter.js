@@ -109,6 +109,34 @@ Vue.filter('takeInitial', val => {
 	}
 })
 
+
+Vue.filter('toFixed', (val, max) => {
+	console.log('toFixed', val)
+	val += ''
+	if(val){
+		console.log('do')
+		let t = val.split('.')
+		console.log('t', t)
+
+		if(t.length <= 1){
+			t = [val, '00']
+			// return val
+		}
+		if(t[1].length <= max){
+			t[1] += '00'
+			//return val
+		}
+
+		val = t[0] + '.' + t[1].slice(0, max)
+		console.log('val', val)
+		return val
+	}else{
+		console.log('not !')
+		return val
+	}
+})
+
+
 export const common = function(){
 	
 }

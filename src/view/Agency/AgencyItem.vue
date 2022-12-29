@@ -51,7 +51,7 @@
 							<th>소속 영업점</th>
 							<td>
 								<template
-									v-if="user.role_group == 'admin'"
+									v-if="user.role != 'agency'"
 								>
 									<select
 										v-if="items_upper.length > 0"
@@ -184,13 +184,20 @@
 										<div class="flex-1 text-left justify-space-between">
 											카드 결제
 											<span>
-											<input
-												v-model="item.sales_fee"
-												type="number"
-												:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
-												class="box pa-5-10 width-fee "
-											/> %
-												</span>
+												<input
+													v-model="item.sales_fee"
+													type="number"
+													:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
+													class="box pa-5-10 width-fee "
+												/> %
+												공급가
+												<input
+													class="box pa-5-10 width-fee "
+													type="number"
+													:value="text_upper_sales_fee | toFixed(2)"
+													disabled
+												/> %
+											</span>
 										</div>
 									</div>
 									<div
@@ -199,13 +206,20 @@
 										<div class="flex-1 text-left justify-space-between">
 											무통장 입금
 											<span>
-											<input
-												v-model="item.sales_fee_bank"
-												type="number"
-												:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
-												class="box pa-5-10 width-fee "
-											/> %
-												</span>
+												<input
+													v-model="item.sales_fee_bank"
+													type="number"
+													:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
+													class="box pa-5-10 width-fee "
+												/> %
+												공급가
+												<input
+													class="box pa-5-10 width-fee "
+													type="number"
+													:value="text_upper_sales_fee_bank | toFixed(2)"
+													disabled
+												/> %
+											</span>
 										</div>
 									</div>
 								</td>
@@ -574,6 +588,24 @@ export default {
 			}
 			return t
 		}
+		, text_upper_sales_fee: function(){
+			let t = 0
+			this.items_upper.filter( (item) =>{
+				if(this.item.agency_upper == item.uid){
+					t += Number(Number(this.item.sales_fee) + Number(item.sales_fee) + Number(item.upper_sales_fee ? item.upper_sales_fee : 0))
+				}
+			})
+			return t
+		}
+		, text_upper_sales_fee_bank: function(){
+			let t = 0
+			this.items_upper.filter( (item) =>{
+				if(this.item.agency_upper == item.uid){
+					t += Number(Number(this.item.sales_fee_bank) + Number(item.sales_fee_bank)+ Number(item.upper_sales_fee_bank ? item.upper_sales_fee_bank : 0))
+				}
+			})
+			return t
+		}
 	}
 	, methods: {
 		save: async function(){
@@ -729,6 +761,7 @@ export default {
 		if(this.user.role_group == 'agency'){
 			this.item.agency_type = this.codes.A001.items[2].total_code
 		}
+		this.getAgencyUpper()
 		this.getPgList()
 	}
 }
