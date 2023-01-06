@@ -5,11 +5,9 @@
 		<Search
 			:search="search"
 			:option="search_option"
-			:is_item="true"
 
 			@change="getData"
 			@click="getData"
-			@toItem="onItem"
 		>
 			<select
 				slot="add"
@@ -24,26 +22,7 @@
 				>
 					<option
 						:key="code.total_code + '_' + index"
-						:value="code.total_code"
-					>{{ code.code_name }}</option>
-				</template>
-			</select>
-			<select
-				v-if="user.role == codes.type_code_admin"
-				slot="add"
-				v-model="search.account_type"
-				class="pa-5-10 mr-10"
-
-				@change="search.agency_upper = ''; getSearch(1)"
-			>
-				<option value="">보유 구분</option>
-				<template
-					v-for="(code, index) in codes.A001.items"
-				>
-					<option
-						v-if="code.code_index <4"
-						:key="code.total_code + '_' + index"
-						:value="code.total_code"
+						:value="code.code_value"
 					>{{ code.code_name }}</option>
 				</template>
 			</select>
@@ -62,8 +41,6 @@
 						<col width="150px" />
 						<col width="auto" />
 						<col width="auto" />
-						<col width="180px" />
-						<col width="150px" />
 					</colgroup>
 					<thead>
 					<tr>
@@ -74,11 +51,8 @@
 						</th>
 						<th>PG사</th>
 						<th>PG명</th>
-						<th>보유 구분</th>
-						<th>보유 상점</th>
 						<th>수수료율</th>
-						<th>사용여부</th>
-						<th>적용여부</th>
+						<th>승인여부</th>
 						<th>등록일</th>
 						<th>상세정보</th>
 					</tr>
@@ -97,8 +71,6 @@
 						</td>
 						<td>{{ item.pg_code }}</td>
 						<td>{{ item.pg_name }}</td>
-						<td>{{ item.account_type_name }}</td>
-						<td>{{ item.account_name }}</td>
 						<td>{{ item.pg_fee }}%</td>
 						<td
 							class="full-height"
@@ -109,34 +81,11 @@
 								<v-icon
 									class="pa-5"
 									:class="item.pg_status == 1 ? 'bg-green color-white' : 'btn-default' "
-									@click="item.pg_status = 1; postUpdate(item)"
 								>mdi mdi-power-plug</v-icon>
 								<v-icon
 									class="pa-5 "
 									:class="item.pg_status != 1 ? 'bg-red color-white' : 'btn-default' "
-									@click="item.pg_status = 0; postUpdate(item)"
 								>mdi mdi-power-plug-off</v-icon>
-
-								<v-icon
-									class="pa-5 bg-red color-white ml-10"
-									@click="onItemDelete(item)"
-								>mdi mdi-delete</v-icon>
-							</div>
-						</td>
-						<td
-							class="full-height"
-						>
-							<div
-								class=" flex-row justify-center"
-							>
-								<v-icon
-									class="pa-5 "
-									:class="item.pg_able == 1 ? 'bg-green color-white' : 'btn-default' "
-								>mdi mdi-pin</v-icon>
-								<v-icon
-									class="pa-5  "
-									:class="item.pg_able != 1 ? 'bg-red color-white' : 'btn-default' "
-								>mdi mdi-pin-off-outline</v-icon>
 							</div>
 						</td>
 						<td>{{ item.wDate }}</td>
@@ -166,7 +115,7 @@
 
 		<Modal
 			:is_modal="is_modal_item"
-			title="PG사 등록"
+			title="PG사 정보"
 			top="true"
 			width="520px"
 
@@ -200,7 +149,7 @@ export default {
 	, data: function(){
 		return {
 			program: {
-				name: 'PG 설정'
+				name: 'PG 목록'
 				, top: true
 				, title: true
 				, bottom: false
@@ -229,11 +178,6 @@ export default {
 							,{ name: '사용불가', column: '0'}
 						]
 					}
-					, { name: '적용 여부', column: 'pg_able', items: [
-							{ name: '사용중', column: '1'}
-							,{ name: '미사용', column: '0'}
-						]
-					}
 				]
 			}
 			, items: []
@@ -259,14 +203,11 @@ export default {
 				this.$bus.$emit('on', true)
 				const result = await this.$request.init({
 					method: 'get'
-					,url: 'management/getSettingPgList'
+					,url: 'management/getPgList'
 					,data: this.search
 				})
 				if(result.success){
-					this.items = result.data.result
-					this.$set(this.search, 'total_count', result.data.tCnt)
-					this.search_option.tCnt = result.data.tCnt
-					this.search_option.cnt = result.data.cnt
+					this.items = result.data
 					this.$storage.setQuery(this.search)
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})

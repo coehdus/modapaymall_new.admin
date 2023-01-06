@@ -419,7 +419,9 @@
 								>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>보유 PG 정보</th>
 							<td colspan="3">
 								<select
@@ -471,6 +473,7 @@
 							<th>결제 PG</th>
 							<td colspan="3">
 								<label
+									v-if="false"
 									class="pa-10 display-inline box radius-10 mr-10"
 									:class="text_bg_pg"
 								>

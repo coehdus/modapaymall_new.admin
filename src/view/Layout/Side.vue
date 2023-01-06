@@ -229,7 +229,7 @@
 					,{
 						path: 'Pg'
 						, name: 'PG 관리'
-						, type: ['manager']
+						, type: ['admin']
 						, sub: [
 							{
 								path: 'List'

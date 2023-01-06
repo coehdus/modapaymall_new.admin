@@ -191,7 +191,9 @@
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>보유 PG 정보</th>
 							<td><select
 								v-model="item.pg_code"

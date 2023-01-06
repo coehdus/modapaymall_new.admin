@@ -453,7 +453,9 @@
 								>
 							</td>
 						</tr>
-						<tr>
+						<tr
+							v-if="false"
+						>
 							<th>보유 PG 정보</th>
 							<td colspan="3">
 								<select
