@@ -388,7 +388,7 @@ export default {
 		}
 		, date: function(){
 			let t = ''
-			t = this.search.year + '-' + this.search.month + '-' + this.search.day
+			t = this.search.year + '-' + ('00' + this.search.month).slice(-2) + '-' + ('00' + this.search.day).slice(-2)
 			return t
 		}
 
