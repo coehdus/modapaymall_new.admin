@@ -58,7 +58,6 @@
 										v-model="item.agency_upper"
 
 										class="input-box"
-										@change="getPgList"
 									>
 										<option value="">선택하세요</option>
 										<option
@@ -175,6 +174,34 @@
 							<col width="120px">
 							<col width="auto">
 							<tbody>
+
+							<tr
+								v-if="item.agency_type == 'A001003'"
+							>
+								<th>결제 PG</th>
+								<td colspan="3">
+									<div>
+										<label
+											v-if="false"
+											class="pa-10 display-inline box radius-10 mr-10"
+											:class="{'bg-success': item.sales_pg_uid === ''}"
+										>
+											<input
+												v-model="item.sales_pg_uid"
+												type="radio"
+												value=""
+											/> 보유 PG
+										</label>
+										<label
+											v-for="(pg, index) in items_pg_list"
+											:key="'pg_' + index"
+											class="pa-10 display-inline box radius-10 mr-10"
+											:class="{'bg-success': item.sales_pg_uid == pg.uid }"
+											@click="setPg(pg)"
+										>{{ pg.pg_name }} <template v-if="user.role == 'admin'">{{ pg.pg_fee }}%</template> </label>
+									</div>
+								</td>
+							</tr>
 							<tr>
 								<th> {{ text_fee_rate }} <span class="color-red">*</span></th>
 								<td>
@@ -302,7 +329,7 @@
 						<tr
 							v-if="item.agency_type == 'A001003'"
 						>
-							<th>상점 로고 <br/> 300 x 200</th>
+							<th>상점 로고 <br/> 150 x 100</th>
 							<td colspan="3">
 
 								<div>
@@ -478,38 +505,6 @@
 
 							</td>
 						</tr>
-						<tr
-							v-if="item.agency_type == 'A001003'"
-						>
-							<th>결제 PG</th>
-							<td colspan="3">
-								<div>
-									<label
-										v-if="false"
-										class="pa-10 display-inline box radius-10 mr-10"
-										:class="{'bg-success': item.sales_pg_uid === ''}"
-									>
-										<input
-											v-model="item.sales_pg_uid"
-											type="radio"
-											value=""
-										/> 보유 PG
-									</label>
-									<label
-										v-for="(pg, index) in items_pg_list"
-										:key="'pg_' + index"
-										class="pa-10 display-inline box radius-10 mr-10"
-										:class="{'bg-success': item.sales_pg_uid == pg.uid }"
-									>
-										<input
-											v-model="item.sales_pg_uid"
-											type="radio"
-											:value="pg.uid"
-										/> {{ pg.pg_name }} <template v-if="user.role == 'admin'">{{ pg.pg_fee }}%</template>
-									</label>
-								</div>
-							</td>
-						</tr>
 						</tbody>
 					</table>
 				</div>
@@ -559,12 +554,13 @@ export default {
 				, bank_code: ''
 				, join_date: this.date.getToday('-')
 				, agency_upper: this.user.role_group == 'agency' ? this.user.uid : ''
-				, sales_fee: 0.5
+				, sales_fee: 0
 				, sales_fee_bank: 0
 				, pg_type: 'A001001'
 				, sales_pg_uid: null
 				, pg_code: ''
 			}
+			, item_pg: {}
 			,is_data_pick: false
 			,is_modal: false
 			,is_post: false
@@ -593,18 +589,20 @@ export default {
 		}
 		, text_upper_sales_fee: function(){
 			let t = 0
+			t += Number(Number(this.item.sales_fee) + Number(this.item_pg.pg_fee ? this.item_pg.pg_fee : 0))
 			this.items_upper.filter( (item) =>{
 				if(this.item.agency_upper == item.uid){
-					t += Number(Number(this.item.sales_fee) + Number(item.sales_fee) + Number(item.upper_sales_fee ? item.upper_sales_fee : 0))
+					t += Number(item.sales_fee) + Number(item.upper_sales_fee ? item.upper_sales_fee : 0)
 				}
 			})
 			return t
 		}
 		, text_upper_sales_fee_bank: function(){
 			let t = 0
+			t += Number(this.item.sales_fee_bank)
 			this.items_upper.filter( (item) =>{
 				if(this.item.agency_upper == item.uid){
-					t += Number(Number(this.item.sales_fee_bank) + Number(item.sales_fee_bank)+ Number(item.upper_sales_fee_bank ? item.upper_sales_fee_bank : 0))
+					t += Number(item.sales_fee_bank) + Number(item.upper_sales_fee_bank ? item.upper_sales_fee_bank : 0)
 				}
 			})
 			return t
@@ -669,6 +667,8 @@ export default {
 				console.log(e)
 			}finally {
 				this.$bus.$emit('on', false)
+				this.item_pg = {}
+				this.item.sales_pg_uid = null
 			}
 		}
 		, setFile: function(e){
@@ -757,6 +757,10 @@ export default {
 			}finally {
 				this.$bus.$emit('on', false)
 			}
+		}
+		, setPg: function(pg){
+			this.item_pg = pg
+			this.item.sales_pg_uid = pg.uid
 		}
 	}
 	, created() {

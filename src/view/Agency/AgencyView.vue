@@ -130,15 +130,21 @@
 						<col width="120px">
 						<col width="auto">
 						<tbody>
+						<tr
+							v-if="item.agency_type == 'A001003'"
+						>
+							<th>결제 PG</th>
+							<td colspan="3">{{ item_pg.pg_name }}</td>
+						</tr>
 						<tr>
 							<th
 								v-if="user.role == 'agency'"
 							>판매 수수료<span class="color-red">*</span></th>
 							<th
 								v-else
-							>공급가 마진<span class="color-red">*</span></th>
+							>수수료<span class="color-red">*</span></th>
 							<td>
-								<div class="flex justify-space-between"> <span>카드 결제</span> <span>{{ item.sales_fee }}% </span></div>
+								<div class="flex justify-space-between"> <span>카드 결제</span> <span>{{ sales_fee | toFixed(2) }}% </span></div>
 								<div  class="flex justify-space-between mt-10"> <span>무통장 입금</span> <span>{{ item.sales_fee_bank }}%</span></div>
 							</td>
 							<th>정산주기</th>
@@ -241,7 +247,7 @@
 						<tr
 							v-if="user.account_type_code == 'A001003'"
 						>
-							<th>상점 로고 <br/> 300 x 200 </th>
+							<th>상점 로고 <br/> 150 x 100 </th>
 							<td>
 								<div>
 									<label
@@ -481,6 +487,21 @@ export default {
 		logo_img_name: function(){
 			let name = '로고 이미지'
 			return name
+		}
+		, sales_fee: function(){
+			let t = 0
+
+			t += Number(this.item.sales_fee)
+
+			if(this.item.upper_sales_fee){
+				t += Number(this.item.upper_sales_fee)
+			}
+
+			if(this.item_pg.uid){
+				t += Number(this.item_pg.pg_fee)
+			}
+
+			return t
 		}
 	}
 	, methods: {

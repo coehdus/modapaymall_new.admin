@@ -45,7 +45,7 @@
 									class="color-blue ml-10 vertical-middle cursor-pointer"
 									@click="addFiles"
 								>mdi mdi-plus-box-outline</v-icon>
-								<br/> 300 x 200
+								<br/> 600 x 300
 							</th>
 							<td>
 								<div
