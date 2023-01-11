@@ -137,18 +137,28 @@
 							<td colspan="3">{{ item_pg.pg_name }}</td>
 						</tr>
 						<tr>
+							<th>정산주기</th>
+							<td
+								v-if="user.role == 'distributor'"
+								class="text-left"
+								colspan="3"
+							>영업일 기준 / 월 정산</td>
+							<td
+								v-else
+								class="text-left"
+							>영업일 기준 / 월 정산</td>
 							<th
 								v-if="user.role == 'agency'"
 							>판매 수수료<span class="color-red">*</span></th>
 							<th
-								v-else
+								v-else-if="user.role == 'admin'"
 							>수수료<span class="color-red">*</span></th>
-							<td>
+							<td
+								v-if="user.role != 'distributor'"
+							>
 								<div class="flex justify-space-between"> <span>카드 결제</span> <span>{{ sales_fee | toFixed(2) }}% </span></div>
 								<div  class="flex justify-space-between mt-10"> <span>무통장 입금</span> <span>{{ item.sales_fee_bank }}%</span></div>
 							</td>
-							<th>정산주기</th>
-							<td class="text-left">영업일 기준 / 월 정산</td>
 						</tr>
 						<tr>
 							<th>은행</th>
