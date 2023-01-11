@@ -485,6 +485,7 @@
 							<td colspan="3">
 								<div>
 									<label
+										v-if="false"
 										class="pa-10 display-inline box radius-10 mr-10"
 										:class="{'bg-success': item.sales_pg_uid === ''}"
 									>

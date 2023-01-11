@@ -109,20 +109,19 @@
 					</tr>
 					<tr>
 						<th>썸네일 이미지</th>
-						<td
-						>
-								<span
-									class="pdt-img mr-10 flex-column justify-center"
-								>
-									<img
-										v-if="item.pdt_img2"
-										:src="item.pdt_img2"
-									/>
-									<v-icon
-										v-else
-										class="color-icon"
-									>mdi mdi-image</v-icon>
-								</span>
+						<td>
+							<span
+								class="pdt-img mr-10 flex-column justify-center"
+							>
+								<img
+									v-if="item.pdt_img2"
+									:src="item.pdt_img2"
+								/>
+								<v-icon
+									v-else
+									class="color-icon"
+								>mdi mdi-image</v-icon>
+							</span>
 
 							<label>
 								<v-icon
@@ -229,7 +228,7 @@
 						></textarea></td>
 					</tr>
 					<tr>
-						<th>상세페이지 이미지</th>
+						<th>상세페이지<br/> 이미지</th>
 						<td>
 							<div>
 								<label
@@ -467,7 +466,7 @@ export default {
 			return t
 		}
 		,product_img_name: function(){
-			let name = '상품 정보 이미지'
+			let name = '상세페이지 이미지'
 
 			for(const [key, value] of Object.entries(this.upload_files)){
 

@@ -226,7 +226,7 @@
 						></textarea></td>
 					</tr>
 					<tr>
-						<th>상세페이지 이미지</th>
+						<th>상세페이지<br/> 이미지</th>
 
 						<td>
 							<div>
@@ -474,7 +474,7 @@ export default {
 			return name
 		}
 		,product_img_name: function(){
-			let name = '상품 정보 이미지'
+			let name = '상세페이지 이미지'
 
 			for(const [key, value] of Object.entries(this.upload_files)){
 
