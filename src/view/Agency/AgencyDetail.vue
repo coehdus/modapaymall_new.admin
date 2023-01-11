@@ -297,7 +297,6 @@
 									>
 										<img
 											:src="item_upload_logo_img.src"
-											style="max-width: 180px"
 										/>
 										<button class="item_close" style="background-color: black">
 											<v-icon
@@ -305,7 +304,7 @@
 											>mdi-close</v-icon>
 										</button>
 									</div>
-									<div class="flex-3 flex-column justify-center ml-10">
+									<div class="flex-3 flex-column justify-center ml-10" style="word-break: break-all;">
 										<p>{{  item_upload_logo_img.name }}</p>
 									</div>
 								</div>
