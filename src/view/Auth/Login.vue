@@ -11,7 +11,7 @@
 				<span
 					v-if="$production"
 					class="size-em-15 font-weight-bold vertical-middle"
-				><img src="@/assets/images/delimall/logo.png" style="width: 40%"></span>
+				><img :src="$shop_logo" style="width: 50%"></span>
 				<div
 					v-else
 					class="bg-333 pa-10 color-eee "
