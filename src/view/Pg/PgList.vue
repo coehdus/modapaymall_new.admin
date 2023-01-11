@@ -79,12 +79,12 @@
 								class=" flex-row justify-center"
 							>
 								<v-icon
-									class="pa-5"
-									:class="item.pg_status == 1 ? 'bg-green color-white' : 'btn-default' "
+									v-if="item.pg_status == 1"
+									class="pa-5 bg-green color-white"
 								>mdi mdi-power-plug</v-icon>
 								<v-icon
-									class="pa-5 "
-									:class="item.pg_status != 1 ? 'bg-red color-white' : 'btn-default' "
+									v-else
+									class="pa-5 bg-red color-white"
 								>mdi mdi-power-plug-off</v-icon>
 							</div>
 						</td>
