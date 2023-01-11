@@ -113,7 +113,7 @@
 						<td>{{ item.pdt_info }}</td>
 					</tr>
 					<tr>
-						<th>상세 정보 이미지</th>
+						<th>상세페이지 이미지</th>
 						<td>
 							<div class="mt-10" style="max-height: 500px; overflow: auto">
 								<div

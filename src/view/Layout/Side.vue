@@ -153,7 +153,7 @@
 							{
 								path: 'Management'
 								,name: '정산 실행'
-								,type: ['admin']
+								,type: ['manager']
 							}
 							,{
 								path: 'List'

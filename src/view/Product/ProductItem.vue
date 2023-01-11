@@ -122,7 +122,7 @@
 							</td>
 						</tr>
 						<tr>
-							<th>목록 이미지</th>
+							<th>썸네일 이미지</th>
 							<td>
 								<label
 									class="box pa-10 justify-space-between "
@@ -226,7 +226,7 @@
 						></textarea></td>
 					</tr>
 					<tr>
-						<th>상세 정보 이미지</th>
+						<th>상세페이지 이미지</th>
 
 						<td>
 							<div>
@@ -455,7 +455,7 @@ export default {
 			}
 		}
 		,main_img_name: function(){
-			let name = '목록 이미지'
+			let name = '썸네일 이미지'
 			if(this.item.pdt_img1){
 				name = this.item.pdt_img1.name
 			}

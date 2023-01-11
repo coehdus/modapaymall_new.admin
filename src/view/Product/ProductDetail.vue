@@ -108,7 +108,7 @@
 						<td><input class="input-box" v-model="item.pdt_summary" /></td>
 					</tr>
 					<tr>
-						<th>목록 이미지</th>
+						<th>썸네일 이미지</th>
 						<td
 						>
 								<span
@@ -229,7 +229,7 @@
 						></textarea></td>
 					</tr>
 					<tr>
-						<th>상세 정보 이미지</th>
+						<th>상세페이지 이미지</th>
 						<td>
 							<div>
 								<label
