@@ -207,51 +207,27 @@
 								>현재는 상품 판매가 불가능합니다. 관리자에게 문의하세요</div>
 							</td>
 						</tr>
-						<tr
-							v-if="false"
-						>
-							<th>보유 PG 정보</th>
-							<td><select
-								v-model="item.pg_code"
-								class="pa-5-10 mr-10"
-								:disabled="item_pg.pg_status == '1'"
-							>
-								<option value="">PG사</option>
-								<option
-									v-for="(code, index) in codes.P004.items"
-									:key="code.total_code + '_' + index"
-									:value="code.code_value"
-								>{{ code.code_name }}</option>
-							</select>
-
-								<input
-									v-model="item.pgMerchNo"
-									class="pa-5-10 mr-10 box"
-									placeholder="가맹점 ID"
-									maxlength="20"
-									:disabled="item_pg.pg_status == '1'"
-								/>
-
-								<input
-									v-model="item.pgMerchName"
-									class="pa-5-10 mr-10 box"
-									placeholder="터미널 ID"
-									maxlength="15"
-									:disabled="item_pg.pg_status == '1'"
-								/>
-
-								<input
-									v-model="item.pg_fee"
-									class="pa-5-10 mr-10 box"
-									placeholder="PG 결제 수수료"
-									:rules="[$rules.demical(item, 'pg_fee', {min: 2, max:2})]"
-									:disabled="item_pg.pg_status == '1'"
-								/>
-
-								<div
-									v-if="item_pg.uid && item_pg.pg_status != '1'"
-									class="color-red mt-10"
-								>보유 PG 정보 확인 중입니다</div>
+						<tr>
+							<th>{{  text_pg_title }}</th>
+							<td>
+								<table class="table">
+									<thead>
+										<tr>
+											<th>PG명</th>
+											<th>공급가</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr
+											v-for="(pg, p_index) in item_pg"
+											:key="'pg_' + p_index"
+											class="mb-5"
+										>
+											<td class="text-left">{{ pg.pg_name }}</td>
+											<td>{{ pg.total_rate }}%</td>
+										</tr>
+									</tbody>
+								</table>
 							</td>
 						</tr>
 						<tr
@@ -511,6 +487,21 @@ export default {
 				t += Number(this.item_pg.pg_fee)
 			}
 
+			return t
+		}
+		, text_pg_title: function(){
+			let t = ''
+			switch (this.user.agency_type){
+				case  'A001001':
+					t = '보유 PG 정보'
+					break
+				case 'A001002':
+					t = 'PG 공급가 정보'
+					break
+				case 'A001003':
+					t = '결제 PG 정보'
+					break
+			}
 			return t
 		}
 	}

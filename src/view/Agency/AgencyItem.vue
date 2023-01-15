@@ -58,6 +58,7 @@
 										v-model="item.agency_upper"
 
 										class="input-box"
+										@change="getPgList"
 									>
 										<option value="">선택하세요</option>
 										<option
@@ -164,6 +165,79 @@
 						</tbody>
 					</table>
 
+					<div class="mt-10">
+						<h6>공급가 마진</h6>
+						<table
+							class="table"
+						>
+							<thead>
+								<tr>
+									<th>PG 명</th>
+									<th
+										v-if="user.role == 'admin'"
+									>PG 원가</th>
+									<th>마진율</th>
+									<th>공급가</th>
+									<th>적용여부</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									v-for="(pg, index) in items_pg_list"
+									:key="'pg_' + index"
+								>
+									<td>{{ pg.pg_name }}</td>
+									<td
+										v-if="user.role == 'admin'"
+									>{{ pg.pg_fee }}%</td>
+									<td>
+										<input
+											v-model="pg.fee_rate"
+											type="number"
+											:rules="[rules.demical(pg, 'fee_rate', { min: 2, max: 2})]"
+											class="box pa-5-10 width-fee "
+										/> %
+									</td>
+									<td>
+										<input
+											class="box pa-5-10 width-fee "
+											type="number"
+											:value="Number(pg.pg_fee) + Number(pg.fee_rate) + Number(pg.fee_upper ? pg.fee_upper : 0) | toFixed(2)"
+											disabled
+										/> %
+									</td>
+									<td
+										v-if="item.agency_type == 'A001002'"
+									>
+										<v-icon
+											class="pa-5 "
+											:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
+											@click="pg.fee_status = 1"
+										>mdi mdi-power-plug</v-icon>
+										<v-icon
+											class="pa-5 "
+											:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
+											@click="pg.fee_status = 0"
+										>mdi mdi-power-plug-off</v-icon>
+									</td>
+									<td
+										v-else
+									>
+										<v-icon
+											class="pa-5 "
+											:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
+											@click="setFeeStatus(pg, true)"
+										>mdi mdi-power-plug</v-icon>
+										<v-icon
+											class="pa-5 "
+											:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
+											@click="setFeeStatus(pg, false)"
+										>mdi mdi-power-plug-off</v-icon>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 					<div class="mt-10">
 						<h6>정산 정보</h6>
@@ -174,34 +248,6 @@
 							<col width="120px">
 							<col width="auto">
 							<tbody>
-
-							<tr
-								v-if="item.agency_type == 'A001003'"
-							>
-								<th>결제 PG</th>
-								<td colspan="3">
-									<div>
-										<label
-											v-if="false"
-											class="pa-10 display-inline box radius-10 mr-10"
-											:class="{'bg-success': item.sales_pg_uid === ''}"
-										>
-											<input
-												v-model="item.sales_pg_uid"
-												type="radio"
-												value=""
-											/> 보유 PG
-										</label>
-										<label
-											v-for="(pg, index) in items_pg_list"
-											:key="'pg_' + index"
-											class="pa-10 display-inline box radius-10 mr-10"
-											:class="{'bg-success': item.sales_pg_uid == pg.uid }"
-											@click="setPg(pg)"
-										>{{ pg.pg_name }} <template v-if="user.role == 'admin'">{{ pg.pg_fee }}%</template> </label>
-									</div>
-								</td>
-							</tr>
 							<tr>
 								<th> {{ text_fee_rate }} <span class="color-red">*</span></th>
 								<td>
@@ -607,6 +653,31 @@ export default {
 			})
 			return t
 		}
+		, pg_sales_list: function(){
+			let t = []
+			this.items_pg_list.filter( (item, index) => {
+				t[index] = {
+					pg_uid: item.uid
+					, pg_name: item.pg_name
+					, pg_fee: item.pg_fee
+					, seller_id: this.item.account_id
+					, fee_rate: item.fee_rate
+					, pg_status: item.fee_status
+					, total_rate: item.pg_fee + item.fee_rate
+				}
+			})
+			return t
+		}
+		, item_upper: function(){
+			let t = {}
+			this.items_upper.filter( (item) => {
+				if(this.item.agency_upper == item.uid){
+					t = item
+					return
+				}
+			})
+			return t
+		}
 	}
 	, methods: {
 		save: async function(){
@@ -742,6 +813,7 @@ export default {
 					,url: 'management/getAvailablePgList'
 					,data: {
 						agency_type: this.item.agency_type
+						, upper_id: this.item_upper.agency_id
 						, agency_upper: this.item.agency_upper
 					}
 				})
@@ -761,6 +833,17 @@ export default {
 		, setPg: function(pg){
 			this.item_pg = pg
 			this.item.sales_pg_uid = pg.uid
+		}
+		, setUpper: function(item){
+			this.item_upper = item
+		}
+		, setFeeStatus: function(item, type){
+			this.items_pg_list.filter( (pg) => {
+				pg.fee_status = 0
+			})
+			if(type){
+				item.fee_status = 1
+			}
 		}
 	}
 	, created() {
