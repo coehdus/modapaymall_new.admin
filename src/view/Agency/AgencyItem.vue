@@ -166,7 +166,7 @@
 					</table>
 
 					<div class="mt-10">
-						<h6>공급가 마진</h6>
+						<h6>공급가 마진  <span class="color-red size-px-12 ">* 공급가 미적용시 하위 대리점에서 결제를 진행할 수 없습니다.</span> </h6>
 						<table
 							class="table"
 						>
@@ -183,7 +183,7 @@
 							</thead>
 							<tbody>
 								<tr
-									v-for="(pg, index) in items_pg_list"
+									v-for="(pg, index) in pg_sales_list"
 									:key="'pg_' + index"
 								>
 									<td>{{ pg.pg_name }}</td>
@@ -249,55 +249,8 @@
 							<col width="auto">
 							<tbody>
 							<tr>
-								<th> {{ text_fee_rate }} <span class="color-red">*</span></th>
-								<td>
-									<div
-										class="justify-start"
-									>
-										<div class="flex-1 text-left justify-space-between">
-											카드 결제
-											<span>
-												<input
-													v-model="item.sales_fee"
-													type="number"
-													:rules="[rules.demical(item, 'sales_fee', { min: 2, max: 2})]"
-													class="box pa-5-10 width-fee "
-												/> %
-												공급가
-												<input
-													class="box pa-5-10 width-fee "
-													type="number"
-													:value="text_upper_sales_fee | toFixed(2)"
-													disabled
-												/> %
-											</span>
-										</div>
-									</div>
-									<div
-										class="justify-start mt-10"
-									>
-										<div class="flex-1 text-left justify-space-between">
-											무통장 입금
-											<span>
-												<input
-													v-model="item.sales_fee_bank"
-													type="number"
-													:rules="[rules.demical(item, 'sales_fee_bank', { min: 2, max: 2})]"
-													class="box pa-5-10 width-fee "
-												/> %
-												공급가
-												<input
-													class="box pa-5-10 width-fee "
-													type="number"
-													:value="text_upper_sales_fee_bank | toFixed(2)"
-													disabled
-												/> %
-											</span>
-										</div>
-									</div>
-								</td>
 								<th>정산주기</th>
-								<td class="text-left">영업일 기준 / 월 정산</td>
+								<td class="text-left" colspan="3">영업일 기준 / 월 정산</td>
 							</tr>
 							<tr>
 								<th>은행</th>
@@ -654,19 +607,10 @@ export default {
 			return t
 		}
 		, pg_sales_list: function(){
-			let t = []
-			this.items_pg_list.filter( (item, index) => {
-				t[index] = {
-					pg_uid: item.uid
-					, pg_name: item.pg_name
-					, pg_fee: item.pg_fee
-					, seller_id: this.item.account_id
-					, fee_rate: item.fee_rate
-					, pg_status: item.fee_status
-					, total_rate: item.pg_fee + item.fee_rate
-				}
+			return this.items_pg_list.filter( (item) => {
+				item.total_rate =  Number(item.pg_fee) + Number(item.fee_rate) + Number(item.fee_upper ? item.fee_upper : 0) + Number(item.distributor_fee_rate ? item.distributor_fee_rate : 0)
+				return item
 			})
-			return t
 		}
 		, item_upper: function(){
 			let t = {}
@@ -685,6 +629,8 @@ export default {
 				this.$bus.$emit('on', true)
 
 				this.$set(this.item, 'item_logo_img', this.item_logo_img)
+
+				this.$set(this.item, 'sales_pg_list', JSON.stringify(this.items_pg_list))
 
 				const result = await this.$request.init({
 					method: 'post'

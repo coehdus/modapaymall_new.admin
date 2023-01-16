@@ -218,6 +218,9 @@
 										</tr>
 									</thead>
 									<tbody>
+										<template
+											v-if="item_pg.length > 0"
+										>
 										<tr
 											v-for="(pg, p_index) in item_pg"
 											:key="'pg_' + p_index"
@@ -225,6 +228,12 @@
 										>
 											<td class="text-left">{{ pg.pg_name }}</td>
 											<td>{{ pg.total_rate }}%</td>
+										</tr>
+										</template>
+										<tr
+											v-else
+										>
+											<td colspan="2" class="color-red">사용가능한 PG 정보가 없습니다.</td>
 										</tr>
 									</tbody>
 								</table>
