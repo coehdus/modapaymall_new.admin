@@ -130,12 +130,6 @@
 						<col width="120px">
 						<col width="auto">
 						<tbody>
-						<tr
-							v-if="item.agency_type == 'A001003'"
-						>
-							<th>결제 PG</th>
-							<td colspan="3">{{ item_pg.pg_name }}</td>
-						</tr>
 						<tr>
 							<th>정산주기</th>
 							<td
