@@ -99,6 +99,18 @@
 							</td>
 						</tr>
 						<tr>
+							<th>정기결제 상품</th>
+							<td class="text-left">
+								<label
+									@click="item.is_regular == '1' ? item.is_regular = '0' : item.is_regular = '1'"
+								>
+									<v-icon v-if="item.is_regular == '1'"  class="color-blue">mdi-checkbox-marked</v-icon>
+									<v-icon v-else>mdi-checkbox-blank-outline</v-icon>
+									정기결제 사용
+								</label>
+							</td>
+						</tr>
+						<tr>
 							<th>개별 배송비</th>
 							<td>
 								<input
@@ -420,6 +432,7 @@ export default {
 				ATOKEN: this.TOKEN
 				,pdt_company: this.user.role == 'agency' ? this.user.account_id : ''
 				,pdt_category: ''
+				, is_regular: ''
 			}
 			,sub_img: [
 

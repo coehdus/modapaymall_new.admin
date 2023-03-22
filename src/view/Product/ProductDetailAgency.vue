@@ -50,6 +50,10 @@
 						<td>{{ item.pdt_price | makeComma }} 원</td>
 					</tr>
 					<tr>
+						<th>정기결제 상품</th>
+						<td>{{ item.is_regular == '1' ? '사용' : '미사용'}} </td>
+					</tr>
+					<tr>
 						<th>상품 배송비</th>
 						<td>
 							{{ item.pdt_delivery | makeComma }} 원
