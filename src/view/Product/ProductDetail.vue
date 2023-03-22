@@ -459,12 +459,6 @@ export default {
 				item.pdt_notice = ' '
 			}
 
-			if(this.item_ori.is_regular == '1'){
-				item.is_regular = true
-			}else{
-				item.is_regular = false
-			}
-
 			return item
 		}
 		,sub_images: function(){
@@ -546,7 +540,7 @@ export default {
 			this.new_item.pdt_category = this.item.pdt_category
 			this.new_item.pdt_company = this.item.pdt_company
 			this.new_item.pdt_info = this.item.pdt_info
-			this.new_item.is_regular = this.item.is_regular ? '1' : '0'
+			this.new_item.is_regular = this.item.is_regular
 
 			for(let [key, val] of Object.entries(this.item_options.option)){
 				this.$set(this.new_item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)
