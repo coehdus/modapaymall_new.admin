@@ -452,3 +452,12 @@ button:disabled { cursor: no-drop; opacity: 0.3}
 .th-white th { background-color: white}
 
 .hide { display: none}
+
+
+
+
+.square-64 { width: 64px; height: 64px; overflow: hidden}
+.square-80 { width: 80px; height: 80px; overflow: hidden}
+.square-100 { width: 100px; height: 100px; overflow: hidden}
+.square-120 { width: 120px; height: 120px; overflow: hidden}
+.square-160 { width: 160px; height: 160px; overflow: hidden}

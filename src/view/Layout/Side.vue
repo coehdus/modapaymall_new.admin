@@ -143,6 +143,11 @@
 								,name: '주문 목록'
 								,type: ['supply']
 							}
+							,{
+								path: 'RegularList'
+								,name: '정기결제 목록'
+								,type: ['admin', 'distributor', 'agency']
+							}
 						]
 					}
 					,{

@@ -198,6 +198,21 @@ const routes = [
 		,component: () => import('@/view/Order/OrderList.vue')
 	}
 	,{
+		path: prefix + 'Order/List'
+		,name: 'OrderList'
+		,component: () => import('@/view/Order/OrderList.vue')
+	}
+	,{
+		path: prefix + 'Order/RegularList'
+		,name: 'OrderRegularList'
+		,component: () => import('@/view/Order/OrderRegularList.vue')
+	}
+	,{
+		path: prefix + 'Order/RegularDetail/:idx'
+		,name: 'OrderRegularDetail'
+		,component: () => import('@/view/Order/OrderRegularDetail.vue')
+	}
+	,{
 		path: prefix + 'Order/ListSupply/:page?'
 		,name: 'OrderListSupply'
 		,component: () => import('@/view/Order/OrderListSupply.vue')
