@@ -137,6 +137,12 @@
 							</tr>
 							</thead>
 							<tbody>
+							<tr>
+								<td
+									:colspan="colspan_margin"
+									class="text-left bg-base"
+								>일반 결제</td>
+							</tr>
 							<tr
 								v-for="(pg, index) in pg_sales_list"
 								:key="'pg_' + index"
@@ -167,12 +173,12 @@
 									<v-icon
 										class="pa-5 "
 										:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="pg.fee_status = 1"
+										@click="setFeeStatus(pg, true)"
 									>mdi mdi-power-plug</v-icon>
 									<v-icon
 										class="pa-5 "
 										:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="pg.fee_status = 0"
+										@click="setFeeStatus(pg, false)"
 									>mdi mdi-power-plug-off</v-icon>
 								</td>
 								<td
@@ -187,6 +193,62 @@
 										class="pa-5 "
 										:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
 										@click="setFeeStatus(pg, false)"
+									>mdi mdi-power-plug-off</v-icon>
+								</td>
+							</tr>
+							<tr>
+								<td :colspan="colspan_margin" class="text-left bg-base">정기 결제</td>
+							</tr>
+							<tr
+								v-for="(pg, index) in pg_bill_list"
+								:key="'pg_' + index"
+							>
+								<td>{{ pg.pg_name }}</td>
+								<td
+									v-if="user.role == 'admin'"
+								>{{ pg.pg_fee }}%</td>
+								<td>
+									<input
+										v-model="pg.fee_rate"
+										type="number"
+										:rules="[rules.demical(pg, 'fee_rate', { min: 2, max: 2})]"
+										class="box pa-5-10 width-fee "
+									/> %
+								</td>
+								<td>
+									<input
+										v-model="pg.total_rate"
+										class="box pa-5-10 width-fee "
+										type="number"
+										disabled
+									/> %
+								</td>
+								<td
+									v-if="item.agency_type == 'A001003'"
+								>
+									<v-icon
+										class="pa-5 "
+										:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="setBillFeeStatus(pg, true)"
+									>mdi mdi-power-plug</v-icon>
+									<v-icon
+										class="pa-5 "
+										:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="setBillFeeStatus(pg, false)"
+									>mdi mdi-power-plug-off</v-icon>
+								</td>
+								<td
+									v-else
+								>
+									<v-icon
+										class="pa-5 "
+										:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
+										@click="pg.fee_status = 1"
+									>mdi mdi-power-plug</v-icon>
+									<v-icon
+										class="pa-5 "
+										:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
+										@click="pg.fee_status = 0"
 									>mdi mdi-power-plug-off</v-icon>
 								</td>
 							</tr>
@@ -566,9 +628,8 @@ import Modal from "@/components/Modal";
 import input_file from '@/components/InputFile'
 export default {
 	name: 'AgencyDetail'
-	,
-	components: {DaumPost, Modal, input_file},
-	props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
+	, components: {DaumPost, Modal, input_file}
+	, props: ['Axios', 'user', 'codes', 'rules', 'date', 'TOKEN']
 	,data: function(){
 		return {
 			program: {
@@ -661,9 +722,26 @@ export default {
 		}
 		, pg_sales_list: function(){
 			return this.items_pg_list.filter( (item) => {
-				item.total_rate =  Number(item.pg_fee) + Number(item.fee_rate) + Number(item.fee_upper ? item.fee_upper : 0) + Number(item.distributor_fee_rate ? item.distributor_fee_rate : 0)
-				return item
+				if(item.pg_type == 'P005001') {
+					item.total_rate = Number(item.pg_fee) + Number(item.fee_rate) + Number(item.fee_upper ? item.fee_upper : 0) + Number(item.distributor_fee_rate ? item.distributor_fee_rate : 0)
+					return item
+				}
 			})
+		}
+		, pg_bill_list: function(){
+			return this.items_pg_list.filter( (item) => {
+				if(item.pg_type == 'P005002'){
+					item.total_rate =  Number(item.pg_fee) + Number(item.fee_rate) + Number(item.fee_upper ? item.fee_upper : 0) + Number(item.distributor_fee_rate ? item.distributor_fee_rate : 0)
+					return item
+				}
+			})
+		}
+		, colspan_margin: function(){
+			let t = 5
+			if(this.user.role != 'admin'){
+				t = 4
+			}
+			return t
 		}
 	}
 	, methods: {
@@ -884,7 +962,19 @@ export default {
 		}
 		, setFeeStatus: function(item, type){
 			this.items_pg_list.filter( (pg) => {
-				pg.fee_status = 0
+				if(pg.pg_type == 'P005001'){
+					pg.fee_status = 0
+				}
+			})
+			if(type){
+				item.fee_status = 1
+			}
+		}
+		, setBillFeeStatus: function(item, type){
+			this.items_pg_list.filter( (pg) => {
+				if(pg.pg_type == 'P005002') {
+					pg.fee_status = 0
+				}
 			})
 			if(type){
 				item.fee_status = 1

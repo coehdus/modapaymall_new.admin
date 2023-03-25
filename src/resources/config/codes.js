@@ -47,6 +47,7 @@ export const codes = {
 		card: { code: 'card', name: '카드결제', color: 'blue'}
 		,bank: { code: 'bank', name: '무통장 입금', color: 'gray'}
 		,point: { code: 'point', name: '포인트 결제', color: 'red'}
+		,bill: { code: 'bill', name: '정기 결제', color: 'red'}
 	}
 	,o_status: [
 		{ code: 0, name: '결제실패', color: 'red'}
@@ -91,5 +92,23 @@ export const codes = {
 		, { name: '건영택배', val: 'http://www.kunyoung.com/goods/goods_01.php?mulno='}
 		, { name: '천일택배', val: 'http://www.chunil.co.kr/HTrace/HTrace.jsp?transNo='}
 	]
+
+	, regular_status: {
+		'0': {code: 0, name: '실행대기'}
+		, '1': {code: 1, name: '결제성공'}
+		, '2': {code: 2, name: '주문완료'}
+		, '22': {code: 22, name: '주문실패'}
+		, '3': {code: 3, name: '상품등록 완료'}
+		, '33': {code: 33, name: '상품등록 실패'}
+		, '4': {code: 4, name: '결제실패'}
+	}
+	, regular_complete_status: {
+		'0': {code: 0, name: '구독중'}
+		, '1': {code: 1, name: '구독완료'}
+	}
+	, regular_cancel_status: {
+		'0': {code: 0, name: '사용'}
+		, '1': {code: 1, name: '미사용'}
+	}
 
 }
