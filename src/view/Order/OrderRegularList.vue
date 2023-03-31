@@ -40,7 +40,6 @@
 						<th>결제일</th>
 						<th>결제기간</th>
 						<th>구독여부</th>
-						<th>사용여부</th>
 						<th>상세보기</th>
 					</tr>
 					</thead>
@@ -67,8 +66,7 @@
 						<td>{{ item.sDate }}</td>
 						<td>매월 {{ item.regular_date }} 일</td>
 						<td>{{ item.regular_rate }} 개월</td>
-						<td>{{ codes.regular_complete_status[item.is_complete].name }}</td>
-						<td>{{ codes.regular_cancel_status[item.is_cancel].name}}</td>
+						<td>{{ codes.regular_cancel_status[item.is_cancel].name }}</td>
 						<td><button
 							@click="toDetail(item)"
 							class="btn-success pa-10"
