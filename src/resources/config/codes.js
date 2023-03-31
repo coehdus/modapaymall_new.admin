@@ -107,8 +107,9 @@ export const codes = {
 		, '1': {code: 1, name: '구독완료'}
 	}
 	, regular_cancel_status: {
-		'0': {code: 0, name: '사용'}
-		, '1': {code: 1, name: '미사용'}
+		'0': {code: 0, name: '구독중'}
+		, '1': {code: 1, name: '구독취소'}
+		, '2': {code: 2, name: '구독완료'}
 	}
 
 }

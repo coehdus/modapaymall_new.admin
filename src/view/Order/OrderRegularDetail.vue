@@ -55,6 +55,26 @@
 				<div>
 					<table
 						class="table mb-10"
+					>
+						<col width="120px" />
+						<col width="auto" />
+						<tbody>
+						<tr>
+							<th>첫 주문</th>
+							<td>{{ item_regular.order_number }}</td>
+						</tr>
+						<tr>
+							<th>결제일</th>
+							<td>{{ item_regular.wDate }}</td>
+						</tr>
+						<tr>
+							<th>결제금액</th>
+							<td>{{ item_regular.order_price | makeComma }}원</td>
+						</tr>
+						</tbody>
+					</table>
+					<table
+						class="table mb-10"
 						v-for="(order, index) in item_regular.order_list"
 						:key="'order_' + index"
 					>
@@ -62,8 +82,7 @@
 						<col width="auto" />
 						<tbody>
 						<tr>
-							<th v-if="index == 0">첫 주문</th>
-							<th v-else>{{ index }} 회차</th>
+							<th>{{ index + 1}} 회차</th>
 							<td>{{ order.order_number }}</td>
 						</tr>
 						<tr>

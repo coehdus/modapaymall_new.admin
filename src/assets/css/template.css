@@ -1,0 +1,22 @@
+
+
+:root {
+    --bg-primary: black;
+    --bg-secondary: #DC505C;
+    --bg-success: #15ab94;
+    --bg-white: white;
+
+    --line-primary: #eee;
+
+    --btn-primary: #0165FA;
+    --btn-secondary: #DC505C;
+    --btn-success: #15ab94;
+
+    --color-primary: #0165FA;
+    --color-secondary: #DC505C;
+    --color-success: #15ab94;
+
+    --label-primary: #0165FA;
+    --label-secondary: #DC505C;
+    --label-success: #15ab94;
+}
