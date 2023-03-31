@@ -53,8 +53,8 @@ html, body {
 }
 html, body, table {
     font-size: 14px;
-    //color:  #bbb;
-    font-family: Noto Sans KR,sans-serif,Dotum,Helvetica,AppleSDGothicNeo;
+//color:  #bbb;
+    font-family: 'Open Sans','Noto Sans KR', 'Malgun Gothic', '맑은 고딕', dotum, '돋움', sans-serif;
 }
 
 a, button, small, label, span, input {

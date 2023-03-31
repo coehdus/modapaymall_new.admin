@@ -65,7 +65,7 @@
 						<td>{{ item.sDate }}</td>
 						<td>매월 {{ item.regular_date }} 일</td>
 						<td>{{ item.regular_rate }} 개월</td>
-						<td>{{ codes.regular_cancel_status[item.is_cancel].name }}</td>
+						<td><span :class="'label label-' + item.status_color">{{ item.status_name }}</span></td>
 						<td><button
 							@click="toDetail(item)"
 							class="btn-success pa-10"
@@ -127,14 +127,10 @@ export default{
 				]
 				,select: [
 
-					{ name: '구독 여부', column: 'is_complete', items: [
+					{ name: '구독 여부', column: 'is_cancel', items: [
 							{ name: '구독중', column: '0'}
 							,{ name: '구독완료', column: '1'}
-						]
-					}
-					, { name: '사용 여부', column: 'is_cancel', items: [
-							{ name: '사용', column: '0'}
-							,{ name: '미사용', column: '1'}
+							,{ name: '구독취소', column: '2'}
 						]
 					}
 				]

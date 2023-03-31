@@ -184,6 +184,7 @@
 </script>
 
 <style lang="css" src="@/assets/css/reset.css"></style>
+<style lang="css" src="@/assets/css/template.css"></style>
 <style lang="css" src="@/assets/css/base.css"></style>
 <style lang="css" src="@/assets/css/theme/dark.css"></style>
 
