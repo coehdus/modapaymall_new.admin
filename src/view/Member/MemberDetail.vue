@@ -32,7 +32,7 @@
 								<option value="">선택하세요</option>
 								<option
 									v-for="(agency, index) in agency_list"
-									:key="agency.uid + '_' + index"
+									:key="'agency_' + index"
 									:value="agency.agency_id"
 								>{{ agency.agency_name }}</option>
 							</select>
@@ -374,15 +374,14 @@ export default {
 				this.$bus.$emit('on', true)
 				const result = await this.$request.init({
 					method: 'get'
-					,url: 'management/getAgencyList2'
+					,url: 'management/getAgencyList'
 					,data: {
 						ATOKEN: this.TOKEN
-						,uid: this.$route.params.idx
-						,agency_type: 'B003003'
+						,agency_type: 'A001003'
 					}
 				})
 				if(result.success){
-					this.agency_list = result.data
+					this.agency_list = result.data.result
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message})
 				}
