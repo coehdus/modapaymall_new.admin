@@ -178,7 +178,7 @@
 			}
 			, getAgencyList: async function(){
 				if(this.user.role != this.codes.type_code_admin && this.user.route != this.codes.type_code_distributor){
-					return false
+					// return false
 				}
 				try{
 					const result = await this.$request.init({
