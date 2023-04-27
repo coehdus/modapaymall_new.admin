@@ -97,7 +97,7 @@
 				>비밀번호 변경</button>
 			</div>
 			<div
-				v-else
+				v-if="false"
 				class="mt-10"
 			>
 				<input
