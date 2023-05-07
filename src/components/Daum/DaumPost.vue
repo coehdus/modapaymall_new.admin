@@ -2,33 +2,29 @@
 
 	<div
 		v-if="overlay"
-		class="position-fixed full-width full-height overflow-y-auto"
-		style="z-index: 9999; top: 0; left: 0;"
+		class="position-fixed-full"
 	>
+		<div class="bg-layer"></div>
 		<div
-			class="position-absolute full-width full-height bg-black opacity-05"
-			style="top: 0; left: 0;"
-		>
-		</div>
-		<div
-			class="position-relative full-height overflow-y-auto flex-column justify-center"
-			style="z-index: 1; margin: auto; "
-			:style="config.width ? 'width: ' + config.width: ''"
+			class="position-relative full-height flex-column justify-center items-center"
 		>
 			<div
-				class="bg-blue-light full-width justify-space-between pa-10"
+				class="ma-auto container-address"
 			>
-				<span class=" white size-px-24">주소 찾기</span>
-				<button
-					@click="daumComplate"
-				><v-icon large class="color-eee"
-				>mdi-close-box-outline</v-icon></button>
+				<div
+					class="bg-address color-white pa-10 flex-row justify-space-between"
+				>
+					<span class="color-white size-px-24">주소 찾기</span>
+					<button
+						@click="daumComplate"
+					><v-icon large class="color-white">mdi-close-box-outline</v-icon></button>
+				</div>
+				<VueDaumPostcode
+					@complete="daumComplate"
+					class="body-address"
+				>
+				</VueDaumPostcode>
 			</div>
-			<VueDaumPostcode
-				@complete="daumComplate"
-				class="full-width overflow-y-auto"
-			>
-			</VueDaumPostcode>
 		</div>
 	</div>
 </template>
@@ -65,3 +61,35 @@ export default{
 	}
 }
 </script>
+
+<style>
+
+.position-fixed-full {
+	position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+}
+.z-index-layer {
+	z-index: 9999;
+}
+.z-index-contents {
+	z-index: 9998;
+}
+.z-index-bg {
+	z-index: 9997;
+}
+
+.bg-layer {
+	position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0.5; background-color: black;
+}
+
+.bg-address {
+	background-color: #0f6ecd
+}
+
+.container-address {
+	width: 480px;
+}
+
+.body-address {
+	max-height: 600px; overflow: auto;
+}
+</style>

@@ -75,7 +75,7 @@
 							<td>{{ item.agency_name }}</td>
 							<td>{{ item.member_id }}</td>
 							<td>{{ item.member_name }}</td>
-							<td>{{ item.member_phone }}</td>
+							<td>{{ item.member_tell }}</td>
 							<td
 								class="full-height"
 							>

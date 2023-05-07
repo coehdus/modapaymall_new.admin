@@ -47,11 +47,11 @@
 			</div>
 			<div class="mt-10">
 				<input
-					v-model="item.member_phone"
+					v-model="item.member_tell"
 					type="number"
 					placeholder="연락처"
 					class="input-box"
-					:rules="[rules.max(item, 'admin_phone', 15)]"
+					:rules="[rules.max(item, 'member_tell', 15)]"
 				/>
 			</div>
 			<div class="mt-10">
@@ -60,9 +60,13 @@
 					type="email"
 					placeholder="이메일"
 					class="input-box"
+					maxlength="50"
 				/>
 			</div>
-			<div class="mt-10 justify-space-between">
+			<div
+				class="mt-10 justify-space-between"
+				@click="onAddress"
+			>
 				<input
 					v-model="item.member_post"
 					placeholder="우편번호"
@@ -124,13 +128,22 @@
 				>{{ btn_name }}</button>
 			</div>
 		</div>
+
+
+		<DaumPost
+			:overlay="is_on_address"
+			@callBack="addPost"
+		></DaumPost>
 	</div>
 </template>
 
 <script>
+	import DaumPost from "../../components/Daum/DaumPost";
 	export default {
 		name: 'MemberItem'
-		,props: ['Axios', 'user', 'codes', 'rules',  'is_agency', 'TOKEN']
+		,
+		components: {DaumPost},
+		props: ['Axios', 'user', 'codes', 'rules',  'is_agency', 'TOKEN']
 		,data: function(){
 			return {
 				item: {
@@ -141,6 +154,7 @@
 					ATOKEN: this.TOKEN
 					, agency_type: 'A001003'
 				}
+				, is_on_address: false
 			}
 		}
 		,computed: {
@@ -196,6 +210,16 @@
 				}catch (e) {
 					console.log(e)
 				}
+			}
+			, onAddress: function(){
+				this.is_on_address = true
+			}
+			, addPost: function (call) {
+
+				this.$set(this.item, 'member_post', call.zonecode)
+				this.$set(this.item, 'member_addr1', call.address)
+
+				this.is_on_address = false
 			}
 		}
 		, created() {
