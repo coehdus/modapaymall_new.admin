@@ -204,7 +204,7 @@
 		>
 
 			<div slot="modal-content" class="bg-white text-center">
-				<qr-code :text="codes.live_url + encodeURI(Base64.encode(user.account_id))"></qr-code>
+				<qr-code :text="shop_link"></qr-code>
 			</div>
 			<template
 				slot="modal-bottom"
@@ -291,7 +291,14 @@
 			}
 		}
 		,computed: {
+			shop_link: function(){
+				let t = this.codes.live_url + encodeURI(Base64.encode(this.user.account_id))
 
+				if(this.user.shop_link){
+					t = this.user.shop_link + '/Auth/Join/' + encodeURI(Base64.encode(this.user.account_id))
+				}
+				return t
+			}
 		}
 		,methods: {
 			onSide: function(){
@@ -319,7 +326,7 @@
 
 			,copy: function (){
 
-				this.clipBoard(this.codes.live_url + encodeURI(this.Base64.encode(this.user.account_id)));
+				this.clipBoard(this.shop_link);
 				alert('대리점 회원가입 바로가기 링크가 복사되었습니다.');
 			}
 			,toSetting: function(){
