@@ -260,7 +260,7 @@
 									<col width="auto" />
 									<col width="auto" />
 									<col width="auto" />
-									<col width="450px" />
+									<col width="500px" />
 								</colgroup>
 								<thead>
 									<tr>
@@ -331,6 +331,11 @@
 															class="pa-5 mr-10 bg-green vertical-middle"
 															@click="onComplete(odt, 'step4')"
 														><span class="vertical-middle">판매 완료</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
+														<button
+															v-if="odt.is_cancel"
+															class="pa-5 mr-10 bg-danger vertical-middle"
+															@click="onCancel(odt, 'step22')"
+														><span class="vertical-middle">주문 취소</span> <v-icon small class="color-eee ">mdi mdi-chevron-right</v-icon></button>
 													</template>
 													<template
 														v-else
@@ -586,6 +591,10 @@ export default {
 							this.$set(odt, 'not_confirm', true)
 						}
 
+						if(odt.order_status == 'step1' || odt.order_status == 'step2' || odt.order_status == 'step3' || odt.order_status == 'step4'){
+							this.$set(odt, 'is_cancel', true)
+						}
+
 						supply.total_count += Number(odt.op_cnt)
 					})
 
@@ -783,6 +792,7 @@ export default {
 
 				if(result.success){
 					await this.getData()
+					this.$set(odt, 'order_status', odt.next_step)
 					this.$bus.$emit('notify', { type: 'success', message: result.message })
 				}else{
 					this.$bus.$emit('notify', { type: 'error', message: result.message })
@@ -978,6 +988,11 @@ export default {
 		}
 		, onComplete: function(odt, step){
 			if(confirm("방문수령 판매 완료처리하시겠습니까?")){
+				this.setOdtStatus(odt, step)
+			}
+		}
+		, onCancel: function(odt, step){
+			if(confirm("카드결제인 경우 해당 PG사에서 실결제 취소 후 진행하셔야 합니다. 주문 취소 처리 하시겠습니까?")){
 				this.setOdtStatus(odt, step)
 			}
 		}
