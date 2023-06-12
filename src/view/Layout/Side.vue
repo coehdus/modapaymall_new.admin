@@ -123,8 +123,15 @@
 							}
 							,{
 								path: 'List'
-								,name: '상품 목록'
+								,name: '일반 상품 목록'
 								,type: ['admin', 'distributor', 'agency', 'supply']
+								, not_view: this.user.sales_status == 1 ? false : true
+							}
+							,{
+								path: 'Sales'
+								,name: '매입 상품 목록'
+								,type: ['admin', 'distributor', 'agency', 'supply']
+								, not_view: this.user.sales_type == 1 ? false : true
 							}
 						]
 					}

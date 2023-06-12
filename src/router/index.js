@@ -143,6 +143,11 @@ const routes = [
 		,component: () => import('@/view/Product/ProductList.vue')
 	}
 	,{
+		path: prefix + 'Product/Sales/:page?'
+		,name: 'ProductSales'
+		,component: () => import('@/view/Product/ProductSales.vue')
+	}
+	,{
 		path: prefix + 'Product/ListAgency/:page?'
 		,name: 'ProductListAgency'
 		,component: () => import('@/view/Product/ProductListAgency.vue')

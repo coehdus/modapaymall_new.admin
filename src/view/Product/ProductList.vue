@@ -279,14 +279,13 @@ import Empty from "@/view/Layout/Empty";
 import Modal from "../../components/Modal";
 import draggable from "vuedraggable";
 export default {
-	name: 'ManagerAdminList'
-	,
-	components: {Empty, Excel, Search, Pagination, Modal, draggable},
-	props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules']
+	name: 'ProductList'
+	, components: {Empty, Excel, Search, Pagination, Modal, draggable}
+	, props: ['Axios', 'TOKEN', 'user', 'codes', 'date', 'rules']
 	,data: function (){
 		return {
 			program: {
-				name: '상품 목록'
+				name: '일반 상품 목록'
 				,top: true
 				,title: true
 			}
