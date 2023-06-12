@@ -63,6 +63,21 @@ const routes = [
 		,component: () => import('@/view/Member/MemberDetail.vue')
 	}
 	,{
+		path: prefix + 'Member/OperatorList/:page?'
+		,name: 'MemberOperatorList'
+		,component: () => import('@/view/Member/OperatorList.vue')
+	}
+	,{
+		path: prefix + 'Member/OperatorItem'
+		,name: 'MemberOperatorItem'
+		,component: () => import('@/view/Member/OperatorItem.vue')
+	}
+	,{
+		path: prefix + 'Member/OperatorDetail/:idx'
+		,name: 'MemberOperatorDetail'
+		,component: () => import('@/view/Member/OperatorDetail.vue')
+	}
+	,{
 		path: prefix + 'Manager/List/:page?'
 		,name: 'ManagerList'
 		,component: () => import('@/view/Manager/ManagerList.vue')

@@ -99,7 +99,7 @@ export async function Axios({ method, url, data, header, authorize, multipart, T
 
 			if(!result.data.success){
 				if(result.data.data?.code == 'E001001'){
-					document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Error/403'
+					// document.location.href = process.env.VUE_APP_PUBLIC_PATH + 'Error/403'
 				}
 			}
 			return result.data

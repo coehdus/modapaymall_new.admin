@@ -109,6 +109,11 @@
 								,name: '회원목록'
 								,type: ['admin', 'distributor', 'agency']
 							}
+							, {
+								path: 'OperatorList'
+								,name: '영업자 목록'
+								,type: ['admin', 'distributor']
+							}
 						]
 					}
 					,{
