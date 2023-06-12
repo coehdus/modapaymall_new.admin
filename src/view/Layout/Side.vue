@@ -113,6 +113,7 @@
 								path: 'OperatorList'
 								,name: '영업자 목록'
 								,type: ['admin', 'distributor']
+								, not_view: this.user.sales_type == 1 ? false : true
 							}
 						]
 					}
