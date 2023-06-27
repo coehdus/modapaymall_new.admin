@@ -5,6 +5,7 @@
 		<table ref="excel_table">
 			<thead>
 				<tr>
+					<th>No</th>
 					<th
 						v-for="(th, index) in excel_data.header"
 						:key="'th_' + th.column + '_' + index"
@@ -16,6 +17,7 @@
 					v-for="(tr, key) in excel_data.content"
 					:key="'tr_' + key"
 				>
+					<td>{{ key + 1}}</td>
 					<td
 						v-for="(td, d_index) in excel_data.header"
 						:key="'tr_' + key + '_td_' + d_index + '_' + td.column"
@@ -54,7 +56,7 @@
 				//let data_type = 'data:application/vnd.ms-excel';
 				let ua = window.navigator.userAgent;
 				let msie = ua.indexOf("MSIE ");
-				let fileName = this.excel_data.name + this.$date.getToday() + '.xls'
+				let fileName = this.excel_data.name + this.$date.getToday() + '.xlsx'
 				//Explorer 환경에서 다운로드
 				if (msie > 0 ) {
 					if (window.navigator.msSaveBlob) {
@@ -75,6 +77,8 @@
 					elem.click();
 					document.body.removeChild(elem);
 				}
+
+				this.$emit('close')
 			}
 		}
 

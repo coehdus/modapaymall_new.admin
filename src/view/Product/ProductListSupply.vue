@@ -202,6 +202,8 @@
 			v-if="is_excel"
 			:excel_data="excel_data"
 			:date="date"
+
+			@close="is_excel = false"
 		></Excel>
 	</div>
 </template>

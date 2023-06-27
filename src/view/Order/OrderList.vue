@@ -463,6 +463,8 @@
 			v-if="is_excel"
 			:excel_data="excel_data"
 			:date="date"
+
+			@close="is_excel = false"
 		></Excel>
 
 		<Modal
@@ -651,6 +653,7 @@ export default {
 					, {key: 0, name: '주문 상품', column: 'odt_name'}
 					, {key: 0, name: '상품 옵션', column: 'op_name'}
 					, {key: 0, name: '상품 금액', column: 'odt_price'}
+					, {key: 0, name: '주문 수량', column: 'odt_cnt'}
 					, {key: 0, name: '주문 상태', column: 'order_status_name'}
 					, {key: 0, name: '배송구분', column: 'delivery_type'}
 					, {key: 0, name: '받는분', column: 'd_name'}

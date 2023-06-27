@@ -257,6 +257,8 @@
 		<Excel
 			v-if="is_excel"
 			:excel_data="excel_data"
+
+			@close="is_excel = false"
 		></Excel>
 	</div>
 </template>
