@@ -56,7 +56,7 @@
 				//let data_type = 'data:application/vnd.ms-excel';
 				let ua = window.navigator.userAgent;
 				let msie = ua.indexOf("MSIE ");
-				let fileName = this.excel_data.name + this.$date.getToday() + '.xlsx'
+				let fileName = this.excel_data.name + this.$date.getToday() + '.xls'
 				//Explorer 환경에서 다운로드
 				if (msie > 0 ) {
 					if (window.navigator.msSaveBlob) {
