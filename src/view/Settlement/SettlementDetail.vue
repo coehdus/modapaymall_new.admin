@@ -44,8 +44,8 @@
 						<td>{{ art.total_amount | makeComma }} 원</td>
 						<td>{{ item.is_agency ? (art.total_fee) + '원' : '-' | makeComma }} <template v-if="item.is_agency">({{ art.total_fee_rate }}%)</template></td>
 
-						<td>{{ item.is_agency ? (art.total_fee - art.pg_fee) + '원' : (art.income_amount) + '원' | makeComma }} <template>({{ art.fee_rate}}%)</template></td>
-						<td>{{ item.is_agency ? (art.pg_fee) + '원' : '-' | makeComma }}  <template v-if="item.is_agency">({{ art.pg_fee_rate }}%)</template></td>
+						<td>{{ item.is_agency ? '-' : (art.income_amount) + '원' | makeComma }} <template v-if="!item.is_agency">({{ art.fee_rate}}%)</template></td>
+						<td>{{ item.is_admin ? (art.pg_fee) + '원' : '-' | makeComma }}  <template v-if="item.is_admin">({{ art.pg_fee_rate }}%)</template></td>
 						<td>{{ art.amount | makeComma }} 원</td>
 					</tr>
 				</template>
@@ -62,8 +62,8 @@
 						<th>{{ item.total_amount | makeComma }} 원</th>
 						<th>{{ item.is_admin ? (item.income_amount) + '원' : item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</th>
 
-						<th>{{ item.is_agency ? (item.total_fee - item.fee) + '원' : (item.income_amount) + '원' | makeComma }}</th>
-						<th>{{ item.is_agency ? (item.fee) + '원' : '-' | makeComma }} </th>
+						<th>{{ item.is_agency ? '-' : (item.income_amount) + '원' | makeComma }}</th>
+						<th>{{ item.is_admin ? (item.fee) + '원' : '-' | makeComma }} </th>
 						<th>{{ item.amount | makeComma}} 원</th>
 					</tr>
 				</tfoot>
