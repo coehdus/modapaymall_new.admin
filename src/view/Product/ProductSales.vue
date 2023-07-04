@@ -506,7 +506,7 @@ export default {
 					name += 'Agency'
 					break;
 			}
-			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})
+			this.$storage.push({ name: name, params: { pdt_code: item.uid }, not_query: true})
 		}
 		,clear_item: function(){
 			this.item_new = {
@@ -569,19 +569,22 @@ export default {
 		}
 		,getCategoryList: async function(){
 			try{
+				this.category_list = []
 				this.search.pdt_category = ''
-				const result = await this.$request.init({
-					method: 'get'
-					,url: 'management/getCategoryList'
-					,data: {
-						agency_id: this.search.pdt_company
-					}
-				})
+				if(this.search.pdt_company) {
+					const result = await this.$request.init({
+						method: 'get'
+						, url: 'management/getCategoryList'
+						, data: {
+							agency_id: this.search.pdt_company
+						}
+					})
 
-				if(result.success){
-					this.category_list = result.data.result
-				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message })
+					if (result.success) {
+						this.category_list = result.data.result
+					} else {
+						this.$bus.$emit('notify', {type: 'error', message: result.message})
+					}
 				}
 			}catch (e) {
 				console.log(e)
@@ -589,9 +592,10 @@ export default {
 		}
 		,getAgencyList: async function(){
 			try{
+				this.search.pdt_category = ''
 				const result = await this.$request.init({
 					method: 'get'
-					,url: 'management/getAgencyList'
+					,url: 'management/getSalesAgencyList'
 					,data: {
 						agency_type: 'A001003'
 					}

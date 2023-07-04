@@ -157,14 +157,14 @@
 						<th>판매금액</th>
 						<th>판매원가</th>
 						<th>판매 수수료</th>
-
 						<th>영업 수수료</th>
+
 						<th>PG 원가</th>
-						<th>배송비</th>
+						<th>차감</th>
 						<th>정산금액</th>
 						<th>정산여부</th>
-
 						<th>지급여부</th>
+
 						<th>관리</th>
 					</tr>
 					</thead>
@@ -183,14 +183,14 @@
 							<td class="text-right">{{ item.sale_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.total_amount | makeComma }} 원</td>
 							<td class="text-right">{{ item.is_agency ? (item.total_fee) + '원' : '-' | makeComma }}</td>
-
 							<td class="text-right">{{ item.is_agency ? '-' : (item.income_amount) + '원' | makeComma }}</td>
+
 							<td class="text-right">{{ item.is_admin ? (item.fee) + '원' : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.is_agency ? (item.minus_amount) + '원'  : '-' | makeComma }}</td>
 							<td class="text-right">{{ item.amount | makeComma }} 원</td>
 							<td>{{ item.is_settlement_name }}</td>
-
 							<td>{{ item.is_deposit_name }}</td>
+
 							<td>
 								<button
 									class="btn-blue pa-5-10 mr-10"

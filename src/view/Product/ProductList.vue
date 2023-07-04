@@ -569,19 +569,22 @@ export default {
 		}
 		,getCategoryList: async function(){
 			try{
+				this.category_list = []
 				this.search.pdt_category = ''
-				const result = await this.$request.init({
-					method: 'get'
-					,url: 'management/getCategoryList'
-					,data: {
-						agency_id: this.search.pdt_company
-					}
-				})
+				if(this.search.pdt_company) {
+					const result = await this.$request.init({
+						method: 'get'
+						, url: 'management/getCategoryList'
+						, data: {
+							agency_id: this.search.pdt_company
+						}
+					})
 
-				if(result.success){
-					this.category_list = result.data.result
-				}else{
-					this.$bus.$emit('notify', { type: 'error', message: result.message })
+					if (result.success) {
+						this.category_list = result.data.result
+					} else {
+						this.$bus.$emit('notify', {type: 'error', message: result.message})
+					}
 				}
 			}catch (e) {
 				console.log(e)
@@ -589,6 +592,7 @@ export default {
 		}
 		,getAgencyList: async function(){
 			try{
+				this.search.pdt_category = ''
 				const result = await this.$request.init({
 					method: 'get'
 					,url: 'management/getAgencyList'
@@ -611,7 +615,7 @@ export default {
 
 			await this.getAgencyList()
 
-			await this.getCategoryList()
+			// await this.getCategoryList()
 
 			await this.getData()
 		}
