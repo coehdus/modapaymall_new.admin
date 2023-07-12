@@ -259,6 +259,8 @@
 									<col width="auto" />
 									<col width="auto" />
 									<col width="auto" />
+
+									<col width="auto" />
 									<col width="auto" />
 									<col width="500px" />
 								</colgroup>
@@ -268,6 +270,7 @@
 										<th>공급가</th>
 										<th>판매가</th>
 										<th>판매 수량</th>
+										<th>소계</th>
 										<th>주문 상태</th>
 										<th>관리</th>
 									</tr>
@@ -303,6 +306,7 @@
 											판매가: {{ odt.pdt_price | makeComma }} 원
 										</td>
 										<td class=" ">수량: {{ odt.op_cnt | makeComma }} 개</td>
+										<td class=" ">소개: {{ odt.op_cnt * odt.pdt_price | makeComma }} 원</td>
 
 										<td class=" ">
 											<span
@@ -432,6 +436,7 @@
 										<td class="text-center">총 공급가: {{ supply.total_purchase | makeComma }} 원</td>
 										<td class="text-center">총 판매가: {{ supply.total_price | makeComma }} 원</td>
 										<td >총 수량: {{ supply.total_count | makeComma }} 개</td>
+										<td >합계 : {{ supply.total_sum | makeComma }} 개</td>
 										<td class="text-center">배송비: {{ supply.delivery_total | makeComma }} 원</td>
 										<td class="text-center">공급가 합계: {{ supply.supply_total | makeComma }} 원</td>
 									</tr>
@@ -573,6 +578,7 @@ export default {
 				item.supply_list.filter((supply) => {
 
 					supply.total_count = 0
+					supply.total_sum = 0
 					supply.odt_list.filter((odt) => {
 						if(odt.pdt_img1){
 							odt.pdt_img = this.$pdt_img_url + odt.pdt_img1
@@ -598,6 +604,7 @@ export default {
 						}
 
 						supply.total_count += Number(odt.op_cnt)
+						supply.total_sum += Number(odt.op_cnt) * Number(odt.pdt_price)
 					})
 
 					supply.supply_total = (Number(supply.total_purchase) + Number(supply.delivery_total))
@@ -622,7 +629,8 @@ export default {
 					supply.odt_list.filter(function(odt){
 
 						list.push({
-							order_num_new: item.order_number + ' '
+							order_number: item.order_number + ' '
+							, order_num_new: item.order_num_new + ' '
 							, agency_name: item.agency_name
 							, member_id: item.member_id
 							, member_name: item.member_name
@@ -631,6 +639,7 @@ export default {
 							, odt_name: odt.pdt_name
 							, op_name: odt.op_name
 							, odt_cnt: odt.op_cnt
+							, odt_total: Number(odt.op_cnt) * Number(odt.pdt_price)
 							, delivery_type: item.delivery_type == 'D002002' ? '방문수령' : '택배배송'
 							, d_name: item.d_name
 							, d_post: item.d_post
@@ -641,19 +650,21 @@ export default {
 				})
 			})
 
-			console.log('excel_data', list)
+			console.log('excel', list)
 
 			return {
 				name: '주문 목록'
 				, header: [
 					{key: 0, name: '대리점', column: 'agency_name'}
 					, {key: 0, name: '주문번호', column: 'order_num_new'}
+					, {key: 0, name: '주문코드', column: 'order_number'}
 					, {key: 0, name: '아이디', column: 'member_id'}
 					, {key: 0, name: '이름', column: 'member_name'}
 					, {key: 0, name: '주문 상품', column: 'odt_name'}
 					, {key: 0, name: '상품 옵션', column: 'op_name'}
 					, {key: 0, name: '상품 금액', column: 'odt_price'}
 					, {key: 0, name: '주문 수량', column: 'odt_cnt'}
+					, {key: 0, name: '합계', column: 'odt_total'}
 					, {key: 0, name: '주문 상태', column: 'order_status_name'}
 					, {key: 0, name: '배송구분', column: 'delivery_type'}
 					, {key: 0, name: '받는분', column: 'd_name'}
