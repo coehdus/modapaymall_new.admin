@@ -630,7 +630,7 @@ export default {
 
 						list.push({
 							order_number: item.order_number + ' '
-							, order_num_new: item.order_num_new + ' '
+							, order_num_new: '[' + item.order_num_new + ']'
 							, agency_name: item.agency_name
 							, member_id: item.member_id
 							, member_name: item.member_name
