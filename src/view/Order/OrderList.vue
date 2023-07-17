@@ -8,6 +8,23 @@
 			>
 				<li
 					class="flex-1 pa-10 text-center cursor-pointer mr-1"
+					:class="search.o_status == '' ? 'bg-green ': 'bg-default'"
+					@click="search.o_status = ''; getSearch(1)"
+				> 전체</li>
+				<li
+					v-for="order_status in codes.O001.items"
+					:key="'order_status' + order_status.total_code"
+
+					class="flex-1 pa-10 text-center cursor-pointer mr-1"
+					:class="order_status.code_value == search.o_status ? 'bg-' + order_status.code_color : 'bg-default'"
+					@click="search.o_status = order_status.code_value; getSearch(1)"
+				>{{ order_status.code_name }}</li>
+			</ul>
+			<ul
+				class="mt-10 justify-space-between "
+			>
+				<li
+					class="flex-1 pa-10 text-center cursor-pointer mr-1"
 					:class="search.order_status == '' ? 'bg-green ': 'bg-default'"
 					@click="search.order_status = ''; getSearch(1)"
 				>주문 전체</li>
@@ -519,7 +536,7 @@ export default {
 				, search_type: ''
 				, search_value: ''
 				, list_cnt: 10
-				, o_status: ''
+				, o_status: '2'
 				, order_status: ''
 				, sDate: this.date.getLastDate(7, '-')
 				, eDate: this.date.getToday('-')
@@ -634,6 +651,7 @@ export default {
 							, agency_name: item.agency_name
 							, member_id: item.member_id
 							, member_name: item.member_name
+							, o_status_name: item.o_status_name
 							, order_status_name: odt.order_status_name
 							, odt_price: odt.pdt_price
 							, odt_name: odt.pdt_name
@@ -665,6 +683,7 @@ export default {
 					, {key: 0, name: '상품 금액', column: 'odt_price'}
 					, {key: 0, name: '주문 수량', column: 'odt_cnt'}
 					, {key: 0, name: '합계', column: 'odt_total'}
+					, {key: 0, name: '결제', column: 'o_status_name'}
 					, {key: 0, name: '주문 상태', column: 'order_status_name'}
 					, {key: 0, name: '배송구분', column: 'delivery_type'}
 					, {key: 0, name: '받는분', column: 'd_name'}
