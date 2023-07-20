@@ -177,17 +177,29 @@
 									<th>결제 상태</th>
 									<td>{{ item.o_status_name}}</td>
 								</tr>
-								<tr>
+								<tr
+									v-if="false"
+								>
 									<th>총 상품가</th>
 									<td>{{ item.total_price | makeComma }} 원</td>
 								</tr>
-								<tr>
+								<tr
+									v-if="false"
+								>
 									<th>총 배송비</th>
 									<td>{{ item.delivery_price | makeComma }} 원</td>
 								</tr>
 								<tr>
 									<th>결제금액</th>
 									<td>{{ item.order_price | makeComma }}</td>
+								</tr>
+								<tr>
+									<th>결제시간</th>
+									<td>{{ item.order_return ? item.order_return.wDate : '-'}}</td>
+								</tr>
+								<tr>
+									<th>승인상태</th>
+									<td>{{ item.order_return ? item.order_return.resultStatus : '-'}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -663,6 +675,8 @@ export default {
 							, d_post: item.d_post
 							, d_addr1: item.d_addr1
 							, d_addr2: item.d_addr2
+							, return_date: item.order_return ? item.order_return.wDate : '-'
+							, return_status: item.order_return ? item.order_return.resultStatus : '-'
 						})
 					})
 				})
@@ -684,6 +698,8 @@ export default {
 					, {key: 0, name: '주문 수량', column: 'odt_cnt'}
 					, {key: 0, name: '합계', column: 'odt_total'}
 					, {key: 0, name: '결제', column: 'o_status_name'}
+					, {key: 0, name: '결제시간', column: 'return_date'}
+					, {key: 0, name: '결제상태', column: 'return_status'}
 					, {key: 0, name: '주문 상태', column: 'order_status_name'}
 					, {key: 0, name: '배송구분', column: 'delivery_type'}
 					, {key: 0, name: '받는분', column: 'd_name'}
