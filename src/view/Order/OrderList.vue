@@ -171,7 +171,7 @@
 								</tr>
 								<tr>
 									<th>결제방식</th>
-									<td>{{ item.pay_div_name }}</td>
+									<td> {{ item.issNm }} {{ item.pay_div_name }}</td>
 								</tr>
 								<tr>
 									<th>결제 상태</th>
@@ -603,6 +603,9 @@ export default {
 
 				let pay_div = this.codes.pay_div[item.pay_div]
 				item.pay_div_name = pay_div.name
+				if(item.order_return){
+					item.issNm = item.order_return.issNm
+				}
 
 				item.supply_list.filter((supply) => {
 
@@ -663,6 +666,7 @@ export default {
 							, agency_name: item.agency_name
 							, member_id: item.member_id
 							, member_name: item.member_name
+							, payment_name: item.issNm + ' ' + item.pay_div_name
 							, o_status_name: item.o_status_name
 							, order_status_name: odt.order_status_name
 							, odt_price: odt.pdt_price
@@ -697,6 +701,7 @@ export default {
 					, {key: 0, name: '상품 금액', column: 'odt_price'}
 					, {key: 0, name: '주문 수량', column: 'odt_cnt'}
 					, {key: 0, name: '합계', column: 'odt_total'}
+					, {key: 0, name: '결제방식', column: 'payment_name'}
 					, {key: 0, name: '결제', column: 'o_status_name'}
 					, {key: 0, name: '결제시간', column: 'return_date'}
 					, {key: 0, name: '결제상태', column: 'return_status'}
