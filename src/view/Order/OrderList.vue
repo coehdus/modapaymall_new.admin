@@ -194,6 +194,10 @@
 									<td>{{ item.order_price | makeComma }}</td>
 								</tr>
 								<tr>
+									<th>할부</th>
+									<td>{{ item.order_return.installment > 1 ? item.order_return.installment + '개월' : '일시불' }}</td>
+								</tr>
+								<tr>
 									<th>결제시간</th>
 									<td>{{ item.order_return ? item.order_return.wDate : '-'}}</td>
 								</tr>
