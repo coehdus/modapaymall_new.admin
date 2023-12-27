@@ -506,7 +506,7 @@ export default {
 					name += 'Agency'
 					break;
 			}
-			this.$storage.push({ name: name, params: { pdt_code: item.pdt_code }, not_query: true})
+			this.$storage.push({ name: name, params: { pdt_code: item.uid }, not_query: true})
 		}
 		,clear_item: function(){
 			this.item_new = {

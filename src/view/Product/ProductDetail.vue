@@ -696,7 +696,7 @@ export default {
 			await this.getData()
 
 			await this.getAgencyList()
-			
+
 			await this.getCategoryList()
 		}
 		, setFile: async function(e){
