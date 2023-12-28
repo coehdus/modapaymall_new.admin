@@ -511,7 +511,9 @@ export default {
 					this.$set(this, 'item_ori', result.data.result)
 					this.item_options = result.data.pdt_option
 					this.item_files = result.data.pdt_files
+
 					this.files = result.data.pdt_files.file
+
 					this.item_upload_delivery_img_uid = result.data.pdt_files.delivery.uid
 					this.item_upload_delivery_img = {
 						src: result.data.pdt_files.delivery.file_path
@@ -541,6 +543,7 @@ export default {
 			this.new_item.pdt_company = this.item.pdt_company
 			this.new_item.pdt_info = this.item.pdt_info
 			this.new_item.is_regular = this.item.is_regular
+			this.new_item.files = JSON.stringify(this.files)
 
 			for(let [key, val] of Object.entries(this.item_options.option)){
 				this.$set(this.new_item, 'pdt_options' + key, val.uid + ';;' + val.opt_name + ';;' + val.opt_cont)
