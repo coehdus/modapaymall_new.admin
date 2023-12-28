@@ -615,7 +615,7 @@ export default {
 
 			await this.getAgencyList()
 
-			// await this.getCategoryList()
+			await this.getCategoryList()
 
 			await this.getData()
 		}
