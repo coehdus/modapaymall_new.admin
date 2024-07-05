@@ -1,7 +1,7 @@
 <template>
-	<div class="full-height">
+	<div class="">
 		<div
-			class="full-height"
+			class=""
 		>
 			<div
 				class="justify-space-between"
@@ -173,12 +173,12 @@
 									<v-icon
 										class="pa-5 "
 										:class="pg.fee_status == 1 ? 'bg-green color-white' : 'btn-default' "
-										@click="setFeeStatus(pg, true)"
+										@click="pg.fee_status = 1"
 									>mdi mdi-power-plug</v-icon>
 									<v-icon
 										class="pa-5 "
 										:class="pg.fee_status != 1 ? 'bg-red color-white' : 'btn-default' "
-										@click="setFeeStatus(pg, false)"
+										@click="pg.fee_status = 0"
 									>mdi mdi-power-plug-off</v-icon>
 								</td>
 								<td
@@ -375,6 +375,42 @@
 									maxlength="25"
 									class="input-box-inline"
 									placeholder="상점명을 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>대표자명 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="text"
+									v-model="item.shop_ceo"
+									maxlength="25"
+									class="input-box-inline"
+									placeholder="대표자명을 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>사업자명 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="text"
+									v-model="item.business_name"
+									maxlength="25"
+									class="input-box-inline"
+									placeholder="사업자명을 입력하세요"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>사업장 연락처 <span class="color-red">*</span></th>
+							<td colspan="3">
+								<input
+									type="text"
+									v-model="item.shop_tell"
+									maxlength="25"
+									class="input-box-inline"
+									placeholder="연락처를 입력하세요"
 								/>
 							</td>
 						</tr>
@@ -584,7 +620,7 @@
 		</div>
 
 		<div
-			class="justify-center"
+			class="justify-center mt-30 mb-30"
 		>
 			<button
 				class="bg-identify pa-10-20 mr-10"
